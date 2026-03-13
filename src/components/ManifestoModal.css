@@ -1,0 +1,226 @@
+.manifesto-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  animation: fadeInModal 0.3s ease forwards;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.manifesto-modal-content {
+  background-color: var(--bg-primary);
+  border: 4px solid var(--border-color);
+  box-shadow: 15px 15px 0px var(--accent-light);
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 5rem 3rem 4rem;
+  transform: rotate(-1deg);
+  animation: slideUpModal 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes slideUpModal {
+  from { opacity: 0; transform: translateY(40px) rotate(-1deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-1deg); }
+}
+
+.manifesto-close-btn {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+.manifesto-close-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--accent-light);
+  border-color: var(--accent-light);
+  color: var(--accent-light);
+}
+
+/* Typography and Blocks */
+.manifesto-modal-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 25vw;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.03);
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.manifesto-modal-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Modifying existing css for use inside the modal */
+.manifesto-modal-inner .manifesto-lead {
+  font-size: 3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 3rem;
+  color: var(--text-primary);
+  text-shadow: 4px 4px 0px var(--accent-light);
+  letter-spacing: -1px;
+}
+
+.manifesto-modal-inner .manifesto-block {
+  margin-bottom: 2.5rem;
+  border-left: 4px solid var(--border-color);
+  padding-left: 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem 2rem;
+  transform: rotate(-1deg);
+  transition: transform 0.3s;
+}
+
+.manifesto-modal-inner .manifesto-block:hover {
+  transform: translate(5px, -5px) rotate(0deg);
+  box-shadow: -8px 8px 0px var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.manifesto-modal-inner .manifesto-rotate-right {
+  transform: rotate(1deg);
+  margin-left: 1rem;
+}
+
+.manifesto-modal-inner .manifesto-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 0.8rem;
+}
+
+.manifesto-modal-inner .manifesto-text.bold {
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.manifesto-modal-inner .accent-bold {
+  color: var(--accent-text);
+  font-weight: 800;
+}
+
+.manifesto-modal-inner .manifesto-list {
+  list-style: none;
+  margin-top: 2rem;
+  margin-left: 1rem;
+}
+
+.manifesto-modal-inner .manifesto-list li {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.manifesto-modal-inner .manifesto-list li::before {
+  content: '✦';
+  color: var(--accent-light);
+  font-size: 1rem;
+}
+
+.manifesto-modal-inner .manifesto-conclusion {
+  margin-top: 4rem;
+  text-align: right;
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--text-primary);
+  text-shadow: 3px 3px 0px var(--accent-light);
+  transform: rotate(2deg);
+}
+
+.manifesto-modal-inner .manifesto-conclusion span {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 2rem;
+  text-shadow: none;
+}
+
+/* Custom Scrollbar for Modal */
+.manifesto-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.manifesto-modal-content::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+}
+
+.manifesto-modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent-light);
+}
+
+@media (max-width: 768px) {
+  .manifesto-modal-overlay {
+    padding: 1rem;
+  }
+  
+  .manifesto-modal-content {
+    padding: 4rem 1.5rem 2rem;
+    transform: none;
+    box-shadow: 8px 8px 0px var(--accent-light);
+  }
+  
+  .manifesto-close-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .manifesto-modal-inner .manifesto-lead {
+    font-size: 2.2rem;
+  }
+  
+  .manifesto-modal-inner .manifesto-rotate-right {
+    margin-left: 0;
+    transform: none;
+  }
+  
+  .manifesto-modal-inner .manifesto-conclusion {
+    font-size: 2.5rem;
+  }
+  
+  .manifesto-modal-inner .manifesto-conclusion span {
+    font-size: 1.5rem;
+  }
+}
