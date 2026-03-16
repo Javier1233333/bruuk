@@ -35,8 +35,7 @@ export default async function handler(
         send_welcome_email: true,
         opt_in_intent: true,
         cancel_opt_in_intent: false,
-        upsert: true,
-        tags: tags || ['Bruuk Landing'],
+        upsert: true
       }),
     });
 

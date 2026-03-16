@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { X } from 'lucide-react';
 import './ManifestoModal.css';
 
@@ -17,7 +17,7 @@ export function ManifestoModal({ isOpen, onClose }: ManifestoModalProps) {
           <X size={32} />
         </button>
 
-        <div className="manifesto-modal-bg-text">BRUKK</div>
+        <div className="manifesto-modal-bg-text">BRUUK</div>
         
         <div className="manifesto-modal-inner">
           <h2 className="manifesto-lead">
@@ -31,7 +31,7 @@ export function ManifestoModal({ isOpen, onClose }: ManifestoModalProps) {
           </div>
 
           <div className="manifesto-block manifesto-rotate-right">
-            <p className="manifesto-text bold">BRUKK existe para conectar personas a través de experiencias reales.</p>
+            <p className="manifesto-text bold">BRUUK existe para conectar personas a través de experiencias reales.</p>
             <p className="manifesto-text">Para redescubrir lugares, compartir momentos y conocer gente nueva.</p>
             <br />
             <p className="manifesto-text accent-bold">No somos solo una app.</p>

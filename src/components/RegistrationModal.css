@@ -160,6 +160,19 @@
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
+.email-form input.input-error {
+    border-color: #ff4d4f;
+    background-color: rgba(255, 77, 79, 0.05);
+}
+
+.error-message {
+    color: #ff4d4f !important;
+    font-size: 0.9rem !important;
+    margin-top: -0.5rem !important;
+    margin-bottom: 0 !important;
+    animation: fadeIn 0.3s ease;
+}
+
 .w-full {
     width: 100%;
 }

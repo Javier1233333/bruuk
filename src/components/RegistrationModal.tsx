@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, Headphones, Utensils, Coffee, Palette, Guitar, Paintbrush, Zap, Tent, Map, Users, PartyPopper, Network } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import * as validator from 'email-validator';
 import './RegistrationModal.css';
 
 interface RegistrationModalProps {
@@ -54,6 +55,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     if (!isOpen) return null;
 
@@ -67,6 +69,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     const handleBack = () => {
         if (step > 0) {
             setStep(prev => prev - 1);
+            setErrorMsg(null);
         }
     };
 
@@ -75,31 +78,76 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
         
         if (isSubmitting) return;
         setIsSubmitting(true);
+        setErrorMsg(null);
 
         try {
-            await addDoc(collection(db, 'earlyAccessLeads'), {
-                email,
+            // Validación estricta de formato de correo (estándar RFC)
+            if (!validator.validate(email.toLowerCase().trim())) {
+                setErrorMsg("Por favor, ingresa un correo electrónico válido.");
+                setIsSubmitting(false);
+                return;
+            }
+
+            const leadsRef = collection(db, 'earlyAccessLeads');
+            const q = query(leadsRef, where('email', '==', email.toLowerCase().trim()));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                setErrorMsg("Este correo ya está en la lista VIP.");
+                setIsSubmitting(false);
+                return;
+            }
+
+            // Llamada al servidor puente de Vercel para mandar el correo a Beehiiv
+            // Lo hacemos ANTES de Firebase para asegurar que se completa la red
+            try {
+                const userTags = Object.values(answers).map(String);
+                
+                const beehiivRes = await fetch(window.location.origin + '/api/join', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email.toLowerCase().trim(),
+                        tags: ['VIP Access', ...userTags]
+                    }),
+                });
+
+                const resText = await beehiivRes.text();
+
+                if (!beehiivRes.ok) {
+                    try {
+                        const errorData = JSON.parse(resText);
+                        const beehiivMsg = errorData.errors?.[0]?.message || 'El correo fue rechazado';
+                        throw new Error(`Beehiiv: ${beehiivMsg}`);
+                    } catch (parseErr) {
+                        throw new Error(`Fallo de conexión: ${resText.substring(0, 50)}`);
+                    }
+                }
+
+                if (resText.includes('<html')) {
+                    throw new Error('Vercel devolvió HTML en vez de la API.');
+                }
+            } catch (beehiivErr: any) {
+                console.error("Error crítico de Beehiiv:", beehiivErr);
+                
+                // Extraemos el mensaje limpio para mostrarlo al usuario
+                const errorStr = beehiivErr.message;
+                if (errorStr.includes('Beehiiv:')) {
+                    setErrorMsg("Este correo no parece válido o fue rechazado.");
+                } else {
+                    setErrorMsg(`Error de sistema: ${errorStr}`);
+                }
+                
+                setIsSubmitting(false);
+                return; // ESTE RETURN ES LA CLAVE PARA FRENAR FIREBASE
+            }
+
+            // Si Beehiiv fue exitoso, guardamos respaldo en Firebase
+            await addDoc(leadsRef, {
+                email: email.toLowerCase().trim(),
                 preferences: answers,
                 createdAt: serverTimestamp()
             });
-
-            // Llamada al servidor puente de Vercel para mandar el correo a Beehiiv
-            try {
-                await fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email,
-                        // Enviamos las respuestas como etiquetas para segmentación en Beehiiv
-                        tags: ['VIP Access', ...Object.values(answers)]
-                    }),
-                });
-            } catch (beehiivErr) {
-                console.error("Error al enviar a Beehiiv:", beehiivErr);
-                // No detenemos el flujo si Beehiiv falla temporalmente, porque ya salvamos en Firebase
-            }
 
             setIsSubmitted(true);
 
@@ -111,6 +159,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                     setStep(0);
                     setAnswers({});
                     setEmail('');
+                    setErrorMsg(null);
                     setIsSubmitted(false);
                     setIsSubmitting(false);
                 }, 500);
@@ -118,8 +167,8 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
         } catch (error) {
             console.error("Error adding document: ", error);
+            setErrorMsg("Ocurrió un error inesperado al conectar. Intenta de nuevo.");
             setIsSubmitting(false);
-            // Optionally could add some error notification here
         }
     };
 
@@ -171,9 +220,19 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                         onChange={e => setEmail(e.target.value)}
                                         required
                                         autoFocus
+                                        className={errorMsg ? 'input-error' : ''}
                                     />
-                                    <button type="submit" className="btn btn-primary w-full mt-4">
-                                        Entrar a BRUKK <ArrowRight size={18} />
+                                    {errorMsg && (
+                                        <p className="error-message">{errorMsg}</p>
+                                    )}
+                                    <button 
+                                        type="submit" 
+                                        className="btn btn-primary w-full mt-4"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? 'Procesando...' : (
+                                            <>Entrar a BRUUK <ArrowRight size={18} /></>
+                                        )}
                                     </button>
                                 </form>
                             </div>

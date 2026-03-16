@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
 import { RegistrationModal } from './components/RegistrationModal';
 import { ManifestoModal } from './components/ManifestoModal';
@@ -28,7 +28,7 @@ function App() {
               Menos Pantalla. <br /> Más Mundo.
             </h1>
             <p className="animate-fade-in delay-1">
-              BRUKK no es solo una app. Es una comunidad para quienes creen en vivir más y scrollear menos. Conecta con personas, improvisa planes reales y redescubre tu ciudad.
+              BRUUK no es solo una app. Es una comunidad para quienes creen en vivir más y scrollear menos. Conecta con personas, improvisa planes reales y redescubre tu ciudad.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
               <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
@@ -98,7 +98,7 @@ function App() {
 
       <footer>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <p style={{ fontWeight: 'bold' }}>BRUKK</p>
+          <p style={{ fontWeight: 'bold' }}>BRUUK</p>
           <p>&copy; {new Date().getFullYear()} bruuk. No sigas las reglas.</p>
         </div>
       </footer>
