@@ -9,6 +9,14 @@
   background: var(--bg-primary);
 }
 
+@media (max-width: 500px) {
+  .login-page {
+    align-items: flex-start;
+    padding-top: 2rem;
+    overflow-y: auto;
+  }
+}
+
 .login-bg-glow {
   position: absolute;
   top: -200px;
