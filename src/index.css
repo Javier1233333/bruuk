@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap');
 
 :root {
-  --bg-primary: #050505;
-  --bg-secondary: #111111;
-  --bg-card: rgba(21, 25, 233, 0.1);
-  --accent-light: #1543e9ff;
-  --accent-text: #6b8eff;
-  --text-primary: #ffffff;
-  --text-secondary: #c0c0c0;
-  --border-color: #ffffff;
-  --glow-subtle: 4px 4px 0px var(--accent-light);
-  --glow-hover: 8px 8px 0px var(--accent-light);
+  --bg-primary: #09090f;
+  --bg-secondary: #111120;
+  --bg-card: rgba(99, 102, 241, 0.06);
+  --accent-light: #6366f1;
+  --accent-text: #a5b4fc;
+  --text-primary: #f0f0ff;
+  --text-secondary: #9090b0;
+  --border-color: #1f1f38;
+  --glow-subtle: 4px 4px 0px rgba(99, 102, 241, 0.4);
+  --glow-hover: 8px 8px 0px rgba(99, 102, 241, 0.4);
 }
 
 * {
@@ -25,9 +25,9 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  background-image: 
-    linear-gradient(rgba(21, 25, 233, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(21, 25, 233, 0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
 import { RegistrationModal } from './components/RegistrationModal';
 import { ManifestoModal } from './components/ManifestoModal';
@@ -8,6 +9,7 @@ import './App.css';
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="app-wrapper">
@@ -16,6 +18,9 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
+          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => navigate('/login')}>
+            Inicia sesión
+          </button>
         </div>
       </header>
 
@@ -40,7 +45,6 @@ function App() {
             </div>
           </div>
         </section>
-
 
         {/* Features Section */}
         <section className="features">
@@ -103,13 +107,11 @@ function App() {
         </div>
       </footer>
 
-      {/* Modal de Registro con Preguntas */}
       <RegistrationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
 
-      {/* Modal del Manifiesto */}
       <ManifestoModal
         isOpen={isManifestoOpen}
         onClose={() => setIsManifestoOpen(false)}
