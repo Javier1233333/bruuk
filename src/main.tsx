@@ -8,6 +8,8 @@ import App from './App.tsx'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { VerifyInvitePage } from './pages/VerifyInvitePage'
+import { ProfileSetupPage } from './pages/ProfileSetupPage'
+import { ProfilePage } from './pages/ProfilePage'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -18,6 +20,15 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/" element={<App />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify" element={<VerifyInvitePage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route
+            path="/setup"
+            element={
+              <ProtectedRoute>
+                <ProfileSetupPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/app"
             element={
