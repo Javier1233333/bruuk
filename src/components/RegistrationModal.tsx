@@ -108,7 +108,19 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
             if (alreadyRegistered) {
                 setIsAlreadyRegistered(true);
-                setIsSubmitting(false);
+                setIsSubmitted(true);
+                setTimeout(() => {
+                    onClose();
+                    setTimeout(() => {
+                        setStep(0);
+                        setAnswers({});
+                        setEmail('');
+                        setErrorMsg(null);
+                        setIsSubmitted(false);
+                        setIsAlreadyRegistered(false);
+                        setIsSubmitting(false);
+                    }, 500);
+                }, 3000);
                 return;
             }
 
