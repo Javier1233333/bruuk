@@ -3,7 +3,7 @@ import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
-import { PhotoCarousel } from './components/PhotoCarousel';
+// import { PhotoCarousel } from './components/PhotoCarousel';
 import { BruukLogo } from './components/BruukLogo';
 import './App.css';
 
@@ -103,7 +103,7 @@ function App() {
                 <p>No tenemos inversores ni oficina bonita. Tenemos una convicción: <strong>las mejores cosas pasan cuando la gente se junta en persona.</strong> El resto es decoración.</p>
                 <p>Bruuk no es una app todavía. Es primero una comunidad. Y antes de lanzar nada al mundo, queremos que los primeros eventos los vivan las personas que de verdad lo entienden.</p>
               </div>
-              <PhotoCarousel />
+              {/* <PhotoCarousel /> */}
             </div>
 
             <div className="nos-closing">
