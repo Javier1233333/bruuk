@@ -52,6 +52,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -101,12 +102,12 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
             // Suscribir a Beehiiv y enviar correo de bienvenida (en paralelo)
             const userTags = Object.values(answers).map(String);
-            await Promise.allSettled([
+            const [joinResult] = await Promise.allSettled([
                 fetch(window.location.origin + '/api/join', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
-                }),
+                }).then(r => r.json()),
                 fetch(window.location.origin + '/api/welcome', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -114,7 +115,14 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 }),
             ]);
 
-            setIsSubmitted(true);
+            const alreadyRegistered =
+                joinResult.status === 'fulfilled' && joinResult.value?.alreadyRegistered === true;
+
+            if (alreadyRegistered) {
+                setIsAlreadyRegistered(true);
+            } else {
+                setIsSubmitted(true);
+            }
 
             setTimeout(() => {
                 onClose();
@@ -124,6 +132,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                     setEmail('');
                     setErrorMsg(null);
                     setIsSubmitted(false);
+                    setIsAlreadyRegistered(false);
                     setIsSubmitting(false);
                 }, 500);
             }, 2500);
@@ -201,6 +210,14 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                             </div>
                         )}
                     </>
+                ) : isAlreadyRegistered ? (
+                    <div className="modal-success animate-fade-in">
+                        <div className="success-icon-wrapper">
+                            <Check size={40} className="success-icon" />
+                        </div>
+                        <h2>Ya estás en la lista.</h2>
+                        <p>Este correo ya fue registrado antes. Revisa tu bandeja de entrada — y también <strong>spam</strong>, <strong>promociones</strong> y <strong>otras</strong>. El correo ya está ahí.</p>
+                    </div>
                 ) : (
                     <div className="modal-success animate-fade-in">
                         <div className="success-icon-wrapper">

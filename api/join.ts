@@ -45,7 +45,10 @@ export default async function handler(
       return response.status(res.status).json(data);
     }
 
-    return response.status(200).json({ success: true, data });
+    // Beehiiv returns 201 for new subscribers, 200 for existing ones
+    const alreadyRegistered = res.status === 200;
+
+    return response.status(200).json({ success: true, alreadyRegistered, data });
   } catch (error) {
     console.error('Beehiiv API error:', error);
     return response.status(500).json({ error: 'Internal Server Error' });
