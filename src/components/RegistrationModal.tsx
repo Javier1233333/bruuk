@@ -99,13 +99,20 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 throw new Error(err.error || 'Error al guardar');
             }
 
-            // Suscribir a Beehiiv
+            // Suscribir a Beehiiv y enviar correo de bienvenida (en paralelo)
             const userTags = Object.values(answers).map(String);
-            await fetch(window.location.origin + '/api/join', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
-            });
+            await Promise.allSettled([
+                fetch(window.location.origin + '/api/join', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
+                }),
+                fetch(window.location.origin + '/api/welcome', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: cleanEmail }),
+                }),
+            ]);
 
             setIsSubmitted(true);
 
