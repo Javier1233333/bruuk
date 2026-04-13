@@ -88,26 +88,28 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
         }
 
         try {
-            // Guardar en Google Sheets
-            const sheetsRes = await fetch(window.location.origin + '/api/sheets', {
+            // Primero verificar si el email ya existe en Beehiiv
+            const userTags = Object.values(answers).map(String);
+            const joinRes = await fetch(window.location.origin + '/api/join', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: cleanEmail, preferences: answers }),
+                body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
             });
+            const joinData = await joinRes.json();
 
-            if (!sheetsRes.ok) {
-                const err = await sheetsRes.json().catch(() => ({}));
-                throw new Error(err.error || 'Error al guardar');
+            if (joinData.alreadyRegistered) {
+                setIsAlreadyRegistered(true);
+                setIsSubmitting(false);
+                return;
             }
 
-            // Suscribir a Beehiiv y enviar correo de bienvenida (en paralelo)
-            const userTags = Object.values(answers).map(String);
-            const [joinResult] = await Promise.allSettled([
-                fetch(window.location.origin + '/api/join', {
+            // Email nuevo: guardar en Google Sheets y enviar correo de bienvenida
+            await Promise.allSettled([
+                fetch(window.location.origin + '/api/sheets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
-                }).then(r => r.json()),
+                    body: JSON.stringify({ email: cleanEmail, preferences: answers }),
+                }),
                 fetch(window.location.origin + '/api/welcome', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -115,14 +117,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 }),
             ]);
 
-            const alreadyRegistered =
-                joinResult.status === 'fulfilled' && joinResult.value?.alreadyRegistered === true;
-
-            if (alreadyRegistered) {
-                setIsAlreadyRegistered(true);
-            } else {
-                setIsSubmitted(true);
-            }
+            setIsSubmitted(true);
 
             setTimeout(() => {
                 onClose();

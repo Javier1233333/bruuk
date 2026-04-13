@@ -23,6 +23,16 @@ export default async function handler(
   }
 
   try {
+    // Check if subscriber already exists
+    const checkRes = await fetch(
+      `https://api.beehiiv.com/v2/publications/${PUB_ID}/subscriptions/by_email/${encodeURIComponent(email)}`,
+      {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${API_KEY}` },
+      }
+    );
+    const alreadyRegistered = checkRes.ok;
+
     const res = await fetch(`https://api.beehiiv.com/v2/publications/${PUB_ID}/subscriptions`, {
       method: 'POST',
       headers: {
@@ -44,9 +54,6 @@ export default async function handler(
     if (!res.ok) {
       return response.status(res.status).json(data);
     }
-
-    // Beehiiv returns 201 for new subscribers, 200 for existing ones
-    const alreadyRegistered = res.status === 200;
 
     return response.status(200).json({ success: true, alreadyRegistered, data });
   } catch (error) {
