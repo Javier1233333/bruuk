@@ -1,15 +1,21 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
-import { RegistrationModal } from './components/RegistrationModal';
 import { ManifestoModal } from './components/ManifestoModal';
+import { ComingSoonModal } from './components/ComingSoonModal';
+import { RegistrationModal } from './components/RegistrationModal';
+import { PhotoCarousel } from './components/PhotoCarousel';
 import { BruukLogo } from './components/BruukLogo';
 import './App.css';
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
-  const navigate = useNavigate();
+
+  const handleJoin = () => {
+    setIsComingSoonOpen(false);
+    setIsRegistrationOpen(true);
+  };
 
   return (
     <div className="app-wrapper">
@@ -18,7 +24,7 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
-          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => navigate('/login')}>
+          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => setIsComingSoonOpen(true)}>
             Inicia sesión
           </button>
         </div>
@@ -29,6 +35,7 @@ function App() {
         <section className="hero">
           <div className="hero-bg-glow"></div>
           <div className="container">
+            
             <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
               Menos Pantalla. <br /> Más Mundo.
             </h1>
@@ -36,7 +43,7 @@ function App() {
               BRUUK no es solo una app. Es una comunidad para quienes creen en vivir más y scrollear menos. Conecta con personas, improvisa planes reales y redescubre tu ciudad.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
-              <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+              <button className="btn btn-primary" onClick={() => setIsComingSoonOpen(true)}>
                 ACCESO VIP <ArrowRight size={20} strokeWidth={3} />
               </button>
               <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
@@ -59,25 +66,50 @@ function App() {
             <div className="features-grid">
               <div className="feature-card">
                 <div className="feature-icon">
-                  <Globe size={28} color="#fff" />
+                  <Sparkles size={28} color="#fff" />
                 </div>
-                <h3>Exploración Pura</h3>
-                <p>Descubre lugares auténticos recomendados por la gente, no por algoritmos que quieren retenerte en la pantalla.</p>
+                <h3>Eventos Bruuk</h3>
+                <p>Organizamos los primeros eventos exclusivos para la comunidad. Noches, experiencias y momentos que no encontrarás en ninguna app.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
-                  <Sparkles size={28} color="#fff" />
+                  <Globe size={28} color="#fff" />
                 </div>
-                <h3>Rompe el Guion</h3>
-                <p>Lanza un plan al aire y deja que la espontaneidad organice tu día. Desde un café hasta caminar la ciudad sin rumbo.</p>
+                <h3>Lista de Asistentes</h3>
+                <p>Antes de llegar, ya sabes quién va. Conecta con los asistentes, rompe el hielo y llega conociendo caras, no extraños.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
                   <Map size={28} color="#fff" />
                 </div>
-                <h3>El mapa es la gente</h3>
-                <p>Navega a través de historias reales y conexiones humanas. Una ciudad no es un listado de puntos turísticos, es su comunidad.</p>
+                <h3>Acceso VIP Anticipado</h3>
+                <p>Antes de lanzar la app, organizamos eventos reales para la comunidad fundadora. Regístrate y sé parte de los primeros encuentros Bruuk.</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Nosotros Section */}
+        <section className="nosotros">
+          <div className="container">
+            <div className="nos-intro">
+              <span className="nos-tag">/ Nosotros</span>
+              <p className="nos-big">Salir era fácil.<br />Quedarse en casa, también.<br />Bruuk nació en el medio.</p>
+            </div>
+
+            <div className="nos-layout">
+              <div className="nos-story">
+                <p>Un grupo de amigos hartos de que los planes murieran en el chat. Hartos de ver contenido de vida en vez de vivirla. Hartos de que la tecnología nos prometiera conexión y nos diera scroll infinito.</p>
+                <p>No tenemos inversores ni oficina bonita. Tenemos una convicción: <strong>las mejores cosas pasan cuando la gente se junta en persona.</strong> El resto es decoración.</p>
+                <p>Bruuk no es una app todavía. Es primero una comunidad. Y antes de lanzar nada al mundo, queremos que los primeros eventos los vivan las personas que de verdad lo entienden.</p>
+              </div>
+              <PhotoCarousel />
+            </div>
+
+            <div className="nos-closing">
+              <span>Bruuk es el puente.</span>
+              <span>Los eventos son el pretexto.</span>
+              <span>La comunidad es el punto.</span>
             </div>
           </div>
         </section>
@@ -90,8 +122,8 @@ function App() {
                 <h2 className="glitch-hover">MENOS SCROLL, MÁS ACCIÓN</h2>
                 <p>Únete a la resistencia. Regístrate antes del lanzamiento y descubre qué aventuras te esperan allá afuera.</p>
                 <div className="newsletter-form" style={{ justifyContent: 'center' }}>
-                  <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-                    OBTÉN TU INVITACIÓN <ArrowRight size={20} strokeWidth={3} />
+                  <button className="btn btn-primary" onClick={handleJoin}>
+                    ÚNETE AL ACCESO VIP ANTICIPADO <ArrowRight size={20} strokeWidth={3} />
                   </button>
                 </div>
               </div>
@@ -107,9 +139,15 @@ function App() {
         </div>
       </footer>
 
+      <ComingSoonModal
+        isOpen={isComingSoonOpen}
+        onClose={() => setIsComingSoonOpen(false)}
+        onJoin={handleJoin}
+      />
+
       <RegistrationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isRegistrationOpen}
+        onClose={() => setIsRegistrationOpen(false)}
       />
 
       <ManifestoModal

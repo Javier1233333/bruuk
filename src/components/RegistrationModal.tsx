@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, Headphones, Utensils, Coffee, Palette, Guitar, Paintbrush, Zap, Tent, Map, Users, PartyPopper, Network } from 'lucide-react';
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import * as validator from 'email-validator';
 import './RegistrationModal.css';
 
@@ -75,86 +73,44 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (isSubmitting) return;
         setIsSubmitting(true);
         setErrorMsg(null);
 
+        const cleanEmail = email.toLowerCase().trim();
+
+        if (!validator.validate(cleanEmail)) {
+            setErrorMsg("Por favor, ingresa un correo electrónico válido.");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            // Validación estricta de formato de correo (estándar RFC)
-            if (!validator.validate(email.toLowerCase().trim())) {
-                setErrorMsg("Por favor, ingresa un correo electrónico válido.");
-                setIsSubmitting(false);
-                return;
+            // Guardar en Google Sheets
+            const sheetsRes = await fetch(window.location.origin + '/api/sheets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: cleanEmail, preferences: answers }),
+            });
+
+            if (!sheetsRes.ok) {
+                const err = await sheetsRes.json().catch(() => ({}));
+                throw new Error(err.error || 'Error al guardar');
             }
 
-            const leadsRef = collection(db, 'earlyAccessLeads');
-            const q = query(leadsRef, where('email', '==', email.toLowerCase().trim()));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                setErrorMsg("Este correo ya está en la lista VIP.");
-                setIsSubmitting(false);
-                return;
-            }
-
-            // Llamada al servidor puente de Vercel para mandar el correo a Beehiiv
-            // Lo hacemos ANTES de Firebase para asegurar que se completa la red
-            try {
-                const userTags = Object.values(answers).map(String);
-                
-                const beehiivRes = await fetch(window.location.origin + '/api/join', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: email.toLowerCase().trim(),
-                        tags: ['VIP Access', ...userTags]
-                    }),
-                });
-
-                const resText = await beehiivRes.text();
-
-                if (!beehiivRes.ok) {
-                    try {
-                        const errorData = JSON.parse(resText);
-                        const beehiivMsg = errorData.errors?.[0]?.message || 'El correo fue rechazado';
-                        throw new Error(`Beehiiv: ${beehiivMsg}`);
-                    } catch (parseErr) {
-                        throw new Error(`Fallo de conexión: ${resText.substring(0, 50)}`);
-                    }
-                }
-
-                if (resText.includes('<html')) {
-                    throw new Error('Vercel devolvió HTML en vez de la API.');
-                }
-            } catch (beehiivErr: any) {
-                console.error("Error crítico de Beehiiv:", beehiivErr);
-                
-                // Extraemos el mensaje limpio para mostrarlo al usuario
-                const errorStr = beehiivErr.message;
-                if (errorStr.includes('Beehiiv:')) {
-                    setErrorMsg("Este correo no parece válido o fue rechazado.");
-                } else {
-                    setErrorMsg(`Error de sistema: ${errorStr}`);
-                }
-                
-                setIsSubmitting(false);
-                return; // ESTE RETURN ES LA CLAVE PARA FRENAR FIREBASE
-            }
-
-            // Si Beehiiv fue exitoso, guardamos respaldo en Firebase
-            await addDoc(leadsRef, {
-                email: email.toLowerCase().trim(),
-                preferences: answers,
-                createdAt: serverTimestamp()
+            // Suscribir a Beehiiv
+            const userTags = Object.values(answers).map(String);
+            await fetch(window.location.origin + '/api/join', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
             });
 
             setIsSubmitted(true);
 
-            // Cierra el modal después de mostrar el éxito
             setTimeout(() => {
                 onClose();
-                // Reset state for next time
                 setTimeout(() => {
                     setStep(0);
                     setAnswers({});
@@ -165,9 +121,9 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 }, 500);
             }, 2500);
 
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            setErrorMsg("Ocurrió un error inesperado al conectar. Intenta de nuevo.");
+        } catch (error: any) {
+            console.error('Submit error:', error);
+            setErrorMsg("Ocurrió un error inesperado. Intenta de nuevo.");
             setIsSubmitting(false);
         }
     };

@@ -25,10 +25,6 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  background-image:
-    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
 a {
@@ -171,6 +167,35 @@ section {
   z-index: 2;
 }
 
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: var(--accent-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.hero-badge-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
 .hero-bg-glow {
   position: absolute;
   top: 0;
@@ -215,8 +240,8 @@ section {
 }
 
 .feature-card {
-  background-color: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  background-color: #ffffff;
+  border: 2px solid #e2e2f0;
   padding: 3rem 2rem;
   transition: all 0.2s ease-out;
   position: relative;
@@ -265,7 +290,7 @@ section {
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  border: 2px solid var(--border-color);
+  border: 2px solid var(--accent-light);
   transform: rotate(5deg);
   transition: transform 0.3s;
 }
@@ -279,12 +304,108 @@ section {
   margin-bottom: 1rem;
   font-weight: 800;
   text-transform: uppercase;
+  color: #09090f;
 }
 
 .feature-card p {
-  color: var(--text-secondary);
+  color: #555570;
   font-size: 1.1rem;
   font-weight: 400;
+}
+
+/* Nosotros */
+.nosotros {
+  padding: 8rem 0;
+  border-top: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.nos-tag {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 2.5rem;
+}
+
+.nos-intro {
+  margin-bottom: 4rem;
+}
+
+.nos-big {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  color: var(--text-primary);
+  max-width: 780px;
+}
+
+.nos-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+  margin-bottom: 5rem;
+}
+
+.nos-story {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-left: 2rem;
+  border-left: 2px solid var(--border-color);
+}
+
+.nos-story p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.nos-story strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .nos-layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+.nos-closing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: center;
+  align-items: center;
+}
+
+.nos-closing span {
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.nos-closing span:last-child {
+  color: var(--accent-text);
+}
+
+.nos-closing span:hover {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .nos-story {
+    padding-left: 1.25rem;
+  }
 }
 
 /* Newsletter */
@@ -313,6 +434,15 @@ section {
   font-weight: 900;
   letter-spacing: -2px;
   text-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+}
+
+.newsletter-wrapper h2::selection {
+  background-color: #000;
+  color: #fff;
+}
+
+.newsletter-wrapper h2.glitch-hover:hover {
+  color: #000;
 }
 
 .newsletter-wrapper p {
@@ -347,13 +477,22 @@ section {
   box-shadow: 6px 6px 0px rgba(0,0,0,0.8);
 }
 
+.newsletter-form .btn-primary:focus,
+.newsletter-form .btn-primary:active,
+.newsletter-form .btn-primary:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+  background-color: #000;
+  color: #fff;
+}
+
 /* Footer */
 footer {
   padding: 3rem 0;
-  border-top: 4px solid var(--border-color);
-  background: var(--bg-secondary);
+  border-top: 4px solid var(--accent-light);
+  background: var(--accent-light);
   text-align: center;
-  color: var(--text-secondary);
+  color: #fff;
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
