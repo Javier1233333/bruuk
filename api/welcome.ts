@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       body: JSON.stringify({
         from: `BRUUK <${FROM_EMAIL}>`,
-        to: email,
+        to: [email],
         template_id: TEMPLATE_ID,
       }),
     });
