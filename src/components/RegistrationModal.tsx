@@ -88,16 +88,25 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
         }
 
         try {
-            // Primero verificar si el email ya existe en Beehiiv
             const userTags = Object.values(answers).map(String);
-            const joinRes = await fetch(window.location.origin + '/api/join', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
-            });
-            const joinData = await joinRes.json();
 
-            if (joinData.alreadyRegistered) {
+            // Verificar si ya existe + suscribir a Beehiiv
+            let alreadyRegistered = false;
+            try {
+                const joinRes = await fetch(window.location.origin + '/api/join', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
+                });
+                if (joinRes.ok) {
+                    const joinData = await joinRes.json();
+                    alreadyRegistered = joinData.alreadyRegistered === true;
+                }
+            } catch {
+                alreadyRegistered = false;
+            }
+
+            if (alreadyRegistered) {
                 setIsAlreadyRegistered(true);
                 setIsSubmitting(false);
                 return;

@@ -24,14 +24,16 @@ export default async function handler(
 
   try {
     // Check if subscriber already exists
-    const checkRes = await fetch(
-      `https://api.beehiiv.com/v2/publications/${PUB_ID}/subscriptions/by_email/${encodeURIComponent(email)}`,
-      {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${API_KEY}` },
-      }
-    );
-    const alreadyRegistered = checkRes.ok;
+    let alreadyRegistered = false;
+    try {
+      const checkRes = await fetch(
+        `https://api.beehiiv.com/v2/publications/${PUB_ID}/subscriptions/by_email/${encodeURIComponent(email)}`,
+        { method: 'GET', headers: { 'Authorization': `Bearer ${API_KEY}` } }
+      );
+      alreadyRegistered = checkRes.ok;
+    } catch {
+      alreadyRegistered = false;
+    }
 
     const res = await fetch(`https://api.beehiiv.com/v2/publications/${PUB_ID}/subscriptions`, {
       method: 'POST',
