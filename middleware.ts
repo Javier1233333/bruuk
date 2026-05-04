@@ -5,11 +5,8 @@ export const config = {
 export default function middleware(request: Request): Response | undefined {
   const { pathname } = new URL(request.url);
 
-  // Dejar pasar: API, assets estáticos y la propia página de acceso
-  if (
-    pathname.startsWith('/api/') ||
-    pathname.includes('.') // archivos estáticos (.js, .css, .png, etc.)
-  ) {
+  // Solo proteger /app y sus subrutas
+  if (!pathname.startsWith('/app')) {
     return undefined;
   }
 
