@@ -41,13 +41,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
+    border-radius: 0;
+    transition: all 0.15s ease;
 }
 
 .cs-close:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0px #000;
 }
 
 .cs-title {
@@ -74,17 +76,18 @@
     color: #fff;
     font-weight: 800;
     font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     text-decoration: none;
     border: 2px solid var(--accent-light);
+    border-radius: 0;
     transition: all 0.15s ease;
-    box-shadow: 4px 4px 0px rgba(99, 102, 241, 0.4);
+    box-shadow: 4px 4px 0px #000;
+    cursor: pointer;
 }
 
 .cs-btn:hover {
-    background-color: #fff;
-    color: var(--accent-light);
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px rgba(99, 102, 241, 0.5);
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0px #000;
 }

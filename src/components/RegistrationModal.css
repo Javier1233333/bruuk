@@ -41,12 +41,12 @@
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    border-radius: 0;
 }
 
 .modal-close-new {
@@ -100,39 +100,53 @@
 
 .option-btn {
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 1.2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0;
+    padding: 1rem 1.25rem;
     display: flex;
     align-items: center;
     gap: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     color: var(--text-primary);
-    font-family: inherit;
-    font-size: 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
     text-align: left;
 }
 
 .option-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(139, 124, 246, 0.08);
+    border-color: var(--accent-light);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px #000;
 }
 
 .option-btn.selected {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #fff;
-    box-shadow: var(--glow-hover);
+    background: var(--accent-light);
+    border-color: var(--accent-light);
+    color: #fff;
+    box-shadow: 3px 3px 0px #000;
 }
 
 .option-icon {
-    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--accent-light);
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.option-btn.selected .option-icon {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .option-label {
     font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .email-form {
@@ -144,20 +158,20 @@
 
 .email-form input {
     width: 100%;
-    padding: 1.2rem 1.5rem;
-    border-radius: 50px;
-    border: 1px solid var(--border-color);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-size: 1.1rem;
-    font-family: inherit;
+    padding: 0.9rem 1.25rem;
+    border-radius: 0;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: 'DM Sans', sans-serif;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .email-form input:focus {
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.2);
 }
 
 .email-form input.input-error {
@@ -189,14 +203,13 @@
 .success-icon-wrapper {
     width: 80px;
     height: 80px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
+    background: var(--accent-light);
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: var(--glow-hover);
+    box-shadow: 4px 4px 0px #000;
     animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
@@ -219,10 +232,11 @@
 .modal-success h2 {
     font-size: 2.2rem;
     margin-bottom: 1rem;
-    background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    letter-spacing: -1px;
+    text-shadow: 4px 4px 0px var(--accent-light);
 }
 
 .modal-success p {

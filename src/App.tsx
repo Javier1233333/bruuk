@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
