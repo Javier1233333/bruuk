@@ -6,96 +6,203 @@ const HTML = (error = '') => `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BRUUK — Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #0e0d1a;
+      --bg-secondary: #16152a;
+      --accent-light: #8b7cf6;
+      --accent-text: #b8affe;
+      --text-primary: #f0eeff;
+      --text-secondary: #9490b8;
+      --border-color: #252340;
+    }
+
     body {
       min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0a0a0a;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      color: #fff;
+      padding: 2rem 1rem;
+      background: var(--bg-primary);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow: hidden;
     }
+
+    .bg-glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139, 124, 246, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 4px 4px 0px var(--accent-light);
+    }
+
     .card {
       width: 100%;
-      max-width: 380px;
-      padding: 2.5rem 2rem;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 16px;
-      text-align: center;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      padding: 2rem;
+      box-shadow: 6px 6px 0px #000;
     }
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 900;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+
+    .tag {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 0.5rem;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
       margin-bottom: 0.4rem;
     }
-    .sub {
-      font-size: 0.8rem;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 2rem;
-    }
-    input[type="password"] {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 1rem;
-      text-align: center;
-      letter-spacing: 4px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    input[type="password"]:focus { border-color: #a78bfa; }
-    input[type="password"]::placeholder { letter-spacing: 1px; color: #444; }
-    button {
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.85rem;
-      background: linear-gradient(135deg, #7c3aed, #db2777);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
+
+    .subtitle {
+      color: var(--text-secondary);
       font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      font-size: 0.8rem;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus {
+      border-color: var(--accent-light);
+    }
+
+    .field input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .error-box {
+      color: #ff4d4f;
+      font-size: 0.875rem;
+      background: rgba(255, 77, 79, 0.1);
+      border: 2px solid #ff4d4f;
+      padding: 0.6rem 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
       letter-spacing: 1px;
       cursor: pointer;
-      transition: opacity 0.2s;
+      border: 2px solid var(--accent-light);
+      background: var(--accent-light);
+      color: #fff;
+      box-shadow: 4px 4px 0px #000;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    button:hover { opacity: 0.85; }
-    .error {
-      margin-top: 0.75rem;
-      font-size: 0.82rem;
-      color: #f87171;
+
+    .btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0px #000;
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000;
     }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="bg-glow"></div>
+  <div class="wrap">
     <div class="logo">BRUUK</div>
-    <div class="sub">Acceso restringido</div>
-    <form method="POST" action="/api/enter">
-      <input
-        type="password"
-        name="password"
-        placeholder="Contraseña"
-        autofocus
-        autocomplete="current-password"
-        required
-      />
-      ${error ? `<div class="error">${error}</div>` : ''}
-      <button type="submit">Entrar</button>
-    </form>
+    <div class="card">
+      <span class="tag">/ Acceso restringido</span>
+      <h1 class="title">Zona de pruebas</h1>
+      <p class="subtitle">Ingresa la contraseña para continuar.</p>
+      <form method="POST" action="/api/enter">
+        <div class="field">
+          <label for="pwd">Contraseña</label>
+          <input
+            id="pwd"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            autofocus
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        ${error ? `<div class="error-box">${error}</div>` : ''}
+        <button type="submit" class="btn">Entrar</button>
+      </form>
+    </div>
   </div>
 </body>
 </html>`;
@@ -121,7 +228,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'Set-Cookie',
         `bruuk_access=1; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax; Secure`
       );
-      res.setHeader('Location', '/');
+      res.setHeader('Location', '/app');
       return res.status(302).end();
     }
 
