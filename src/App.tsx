@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, Globe, ArrowRight, Users, Compass } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
@@ -25,9 +26,9 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
-          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => setIsComingSoonOpen(true)}>
+          <Link to="/login" className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }}>
             Inicia sesión
-          </button>
+          </Link>
         </div>
       </header>
 
@@ -36,19 +37,26 @@ function App() {
         <section className="hero">
           <div className="hero-bg-glow"></div>
           <div className="container">
-            
-            <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
-              Menos Pantalla. <br /> Más Mundo.
+            <div className="animate-fade-in" style={{ marginBottom: '1.2rem', textAlign: 'center' }}>
+              <span style={{
+                fontSize: '0.9rem', fontWeight: 500, letterSpacing: '0.15em',
+                color: 'var(--text-secondary)', textTransform: 'uppercase',
+              }}>
+                Más ciudades pronto
+              </span>
+            </div>
+            <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Guadalajara tiene más de lo que crees.">
+              Guadalajara tiene<br />más de lo que crees.
             </h1>
             <p className="animate-fade-in delay-1">
-              BRUUK no es solo una app. Es una comunidad para quienes creen en vivir más y scrollear menos. Conecta con personas, improvisa planes reales y redescubre tu ciudad.
+              Planes curados para vivir la ciudad de verdad. Para los que vienen de visita y quieren ir más allá del itinerario. Para los que ya viven aquí y la olvidaron. Para los que quieren conocer gente real mientras la recorren.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
               <button className="btn btn-primary" onClick={() => setIsComingSoonOpen(true)}>
-                ACCESO VIP <ArrowRight size={20} strokeWidth={3} />
+                EXPLORAR PLANES <ArrowRight size={20} strokeWidth={3} />
               </button>
               <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
-                VER MANIFIESTO
+                POR QUÉ BRUUK
               </button>
             </div>
           </div>
@@ -58,9 +66,9 @@ function App() {
         <section className="features">
           <div className="container">
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 className="brand-gradient-text" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>HAZ QUE SUCEDA</h2>
+              <h2 className="brand-gradient-text" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>UNA CIUDAD, DESCUBIERTA DE VERDAD</h2>
               <p style={{ color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '1.2rem', maxWidth: '600px', margin: '1rem auto 0' }}>
-                Tu teléfono es una herramienta para salir a la calle, no una cárcel. Te damos lo esencial para que dejes de planear y empieces a vivir.
+                No guías de turista. No listas de influencers. Planes pensados para que te pierdas en lo bueno y encuentres personas en el camino.
               </p>
             </div>
 
@@ -69,22 +77,29 @@ function App() {
                 <div className="feature-icon">
                   <Sparkles size={28} color="#fff" />
                 </div>
-                <h3>Eventos Bruuk</h3>
-                <p>Organizamos los primeros eventos exclusivos para la comunidad. Noches, experiencias y momentos que no encontrarás en ninguna app.</p>
+                <h3>Planes curados</h3>
+                <p>Cada plan fue pensado para sacar lo mejor de Guadalajara: sus colonias, su comida, su música, su gente. Nada genérico, nada de lo que ya conoces.</p>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <Users size={28} color="#fff" />
+                </div>
+                <h3>Planes con desconocidos</h3>
+                <p>¿Vienes solo o quieres conocer gente nueva? Algunos planes están diseñados para hacerse con extraños que comparten el mismo interés. La ciudad es el pretexto, la conexión es el punto.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
                   <Globe size={28} color="#fff" />
                 </div>
-                <h3>Lista de Asistentes</h3>
-                <p>Antes de llegar, ya sabes quién va. Conecta con los asistentes, rompe el hielo y llega conociendo caras, no extraños.</p>
+                <h3>Para visitantes y locales</h3>
+                <p>Si vienes de visita, te mostramos la Guadalajara que los tapatíos quieren que veas. Si ya vives aquí, te apostamos que hay rincones que todavía no conoces.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
-                  <Map size={28} color="#fff" />
+                  <Compass size={28} color="#fff" />
                 </div>
-                <h3>Acceso VIP Anticipado</h3>
-                <p>Antes de lanzar la app, organizamos eventos reales para la comunidad fundadora. Regístrate y sé parte de los primeros encuentros Bruuk.</p>
+                <h3>Más ciudades en camino</h3>
+                <p>Guadalajara es el inicio. BRUUK está construyendo lo mismo para Ciudad de México, Monterrey, Oaxaca y más. Cada ciudad, descubierta de manera auténtica.</p>
               </div>
             </div>
           </div>
@@ -94,23 +109,22 @@ function App() {
         <section className="nosotros">
           <div className="container">
             <div className="nos-intro">
-              <span className="nos-tag">/ Nosotros</span>
-              <p className="nos-big">Salir era fácil.<br />Quedarse en casa, también.<br />Bruuk nació en el medio.</p>
+              <span className="nos-tag">/ Por qué existe esto</span>
+              <p className="nos-big">Viniste a Guadalajara.<br />Viste lo mismo que todos.<br />Bruuk nació para eso.</p>
             </div>
 
             <div className="nos-layout">
               <div className="nos-story">
-                <p>Un grupo de amigos hartos de que los planes murieran en el chat. Hartos de ver contenido de vida en vez de vivirla. Hartos de que la tecnología nos prometiera conexión y nos diera scroll infinito.</p>
-                <p>No tenemos inversores ni oficina bonita. Tenemos una convicción: <strong>las mejores cosas pasan cuando la gente se junta en persona.</strong> El resto es decoración.</p>
-                <p>Bruuk no es una app todavía. Es primero una comunidad. Y antes de lanzar nada al mundo, queremos que los primeros eventos los vivan las personas que de verdad lo entienden.</p>
+                <p>Hay una versión de Guadalajara que no sale en TripAdvisor. Que no aparece en los reels. Que solo conocen los que saben preguntar a las personas correctas.</p>
+                <p>Nosotros la mapeamos, la destilamos y la convertimos en planes concretos para que cualquiera pueda vivirla, sin importar si llegas hoy o llevas años aquí.</p>
+                <p>Y si quieres vivirla con alguien, también. <strong>Algunos de nuestros mejores planes están diseñados para hacerse con desconocidos que se vuelven conocidos.</strong> Esa es la magia.</p>
               </div>
-              {/* <PhotoCarousel /> */}
             </div>
 
             <div className="nos-closing">
-              <span>Bruuk es el puente.</span>
-              <span>Los eventos son el pretexto.</span>
-              <span>La comunidad es el punto.</span>
+              <span>Bruuk es la bruújula.</span>
+              <span>Los planes son el pretexto.</span>
+              <span>La conexión es el destino.</span>
             </div>
           </div>
         </section>
@@ -120,13 +134,14 @@ function App() {
           <div className="container">
             <div className="newsletter-wrapper">
               <div className="newsletter-content">
-                <h2 className="glitch-hover">MENOS SCROLL, MÁS ACCIÓN</h2>
-                <p>Únete a la resistencia. Regístrate antes del lanzamiento y descubre qué aventuras te esperan allá afuera.</p>
+                <h2 className="glitch-hover">GUADALAJARA TE ESPERA</h2>
+                <p>Acceso anticipado a los primeros planes curados de BRUUK. Sé parte de la comunidad que está redescubriendo la ciudad.</p>
                 <div className="newsletter-form" style={{ justifyContent: 'center' }}>
                   <button className="btn btn-primary" onClick={handleJoin}>
-                    ÚNETE AL ACCESO VIP ANTICIPADO <ArrowRight size={20} strokeWidth={3} />
+                    QUIERO EXPLORAR <ArrowRight size={20} strokeWidth={3} />
                   </button>
                 </div>
+               
               </div>
             </div>
           </div>

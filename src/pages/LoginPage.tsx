@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff, Lock } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
@@ -12,7 +12,6 @@ export function LoginPage() {
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,41 +31,12 @@ export function LoginPage() {
         navigate('/app');
       }
     } else {
-      // Validar código de invitación antes de crear cuenta
-      const code = inviteCode.trim().toUpperCase();
-
-      const { data: codeRow, error: codeErr } = await supabase
-        .from('invite_codes')
-        .select('id, used')
-        .eq('code', code)
-        .single();
-
-      if (codeErr || !codeRow) {
-        setError('Código de invitación inválido. Únete al newsletter para obtener el tuyo.');
-        setLoading(false);
-        return;
-      }
-
-      if (codeRow.used) {
-        setError('Este código ya fue utilizado.');
-        setLoading(false);
-        return;
-      }
-
-      // Crear cuenta
       const { error: signUpErr } = await supabase.auth.signUp({ email, password });
       if (signUpErr) {
         setError(translateError(signUpErr.message));
         setLoading(false);
         return;
       }
-
-      // Marcar código como usado
-      await supabase
-        .from('invite_codes')
-        .update({ used: true, used_by: email.toLowerCase().trim() })
-        .eq('id', codeRow.id);
-
       setSuccessMsg('¡Cuenta creada! Revisa tu correo para confirmarla.');
     }
 
@@ -105,20 +75,13 @@ export function LoginPage() {
             </button>
           </div>
 
-          {mode === 'signup' && (
-            <div className="invite-banner">
-              <Lock size={15} />
-              <span>¿No tienes código? <Link to="/">Únete al acceso anticipado.</Link></span>
-            </div>
-          )}
-
           <h1 className="login-title brand-gradient-text">
             {mode === 'login' ? 'Bienvenido de vuelta.' : 'Únete al movimiento.'}
           </h1>
           <p className="login-subtitle">
             {mode === 'login'
               ? 'Inicia sesión y sigue explorando.'
-              : 'Ingresa tu código de invitación para entrar.'}
+              : 'Crea tu cuenta y únete a la comunidad.'}
           </p>
 
           <form onSubmit={handleSubmit} className="login-form">
@@ -158,22 +121,6 @@ export function LoginPage() {
                 </button>
               </div>
             </div>
-
-            {mode === 'signup' && (
-              <div className="login-field">
-                <label htmlFor="invite-code">Código de invitación</label>
-                <input
-                  id="invite-code"
-                  type="text"
-                  placeholder="BRUUK-XXXX"
-                  value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value)}
-                  required
-                  autoComplete="off"
-                  style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                />
-              </div>
-            )}
 
             {error && <p className="login-error">{error}</p>}
             {successMsg && <p className="login-success">{successMsg}</p>}
