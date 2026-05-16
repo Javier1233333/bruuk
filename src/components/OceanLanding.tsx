@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
 import { OceanCanvas } from './OceanCanvas';
+import spotsData from '../data/spots.json';
 import './OceanLanding.css';
 
 type Spot = {
@@ -139,19 +140,14 @@ export function OceanLanding() {
   const [ripple, setRipple]         = useState<RippleParams | null>(null);
   const [activeSpot, setActiveSpot] = useState<ActiveSpot | null>(null);
   const [clickCount, setClickCount] = useState(0);
-  const [spots, setSpots]           = useState<Spot[]>([]);
+  const [spots]                     = useState<Spot[]>(spotsData as Spot[]);
 
   const [videoFailed, setVideoFailed] = useState(false);
   const spotsQueue  = useRef<Spot[]>([]);
   const lastSpotId  = useRef<string | null>(null);
   const rippleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Fetch spots from API — never bundled in the client
   useEffect(() => {
-    fetch('/api/spots')
-      .then(r => r.json())
-      .then((data: Spot[]) => setSpots(data))
-      .catch(console.error);
     return () => { if (rippleTimer.current) clearTimeout(rippleTimer.current); };
   }, []);
 
