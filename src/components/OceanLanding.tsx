@@ -193,12 +193,15 @@ export function OceanLanding() {
       {/* Background */}
       <div className="ocean-bg">
         {isMobile ? (
-          <img
-            className="ocean-video"
-            src="/ocean-loop.gif"
-            alt=""
-            draggable={false}
-          />
+          <>
+            <img
+              className="ocean-video"
+              src="/ocean-frame.jpg"
+              alt=""
+              draggable={false}
+            />
+            <div className="ocean-line" />
+          </>
         ) : videoFailed ? (
           <OceanCanvas />
         ) : (
