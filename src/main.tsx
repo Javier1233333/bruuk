@@ -8,6 +8,7 @@ import App from './App.tsx'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { VerifyInvitePage } from './pages/VerifyInvitePage'
+import { OceanLanding } from './components/OceanLanding'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <Routes>
           <Route path="/" element={<App />} />
+          <Route path="/descubrir" element={<OceanLanding />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify" element={<VerifyInvitePage />} />
           <Route

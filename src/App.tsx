@@ -1,17 +1,17 @@
-
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight } from 'lucide-react';
+import { Sparkles, Map, Globe, ArrowRight, Compass } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
-// import { PhotoCarousel } from './components/PhotoCarousel';
 import { BruukLogo } from './components/BruukLogo';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function App() {
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleJoin = () => {
     setIsComingSoonOpen(false);
@@ -36,7 +36,7 @@ function App() {
         <section className="hero">
           <div className="hero-bg-glow"></div>
           <div className="container">
-            
+
             <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
               Menos Pantalla. <br /> Más Mundo.
             </h1>
@@ -49,6 +49,26 @@ function App() {
               </button>
               <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
                 VER MANIFIESTO
+              </button>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Mar Interactivo Section */}
+        <section className="mar-section">
+          <div className="mar-inner">
+            <div className="mar-text">
+              <span className="mar-eyebrow">Lista curada · Guadalajara</span>
+              <h2 className="mar-title">Explora<br />el mar.</h2>
+              <p className="mar-subtitle">Navega lo desconocido.</p>
+            </div>
+            <div className="mar-action">
+              <p className="mar-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
+              <button className="mar-cta" onClick={() => navigate('/descubrir')}>
+                <Compass size={16} strokeWidth={2} />
+                Descubrir spots
+                <ArrowRight size={16} strokeWidth={2} />
               </button>
             </div>
           </div>
@@ -104,7 +124,6 @@ function App() {
                 <p>No tenemos inversores ni oficina bonita. Tenemos una convicción: <strong>las mejores cosas pasan cuando la gente se junta en persona.</strong> El resto es decoración.</p>
                 <p>Bruuk no es una app todavía. Es primero una comunidad. Y antes de lanzar nada al mundo, queremos que los primeros eventos los vivan las personas que de verdad lo entienden.</p>
               </div>
-              {/* <PhotoCarousel /> */}
             </div>
 
             <div className="nos-closing">
