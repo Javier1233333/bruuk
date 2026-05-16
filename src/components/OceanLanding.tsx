@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
+import { OceanCanvas } from './OceanCanvas';
 import './OceanLanding.css';
 
 type Spot = {
@@ -140,6 +141,7 @@ export function OceanLanding() {
   const [clickCount, setClickCount] = useState(0);
   const [spots, setSpots]           = useState<Spot[]>([]);
 
+  const [videoFailed, setVideoFailed] = useState(false);
   const spotsQueue  = useRef<Spot[]>([]);
   const lastSpotId  = useRef<string | null>(null);
   const rippleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -193,12 +195,16 @@ export function OceanLanding() {
 
       {/* Background */}
       <div className="ocean-bg">
-        <video
-          className="ocean-video"
-          src="/ocean.mp4"
-          autoPlay loop muted playsInline
-          onError={e => { (e.currentTarget as HTMLVideoElement).style.display = 'none'; }}
-        />
+        {videoFailed ? (
+          <OceanCanvas />
+        ) : (
+          <video
+            className="ocean-video"
+            src="/ocean.mp4"
+            autoPlay loop muted playsInline
+            onError={() => setVideoFailed(true)}
+          />
+        )}
         <div className="ocean-overlay" />
       </div>
 
