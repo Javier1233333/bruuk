@@ -270,9 +270,41 @@ export function OceanLanding() {
         )}
       </AnimatePresence>
 
-      {/* Handmade ripple */}
+      {/* Ripple */}
       <AnimatePresence>
-        {ripple && <HandmadeRipple key={ripple.id} r={ripple} />}
+        {ripple && (
+          isMobile ? (
+            <motion.div
+              key={ripple.id}
+              style={{
+                position: 'fixed',
+                left: ripple.x,
+                top: ripple.y,
+                width: 0,
+                height: 0,
+                pointerEvents: 'none',
+                zIndex: 20,
+              }}
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  borderRadius: '50%',
+                  border: '2px solid rgba(180, 210, 255, 0.6)',
+                  transform: 'translate(-50%, -50%)',
+                }}
+                initial={{ width: 20, height: 20, opacity: 0.8 }}
+                animate={{ width: 160, height: 160, opacity: 0 }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
+              />
+            </motion.div>
+          ) : (
+            <HandmadeRipple key={ripple.id} r={ripple} />
+          )
+        )}
       </AnimatePresence>
 
       {/* Spot card */}
