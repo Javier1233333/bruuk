@@ -142,6 +142,7 @@ export function OceanLanding() {
   const [clickCount, setClickCount] = useState(0);
   const [spots]                     = useState<Spot[]>(spotsData as Spot[]);
 
+  const [isMobile] = useState(() => window.innerWidth <= 768);
   const [videoFailed, setVideoFailed] = useState(false);
   const spotsQueue  = useRef<Spot[]>([]);
   const lastSpotId  = useRef<string | null>(null);
@@ -191,7 +192,17 @@ export function OceanLanding() {
 
       {/* Background */}
       <div className="ocean-bg">
-        {videoFailed ? (
+        {isMobile ? (
+          <>
+            <img
+              className="ocean-video"
+              src="/ocean-frame.jpg"
+              alt=""
+              draggable={false}
+            />
+            <OceanCanvas />
+          </>
+        ) : videoFailed ? (
           <OceanCanvas />
         ) : (
           <video

@@ -23,43 +23,24 @@ export function OceanCanvas() {
       if (!canvasRef.current) return;
       const w = canvasRef.current.width;
       const h = canvasRef.current.height;
-      t += 0.004;
+      t += 0.006;
 
-      /* Base ocean gradient */
-      const base = ctx.createLinearGradient(0, 0, 0, h);
-      base.addColorStop(0,   '#010f22');
-      base.addColorStop(0.4, '#012a48');
-      base.addColorStop(1,   '#01365a');
-      ctx.fillStyle = base;
-      ctx.fillRect(0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
 
-      /* Single wide wave */
-      const waveY = h * 0.45;
-      const amp = h * 0.12;
+      /* Single smooth wave line */
+      const waveY = h * 0.5;
+      const amp = h * 0.08;
 
       ctx.beginPath();
-      ctx.moveTo(0, h);
-      for (let x = 0; x <= w; x += 4) {
-        const y = waveY
-          + Math.sin(x * 0.003 + t) * amp
-          + Math.sin(x * 0.006 + t * 1.4) * (amp * 0.3);
+      ctx.moveTo(0, waveY + Math.sin(t) * amp);
+      for (let x = 0; x <= w; x += 8) {
+        const y = waveY + Math.sin(x * 0.002 + t) * amp;
         ctx.lineTo(x, y);
       }
-      ctx.lineTo(w, h);
-      ctx.closePath();
-
-      const waveGrad = ctx.createLinearGradient(0, waveY - amp, 0, h);
-      waveGrad.addColorStop(0, 'rgba(2, 60, 120, 0.6)');
-      waveGrad.addColorStop(1, 'rgba(1, 20, 50, 0.8)');
-      ctx.fillStyle = waveGrad;
-      ctx.fill();
-
-      /* Subtle glow */
-      const glow = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.4, w * 0.5);
-      glow.addColorStop(0, `rgba(30, 100, 180, ${0.12 + Math.sin(t * 0.5) * 0.04})`);
-      glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(80, 180, 240, 0.4)';
+      ctx.lineWidth = 12;
+      ctx.lineCap = 'round';
+      ctx.stroke();
 
       animId = requestAnimationFrame(draw);
     }
