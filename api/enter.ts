@@ -224,9 +224,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (password === ACCESS_TOKEN) {
       const maxAge = 60 * 60 * 24 * 7; // 7 días
+      const crypto = await import('crypto');
+      const cookieValue = crypto.createHmac('sha256', ACCESS_TOKEN).update('bruuk_session').digest('hex');
       res.setHeader(
         'Set-Cookie',
-        `bruuk_access=1; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax; Secure`
+        `bruuk_access=${cookieValue}; Path=/; Max-Age=${maxAge}; HttpOnly; SameSite=Lax; Secure`
       );
       res.setHeader('Location', '/app');
       return res.status(302).end();

@@ -1,1 +1,111 @@
- /* Cleared default */
+/* ============================================================
+   MAR INTERACTIVO SECTION
+   ============================================================ */
+
+.mar-section {
+  background: #fff;
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  padding: 4rem 6vw;
+}
+
+.mar-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mar-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mar-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #8b7cf6;
+}
+
+.mar-subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #000;
+  margin: 0.4rem 0 0;
+}
+
+.mar-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(3.8rem, 9vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -3px;
+  line-height: 0.88;
+  color: #000;
+  margin: 0;
+}
+
+.mar-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.6rem;
+  flex-shrink: 0;
+  max-width: 280px;
+  text-align: right;
+}
+
+.mar-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.mar-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 1.8rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+  background: #000;
+  border: 2px solid #000;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px #8b7cf6;
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4,0,0.2,1),
+              box-shadow 0.12s cubic-bezier(0.4,0,0.2,1);
+  white-space: nowrap;
+}
+
+.mar-cta:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px #8b7cf6;
+}
+
+.mar-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px #8b7cf6;
+}
+
+@media (max-width: 640px) {
+  .mar-inner   { flex-direction: column; align-items: flex-start; gap: 2rem; }
+  .mar-action  { align-items: flex-start; text-align: left; max-width: 100%; }
+  .mar-cta     { width: 100%; justify-content: center; }
+}
