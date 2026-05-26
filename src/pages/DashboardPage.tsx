@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LogOut, MapPin, Calendar, ArrowRight, Zap, Palette,
@@ -133,7 +133,7 @@ const SPOTS = [
     nombre: 'La Azotea sin nombre',
     tipo: 'Bar / Terraza',
     colonia: 'Roma Norte',
-    foto: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75&auto=format&fit=crop',
     descripcion: 'Subir por una escalera sin señalización y encontrar la mejor terraza de la colonia. Sin reservaciones, sin publicidad.',
     horario: 'Jue–Dom 19:00–2:00',
     nuevo: true,
@@ -143,7 +143,7 @@ const SPOTS = [
     nombre: 'Café 47',
     tipo: 'Café oculto',
     colonia: 'Condesa',
-    foto: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=75&auto=format&fit=crop',
     descripcion: 'Sin letrero afuera. La entrada es un pasillo de edificio. El mejor café de filtro de la colonia, según quienes lo conocen.',
     horario: 'Lun–Vie 8:00–17:00',
     nuevo: false,
@@ -153,7 +153,7 @@ const SPOTS = [
     nombre: 'El Sótano',
     tipo: 'Jazz bar underground',
     colonia: 'Centro Histórico',
-    foto: 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=400&q=75&auto=format&fit=crop',
     descripcion: 'Cuatro escalones abajo de la calle, jazz en vivo todos los jueves. Capacidad para 30 personas. Llega temprano.',
     horario: 'Jue–Sáb 21:00–3:00',
     nuevo: true,
@@ -163,7 +163,7 @@ const SPOTS = [
     nombre: 'Jardín del Tiempo',
     tipo: 'Jardín secreto',
     colonia: 'Coyoacán',
-    foto: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400&q=75&auto=format&fit=crop',
     descripcion: 'Un jardín escondido entre vecindades. Solo saben los que viven cerca. Llevas algo para tomar, te quedas horas.',
     horario: 'Siempre abierto',
     nuevo: false,
@@ -173,7 +173,7 @@ const SPOTS = [
     nombre: 'Taller Lunes',
     tipo: 'Espacio cultural',
     colonia: 'Doctores',
-    foto: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=400&q=75&auto=format&fit=crop',
     descripcion: 'Taller de serigrafía, exposiciones emergentes y café de especialidad en un mismo espacio. Sin pretensiones.',
     horario: 'Lun–Sáb 11:00–20:00',
     nuevo: true,
@@ -183,7 +183,7 @@ const SPOTS = [
     nombre: 'Mirador 36',
     tipo: 'Vista panorámica',
     colonia: 'Tepito',
-    foto: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80',
+    foto: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&q=75&auto=format&fit=crop',
     descripcion: 'El edificio más alto de la colonia, azotea abierta los domingos. La mejor vista de la ciudad sin una selfie en el horizonte.',
     horario: 'Dom 14:00–20:00',
     nuevo: false,
@@ -193,14 +193,45 @@ const SPOTS = [
 const TABS: { id: Tab; label: string; icon: React.ReactNode; desc: string }[] = [
   { id: 'planes', label: 'Planes', icon: <Sparkles size={15} />, desc: 'Ideas curadas para salir' },
   { id: 'eventos', label: 'Eventos', icon: <Calendar size={15} />, desc: 'Pasa esta semana en tu ciudad' },
-  { id: 'spots', label: 'Spots', icon: <Map size={15} />, desc: 'Lugares nuevos by BRUUK' },
+  { id: 'spots', label: 'El Mar', icon: <Map size={15} />, desc: 'Spots curados. Sin algoritmos.' },
 ];
+
+function SpotPhotoImg({ foto, nombre }: { foto: string | null; nombre: string }) {
+  const [state, setState] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+  if (!foto || state === 'error') {
+    return <Map size={32} className="spot-photo-icon" />;
+  }
+
+  return (
+    <>
+      {state === 'loading' && <div className="spot-photo-skeleton" />}
+      <img
+        src={foto}
+        alt={nombre}
+        className={`spot-photo-img${state === 'loaded' ? ' loaded' : ''}`}
+        onLoad={() => setState('loaded')}
+        onError={() => setState('error')}
+        loading="eager"
+      />
+    </>
+  );
+}
 
 export function DashboardPage() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('planes');
   const [showWelcome, setShowWelcome] = useState(true);
+
+  useEffect(() => {
+    SPOTS.forEach(spot => {
+      if (spot.foto) {
+        const img = new Image();
+        img.src = spot.foto;
+      }
+    });
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -380,22 +411,22 @@ export function DashboardPage() {
               <div className="container">
                 <div className="section-header">
                   <div>
-                    <span className="section-tag">/ Spots by BRUUK</span>
-                    <h2 className="section-title">Lugares que deberías conocer</h2>
+                    <span className="section-tag">/ EL MAR</span>
+                    <h2 className="section-title">LUGARES PARA APARECER.</h2>
                   </div>
-                  <p className="section-sub">Sin algoritmos. Sin reseñas de influencers. Solo lugares que valen la pena.</p>
+                  <div className="spots-header-right">
+                    <p className="section-sub">Sin algoritmos. Sin reseñas de influencers. Solo lugares que valen la pena.</p>
+                    <button className="spots-ocean-cta" onClick={() => navigate('/descubrir')}>
+                      Ver el mar completo <ArrowRight size={14} strokeWidth={2.5} />
+                    </button>
+                  </div>
                 </div>
-                <div className="planes-grid">
+                <div className="spots-grid">
                   {SPOTS.map(spot => (
-                    <div className="spot-card" key={spot.id}>
-                      <div
-                        className="spot-photo"
-                        style={spot.foto
-                          ? { backgroundImage: `url(${spot.foto})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                          : { background: 'linear-gradient(135deg, #8b7cf622, #8b7cf655)' }
-                        }
-                      >
-                        {!spot.foto && <Map size={32} className="spot-photo-icon" />}
+                    <div className="dash-spot-card" key={spot.id}>
+                      <div className="spot-photo">
+                        <SpotPhotoImg foto={spot.foto} nombre={spot.nombre} />
+                        <div className="spot-photo-overlay" />
                         <div className="spot-photo-badges">
                           {spot.nuevo && (
                             <span className="spot-nuevo-badge">
@@ -404,12 +435,12 @@ export function DashboardPage() {
                           )}
                           <span className="spot-bruuk-badge">SPOT BRUUK</span>
                         </div>
-                      </div>
-                      <div className="spot-body">
-                        <div className="spot-top">
+                        <div className="spot-photo-meta">
                           <span className="spot-colonia"><MapPin size={12} />{spot.colonia}</span>
                           <span className="spot-tipo">{spot.tipo}</span>
                         </div>
+                      </div>
+                      <div className="spot-body">
                         <h3 className="spot-title">{spot.nombre}</h3>
                         <p className="spot-desc">{spot.descripcion}</p>
                         <div className="spot-footer">
@@ -419,6 +450,12 @@ export function DashboardPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="spots-curation-footer">
+                  <p className="spots-curation-label">CURADO ESTA SEMANA POR BRUUK.</p>
+                  <button className="spots-ocean-cta" onClick={() => navigate('/descubrir')}>
+                    EXPLORAR EL MAR <ArrowRight size={13} strokeWidth={2.5} />
+                  </button>
                 </div>
               </div>
             </section>
