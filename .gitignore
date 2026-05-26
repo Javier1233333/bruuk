@@ -27,3 +27,8 @@ dist-ssr
 *.sw?
 .vercel
 .env*.local
+
+# Bruuk internal
+Bruuk Design System/
+docs/
+.claude/
