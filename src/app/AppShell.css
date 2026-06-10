@@ -1,0 +1,34 @@
+/* ============================================================
+   AppShell — Wrapper principal de la app /app
+   BEM: .app-shell__element--modifier
+   ============================================================ */
+
+.app-shell {
+  background-color: var(--rack-bg);
+  color: var(--rack-text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Estado fullscreen para el tab MAR — quita el límite de ancho */
+.app-shell--mar-fullscreen {
+  max-width: 100%;
+}
+
+/* Área de contenido — scrollable */
+.app-shell__content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+/* Ocultar header y tab bar cuando MAR está activo (fullscreen) */
+.app-shell--mar-fullscreen .app-shell__header,
+.app-shell--mar-fullscreen .app-shell__tabbar {
+  display: none;
+}

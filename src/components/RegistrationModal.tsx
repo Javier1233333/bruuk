@@ -153,7 +153,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 }, 500);
             }, 2500);
 
-        } catch (error: any) {
+        } catch (error) {
             console.error('Submit error:', error);
             setErrorMsg("Ocurrió un error inesperado. Intenta de nuevo.");
             setIsSubmitting(false);

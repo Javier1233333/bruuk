@@ -1,0 +1,121 @@
+/* ============================================================
+   PlanCard — Tarjeta de plan guardado
+   BEM: .plan-card-app__element--modifier
+   ============================================================ */
+
+.plan-card-app {
+  background: var(--rack-bg-card);
+  border-left: 3px solid var(--rack-accent);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 3px 3px 0px rgba(99, 102, 241, 0.25);
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.plan-card-app:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0px rgba(99, 102, 241, 0.4);
+}
+
+.plan-card-app__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.plan-card-app__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  font-weight: 700;
+  color: var(--rack-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-card-app__delete-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--rack-text-muted);
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: color 0.12s ease;
+}
+
+.plan-card-app__delete-btn:hover {
+  color: #ff6b6b;
+}
+
+.plan-card-app__meta {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.plan-card-app__stops-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.plan-card-app__stop-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.plan-card-app__stop-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+}
+
+.plan-card-app__stop-arrow {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.plan-card-app__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plan-card-app__view-btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rack-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.12s ease;
+}
+
+.plan-card-app__view-btn:hover {
+  color: var(--rack-text);
+}

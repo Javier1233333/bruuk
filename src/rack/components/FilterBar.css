@@ -1,0 +1,61 @@
+/* ============================================================
+   FilterBar — Toggle TODO / PRE-OWNED / ARTESANAL
+   ============================================================ */
+
+.rack-filter-bar {
+  display: flex;
+  gap: 0;
+  padding: 16px;
+  background-color: var(--rack-bg);
+  border-bottom: 1px solid var(--rack-separator);
+  position: sticky;
+  top: 73px; /* altura del RackHeader: 32px logo + 20px padding top + 20px padding bottom + 1px border */
+  z-index: 10;
+}
+
+.rack-filter-bar__btn {
+  flex: 1;
+  padding: 10px 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.12s ease,
+              color 0.12s ease,
+              border-color 0.12s ease;
+  white-space: nowrap;
+  line-height: 1;
+  /* Fused borders: solo el border derecho para evitar doble borde */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: none;
+}
+
+.rack-filter-bar__btn:last-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Inactive */
+.rack-filter-bar__btn:not(.rack-filter-bar__btn--active) {
+  background: transparent;
+  color: #b8b8c7;
+}
+
+.rack-filter-bar__btn:not(.rack-filter-bar__btn--active):hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+/* Active */
+.rack-filter-bar__btn--active {
+  background-color: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+}
+
+/* Ajuste para que el botón activo no muestre borde exterior extraño */
+.rack-filter-bar__btn--active + .rack-filter-bar__btn {
+  border-left-color: rgba(255, 255, 255, 0.15);
+}

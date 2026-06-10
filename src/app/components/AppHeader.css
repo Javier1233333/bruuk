@@ -1,0 +1,54 @@
+/* ============================================================
+   AppHeader — Header sticky de la app /app
+   BEM: .app-header__element--modifier
+   ============================================================ */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #0a0a0f;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #0a0a0f;
+  flex-shrink: 0;
+  cursor: default;
+  user-select: none;
+}
+
+.app-header__signout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--rack-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.12s ease;
+}
+
+.app-header__signout:hover {
+  color: var(--rack-text);
+}

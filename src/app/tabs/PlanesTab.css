@@ -1,0 +1,77 @@
+/* ============================================================
+   PlanesTab — Tab de planes de la app
+   BEM: .planes-tab__element--modifier
+   ============================================================ */
+
+.planes-tab {
+  padding: 24px 16px;
+}
+
+.planes-tab__tag {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 6px;
+}
+
+.planes-tab__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-display-md);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--rack-text);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.planes-tab__separator {
+  width: 100%;
+  height: 2px;
+  background: var(--rack-accent);
+  margin: 16px 0 24px;
+}
+
+.planes-tab__section-label {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 16px;
+}
+
+.planes-tab__section-separator {
+  width: 100%;
+  height: 1px;
+  background: var(--rack-separator);
+  margin: 24px 0;
+}
+
+.planes-tab__loading,
+.planes-tab__empty {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text-muted);
+  text-align: center;
+  padding: 32px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.planes-tab__templates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 400px) {
+  .planes-tab__templates-grid {
+    grid-template-columns: 1fr;
+  }
+}

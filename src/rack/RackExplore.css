@@ -1,0 +1,48 @@
+/* ============================================================
+   RackExplore — Página de feed /rack/explorar
+   ============================================================ */
+
+.rack-explore {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---- Feed principal ---- */
+.rack-explore__feed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* Sin gap — los cards se tocan entre sí, feed continuo tipo Instagram */
+}
+
+/* Los items del feed se separan con un borde inferior sutil */
+.rack-explore__feed > * {
+  border-bottom: 1px solid var(--rack-separator);
+}
+
+.rack-explore__feed > *:last-child {
+  border-bottom: none;
+}
+
+/* ---- Loading / Error / Empty ---- */
+.rack-explore__loading,
+.rack-explore__error,
+.rack-explore__empty {
+  padding: 64px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.rack-explore__loading p,
+.rack-explore__error p,
+.rack-explore__empty p {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--rack-text-muted);
+  margin: 0;
+}

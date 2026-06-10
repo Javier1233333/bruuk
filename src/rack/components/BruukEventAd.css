@@ -1,0 +1,184 @@
+/* ============================================================
+   BruukEventAd — Ads de eventos intercalados en el feed
+   3 variantes: centered (indigo), lateral (amber), banner (dark)
+   ============================================================ */
+
+.rack-event-ad {
+  width: 100%;
+  border: 1px solid var(--rack-border-card);
+}
+
+/* ────────────────────────────────────────────────
+   Variante CENTERED — fondo indigo sutil, centrado
+   ──────────────────────────────────────────────── */
+
+.rack-event-ad--centered {
+  background-color: rgba(99, 102, 241, 0.08);
+  padding: 48px 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.rack-event-ad__centered-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  max-width: 320px;
+}
+
+/* ────────────────────────────────────────────────
+   Variante LATERAL — fondo ámbar sutil, alineado left
+   ──────────────────────────────────────────────── */
+
+.rack-event-ad--lateral {
+  background-color: rgba(232, 160, 69, 0.06);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* ────────────────────────────────────────────────
+   Variante BANNER — oscuro, layout horizontal
+   ──────────────────────────────────────────────── */
+
+.rack-event-ad--banner {
+  background-color: #0a0a0f;
+  height: 200px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--rack-separator);
+  border-bottom: 1px solid var(--rack-separator);
+}
+
+.rack-event-ad__banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rack-event-ad__banner-right {
+  opacity: 0.6;
+}
+
+/* ────────────────────────────────────────────────
+   Elementos compartidos
+   ──────────────────────────────────────────────── */
+
+.rack-event-ad__logo {
+  opacity: 0.9;
+}
+
+.rack-event-ad__tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  display: block;
+}
+
+.rack-event-ad__tag--indigo {
+  color: #6366f1;
+}
+
+.rack-event-ad__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--rack-text);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.rack-event-ad__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--rack-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rack-event-ad__description {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--rack-text-muted);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.rack-event-ad__date {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin: 0;
+}
+
+/* ────────────────────────────────────────────────
+   Botones de los ads
+   ──────────────────────────────────────────────── */
+
+.rack-event-ad__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rack-event-ad__btn--indigo {
+  background-color: #7373ff;
+  color: #ffffff;
+  border-color: #7373ff;
+  box-shadow: 3px 3px 0px rgba(99, 102, 241, 0.4);
+}
+
+.rack-event-ad__btn--indigo:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(99, 102, 241, 0.4);
+}
+
+.rack-event-ad__btn--indigo:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(99, 102, 241, 0.4);
+}
+
+.rack-event-ad__btn--amber {
+  background-color: #e8a145;
+  color: #0a0a0f;
+  border-color: #e8a145;
+  box-shadow: 3px 3px 0px rgba(232, 160, 69, 0.3);
+}
+
+.rack-event-ad__btn--amber:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(232, 160, 69, 0.3);
+}
+
+.rack-event-ad__btn--amber:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(232, 160, 69, 0.3);
+}

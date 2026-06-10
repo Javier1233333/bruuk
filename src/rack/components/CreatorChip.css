@@ -1,0 +1,75 @@
+/* ============================================================
+   CreatorChip — Chip de creador/vendedor
+   BEM: .rack-creator-chip__element--modifier
+   ============================================================ */
+
+.rack-creator-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+}
+
+.rack-creator-chip:focus-visible {
+  outline: 1px solid var(--rack-accent);
+  outline-offset: 4px;
+}
+
+/* Avatar circular — 36px fijo */
+.rack-creator-chip__avatar {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rack-creator-chip__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rack-creator-chip__avatar-initial {
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Info */
+.rack-creator-chip__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rack-creator-chip__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rack-creator-chip__bio {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--rack-text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

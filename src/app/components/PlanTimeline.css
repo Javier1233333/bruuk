@@ -1,0 +1,202 @@
+/* ============================================================
+   PlanTimeline — Vista del itinerario con horas calculadas
+   BEM: .plan-timeline__element--modifier
+   ============================================================ */
+
+.plan-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.plan-timeline__stop {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rack-separator);
+}
+
+.plan-timeline__drag-handle {
+  color: var(--rack-text-muted);
+  cursor: grab;
+  padding: 2px 0;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.plan-timeline__drag-handle:active {
+  cursor: grabbing;
+}
+
+.plan-timeline__stop-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-timeline__stop-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.plan-timeline__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.plan-timeline__stop-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  font-weight: 700;
+  color: var(--rack-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-timeline__time-range {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.plan-timeline__stop-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plan-timeline__duration-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.plan-timeline__duration-input {
+  width: 56px;
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--rack-separator);
+  border-radius: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text);
+  outline: none;
+  text-align: center;
+  transition: border-color 0.12s ease;
+}
+
+.plan-timeline__duration-input:focus {
+  border-color: var(--rack-accent);
+}
+
+.plan-timeline__price {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+}
+
+.plan-timeline__remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--rack-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  transition: color 0.12s ease;
+  line-height: 1;
+}
+
+.plan-timeline__remove-btn:hover {
+  color: #ff6b6b;
+}
+
+/* Bloque de traslado entre paradas */
+.plan-timeline__transfer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(99, 102, 241, 0.06);
+  margin: 0;
+}
+
+.plan-timeline__transfer-icon {
+  color: var(--rack-text-muted);
+  flex-shrink: 0;
+}
+
+.plan-timeline__transfer-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-timeline__transfer-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.plan-timeline__transfer-distance {
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  opacity: 0.7;
+}
+
+.plan-timeline__transfer-input {
+  width: 48px;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--rack-separator);
+  border-radius: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text);
+  outline: none;
+  text-align: center;
+}
+
+.plan-timeline__transfer-input:focus {
+  border-color: var(--rack-accent);
+}
+
+.plan-timeline__transfer-toggle {
+  display: flex;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--rack-text-muted);
+  cursor: pointer;
+  padding: 3px 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: border-color 0.1s ease, color 0.1s ease;
+  flex-shrink: 0;
+  border-radius: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.plan-timeline__transfer-toggle:hover {
+  border-color: var(--rack-accent);
+  color: var(--rack-text);
+}

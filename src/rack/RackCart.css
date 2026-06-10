@@ -1,0 +1,214 @@
+/* ============================================================
+   RackCart — Página de carrito /rack/carrito
+   BEM: .rack-cart__element--modifier
+   ============================================================ */
+
+/* ── Estado vacío ────────────────────────────────────────── */
+
+.rack-cart__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 80px 24px;
+  min-height: 60vh;
+}
+
+.rack-cart__empty-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--rack-text-muted);
+  margin: 0;
+}
+
+/* ── Contenido ───────────────────────────────────────────── */
+
+.rack-cart__content {
+  padding: 32px 24px 64px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.rack-cart__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 24px 0;
+}
+
+.rack-cart__notice {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rack-artesanal);
+  background-color: var(--rack-ad-amber-bg);
+  padding: 12px 16px;
+  margin: 0 0 20px 0;
+}
+
+/* ── Items ───────────────────────────────────────────────── */
+
+.rack-cart__items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rack-cart__item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--rack-bg-card);
+  border: 1px solid var(--rack-border-card);
+  padding: 12px;
+}
+
+.rack-cart__item-image {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.rack-cart__item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rack-cart__item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.rack-cart__item-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.rack-cart__item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.rack-cart__item-price {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.rack-cart__item-remove {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--rack-text-muted);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.rack-cart__item-remove:hover {
+  color: var(--rack-pieza-unica);
+}
+
+/* ── Total y pago ────────────────────────────────────────── */
+
+.rack-cart__total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.rack-cart__total-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--rack-text-muted);
+}
+
+.rack-cart__total-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.rack-cart__btn-pay {
+  width: 100%;
+  padding: 18px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #262626;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--rack-accent);
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rack-cart__btn-pay:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--rack-accent);
+}
+
+.rack-cart__btn-pay:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--rack-accent);
+}
+
+.rack-cart__btn-pay:disabled {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+  cursor: wait;
+  transform: none;
+}
+
+.rack-cart__error {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rack-pieza-unica);
+  background-color: var(--rack-pieza-unica-bg);
+  padding: 12px 16px;
+  margin: 16px 0 0 0;
+}
+
+.rack-cart__secure-note {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--rack-text-muted);
+  text-align: center;
+  margin: 16px 0 0 0;
+}

@@ -1,0 +1,188 @@
+/* ============================================================
+   EventCard — Tarjeta de evento (gratuito y de pago)
+   BEM: .event-card__element--modifier
+   ============================================================ */
+
+.event-card {
+  background: var(--rack-bg-card);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.event-card__category-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 0;
+  color: #0a0a0f;
+  line-height: 1.4;
+}
+
+.event-card__date {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  letter-spacing: 1px;
+}
+
+.event-card__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-title);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--rack-text);
+  margin: 0 0 6px;
+  line-height: 1.35;
+}
+
+.event-card__description {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  color: var(--rack-text-muted);
+  margin: 0 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.event-card__separator {
+  width: 100%;
+  height: 1px;
+  background: var(--rack-separator);
+  margin-bottom: 12px;
+}
+
+.event-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.event-card__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+}
+
+.event-card__capacity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.event-card__capacity--available {
+  color: #52c41a;
+}
+
+.event-card__capacity--full {
+  color: #ff6b6b;
+}
+
+.event-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.event-card__btn-action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.12s ease;
+}
+
+.event-card__btn-action--primary {
+  color: #0a0a0f;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 3px 3px 0px var(--rack-accent);
+}
+
+.event-card__btn-action--primary:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--rack-accent);
+}
+
+.event-card__btn-action--primary:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--rack-accent);
+}
+
+.event-card__btn-action--secondary {
+  color: var(--rack-text);
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 2px 2px 0px rgba(255, 255, 255, 0.08);
+}
+
+.event-card__btn-action--secondary:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.event-card__btn-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.event-card__price-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  font-weight: 700;
+  color: var(--rack-text-muted);
+  white-space: nowrap;
+}
+
+.event-card__cancel-link {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 600;
+  color: var(--rack-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.12s ease;
+}
+
+.event-card__cancel-link:hover {
+  color: #ff6b6b;
+}

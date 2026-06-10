@@ -1,0 +1,154 @@
+/* ============================================================
+   RackDrops — Página de drops
+   /rack/drops
+   BEM: .rack-drops__element--modifier
+   ============================================================ */
+
+.rack-drops {
+  /* rack-page ya establece bg y color */
+}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+
+.rack-drops__hero {
+  padding: 40px 24px 32px;
+  border-bottom: 1px solid var(--rack-separator);
+}
+
+.rack-drops__tag {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #b8b8c7;
+  margin-bottom: 14px;
+}
+
+.rack-drops__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1.15;
+  margin: 0 0 14px 0;
+}
+
+.rack-drops__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #b8b8c7;
+  line-height: 22px;
+  margin: 0;
+}
+
+/* ── Lista de drops ──────────────────────────────────────── */
+
+.rack-drops__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rack-drops__item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 18px 24px;
+  transition: background-color 0.12s ease;
+  cursor: default;
+}
+
+.rack-drops__item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.rack-drops__item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Fecha */
+.rack-drops__item-date {
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6366f1;
+  min-width: 52px;
+  padding-top: 1px;
+}
+
+/* Centro */
+.rack-drops__item-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rack-drops__item-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rack-drops__item-teaser {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cantidad */
+.rack-drops__item-count {
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #b8b8c7;
+  padding-top: 1px;
+}
+
+/* ── Separador ─────────────────────────────────────────────── */
+
+.rack-drops__separator {
+  margin: 0;
+}
+
+/* ── CTA vender ────────────────────────────────────────────── */
+
+.rack-drops__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 40px 24px 60px;
+}
+
+.rack-drops__cta-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--rack-text-muted);
+  margin: 0;
+}
+
+.rack-drops__cta-btn {
+  /* extiende rack-btn-secondary */
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 14px 32px;
+}

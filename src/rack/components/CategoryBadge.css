@@ -1,0 +1,26 @@
+/* ============================================================
+   CategoryBadge — PRE-OWNED / ARTESANAL
+   ============================================================ */
+
+.rack-category-badge {
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rack-category-badge--pre-owned {
+  background-color: #64d23c;
+  color: #0a0a0f;
+}
+
+.rack-category-badge--artesanal {
+  background-color: #e8a145;
+  color: #0a0a0f;
+}

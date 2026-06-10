@@ -1,0 +1,67 @@
+/* ============================================================
+   DropsTeaser — Bloque final del feed
+   ============================================================ */
+
+.rack-drops-teaser {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--rack-border-card);
+  border-top: 1px solid var(--rack-separator);
+  padding: 56px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.rack-drops-teaser__tag {
+  font-family: 'Outfit', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  display: block;
+}
+
+.rack-drops-teaser__headline {
+  font-family: 'Outfit', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  color: var(--rack-text);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.rack-drops-teaser__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background-color: #7373ff;
+  color: #ffffff;
+  border: 2px solid #7373ff;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px rgba(99, 102, 241, 0.4);
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rack-drops-teaser__btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(99, 102, 241, 0.4);
+}
+
+.rack-drops-teaser__btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(99, 102, 241, 0.4);
+}

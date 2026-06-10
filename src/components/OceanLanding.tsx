@@ -134,7 +134,13 @@ function makeRipple(x: number, y: number): RippleParams {
 }
 
 /* ─────────────────────────────────────────────────────── */
-export function OceanLanding() {
+interface OceanLandingProps {
+  /** Cuando se monta dentro de la app (/app tab MAR), el back
+      regresa a las pestañas en vez de navigate(-1). */
+  onBack?: () => void;
+}
+
+export function OceanLanding({ onBack }: OceanLandingProps = {}) {
   const navigate = useNavigate();
   const [showIntro, setShowIntro]   = useState(true);
   const [ripple, setRipple]         = useState<RippleParams | null>(null);
@@ -154,7 +160,7 @@ export function OceanLanding() {
 
   const getNextSpot = useCallback(() => {
     if (spotsQueue.current.length === 0) {
-      let s = [...spots].sort(() => Math.random() - 0.5);
+      const s = [...spots].sort(() => Math.random() - 0.5);
       if (lastSpotId.current && s[s.length - 1]?.id === lastSpotId.current) {
         const last = s.pop()!;
         s.splice(Math.floor(Math.random() * (s.length - 1)), 0, last);
@@ -311,7 +317,7 @@ export function OceanLanding() {
       </AnimatePresence>
 
       {/* Back */}
-      <button className="ocean-back-btn" onClick={() => navigate(-1)}>
+      <button className="ocean-back-btn" onClick={() => (onBack ? onBack() : navigate(-1))}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6" />
         </svg>

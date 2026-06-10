@@ -1,0 +1,92 @@
+/* ============================================================
+   EventosTab — Tab de eventos de la app
+   BEM: .eventos-tab__element--modifier
+   ============================================================ */
+
+.eventos-tab {
+  padding: 24px 16px;
+}
+
+.eventos-tab__tag {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 6px;
+}
+
+.eventos-tab__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-display-md);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--rack-text);
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.eventos-tab__separator {
+  width: 100%;
+  height: 2px;
+  background: var(--rack-accent);
+  margin: 16px 0 24px;
+}
+
+.eventos-tab__loading,
+.eventos-tab__error,
+.eventos-tab__empty {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text-muted);
+  text-align: center;
+  padding: 48px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.eventos-tab__error {
+  color: #ff6b6b;
+}
+
+.eventos-tab__confirmation {
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid var(--rack-accent);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.eventos-tab__confirmation-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rack-accent);
+  margin: 0 0 6px;
+}
+
+.eventos-tab__confirmation-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text-muted);
+  margin: 0;
+}
+
+.eventos-tab__confirmation-status {
+  font-size: var(--rack-font-label);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.eventos-tab__confirmation-status--paid {
+  color: #52c41a;
+}
+
+.eventos-tab__confirmation-status--pending {
+  color: var(--rack-artesanal);
+}

@@ -1,0 +1,145 @@
+/* ============================================================
+   RACK por BRUUK — Variables y tokens CSS
+   Extiende index.css. No reemplaza — modula.
+   ============================================================ */
+
+:root {
+  /* Base */
+  --rack-bg:              #0a0a0f;
+  --rack-bg-card:         #0d0d0d;
+  --rack-accent:          #6366f1;
+  --rack-text:            #ffffff;
+  --rack-text-muted:      #b8b8c7;
+
+  /* Categorías */
+  --rack-preowned:        #52c41a;
+  --rack-preowned-badge:  #64d23c;
+  --rack-artesanal:       #e8a145;
+
+  /* Estados de stock */
+  --rack-pieza-unica:     #ff6b6b;
+  --rack-pieza-unica-bg:  rgba(255, 120, 120, 0.2);
+
+  /* Separadores y bordes */
+  --rack-separator:       rgba(255, 255, 255, 0.08);
+  --rack-border-card:     rgba(255, 255, 255, 0.04);
+
+  /* Fondos de ads */
+  --rack-ad-indigo-bg:    rgba(99, 102, 241, 0.08);
+  --rack-ad-amber-bg:     rgba(232, 160, 69, 0.06);
+  --rack-ad-neutral-bg:   rgba(255, 255, 255, 0.02);
+
+  /* Tipografía — tamaños */
+  --rack-font-display-xl:   clamp(4.5rem, 12vw, 8rem);
+  --rack-font-display-lg:   1.625rem;
+  --rack-font-display-md:   1.5rem;
+  --rack-font-title:        0.8125rem;
+  --rack-font-price:        1rem;
+  --rack-font-body:         0.875rem;
+  --rack-font-label:        0.6875rem;
+  --rack-font-tag:          0.5625rem;
+  --rack-font-badge:        0.625rem;
+  --rack-font-subtitle:     0.625rem;
+}
+
+/* ============================================================
+   Utilidades compartidas de Rack
+   ============================================================ */
+
+.rack-page {
+  background-color: var(--rack-bg);
+  color: var(--rack-text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+}
+
+.rack-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--rack-separator);
+}
+
+.rack-separator--indigo {
+  background-color: var(--rack-accent);
+  height: 2px;
+}
+
+/* Botón primario Rack — fondo blanco, texto negro, shadow offset */
+.rack-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #0a0a0f;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--rack-accent);
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.rack-btn-primary:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--rack-accent);
+}
+
+.rack-btn-primary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--rack-accent);
+}
+
+/* Botón secundario Rack — outline blanco */
+.rack-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0;
+  box-shadow: 3px 3px 0px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.12s ease;
+  text-decoration: none;
+}
+
+.rack-btn-secondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.rack-btn-secondary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.1);
+}
+
+/* Tag de sección — "/ RACK", "/ DROPS", etc. */
+.rack-section-tag {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 1.5rem;
+}

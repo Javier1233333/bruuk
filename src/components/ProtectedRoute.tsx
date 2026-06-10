@@ -1,7 +1,8 @@
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { loading } = useAuth();
+  const { session, loading } = useAuth();
 
   if (loading) {
     return (
@@ -21,8 +22,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // TODO: restaurar auth — temporalmente abierto para preview
-  // if (!session) return <Navigate to="/login" replace />;
+  if (!session) return <Navigate to="/login" replace />;
 
   return <>{children}</>;
 }

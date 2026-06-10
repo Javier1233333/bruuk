@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight, Compass } from 'lucide-react';
+import { Sparkles, Map, Globe, ArrowRight, Compass, Smartphone, Menu, X } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
@@ -7,15 +7,30 @@ import { BruukLogo } from './components/BruukLogo';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
+const NAV_LINKS = [
+  { id: 'mar', label: 'El Mar' },
+  { id: 'rack', label: 'Rack' },
+  { id: 'app', label: 'La App' },
+] as const;
+
+const TICKER_TEXT =
+  'MENOS PANTALLA ★ MÁS MUNDO ★ CERO ALGORITMOS ★ EVENTOS REALES ★ GUADALAJARA ★ COMUNIDAD PRIMERO ★ ';
+
 function App() {
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleJoin = () => {
     setIsComingSoonOpen(false);
     setIsRegistrationOpen(true);
+  };
+
+  const scrollToSection = (id: string) => {
+    setIsMenuOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -25,17 +40,60 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
-          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => setIsComingSoonOpen(true)}>
-            Inicia sesión
-          </button>
+
+          <nav className="header-nav" aria-label="Secciones">
+            {NAV_LINKS.map((link) => (
+              <button key={link.id} className="header-nav__link" onClick={() => scrollToSection(link.id)}>
+                {link.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="header-right">
+            <button className="btn btn-secondary header-login" onClick={() => setIsComingSoonOpen(true)}>
+              Inicia sesión
+            </button>
+            <button
+              className="header-menu-toggle"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
+          </div>
         </div>
+
+        {/* Menú móvil */}
+        {isMenuOpen && (
+          <nav className="header-mobile-menu animate-fade-in" aria-label="Secciones">
+            {NAV_LINKS.map((link) => (
+              <button key={link.id} className="header-mobile-menu__link" onClick={() => scrollToSection(link.id)}>
+                {link.label} <ArrowRight size={16} strokeWidth={3} />
+              </button>
+            ))}
+            <button
+              className="header-mobile-menu__link header-mobile-menu__link--login"
+              onClick={() => { setIsMenuOpen(false); setIsComingSoonOpen(true); }}
+            >
+              Inicia sesión
+            </button>
+          </nav>
+        )}
       </header>
 
       <main>
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-bg-glow"></div>
+          <div className="hero-bg-glow hero-bg-glow--left"></div>
+          <div className="hero-watermark" aria-hidden="true">BRUUK</div>
           <div className="container">
+
+            <div className="hero-badge animate-fade-in">
+              <span className="hero-badge-dot"></span>
+              Guadalajara, MX · Comunidad fundadora abierta
+            </div>
 
             <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
               Menos Pantalla. <br /> Más Mundo.
@@ -53,10 +111,25 @@ function App() {
             </div>
 
           </div>
+
+          <div className="hero-scroll" aria-hidden="true">
+            <span>Scroll</span>
+            <div className="hero-scroll__line"></div>
+          </div>
         </section>
 
+        {/* Ticker de marca */}
+        <div className="ticker-clip" aria-hidden="true">
+          <div className="ticker-wrap">
+            <div className="ticker">
+              <span>{TICKER_TEXT}</span>
+              <span>{TICKER_TEXT}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Mar Interactivo Section */}
-        <section className="mar-section">
+        <section id="mar" className="mar-section">
           <div className="mar-inner">
             <div className="mar-text">
               <span className="mar-eyebrow">Lista curada · Guadalajara</span>
@@ -64,7 +137,7 @@ function App() {
               <p className="mar-subtitle">Navega lo desconocido.</p>
             </div>
             <div className="mar-action">
-              <p className="mar-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
+              <p className="mar-sub">Nuestro mapa vivo de la ciudad: cafés, bares y rincones donde vale la pena aparecer, curados por la comunidad. Sin algoritmos, sin reseñas pagadas.</p>
               <button className="mar-cta" onClick={() => navigate('/descubrir')}>
                 <Compass size={16} strokeWidth={2} />
                 Descubrir spots
@@ -105,6 +178,58 @@ function App() {
                 </div>
                 <h3>Acceso VIP Anticipado</h3>
                 <p>Antes de lanzar la app, organizamos eventos reales para la comunidad fundadora. Regístrate y sé parte de los primeros encuentros Bruuk.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* RACK Section */}
+        <section id="rack" className="rack-section">
+          <div className="container">
+            <div className="rack-inner">
+              <span className="nos-tag">/ RACK</span>
+              <h2 className="brand-gradient-text rack-title">PIEZAS CON HISTORIA.</h2>
+              <p className="rack-subtitle">
+                La tienda de la comunidad: moda pre-owned con segunda vida y artesanías locales hechas a mano. Cada pieza es única, tiene historia y un creador con nombre. Curado por Bruuk, desde Guadalajara.
+              </p>
+              <div className="rack-actions">
+                <button className="btn btn-primary" onClick={() => navigate('/rack')}>
+                  ENTRAR AL RACK <ArrowRight size={20} strokeWidth={3} />
+                </button>
+                <button className="btn btn-secondary" onClick={() => setIsComingSoonOpen(true)}>
+                  VENDER TUS COSAS
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* La App Section */}
+        <section id="app" className="app-section">
+          <div className="container">
+            <div className="app-inner">
+              <div className="app-text">
+                <span className="nos-tag">/ La App</span>
+                <h2 className="brand-gradient-text app-title">TU PRETEXTO<br />PARA SALIR.</h2>
+                <p className="app-subtitle">
+                  La app de Bruuk está en construcción: planes improvisados, eventos de la comunidad
+                  y la lista de quién va — todo pensado para sacarte de la pantalla, no para atraparte
+                  en ella. Primero construimos la comunidad; los primeros en entrar serán quienes ya
+                  viven los eventos.
+                </p>
+                <ul className="app-points">
+                  <li><Smartphone size={18} strokeWidth={2.5} /> Propón un plan en segundos y mira quién se apunta</li>
+                  <li><Globe size={18} strokeWidth={2.5} /> Eventos Bruuk con lista de asistentes real</li>
+                  <li><Compass size={18} strokeWidth={2.5} /> El Mar y el Rack, integrados en tu bolsillo</li>
+                </ul>
+                <div className="app-actions">
+                  <button className="btn btn-primary" onClick={() => setIsComingSoonOpen(true)}>
+                    ACCESO VIP ANTICIPADO <ArrowRight size={20} strokeWidth={3} />
+                  </button>
+                  <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
+                    VER MANIFIESTO
+                  </button>
+                </div>
               </div>
             </div>
           </div>

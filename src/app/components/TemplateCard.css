@@ -1,0 +1,82 @@
+/* ============================================================
+   TemplateCard — Tarjeta de plantilla curada
+   BEM: .template-card__element--modifier
+   ============================================================ */
+
+.template-card {
+  background: var(--rack-bg-card);
+  padding: 20px 16px;
+  margin-bottom: 12px;
+}
+
+.template-card__header {
+  margin-bottom: 12px;
+}
+
+.template-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 10px;
+}
+
+.template-card__chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.template-card__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  font-weight: 700;
+  color: var(--rack-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+
+.template-card__description {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text-muted);
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.template-card__meta {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: var(--rack-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.template-card__use-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rack-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.12s ease;
+}
+
+.template-card__use-btn:hover {
+  color: var(--rack-text);
+}

@@ -1,0 +1,35 @@
+/* ============================================================
+   StockBadge — PIEZA ÚNICA / APARTADO / AGOTADO
+   ============================================================ */
+
+.rack-stock-badge {
+  display: inline-block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* PIEZA ÚNICA — coral */
+.rack-stock-badge--disponible {
+  background-color: var(--rack-pieza-unica-bg);
+  color: var(--rack-pieza-unica);
+}
+
+/* APARTADO — ámbar */
+.rack-stock-badge--apartado {
+  background-color: rgba(232, 160, 69, 0.2);
+  color: #e8a145;
+}
+
+/* AGOTADO — gris apagado */
+.rack-stock-badge--agotado {
+  background-color: transparent;
+  color: #666666;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

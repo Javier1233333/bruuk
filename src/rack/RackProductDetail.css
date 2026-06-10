@@ -1,0 +1,284 @@
+/* ============================================================
+   RackProductDetail — Página de detalle de pieza
+   /rack/pieza/:slug
+   BEM: .rack-product-detail__element--modifier
+   ============================================================ */
+
+.rack-product-detail {
+  /* rack-page ya establece bg y color */
+}
+
+/* ── Estado: pieza no encontrada ─────────────────────────── */
+
+.rack-product-detail__not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 80px 24px;
+  min-height: 60vh;
+}
+
+.rack-product-detail__not-found-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--rack-text-muted);
+  margin: 0;
+}
+
+.rack-product-detail__not-found-btn {
+  /* extiende rack-btn-secondary */
+  font-size: 11px;
+  letter-spacing: 3px;
+  padding: 14px 32px;
+}
+
+/* ── Imagen de producto ──────────────────────────────────── */
+
+.rack-product-detail__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+/* Badge de categoría — absolute top-left */
+.rack-product-detail__image-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+}
+
+/* Dots de navegación de imágenes — absolute bottom centrados */
+.rack-product-detail__dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.rack-product-detail__dot {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.35);
+  width: 6px;
+  transition: width 0.15s ease, background-color 0.15s ease;
+}
+
+/* Primer dot — activo: más ancho y blanco */
+.rack-product-detail__dot--active {
+  width: 20px;
+  background-color: #ffffff;
+}
+
+/* ── Info section ────────────────────────────────────────── */
+
+.rack-product-detail__info {
+  padding: 24px;
+  background-color: #0a0a0f;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Título */
+.rack-product-detail__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0 0 16px 0;
+}
+
+/* Fila precio + badge */
+.rack-product-detail__price-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.rack-product-detail__price {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Botón AGREGAR AL CARRITO */
+.rack-product-detail__btn-add {
+  width: 100%;
+  padding: 18px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #262626;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 4px 0px var(--rack-accent);
+}
+
+.rack-product-detail__btn-add:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--rack-accent);
+}
+
+.rack-product-detail__btn-add:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--rack-accent);
+}
+
+.rack-product-detail__btn-add:disabled {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Botón APARTAR PIEZA */
+.rack-product-detail__btn-hold {
+  width: 100%;
+  padding: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: border-color 0.12s ease,
+              transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rack-product-detail__btn-hold:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translate(-1px, -1px);
+}
+
+.rack-product-detail__btn-hold:active {
+  transform: translate(1px, 1px);
+}
+
+.rack-product-detail__btn-hold:disabled {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.35);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error de checkout (alguien se adelantó / pagos no activos) */
+.rack-product-detail__checkout-error {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--rack-pieza-unica);
+  background-color: var(--rack-pieza-unica-bg);
+  padding: 12px 16px;
+  margin: -12px 0 24px 0;
+}
+
+/* Separador */
+.rack-product-detail__separator {
+  margin-bottom: 20px;
+}
+
+/* Fila CONDICIÓN */
+.rack-product-detail__condition-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rack-product-detail__condition-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #b3b3b3;
+}
+
+.rack-product-detail__condition-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #52c41a;
+}
+
+/* Descripción */
+.rack-product-detail__description {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 23px;
+  margin: 0 0 24px 0;
+}
+
+/* Label HISTORIA */
+.rack-product-detail__story-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+}
+
+/* Story text */
+.rack-product-detail__story {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 23px;
+  margin: 0 0 24px 0;
+}
+
+/* ── Sigue explorando ────────────────────────────────────── */
+
+.rack-product-detail__more {
+  background-color: #0a0a0f;
+  border-top: 1px solid var(--rack-separator);
+}
+
+.rack-product-detail__more-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  padding: 40px 24px 20px;
+  margin: 0;
+}
+
+.rack-product-detail__more-feed {
+  display: flex;
+  flex-direction: column;
+}

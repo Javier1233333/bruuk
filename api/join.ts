@@ -8,7 +8,7 @@ export default async function handler(
     return response.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, tags } = request.body;
+  const { email } = request.body;
 
   if (!email) {
     return response.status(400).json({ error: 'Email is required' });

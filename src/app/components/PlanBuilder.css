@@ -1,0 +1,195 @@
+/* ============================================================
+   PlanBuilder — Constructor interactivo del plan
+   BEM: .plan-builder__element--modifier
+   ============================================================ */
+
+.plan-builder {
+  background: var(--rack-bg-card);
+  padding: 20px 16px;
+  margin-bottom: 24px;
+}
+
+.plan-builder__section-tag {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 16px;
+}
+
+.plan-builder__name-input {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-display-md);
+  font-weight: 700;
+  color: var(--rack-text);
+  outline: none;
+  padding: 6px 0;
+  margin-bottom: 20px;
+  transition: border-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+.plan-builder__name-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.plan-builder__name-input:focus {
+  border-bottom-color: var(--rack-accent);
+}
+
+.plan-builder__time-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.plan-builder__time-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+}
+
+.plan-builder__time-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--rack-separator);
+  border-radius: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-body);
+  color: var(--rack-text);
+  padding: 8px 12px;
+  outline: none;
+  width: fit-content;
+  transition: border-color 0.12s ease;
+  /* Color de los controles del input[type=time] en dark */
+  color-scheme: dark;
+}
+
+.plan-builder__time-input:focus {
+  border-color: var(--rack-accent);
+}
+
+.plan-builder__stops-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.plan-builder__stops-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+}
+
+.plan-builder__separator {
+  width: 100%;
+  height: 1px;
+  background: var(--rack-separator);
+  margin-bottom: 16px;
+}
+
+.plan-builder__add-spot-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0;
+  box-shadow: 3px 3px 0px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.12s ease;
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+.plan-builder__add-spot-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.plan-builder__add-spot-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.plan-builder__save-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 14px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #0a0a0f;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--rack-accent);
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.plan-builder__save-btn:hover:not(:disabled) {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0px var(--rack-accent);
+}
+
+.plan-builder__save-btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px var(--rack-accent);
+}
+
+.plan-builder__save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.plan-builder__error {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: #ff6b6b;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.plan-builder__success {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--rack-font-label);
+  color: #52c41a;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
