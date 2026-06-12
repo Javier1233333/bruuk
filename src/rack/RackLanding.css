@@ -1,17 +1,38 @@
 /* ============================================================
    RackLanding — Landing page /rack
-   Fiel al mockup Figma. Neo-brutalist, fondo negro, Outfit.
+   Neo-brutalist, fondo negro, Outfit.
+   Bloques: Hero (comprar) → Curaduría (gancho visual) →
+   Comunidad (vender) → Footer minimalista.
+   Las divisiones se hacen con espacio, no con líneas.
    ============================================================ */
 
 /* ── PAGE WRAPPER ─────────────────────────────────────────── */
 
 .rack-landing {
-  background-color: #0a0a0f;
-  color: #ffffff;
+  background-color: var(--rack-bg);
+  color: var(--rack-text);
   font-family: 'Outfit', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Contenedor interno compartido por secciones */
+.rack-landing__section-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Eyebrow compartido (/ CURADURÍA, / COMUNIDAD) */
+.rack-landing__eyebrow {
+  display: inline-block;
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
+  margin-bottom: 20px;
 }
 
 /* ── HEADER ───────────────────────────────────────────────── */
@@ -31,11 +52,11 @@
 
 .rack-landing__header-menu {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.6875rem;
+  font-size: var(--rack-font-label);
   font-weight: 500;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #b8b8c7;
+  color: var(--rack-text-muted);
   background: none;
   border: none;
   cursor: pointer;
@@ -47,196 +68,329 @@
   color: #ffffff;
 }
 
-/* ── HERO ─────────────────────────────────────────────────── */
+/* ── BLOQUE 1 · HERO ──────────────────────────────────────── */
 
 .rack-landing__hero {
-  flex: 1;
+  position: relative;
+  min-height: calc(100vh - 73px); /* pantalla completa menos header */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 64px 24px 48px;
+  padding: 64px 24px 96px;
 }
 
-.rack-landing__hero-tag {
-  display: inline-block;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.5625rem;
+.rack-landing__hero-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Micro-texto de identidad local, arriba del logo */
+.rack-landing__hero-micro {
+  font-size: var(--rack-font-tag);
   font-weight: 500;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #b8b8c7;
-  margin-bottom: 24px;
+  color: var(--rack-text-muted);
+  margin-bottom: 28px;
 }
 
 .rack-landing__hero-logo {
-  width: clamp(260px, 75vw, 420px);
+  width: clamp(260px, 75vw, 460px);
   height: auto;
-  margin: 0 0 32px;
+  margin: 0 0 28px;
 }
 
 .rack-landing__hero-subtitle {
-  font-family: 'Outfit', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.65;
-  color: #b8b8c7;
-  max-width: 320px;
-  margin: 0 0 28px;
-  border-left: 3px solid #6366f1;
+  color: var(--rack-text-muted);
+  max-width: 340px;
+  margin: 0 0 40px;
+  border-left: 3px solid var(--rack-accent);
   padding-left: 16px;
 }
 
-.rack-landing__hero-line {
-  width: 100%;
-  height: 2px;
-  background-color: #6366f1;
-  margin-bottom: 32px;
-}
-
+/* CTA principal — sólido morado */
 .rack-landing__hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   padding: 1rem 2.5rem;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.8125rem;
+  font-size: var(--rack-font-title);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #0a0a0f;
-  background: #ffffff;
-  border: 2px solid #ffffff;
+  color: #ffffff;
+  background: var(--rack-accent);
+  border: 2px solid var(--rack-accent);
   border-radius: 0;
-  box-shadow: 4px 4px 0px #6366f1;
+  box-shadow: 4px 4px 0px #2e2f8f;
   cursor: pointer;
   transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  align-self: flex-start;
 }
 
 .rack-landing__hero-cta:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px #6366f1;
+  box-shadow: 7px 7px 0px #2e2f8f;
 }
 
 .rack-landing__hero-cta:active {
   transform: translate(1px, 1px);
-  box-shadow: 2px 2px 0px #6366f1;
+  box-shadow: 2px 2px 0px #2e2f8f;
 }
 
-/* ── INFO BAR ─────────────────────────────────────────────── */
-
-.rack-landing__info-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.rack-landing__info-bar-text {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.5625rem;
-  font-weight: 500;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #b8b8c7;
-}
-
-/* ── SELL SECTION ─────────────────────────────────────────── */
-
-.rack-landing__sell {
-  padding: 56px 24px 64px;
+/* Indicador sutil de scroll */
+.rack-landing__scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--rack-text-muted);
+  opacity: 0.7;
 }
 
-.rack-landing__sell-eyebrow {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.5625rem;
-  font-weight: 500;
-  letter-spacing: 4px;
+.rack-landing__scroll-line {
+  width: 1px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.rack-landing__scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: var(--rack-accent);
+  animation: rack-scroll-drip 1.8s ease-in-out infinite;
+}
+
+@keyframes rack-scroll-drip {
+  to { top: 110%; }
+}
+
+/* ── BLOQUE 2 · CURADURÍA ─────────────────────────────────── */
+
+.rack-landing__curated {
+  padding: 32px 24px 88px;
+}
+
+.rack-landing__curated-title {
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin: 0 0 32px;
+}
+
+/* Cuadrícula asimétrica: 1 pieza grande + 2 apiladas */
+.rack-landing__curated-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: 210px 210px;
+  gap: 14px;
+}
+
+.rack-landing__curated-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--rack-border-card);
+  border-radius: 0;
+  background: var(--rack-bg-card);
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.rack-landing__curated-item--1 {
+  grid-row: 1 / 3;
+}
+
+.rack-landing__curated-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(30%) contrast(1.05);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              filter 0.45s ease;
+}
+
+.rack-landing__curated-item:hover img {
+  transform: scale(1.05);
+  filter: grayscale(0%) contrast(1);
+}
+
+/* Degradado inferior para legibilidad del label */
+.rack-landing__curated-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 15, 0.85) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.rack-landing__curated-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  font-size: var(--rack-font-tag);
+  font-weight: 700;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  color: #b8b8c7;
-  margin-bottom: 20px;
+  padding: 5px 9px;
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.rack-landing__curated-tag--preowned  { color: var(--rack-preowned-badge); }
+.rack-landing__curated-tag--artesanal { color: var(--rack-artesanal); }
+.rack-landing__curated-tag--drops     { color: #a5a7ff; }
+
+.rack-landing__curated-label {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+}
+
+/* ── BLOQUE 3 · COMUNIDAD / VENDER ────────────────────────── */
+
+/* Gris muy oscuro para romper el bloque negro absoluto */
+.rack-landing__sell {
+  background: #111118;
+  padding: 80px 24px 88px;
 }
 
 .rack-landing__sell-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
   font-weight: 900;
-  line-height: 1.15;
+  line-height: 1.1;
   letter-spacing: -1px;
   color: #ffffff;
-  margin: 0 0 8px;
+  margin: 0 0 18px;
 }
 
-.rack-landing__sell-title--accent {
-  color: #b8b8c7;
+.rack-landing__sell-text {
+  font-size: 1rem;
   font-weight: 400;
-  font-size: clamp(1rem, 3.5vw, 1.3rem);
-  letter-spacing: -0.5px;
-  display: block;
+  line-height: 1.65;
+  color: var(--rack-text-muted);
+  max-width: 400px;
+  margin: 0 0 36px;
 }
 
-.rack-landing__sell-line {
-  width: 100%;
-  height: 2px;
-  background-color: #6366f1;
-  margin: 28px 0 32px;
-}
-
+/* CTA secundario — outline morado, fondo transparente */
 .rack-landing__sell-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 1rem 2.5rem;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.8125rem;
+  font-size: var(--rack-font-title);
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: #ffffff;
   background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--rack-accent);
   border-radius: 0;
-  box-shadow: 3px 3px 0px rgba(255, 255, 255, 0.1);
+  box-shadow: 3px 3px 0px rgba(99, 102, 241, 0.25);
   cursor: pointer;
   transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.12s ease;
-  text-decoration: none;
-  align-self: flex-start;
+              background-color 0.12s ease;
 }
 
 .rack-landing__sell-cta:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 5px 5px 0px rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.1);
 }
 
 .rack-landing__sell-cta:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.1);
+  box-shadow: 1px 1px 0px rgba(99, 102, 241, 0.25);
+}
+
+/* ── FOOTER MINIMALISTA ───────────────────────────────────── */
+
+.rack-landing__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px;
+  border-top: 1px solid var(--rack-separator);
+}
+
+.rack-landing__footer span {
+  font-size: var(--rack-font-tag);
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rack-text-muted);
 }
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
 
+@media (min-width: 768px) {
+  .rack-landing__curated-grid {
+    grid-template-rows: 260px 260px;
+  }
+}
+
 @media (max-width: 480px) {
   .rack-landing__hero {
-    padding: 48px 20px 40px;
+    padding: 48px 20px 88px;
   }
 
   .rack-landing__hero-cta,
   .rack-landing__sell-cta {
     width: 100%;
-    align-self: stretch;
+  }
+
+  .rack-landing__curated {
+    padding: 24px 20px 72px;
+  }
+
+  .rack-landing__curated-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 240px 170px;
+  }
+
+  .rack-landing__curated-item--1 {
+    grid-row: auto;
+    grid-column: 1 / 3;
   }
 
   .rack-landing__sell {
-    padding: 48px 20px 56px;
+    padding: 64px 20px 72px;
+  }
+
+  .rack-landing__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }

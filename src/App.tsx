@@ -13,9 +13,6 @@ const NAV_LINKS = [
   { id: 'app', label: 'La App' },
 ] as const;
 
-const TICKER_TEXT =
-  'MENOS PANTALLA ★ MÁS MUNDO ★ CERO ALGORITMOS ★ EVENTOS REALES ★ GUADALAJARA ★ COMUNIDAD PRIMERO ★ ';
-
 function App() {
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
@@ -86,14 +83,7 @@ function App() {
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-bg-glow"></div>
-          <div className="hero-bg-glow hero-bg-glow--left"></div>
-          <div className="hero-watermark" aria-hidden="true">BRUUK</div>
           <div className="container">
-
-            <div className="hero-badge animate-fade-in">
-              <span className="hero-badge-dot"></span>
-              Guadalajara, MX · Comunidad fundadora abierta
-            </div>
 
             <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
               Menos Pantalla. <br /> Más Mundo.
@@ -111,22 +101,7 @@ function App() {
             </div>
 
           </div>
-
-          <div className="hero-scroll" aria-hidden="true">
-            <span>Scroll</span>
-            <div className="hero-scroll__line"></div>
-          </div>
         </section>
-
-        {/* Ticker de marca */}
-        <div className="ticker-clip" aria-hidden="true">
-          <div className="ticker-wrap">
-            <div className="ticker">
-              <span>{TICKER_TEXT}</span>
-              <span>{TICKER_TEXT}</span>
-            </div>
-          </div>
-        </div>
 
         {/* Mar Interactivo Section */}
         <section id="mar" className="mar-section">
