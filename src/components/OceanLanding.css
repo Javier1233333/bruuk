@@ -10,11 +10,20 @@
 }
 
 /* Base Page Setup */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+a:focus {
+  outline: none;
+}
+
 .ocean-container {
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   background-color: var(--dark-bg);
   color: #fff;
@@ -328,7 +337,7 @@
   position: relative;
   z-index: 5; /* Lower than actions sidebar to allow clicking actions */
   width: 100%;
-  padding: 0 5rem 1.8rem 1.2rem;
+  padding: 0 5rem calc(1.8rem + env(safe-area-inset-bottom, 0px)) 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -418,7 +427,7 @@
 .tiktok-actions {
   position: absolute;
   right: 0.8rem;
-  bottom: 2.2rem;
+  bottom: calc(2.2rem + env(safe-area-inset-bottom, 0px));
   z-index: 15; /* Raised from 3 to 15 to stay on top of transparent card boundaries and register clicks */
   display: flex;
   flex-direction: column;
