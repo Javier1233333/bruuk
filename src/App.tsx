@@ -5,6 +5,7 @@ import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
 import { BruukLogo } from './components/BruukLogo';
 import { useNavigate } from 'react-router-dom';
+import citiesData from './data/cities.json';
 import './App.css';
 
 function App() {
@@ -59,17 +60,32 @@ function App() {
         <section className="mar-section">
           <div className="mar-inner">
             <div className="mar-text">
-              <span className="mar-eyebrow">Lista curada · Guadalajara</span>
+              <span className="mar-eyebrow">Rincones locales · Sin algoritmos</span>
               <h2 className="mar-title">Explora<br />el mar.</h2>
               <p className="mar-subtitle">Navega lo desconocido.</p>
             </div>
             <div className="mar-action">
               <p className="mar-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
-              <button className="mar-cta" onClick={() => navigate('/descubrir')}>
-                <Compass size={16} strokeWidth={2} />
-                Descubrir spots
-                <ArrowRight size={16} strokeWidth={2} />
-              </button>
+              
+              <div className="home-city-selector">
+                {citiesData.map(c => (
+                  <button
+                    key={c.id}
+                    className="home-city-btn"
+                    onClick={() => navigate(`/descubrir/${c.id}`)}
+                    style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
+                  >
+                    {c.name}
+                    <ArrowRight size={14} />
+                  </button>
+                ))}
+                <button
+                  className="home-city-btn home-city-btn--all"
+                  onClick={() => navigate('/descubrir')}
+                >
+                  <Compass size={14} /> Elige ciudad
+                </button>
+              </div>
             </div>
           </div>
         </section>
