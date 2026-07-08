@@ -1,0 +1,22 @@
+[
+  {
+    "id": "hermosillo",
+    "name": "Hermosillo",
+    "accentColor": "#ff7a45",
+    "hueRange": [15, 45],
+    "defaultCoordinates": { "lat": 29.0729, "lng": -110.9559 },
+    "overlayGradient": "linear-gradient(160deg, rgba(255, 110, 60, 0.45) 0%, rgba(200, 60, 30, 0.38) 50%, rgba(120, 30, 20, 0.52) 100%)",
+    "introTitle": "Lugares para salir.\nSin pensar tanto.",
+    "introBody": "Una selección de cafés, bares y rincones de Hermosillo donde vale la pena aparecer. Toca el mar y descubre tu próximo spot."
+  },
+  {
+    "id": "guadalajara",
+    "name": "Guadalajara",
+    "accentColor": "#7e5bef",
+    "hueRange": [255, 325],
+    "defaultCoordinates": { "lat": 20.6597, "lng": -103.3496 },
+    "overlayGradient": "linear-gradient(160deg, rgba(110, 60, 220, 0.58) 0%, rgba(80, 30, 180, 0.50) 50%, rgba(60, 20, 140, 0.62) 100%)",
+    "introTitle": "Lugares para salir.\nSin pensar tanto.",
+    "introBody": "Una selección de cafés, bares y rincones de Guadalajara donde vale la pena aparecer. Toca el mar y descubre tu próximo spot."
+  }
+]

@@ -8,8 +8,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$200-300",
-    "coordinates": { "lat": 20.669495, "lng": -103.3661607 },
-    "mapsLink": "https://maps.google.com/?q=El+Terrible+Juan+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.669495,
+      "lng": -103.3661607
+    },
+    "mapsLink": "https://maps.google.com/?q=El+Terrible+Juan+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_004",
@@ -20,8 +24,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.5,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6778728, "lng": -103.3664471 },
-    "mapsLink": "https://maps.google.com/?q=Café+Tenango+Guadalajara"
+    "coordinates": {
+      "lat": 20.6778728,
+      "lng": -103.3664471
+    },
+    "mapsLink": "https://maps.google.com/?q=Café+Tenango+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_005",
@@ -32,8 +40,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.5,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6773684, "lng": -103.3784496 },
-    "mapsLink": "https://maps.google.com/?q=Elefante+Sabio+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6773684,
+      "lng": -103.3784496
+    },
+    "mapsLink": "https://maps.google.com/?q=Elefante+Sabio+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_006",
@@ -44,8 +56,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.8,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6778677, "lng": -103.3722255 },
-    "mapsLink": "https://maps.google.com/?q=NOT+COLLECTIVE+coffee+Guadalajara"
+    "coordinates": {
+      "lat": 20.6778677,
+      "lng": -103.3722255
+    },
+    "mapsLink": "https://maps.google.com/?q=NOT+COLLECTIVE+coffee+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_007",
@@ -56,8 +72,12 @@
     "colorAccent": "#c49a2a",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.676902, "lng": -103.3734507 },
-    "mapsLink": "https://maps.google.com/?q=Frank+Bakery+GDL+Guadalajara"
+    "coordinates": {
+      "lat": 20.676902,
+      "lng": -103.3734507
+    },
+    "mapsLink": "https://maps.google.com/?q=Frank+Bakery+GDL+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_008",
@@ -66,10 +86,14 @@
     "description": "El lugar secreto que no ibas a encontrar solo.",
     "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&q=80",
     "colorAccent": "#7a5230",
-    "rating": 5.0,
+    "rating": 5,
     "price": "$1-100",
-    "coordinates": { "lat": 20.6756503, "lng": -103.3707879 },
-    "mapsLink": "https://maps.google.com/?q=Dorla+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6756503,
+      "lng": -103.3707879
+    },
+    "mapsLink": "https://maps.google.com/?q=Dorla+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_009",
@@ -80,8 +104,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.3,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6701281, "lng": -103.3726641 },
-    "mapsLink": "https://maps.google.com/?q=Espacio+Abierto+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6701281,
+      "lng": -103.3726641
+    },
+    "mapsLink": "https://maps.google.com/?q=Espacio+Abierto+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_010",
@@ -92,8 +120,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.5,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6711026, "lng": -103.3737268 },
-    "mapsLink": "https://maps.google.com/?q=KAFEI+Guadalajara"
+    "coordinates": {
+      "lat": 20.6711026,
+      "lng": -103.3737268
+    },
+    "mapsLink": "https://maps.google.com/?q=KAFEI+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_011",
@@ -104,8 +136,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.9,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6731039, "lng": -103.382489 },
-    "mapsLink": "https://maps.google.com/?q=Kalido+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6731039,
+      "lng": -103.382489
+    },
+    "mapsLink": "https://maps.google.com/?q=Kalido+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_012",
@@ -116,8 +152,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6674925, "lng": -103.3949423 },
-    "mapsLink": "https://maps.google.com/?q=Ventura+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6674925,
+      "lng": -103.3949423
+    },
+    "mapsLink": "https://maps.google.com/?q=Ventura+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_013",
@@ -128,8 +168,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.6,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6729975, "lng": -103.3635441 },
-    "mapsLink": "https://maps.google.com/?q=Neretta+Café+Gelato+Guadalajara"
+    "coordinates": {
+      "lat": 20.6729975,
+      "lng": -103.3635441
+    },
+    "mapsLink": "https://maps.google.com/?q=Neretta+Café+Gelato+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_014",
@@ -138,10 +182,14 @@
     "description": "Vino de tarde, buena compañía.",
     "imageUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80",
     "colorAccent": "#b5451b",
-    "rating": 4.0,
+    "rating": 4,
     "price": "$200-500",
-    "coordinates": { "lat": 20.6720006, "lng": -103.3750423 },
-    "mapsLink": "https://maps.google.com/?q=Roto+Café+Vino+Guadalajara"
+    "coordinates": {
+      "lat": 20.6720006,
+      "lng": -103.3750423
+    },
+    "mapsLink": "https://maps.google.com/?q=Roto+Café+Vino+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_015",
@@ -152,8 +200,12 @@
     "colorAccent": "#3a5f8f",
     "rating": 4.4,
     "price": "$200-600",
-    "coordinates": { "lat": 20.6699983, "lng": -103.3642527 },
-    "mapsLink": "https://maps.google.com/?q=Cafetal+97+Guadalajara"
+    "coordinates": {
+      "lat": 20.6699983,
+      "lng": -103.3642527
+    },
+    "mapsLink": "https://maps.google.com/?q=Cafetal+97+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_016",
@@ -164,8 +216,12 @@
     "colorAccent": "#c49a2a",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6775848, "lng": -103.371024 },
-    "mapsLink": "https://maps.google.com/?q=BANETTO+Panadería+Guadalajara"
+    "coordinates": {
+      "lat": 20.6775848,
+      "lng": -103.371024
+    },
+    "mapsLink": "https://maps.google.com/?q=BANETTO+Panadería+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_018",
@@ -176,8 +232,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.6,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6754111, "lng": -103.3834685 },
-    "mapsLink": "https://maps.google.com/?q=Karmele+Cafetería+Guadalajara"
+    "coordinates": {
+      "lat": 20.6754111,
+      "lng": -103.3834685
+    },
+    "mapsLink": "https://maps.google.com/?q=Karmele+Cafetería+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_019",
@@ -188,8 +248,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.8,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6703779, "lng": -103.3643839 },
-    "mapsLink": "https://maps.google.com/?q=Colacorta+Guadalajara"
+    "coordinates": {
+      "lat": 20.6703779,
+      "lng": -103.3643839
+    },
+    "mapsLink": "https://maps.google.com/?q=Colacorta+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_020",
@@ -200,8 +264,12 @@
     "colorAccent": "#2a7f7f",
     "rating": 4.8,
     "price": "$200-300",
-    "coordinates": { "lat": 20.7013223, "lng": -103.3807839 },
-    "mapsLink": "https://maps.google.com/?q=Casa+Emergente+Guadalajara"
+    "coordinates": {
+      "lat": 20.7013223,
+      "lng": -103.3807839
+    },
+    "mapsLink": "https://maps.google.com/?q=Casa+Emergente+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_021",
@@ -212,8 +280,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6720195, "lng": -103.387443 },
-    "mapsLink": "https://maps.google.com/?q=Guru-Rim+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6720195,
+      "lng": -103.387443
+    },
+    "mapsLink": "https://maps.google.com/?q=Guru-Rim+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_024",
@@ -224,8 +296,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.4,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6730426, "lng": -103.3706738 },
-    "mapsLink": "https://maps.google.com/?q=RUFUS+rest+Guadalajara"
+    "coordinates": {
+      "lat": 20.6730426,
+      "lng": -103.3706738
+    },
+    "mapsLink": "https://maps.google.com/?q=RUFUS+rest+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_025",
@@ -236,8 +312,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.5,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6714372, "lng": -103.3745543 },
-    "mapsLink": "https://maps.google.com/?q=Baham+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6714372,
+      "lng": -103.3745543
+    },
+    "mapsLink": "https://maps.google.com/?q=Baham+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_026",
@@ -248,8 +328,12 @@
     "colorAccent": "#c23b22",
     "rating": 4.6,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6788782, "lng": -103.3702907 },
-    "mapsLink": "https://maps.google.com/?q=Barrio+Toyo+Guadalajara"
+    "coordinates": {
+      "lat": 20.6788782,
+      "lng": -103.3702907
+    },
+    "mapsLink": "https://maps.google.com/?q=Barrio+Toyo+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_027",
@@ -260,8 +344,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.6,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6623183, "lng": -103.4009393 },
-    "mapsLink": "https://maps.google.com/?q=Neretta+Café+Chapalita+Zapopan"
+    "coordinates": {
+      "lat": 20.6623183,
+      "lng": -103.4009393
+    },
+    "mapsLink": "https://maps.google.com/?q=Neretta+Café+Chapalita+Zapopan",
+    "city": "guadalajara"
   },
   {
     "id": "spot_028",
@@ -272,8 +360,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.6,
     "price": "$100-200",
-    "coordinates": { "lat": 20.7197297, "lng": -103.3885521 },
-    "mapsLink": "https://maps.google.com/?q=Binaural+Café+Zapopan"
+    "coordinates": {
+      "lat": 20.7197297,
+      "lng": -103.3885521
+    },
+    "mapsLink": "https://maps.google.com/?q=Binaural+Café+Zapopan",
+    "city": "guadalajara"
   },
   {
     "id": "spot_029",
@@ -284,8 +376,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.4,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6869714, "lng": -103.3760695 },
-    "mapsLink": "https://maps.google.com/?q=Zarco+Cafetería+Guadalajara"
+    "coordinates": {
+      "lat": 20.6869714,
+      "lng": -103.3760695
+    },
+    "mapsLink": "https://maps.google.com/?q=Zarco+Cafetería+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_031",
@@ -296,8 +392,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6730811, "lng": -103.3689433 },
-    "mapsLink": "https://maps.google.com/?q=Gufo+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6730811,
+      "lng": -103.3689433
+    },
+    "mapsLink": "https://maps.google.com/?q=Gufo+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_032",
@@ -308,8 +408,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.8,
     "price": "$1-100",
-    "coordinates": { "lat": 20.6694284, "lng": -103.3705968 },
-    "mapsLink": "https://maps.google.com/?q=Panopia+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6694284,
+      "lng": -103.3705968
+    },
+    "mapsLink": "https://maps.google.com/?q=Panopia+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_033",
@@ -320,8 +424,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.8,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6685953, "lng": -103.3672076 },
-    "mapsLink": "https://maps.google.com/?q=Metódico+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6685953,
+      "lng": -103.3672076
+    },
+    "mapsLink": "https://maps.google.com/?q=Metódico+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_034",
@@ -332,8 +440,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.5,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6707583, "lng": -103.3667229 },
-    "mapsLink": "https://maps.google.com/?q=Zuno+Cafe+Guadalajara"
+    "coordinates": {
+      "lat": 20.6707583,
+      "lng": -103.3667229
+    },
+    "mapsLink": "https://maps.google.com/?q=Zuno+Cafe+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_035",
@@ -344,8 +456,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.8,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6735417, "lng": -103.3639036 },
-    "mapsLink": "https://maps.google.com/?q=OBRERO+Guadalajara"
+    "coordinates": {
+      "lat": 20.6735417,
+      "lng": -103.3639036
+    },
+    "mapsLink": "https://maps.google.com/?q=OBRERO+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_036",
@@ -356,8 +472,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.3,
     "price": "$200-300",
-    "coordinates": { "lat": 20.67232, "lng": -103.3759496 },
-    "mapsLink": "https://maps.google.com/?q=Sinónimo+Cafetería+Guadalajara"
+    "coordinates": {
+      "lat": 20.67232,
+      "lng": -103.3759496
+    },
+    "mapsLink": "https://maps.google.com/?q=Sinónimo+Cafetería+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_037",
@@ -368,8 +488,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.8,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6775339, "lng": -103.3802458 },
-    "mapsLink": "https://maps.google.com/?q=Paralelo+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6775339,
+      "lng": -103.3802458
+    },
+    "mapsLink": "https://maps.google.com/?q=Paralelo+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_039",
@@ -380,8 +504,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.8,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6392893, "lng": -103.3141414 },
-    "mapsLink": "https://maps.google.com/?q=Café+Casa+Independencia+Tlaquepaque"
+    "coordinates": {
+      "lat": 20.6392893,
+      "lng": -103.3141414
+    },
+    "mapsLink": "https://maps.google.com/?q=Café+Casa+Independencia+Tlaquepaque",
+    "city": "guadalajara"
   },
   {
     "id": "spot_040",
@@ -392,8 +520,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.1,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6726107, "lng": -103.363593 },
-    "mapsLink": "https://maps.google.com/?q=Membrillo+Cocina+Guadalajara"
+    "coordinates": {
+      "lat": 20.6726107,
+      "lng": -103.363593
+    },
+    "mapsLink": "https://maps.google.com/?q=Membrillo+Cocina+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_041",
@@ -404,8 +536,12 @@
     "colorAccent": "#4a7f4a",
     "rating": 4.5,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6738839, "lng": -103.3609698 },
-    "mapsLink": "https://maps.google.com/?q=Endémico+Vivero+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6738839,
+      "lng": -103.3609698
+    },
+    "mapsLink": "https://maps.google.com/?q=Endémico+Vivero+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_042",
@@ -416,8 +552,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.4,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6773184, "lng": -103.3652476 },
-    "mapsLink": "https://maps.google.com/?q=Lince+Café+Bar+Guadalajara"
+    "coordinates": {
+      "lat": 20.6773184,
+      "lng": -103.3652476
+    },
+    "mapsLink": "https://maps.google.com/?q=Lince+Café+Bar+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_043",
@@ -428,8 +568,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6789513, "lng": -103.3714901 },
-    "mapsLink": "https://maps.google.com/?q=Palomanegra+Café+Bar+Guadalajara"
+    "coordinates": {
+      "lat": 20.6789513,
+      "lng": -103.3714901
+    },
+    "mapsLink": "https://maps.google.com/?q=Palomanegra+Café+Bar+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_044",
@@ -440,8 +584,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.6,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6696489, "lng": -103.3701232 },
-    "mapsLink": "https://maps.google.com/?q=Bigol+Bagel+Guadalajara"
+    "coordinates": {
+      "lat": 20.6696489,
+      "lng": -103.3701232
+    },
+    "mapsLink": "https://maps.google.com/?q=Bigol+Bagel+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_045",
@@ -452,8 +600,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6753137, "lng": -103.3812176 },
-    "mapsLink": "https://maps.google.com/?q=ÂNDRA+Cafetería+Guadalajara"
+    "coordinates": {
+      "lat": 20.6753137,
+      "lng": -103.3812176
+    },
+    "mapsLink": "https://maps.google.com/?q=ÂNDRA+Cafetería+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_046",
@@ -464,8 +616,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.4,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6995613, "lng": -103.3861433 },
-    "mapsLink": "https://maps.google.com/?q=Rayo+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6995613,
+      "lng": -103.3861433
+    },
+    "mapsLink": "https://maps.google.com/?q=Rayo+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_047",
@@ -476,8 +632,12 @@
     "colorAccent": "#7a5230",
     "rating": 4.5,
     "price": "$100-200",
-    "coordinates": { "lat": 20.6757309, "lng": -103.3615109 },
-    "mapsLink": "https://maps.google.com/?q=KONA+Café+Guadalajara"
+    "coordinates": {
+      "lat": 20.6757309,
+      "lng": -103.3615109
+    },
+    "mapsLink": "https://maps.google.com/?q=KONA+Café+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_049",
@@ -488,8 +648,12 @@
     "colorAccent": "#4a7f4a",
     "rating": 4.8,
     "price": "$200-300",
-    "coordinates": { "lat": 20.7233377, "lng": -103.3774618 },
-    "mapsLink": "https://maps.google.com/?q=Plantada+Café+Zapopan"
+    "coordinates": {
+      "lat": 20.7233377,
+      "lng": -103.3774618
+    },
+    "mapsLink": "https://maps.google.com/?q=Plantada+Café+Zapopan",
+    "city": "guadalajara"
   },
   {
     "id": "spot_050",
@@ -500,8 +664,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.7,
     "price": "$200-300",
-    "coordinates": { "lat": 20.6699195, "lng": -103.3716348 },
-    "mapsLink": "https://maps.google.com/?q=Biolento+Guadalajara"
+    "coordinates": {
+      "lat": 20.6699195,
+      "lng": -103.3716348
+    },
+    "mapsLink": "https://maps.google.com/?q=Biolento+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_101",
@@ -510,10 +678,14 @@
     "description": "El pretexto perfecto para empezar el día diferente.",
     "imageUrl": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=400&q=80",
     "colorAccent": "#d4845a",
-    "rating": 4.0,
+    "rating": 4,
     "price": "$100-300",
-    "coordinates": { "lat": 20.7222319, "lng": -103.3769448 },
-    "mapsLink": "http://maps.google.com/?cid=17238940796618486583"
+    "coordinates": {
+      "lat": 20.7222319,
+      "lng": -103.3769448
+    },
+    "mapsLink": "http://maps.google.com/?cid=17238940796618486583",
+    "city": "guadalajara"
   },
   {
     "id": "spot_102",
@@ -524,8 +696,12 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.5,
     "price": "$200-500",
-    "coordinates": { "lat": 20.6974286, "lng": -103.3725977 },
-    "mapsLink": "http://maps.google.com/?cid=12736157075871778602"
+    "coordinates": {
+      "lat": 20.6974286,
+      "lng": -103.3725977
+    },
+    "mapsLink": "http://maps.google.com/?cid=12736157075871778602",
+    "city": "guadalajara"
   },
   {
     "id": "spot_103",
@@ -536,8 +712,12 @@
     "colorAccent": "#b5451b",
     "rating": 4.4,
     "price": "$200-400",
-    "coordinates": { "lat": 20.6879727, "lng": -103.4262561 },
-    "mapsLink": "http://maps.google.com/?cid=5780673662717268617"
+    "coordinates": {
+      "lat": 20.6879727,
+      "lng": -103.4262561
+    },
+    "mapsLink": "http://maps.google.com/?cid=5780673662717268617",
+    "city": "guadalajara"
   },
   {
     "id": "spot_104",
@@ -548,8 +728,12 @@
     "colorAccent": "#2a7f6f",
     "rating": 4.3,
     "price": "$200-400",
-    "coordinates": { "lat": 20.6448885, "lng": -103.4391223 },
-    "mapsLink": "http://maps.google.com/?cid=2628697892325545849"
+    "coordinates": {
+      "lat": 20.6448885,
+      "lng": -103.4391223
+    },
+    "mapsLink": "http://maps.google.com/?cid=2628697892325545849",
+    "city": "guadalajara"
   },
   {
     "id": "spot_105",
@@ -560,7 +744,8 @@
     "colorAccent": "#d4845a",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=palReal+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=palReal+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_106",
@@ -571,7 +756,8 @@
     "colorAccent": "#4a7f4a",
     "rating": 4.7,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Jamaica+Records+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Jamaica+Records+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_107",
@@ -582,7 +768,8 @@
     "colorAccent": "#c49a2a",
     "rating": 4.8,
     "price": "$1-100",
-    "mapsLink": "https://maps.google.com/?q=Helados+Monóculo+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Helados+Monóculo+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_108",
@@ -593,7 +780,8 @@
     "colorAccent": "#3a5f8f",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=El+Habanero+Negro+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=El+Habanero+Negro+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_109",
@@ -604,7 +792,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.9,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Louie+Burger+Americana+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Louie+Burger+Americana+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_110",
@@ -613,9 +802,10 @@
     "description": "Detroit style, esponjosa y gruesa. Vale el viaje.",
     "imageUrl": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80",
     "colorAccent": "#b5451b",
-    "rating": 4.0,
+    "rating": 4,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Pizzería+de+Barrio+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Pizzería+de+Barrio+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_111",
@@ -626,7 +816,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Archipielago+Pizza+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Archipielago+Pizza+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_112",
@@ -637,7 +828,8 @@
     "colorAccent": "#c23b22",
     "rating": 4.6,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Shao+Asian+Street+Food+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Shao+Asian+Street+Food+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_113",
@@ -648,7 +840,8 @@
     "colorAccent": "#c49a2a",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Morocco+Kebab+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Morocco+Kebab+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_114",
@@ -659,7 +852,8 @@
     "colorAccent": "#4a7f4a",
     "rating": 4.8,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=O+Brasileiro+Maluco+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=O+Brasileiro+Maluco+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_115",
@@ -670,7 +864,8 @@
     "colorAccent": "#7a5230",
     "rating": 4.7,
     "price": "$100-200",
-    "mapsLink": "https://maps.google.com/?q=ZAMGÜIS+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=ZAMGÜIS+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_116",
@@ -681,7 +876,8 @@
     "colorAccent": "#c23b22",
     "rating": 4.4,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Momotabi+Ramen+House+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Momotabi+Ramen+House+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_117",
@@ -692,7 +888,8 @@
     "colorAccent": "#c23b22",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Mononoke+Ramen+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Mononoke+Ramen+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_118",
@@ -703,7 +900,8 @@
     "colorAccent": "#d4845a",
     "rating": 4.4,
     "price": "$100-200",
-    "mapsLink": "https://maps.google.com/?q=Pollitos+Kiki+Americana+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Pollitos+Kiki+Americana+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_119",
@@ -714,7 +912,8 @@
     "colorAccent": "#c49a2a",
     "rating": 4.9,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Arez+Libanés+Restaurante+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Arez+Libanés+Restaurante+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_120",
@@ -725,7 +924,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.7,
     "price": "$300-800",
-    "mapsLink": "https://maps.google.com/?q=Jerry+Bar+and+Snacks+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Jerry+Bar+and+Snacks+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_121",
@@ -736,7 +936,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.2,
     "price": "$1000+",
-    "mapsLink": "https://maps.google.com/?q=THE+NORMAL+GDL+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=THE+NORMAL+GDL+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_122",
@@ -747,7 +948,8 @@
     "colorAccent": "#3a5f8f",
     "rating": 4.3,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=lady+lee+rooftop+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=lady+lee+rooftop+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_123",
@@ -758,7 +960,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.7,
     "price": "$200-400",
-    "mapsLink": "https://maps.google.com/?q=Pardo+Club+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Pardo+Club+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_124",
@@ -769,7 +972,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.8,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Tito+Club+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Tito+Club+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_125",
@@ -780,7 +984,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Sauna+Disco+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Sauna+Disco+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_126",
@@ -791,7 +996,8 @@
     "colorAccent": "#3a5f8f",
     "rating": 4.6,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Casa+Mudra+Restaurant+Jazz+Club+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Casa+Mudra+Restaurant+Jazz+Club+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_127",
@@ -802,7 +1008,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.3,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=SkyGamers+Sport+Bar+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=SkyGamers+Sport+Bar+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_128",
@@ -813,7 +1020,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Gallo+y+Toro+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Gallo+y+Toro+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_129",
@@ -824,7 +1032,8 @@
     "colorAccent": "#b5451b",
     "rating": 4.5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Casa+Colimita+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Casa+Colimita+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_130",
@@ -833,9 +1042,10 @@
     "description": "Cócteles artesanales; mixólogos talentosos y exclusivo.",
     "imageUrl": "https://images.unsplash.com/photo-1575444758702-4a6b9222c016?w=400&q=80",
     "colorAccent": "#3a5f8f",
-    "rating": 5.0,
+    "rating": 5,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=Espuma+Bar+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Espuma+Bar+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_131",
@@ -846,7 +1056,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.3,
     "price": "$200-600",
-    "mapsLink": "https://maps.google.com/?q=Bar+americas+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Bar+americas+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_132",
@@ -857,7 +1068,8 @@
     "colorAccent": "#7c3d8f",
     "rating": 4.4,
     "price": "$200-300",
-    "mapsLink": "https://maps.google.com/?q=LUZY+BOOM+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=LUZY+BOOM+Guadalajara",
+    "city": "guadalajara"
   },
   {
     "id": "spot_133",
@@ -868,6 +1080,87 @@
     "colorAccent": "#3a5f8f",
     "rating": 4.3,
     "price": "$200-500",
-    "mapsLink": "https://maps.google.com/?q=Casa+Cobra+Guadalajara"
+    "mapsLink": "https://maps.google.com/?q=Casa+Cobra+Guadalajara",
+    "city": "guadalajara"
+  },
+  {
+    "id": "hmo_001",
+    "city": "hermosillo",
+    "name": "Gila Cafetería",
+    "type": "Cafetería",
+    "description": "Espacio minimalista y café de especialidad impecable en el corazón de la ciudad.",
+    "imageUrl": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=80",
+    "colorAccent": "#ff7a45",
+    "rating": 4.9,
+    "price": "$120-200",
+    "coordinates": {
+      "lat": 29.0833,
+      "lng": -110.9634
+    },
+    "mapsLink": "https://maps.google.com/?q=Gila+Cafeteria+Hermosillo"
+  },
+  {
+    "id": "hmo_002",
+    "city": "hermosillo",
+    "name": "Ocotillo",
+    "type": "Restaurante",
+    "description": "Diseño inspirado en el desierto con una vibra única y café excepcional.",
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80",
+    "colorAccent": "#b5451b",
+    "rating": 4.8,
+    "price": "$250-400",
+    "coordinates": {
+      "lat": 29.0805,
+      "lng": -110.9575
+    },
+    "mapsLink": "https://maps.google.com/?q=Ocotillo+Hermosillo"
+  },
+  {
+    "id": "hmo_003",
+    "city": "hermosillo",
+    "name": "Kino Café",
+    "type": "Cafetería",
+    "description": "Un lugar clásico e íntimo para conversar y disfrutar una excelente infusión.",
+    "imageUrl": "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&q=80",
+    "colorAccent": "#7a5230",
+    "rating": 4.6,
+    "price": "$100-180",
+    "coordinates": {
+      "lat": 29.0881,
+      "lng": -110.9702
+    },
+    "mapsLink": "https://maps.google.com/?q=Kino+Cafe+Hermosillo"
+  },
+  {
+    "id": "hmo_004",
+    "city": "hermosillo",
+    "name": "Casa de las Tres",
+    "type": "Espacio Cultural",
+    "description": "Un patio cultural con olor a café y arte local por todos lados.",
+    "imageUrl": "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=400&q=80",
+    "colorAccent": "#c49a2a",
+    "rating": 4.7,
+    "price": "$80-150",
+    "coordinates": {
+      "lat": 29.0754,
+      "lng": -110.9599
+    },
+    "mapsLink": "https://maps.google.com/?q=Casa+de+las+Tres+Hermosillo"
+  },
+  {
+    "id": "hmo_005",
+    "city": "hermosillo",
+    "name": "Diente de León",
+    "type": "Repostería",
+    "description": "Repostería fina artesanal y café de especialidad para pasar la tarde.",
+    "imageUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80",
+    "colorAccent": "#ff7a45",
+    "rating": 4.8,
+    "price": "$150-250",
+    "coordinates": {
+      "lat": 29.0818,
+      "lng": -110.9622
+    },
+    "mapsLink": "https://maps.google.com/?q=Diente+de+Leon+Hermosillo"
   }
 ]
