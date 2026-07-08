@@ -560,17 +560,33 @@ function OceanLandingInner() {
             <div className="tiktok-header-row" style={{ flexDirection: 'column', gap: '0.6rem', alignItems: 'center' }}>
               
               {/* Row 1: Back, Logo, and Map buttons */}
-              <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button className="tiktok-back-btn" onClick={() => navigate('/')} aria-label="Inicio">
+              <div style={{ 
+                position: 'relative', 
+                display: 'flex', 
+                width: '100%', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                minHeight: '36px' 
+              }}>
+                <button 
+                  className="tiktok-back-btn" 
+                  onClick={() => navigate('/')} 
+                  aria-label="Inicio"
+                  style={{ position: 'absolute', left: 0 }}
+                >
                   <ArrowLeft size={16} />
                 </button>
 
                 {/* Centered Bruuk Logo */}
-                <div className="tiktok-logo" onClick={() => navigate('/')}>
+                <div className="tiktok-logo" onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center' }}>
                   <BruukLogo />
                 </div>
 
-                <button className="tiktok-map-btn" onClick={() => setIsMapOpen(true)}>
+                <button 
+                  className="tiktok-map-btn" 
+                  onClick={() => setIsMapOpen(true)}
+                  style={{ position: 'absolute', right: 0 }}
+                >
                   <Map size={14} /> Mapa
                 </button>
               </div>
