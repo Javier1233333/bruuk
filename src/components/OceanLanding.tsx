@@ -1,10 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
 import { OceanCanvas } from './OceanCanvas';
+import { ChevronDown, MapPin, Loader2 } from 'lucide-react';
 import spotsData from '../data/spots.json';
+import citiesData from '../data/cities.json';
 import './OceanLanding.css';
 
 type Spot = {
@@ -120,7 +122,9 @@ function HandmadeRipple({ r }: { r: RippleParams }) {
 }
 
 /* ── Random params generator — different every click ── */
-function makeRipple(x: number, y: number): RippleParams {
+function makeRipple(x: number, y: number, hueRange: [number, number] = [255, 325]): RippleParams {
+  const minHue = hueRange[0];
+  const maxHue = hueRange[1];
   return {
     id:           `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     x, y,
@@ -129,32 +133,57 @@ function makeRipple(x: number, y: number): RippleParams {
     seed:         Math.floor(Math.random() * 999),
     rings:        2,                                 // always 2 rings
     strokeWidth:  3,
-    hue:          255 + Math.random() * 70,
+    hue:          minHue + Math.random() * (maxHue - minHue),
   };
 }
 
 /* ─────────────────────────────────────────────────────── */
 export function OceanLanding() {
+  const { city } = useParams();
+  return <OceanLandingInner key={city || 'default'} />;
+}
+
+function OceanLandingInner() {
   const navigate = useNavigate();
-  const [showIntro, setShowIntro]   = useState(true);
-  const [ripple, setRipple]         = useState<RippleParams | null>(null);
-  const [activeSpot, setActiveSpot] = useState<ActiveSpot | null>(null);
-  const [clickCount, setClickCount] = useState(0);
-  const [spots]                     = useState<Spot[]>(spotsData as Spot[]);
+  const { city } = useParams();
+
+  const [showIntro, setShowIntro]     = useState(true);
+  const [ripple, setRipple]           = useState<RippleParams | null>(null);
+  const [activeSpot, setActiveSpot]   = useState<ActiveSpot | null>(null);
+  const [clickCount, setClickCount]   = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLocating, setIsLocating]     = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const [isMobile] = useState(() => window.innerWidth <= 768);
   const [videoFailed, setVideoFailed] = useState(false);
+  
   const spotsQueue  = useRef<Spot[]>([]);
   const lastSpotId  = useRef<string | null>(null);
   const rippleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Find active city config (or Hermosillo as fallback for backdrop visualization)
+  const currentCityConfig = citiesData.find(c => c.id === city);
+  const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
+
+  // Filter spots dynamically
+  const spots = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
 
   useEffect(() => {
     return () => { if (rippleTimer.current) clearTimeout(rippleTimer.current); };
   }, []);
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    const handleClose = () => setIsDropdownOpen(false);
+    document.addEventListener('click', handleClose);
+    return () => document.removeEventListener('click', handleClose);
+  }, [isDropdownOpen]);
+
   const getNextSpot = useCallback(() => {
     if (spotsQueue.current.length === 0) {
-      let s = [...spots].sort(() => Math.random() - 0.5);
+      const s = [...spots].sort(() => Math.random() - 0.5);
       if (lastSpotId.current && s[s.length - 1]?.id === lastSpotId.current) {
         const last = s.pop()!;
         s.splice(Math.floor(Math.random() * (s.length - 1)), 0, last);
@@ -167,11 +196,14 @@ export function OceanLanding() {
   }, [spots]);
 
   const handleOceanClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!currentCityConfig) return; // Block ripples while the selector modal is open
     if (spots.length === 0) return;
     const t = e.target as HTMLElement;
     if (
       t.closest('.spot-card')      ||
       t.closest('.ocean-back-btn') ||
+      t.closest('.city-switcher-container') ||
+      t.closest('.city-selector-modal') ||
       t.closest('.modal-overlay')
     ) return;
 
@@ -179,16 +211,76 @@ export function OceanLanding() {
 
     // New unique ripple every click
     if (rippleTimer.current) clearTimeout(rippleTimer.current);
-    const rp = makeRipple(x, y);
+    const rp = makeRipple(x, y, activeCityConfig.hueRange as [number, number]);
     setRipple(rp);
     rippleTimer.current = setTimeout(() => setRipple(null), 3200);
 
     setActiveSpot({ id: rp.id, spot: getNextSpot(), x, y });
     setClickCount(n => n + 1);
-  }, [spots, getNextSpot]);
+  }, [spots, getNextSpot, activeCityConfig, currentCityConfig]);
+
+  const handleAutoLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      setIsLocating(true);
+      setLocationError(null);
+      console.log("Requesting geolocation...");
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsLocating(false);
+          const { latitude: lat, longitude: lng } = position.coords;
+          console.log(`Geolocation success: lat=${lat}, lng=${lng}`);
+          
+          let closestCity = citiesData[0];
+          let minDistance = Infinity;
+          citiesData.forEach(c => {
+            const dist = Math.pow(c.defaultCoordinates.lat - lat, 2) + Math.pow(c.defaultCoordinates.lng - lng, 2);
+            if (dist < minDistance) {
+              minDistance = dist;
+              closestCity = c;
+            }
+          });
+          console.log(`Closest city detected: ${closestCity.name} (${closestCity.id})`);
+          navigate(`/descubrir/${closestCity.id}`);
+        },
+        (error) => {
+          setIsLocating(false);
+          console.error("Geolocation error:", error);
+          let msg = "No pudimos detectar tu ubicación. Selecciona una ciudad manualmente.";
+          if (error.code === error.PERMISSION_DENIED) {
+            msg = "Permiso de ubicación denegado. Selecciona una ciudad manualmente.";
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            msg = "La información de ubicación no está disponible.";
+          } else if (error.code === error.TIMEOUT) {
+            msg = "Se agotó el tiempo de espera para obtener la ubicación.";
+          }
+          setLocationError(msg);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 6000,
+          maximumAge: 600000
+        }
+      );
+    } else {
+      setLocationError("Tu navegador no soporta geolocalización o estás en HTTP.");
+    }
+  }, [navigate]);
+
+  // Automatically trigger location detection on mount if no city parameter is active
+  useEffect(() => {
+    if (!currentCityConfig) {
+      handleAutoLocation();
+    }
+  }, [currentCityConfig, handleAutoLocation]);
 
   return (
-    <div className="ocean-container" onClick={handleOceanClick}>
+    <div 
+      className="ocean-container" 
+      onClick={handleOceanClick}
+      style={{
+        '--city-accent': activeCityConfig.accentColor
+      } as React.CSSProperties}
+    >
 
       {/* Background */}
       <div className="ocean-bg">
@@ -212,12 +304,12 @@ export function OceanLanding() {
             onError={() => setVideoFailed(true)}
           />
         )}
-        <div className="ocean-overlay" />
+        <div className="ocean-overlay" style={{ background: activeCityConfig.overlayGradient }} />
       </div>
 
       {/* ── Intro overlay ── */}
       <AnimatePresence>
-        {showIntro && (
+        {showIntro && currentCityConfig && (
           <motion.div
             className="ocean-intro"
             initial={{ opacity: 0 }}
@@ -232,14 +324,19 @@ export function OceanLanding() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ delay: 0.15, duration: 0.55, ease: [0.1, 0.9, 0.2, 1] }}
             >
-              <span className="ocean-intro__tag">/ Lista curada</span>
+              <span className="ocean-intro__tag">/ Lista curada · {activeCityConfig.name}</span>
 
               <h1 className="ocean-intro__title">
-                Lugares para salir.<br />Sin pensar tanto.
+                {activeCityConfig.introTitle.split('\n').map((line, idx) => (
+                  <span key={idx}>
+                    {line}
+                    {idx < activeCityConfig.introTitle.split('\n').length - 1 && <br />}
+                  </span>
+                ))}
               </h1>
 
               <p className="ocean-intro__body">
-                Una selección de cafés, bares y rincones de la ciudad donde vale la pena aparecer. Toca el mar y descubre tu próximo spot.
+                {activeCityConfig.introBody}
               </p>
 
               <p className="ocean-intro__sub">Navega lo desconocido.</p>
@@ -257,7 +354,7 @@ export function OceanLanding() {
 
       {/* Hint */}
       <AnimatePresence>
-        {clickCount === 0 && (
+        {clickCount === 0 && currentCityConfig && (
           <motion.div
             className="ocean-hint"
             initial={{ opacity: 0 }}
@@ -305,6 +402,7 @@ export function OceanLanding() {
             spot={activeSpot.spot}
             clickX={activeSpot.x}
             clickY={activeSpot.y}
+            cityName={activeCityConfig.name}
             onClose={() => setActiveSpot(null)}
           />
         )}
@@ -318,10 +416,119 @@ export function OceanLanding() {
         Inicio
       </button>
 
+      {/* City Switcher Dropdown */}
+      {currentCityConfig && (
+        <div className="city-switcher-container">
+          <button 
+            className="city-switcher-btn" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsDropdownOpen(!isDropdownOpen);
+            }}
+          >
+            {activeCityConfig.name} <ChevronDown size={14} />
+          </button>
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                className="city-switcher-menu"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.12 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {citiesData.map(c => (
+                  <button
+                    key={c.id}
+                    className="city-switcher-item"
+                    onClick={() => {
+                      navigate(`/descubrir/${c.id}`);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
       {/* Logo */}
       <div className="ocean-logo-container">
         <BruukLogo />
       </div>
+
+      {/* City Selector Modal Overlay */}
+      <AnimatePresence>
+        {!currentCityConfig && (
+          <motion.div
+            className="city-selector-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="city-selector-modal"
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 60, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            >
+              <div className="city-selector-handle" />
+              <div className="city-selector-logo">
+                <BruukLogo />
+              </div>
+              <h1 className="city-selector-title">Elige tu mar</h1>
+              <p className="city-selector-subtitle">Selecciona una ciudad para descubrir rincones únicos sin algoritmos.</p>
+              
+              <div className="city-options-grid">
+                {citiesData.map(c => (
+                  <button
+                    key={c.id}
+                    className="city-option-btn"
+                    onClick={() => navigate(`/descubrir/${c.id}`)}
+                    style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
+                  >
+                    <span className="city-option-name">{c.name}</span>
+                    <span className="city-option-desc">
+                      {c.id === 'hermosillo' ? 'Desierto y Café' : 'Rincones y Barra'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {locationError && (
+                <div style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
+                  {locationError}
+                </div>
+              )}
+
+              <div className="city-selector-divider">o</div>
+
+              <button
+                className="geolocation-btn"
+                onClick={handleAutoLocation}
+                disabled={isLocating}
+              >
+                {isLocating ? (
+                  <>
+                    <Loader2 className="animate-spin" size={16} />
+                    Detectando ubicación...
+                  </>
+                ) : (
+                  <>
+                    <MapPin size={16} />
+                    Detectar ubicación automática
+                  </>
+                )}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

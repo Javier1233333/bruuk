@@ -17,6 +17,7 @@ interface SpotCardProps {
   spot: Spot;
   clickX: number;
   clickY: number;
+  cityName: string;
   onClose: () => void;
 }
 
@@ -40,7 +41,7 @@ function getCardPos(cx: number, cy: number) {
   return { x, y };
 }
 
-export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
+export function SpotCard({ spot, clickX, clickY, cityName, onClose }: SpotCardProps) {
   const pos = getCardPos(clickX, clickY);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -92,7 +93,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
       <div className="spot-card__body">
         <div className="spot-card__meta">
           <span className="spot-card__type" style={{ background: spot.colorAccent }}>{spot.type}</span>
-          <span className="spot-card__label">Guadalajara</span>
+          <span className="spot-card__label">{cityName}</span>
         </div>
         <h3 className="spot-card__name">{spot.name}</h3>
         {(spot.rating || spot.price) && (
