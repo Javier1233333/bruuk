@@ -81,9 +81,19 @@ function OceanLandingInner() {
   const [activeCategory, setActiveCategory] = useState<'todo' | 'lugar' | 'experiencia'>('todo');
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMapOpen, setIsMapOpen] = useState(false);
+  const [selectedMapSpotId, setSelectedMapSpotId] = useState<string | null>(null);
+  
+  // Custom drag state to disable snap scroll on active drag
+  const [isGrabbing, setIsGrabbing] = useState(false);
 
   const feedRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Drag-to-scroll references
+  const isDragging = useRef(false);
+  const startY = useRef(0);
+  const scrollTopStart = useRef(0);
+  const dragDistance = useRef(0);
 
   // Find active city config (or Hermosillo as fallback)
   const currentCityConfig = citiesData.find(c => c.id === city);
@@ -104,6 +114,18 @@ function OceanLandingInner() {
     return cat === activeCategory;
   });
 
+  // Dynamic feed order
+  const [reorderedSpots, setReorderedSpots] = useState<Spot[]>([]);
+
+  // Keep reordered list synced with filters
+  useEffect(() => {
+    setReorderedSpots(filteredSpots);
+    setActiveIndex(0);
+    if (feedRef.current) {
+      feedRef.current.scrollTop = 0;
+    }
+  }, [activeCategory, city]);
+
   // Close dropdown on click outside
   useEffect(() => {
     if (!isDropdownOpen) return;
@@ -114,26 +136,125 @@ function OceanLandingInner() {
 
   // Handle vertical snapping scroll to find the active slide
   const handleScroll = useCallback(() => {
-    if (!feedRef.current) return;
+    if (!feedRef.current || isDragging.current) return;
     const scrollTop = feedRef.current.scrollTop;
     const clientHeight = feedRef.current.clientHeight;
     // Calculate which index is in view
     const index = Math.round(scrollTop / clientHeight);
-    if (index !== activeIndex && index >= 0 && index < filteredSpots.length) {
+    if (index !== activeIndex && index >= 0 && index < reorderedSpots.length) {
       setActiveIndex(index);
     }
-  }, [activeIndex, filteredSpots.length]);
+  }, [activeIndex, reorderedSpots.length]);
 
   // Scroll directly to a specific slide index
-  const scrollToSlide = useCallback((index: number) => {
+  const scrollToSlide = useCallback((index: number, smooth = true) => {
     if (!feedRef.current) return;
     const clientHeight = feedRef.current.clientHeight;
     feedRef.current.scrollTo({
       top: index * clientHeight,
-      behavior: 'smooth'
+      behavior: smooth ? 'smooth' : 'auto'
     });
     setActiveIndex(index);
   }, []);
+
+  // Redirect desktop mouse wheel scrolls anywhere on the screen to the snap feed container
+  useEffect(() => {
+    const handleGlobalWheel = (e: WheelEvent) => {
+      if (!feedRef.current || isMapOpen) return;
+
+      const target = e.target as HTMLElement;
+      // If cursor is already inside the feed, browser handles wheel scroll natively
+      if (target.closest('.tiktok-feed')) return;
+
+      // Scroll the feed manually
+      feedRef.current.scrollTop += e.deltaY;
+    };
+
+    window.addEventListener('wheel', handleGlobalWheel, { passive: true });
+    return () => window.removeEventListener('wheel', handleGlobalWheel);
+  }, [isMapOpen]);
+
+  // Drag-to-scroll mouse click-drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return; // Left click only
+    const target = e.target as HTMLElement;
+    // Prevent dragging when clicking buttons, links, maps, or specific interactive elements
+    if (
+      target.closest('.tiktok-actions') || 
+      target.closest('.tiktok-cta-link') || 
+      target.closest('a') || 
+      target.closest('button') ||
+      target.closest('.map-view-container') ||
+      target.closest('.leaflet-container')
+    ) return;
+
+    isDragging.current = true;
+    setIsGrabbing(true); // Disable snapping on drag
+    startY.current = e.pageY;
+    scrollTopStart.current = feedRef.current ? feedRef.current.scrollTop : 0;
+    dragDistance.current = 0;
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !feedRef.current) return;
+    const y = e.pageY;
+    const walk = y - startY.current;
+    dragDistance.current = walk;
+    feedRef.current.scrollTop = scrollTopStart.current - walk;
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    setIsGrabbing(false); // Enable snap scroll back
+    document.body.style.userSelect = '';
+
+    if (!feedRef.current) return;
+    
+    // Snap threshold: if dragged more than 60px, jump to next/previous slide
+    const threshold = 60;
+    if (Math.abs(dragDistance.current) > threshold) {
+      if (dragDistance.current < 0) {
+        // Dragged up -> Go to next
+        const nextIdx = Math.min(activeIndex + 1, reorderedSpots.length - 1);
+        scrollToSlide(nextIdx);
+      } else {
+        // Dragged down -> Go to previous
+        const prevIdx = Math.max(activeIndex - 1, 0);
+        scrollToSlide(prevIdx);
+      }
+    } else {
+      // Revert back to active slide
+      scrollToSlide(activeIndex);
+    }
+  };
+
+  // Select a spot from map popup: places it at index 0 and jumps instantly
+  const handleSelectSpotFromMap = useCallback((spotId: string) => {
+    const selectedSpot = filteredSpots.find(s => s.id === spotId);
+    if (!selectedSpot) return;
+
+    const rest = filteredSpots.filter(s => s.id !== spotId);
+    const newOrder = [selectedSpot, ...rest];
+    
+    setReorderedSpots(newOrder);
+    scrollToSlide(0, false); // Instant jump
+    setIsMapOpen(false);
+    setSelectedMapSpotId(null);
+  }, [filteredSpots, scrollToSlide]);
+
+  // Open map focused on a specific spot
+  const handleOpenMapForSpot = (spotId: string) => {
+    setSelectedMapSpotId(spotId);
+    setIsMapOpen(true);
+  };
+
+  // Close map modal
+  const handleCloseMap = () => {
+    setIsMapOpen(false);
+    setSelectedMapSpotId(null);
+  };
 
   // Handle Likes
   const toggleLike = (id: string) => {
@@ -231,12 +352,14 @@ function OceanLandingInner() {
   useEffect(() => {
     if (!isMapOpen || !mapContainerRef.current || !currentCityConfig) return;
 
-    const lat = activeCityConfig.defaultCoordinates.lat;
-    const lng = activeCityConfig.defaultCoordinates.lng;
+    // Center coordinates: if selected a spot from the feed, center on it, otherwise city default
+    const focusedSpot = filteredSpots.find(s => s.id === selectedMapSpotId);
+    const lat = focusedSpot?.coordinates?.lat || activeCityConfig.defaultCoordinates.lat;
+    const lng = focusedSpot?.coordinates?.lng || activeCityConfig.defaultCoordinates.lng;
 
     const map = L.map(mapContainerRef.current, {
       center: [lat, lng],
-      zoom: 13,
+      zoom: focusedSpot ? 15 : 13,
       zoomControl: true,
       attributionControl: false
     });
@@ -259,6 +382,9 @@ function OceanLandingInner() {
 
       marker.bindPopup(`
         <div class="map-popup-inner" style="font-family: 'DM Sans', sans-serif; color: #fff;">
+          <div style="width: 100%; height: 90px; overflow: hidden; margin-bottom: 8px;">
+            <img src="${spot.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
           <h4 style="margin: 0 0 4px 0; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 0.95rem; color: #fff;">${spot.name}</h4>
           <p style="margin: 0 0 6px 0; font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">
             ${spot.type} · ${activeCityConfig.name}
@@ -271,26 +397,52 @@ function OceanLandingInner() {
               📅 ${spot.schedule}
             </p>
           ` : ''}
-          <button class="map-go-to-feed-btn" data-spot-id="${spot.id}" style="
-            width: 100%;
-            background: #fff;
-            color: #000;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800;
-            border: 2px solid #000;
-            padding: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 2px 2px 0px ${accentColor};
-            transition: all 0.1s;
-          ">Ver en Feed</button>
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button class="map-go-to-feed-btn" data-spot-id="${spot.id}" style="
+              flex: 1;
+              background: #fff;
+              color: #000;
+              font-family: 'Outfit', sans-serif;
+              font-weight: 800;
+              border: 2px solid #000;
+              padding: 6px;
+              font-size: 0.7rem;
+              cursor: pointer;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              box-shadow: 2px 2px 0px ${accentColor};
+              transition: all 0.1s;
+            ">Ver en Feed</button>
+            <a href="${spot.mapsLink}" target="_blank" rel="noopener noreferrer" style="
+              flex: 1;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              background: #0e0d1a;
+              color: #fff;
+              font-family: 'Outfit', sans-serif;
+              font-weight: 800;
+              border: 2px solid #fff;
+              padding: 6px;
+              font-size: 0.7rem;
+              cursor: pointer;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              text-decoration: none;
+              box-shadow: 2px 2px 0px ${accentColor};
+              transition: all 0.1s;
+            ">Cómo llegar</a>
+          </div>
         </div>
       `);
+
+      // Auto open popup if this marker was selected
+      if (spot.id === selectedMapSpotId) {
+        marker.openPopup();
+      }
     });
 
-    // Attach listener for map popup clicks
+    // Delegate click on Ver en Feed inside Leaflet popup HTML
     const handlePopupOpen = (e: L.PopupEvent) => {
       const container = e.popup.getElement();
       if (!container) return;
@@ -299,11 +451,7 @@ function OceanLandingInner() {
         btn.addEventListener('click', () => {
           const spotId = btn.getAttribute('data-spot-id');
           if (spotId) {
-            const index = filteredSpots.findIndex(s => s.id === spotId);
-            if (index !== -1) {
-              scrollToSlide(index);
-              setIsMapOpen(false);
-            }
+            handleSelectSpotFromMap(spotId);
           }
         });
       }
@@ -315,7 +463,7 @@ function OceanLandingInner() {
       map.off('popupopen', handlePopupOpen);
       map.remove();
     };
-  }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, scrollToSlide]);
+  }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap]);
 
   return (
     <div 
@@ -325,11 +473,11 @@ function OceanLandingInner() {
       } as React.CSSProperties}
     >
       {/* Dynamic Desktop Blurred Background */}
-      {filteredSpots.length > 0 && (
+      {reorderedSpots.length > 0 && (
         <div 
           className="desktop-bg-blur"
           style={{
-            backgroundImage: `url(${filteredSpots[activeIndex]?.imageUrl})`
+            backgroundImage: `url(${reorderedSpots[activeIndex]?.imageUrl})`
           }}
         />
       )}
@@ -356,7 +504,7 @@ function OceanLandingInner() {
         {currentCityConfig && (
           <header className="tiktok-header">
             <div className="tiktok-header-row">
-              {/* Back to Home page */}
+              {/* Back to Home page (now inline in layout) */}
               <button className="tiktok-back-btn" onClick={() => navigate('/')} aria-label="Inicio">
                 <ArrowLeft size={16} />
               </button>
@@ -383,6 +531,25 @@ function OceanLandingInner() {
                       transition={{ duration: 0.12 }}
                       onClick={(e) => e.stopPropagation()}
                     >
+                      {/* Subtle GPS Auto Detect item */}
+                      <button
+                        className="tiktok-city-item"
+                        style={{ 
+                          borderBottom: '1px dashed rgba(255,255,255,0.15)',
+                          color: 'var(--city-accent)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsDropdownOpen(false);
+                          handleAutoLocation();
+                        }}
+                      >
+                        <MapPin size={12} /> Detectar GPS
+                      </button>
+
                       {citiesData.map(c => (
                         <button
                           key={c.id}
@@ -431,16 +598,20 @@ function OceanLandingInner() {
         {currentCityConfig && (
           <div 
             ref={feedRef}
-            className="tiktok-feed"
+            className={`tiktok-feed ${isGrabbing ? 'grabbing' : ''}`}
             onScroll={handleScroll}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
-            {filteredSpots.length === 0 ? (
+            {reorderedSpots.length === 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
                 <Compass size={40} style={{ color: 'var(--city-accent)' }} />
                 <p style={{ fontFamily: 'Outfit', fontWeight: 'bold', fontSize: '1rem' }}>No hay planes disponibles en esta categoría.</p>
               </div>
             ) : (
-              filteredSpots.map((spot, index) => {
+              reorderedSpots.map((spot, index) => {
                 const isLiked = likedSpots.has(spot.id);
                 const isSaved = savedSpots.has(spot.id);
                 const isExperience = getCategory(spot) === 'experiencia';
@@ -466,7 +637,10 @@ function OceanLandingInner() {
                       <div className="tiktok-action-item">
                         <button 
                           className={`tiktok-action-btn ${isLiked ? 'active' : ''}`}
-                          onClick={() => toggleLike(spot.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleLike(spot.id);
+                          }}
                           aria-label="Me gusta"
                         >
                           <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
@@ -478,7 +652,10 @@ function OceanLandingInner() {
                       <div className="tiktok-action-item">
                         <button 
                           className={`tiktok-action-btn ${isSaved ? 'active-save' : ''}`}
-                          onClick={() => toggleSave(spot.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSave(spot.id);
+                          }}
                           aria-label="Guardar"
                         >
                           <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
@@ -490,7 +667,10 @@ function OceanLandingInner() {
                       <div className="tiktok-action-item">
                         <button 
                           className="tiktok-action-btn"
-                          onClick={() => handleShare(spot.name)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShare(spot.name);
+                          }}
                           aria-label="Compartir"
                         >
                           <Share2 size={20} />
@@ -530,7 +710,7 @@ function OceanLandingInner() {
 
                       <p className="tiktok-desc">"{spot.description}"</p>
 
-                      {/* Context-aware Dynamic CTA */}
+                      {/* Context-aware Dynamic CTA (Now opens Leaflet focused map) */}
                       {isExperience && spot.bookingLink ? (
                         <a 
                           href={spot.bookingLink} 
@@ -538,19 +718,21 @@ function OceanLandingInner() {
                           rel="noopener noreferrer"
                           className="tiktok-cta-link"
                           style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <ExternalLink size={14} /> Reservar / Unirse
                         </a>
                       ) : (
-                        <a 
-                          href={spot.mapsLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                        <button 
                           className="tiktok-cta-link"
                           style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenMapForSpot(spot.id);
+                          }}
                         >
-                          <MapPin size={14} /> Ver en Maps
-                        </a>
+                          <MapPin size={14} /> Ver Ubicación
+                        </button>
                       )}
                     </div>
                   </div>
@@ -637,7 +819,7 @@ function OceanLandingInner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsMapOpen(false)}
+              onClick={handleCloseMap}
             >
               <motion.div 
                 className="map-modal-content"
@@ -648,7 +830,7 @@ function OceanLandingInner() {
               >
                 <div className="map-modal-header">
                   <h3 className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
-                  <button className="map-modal-close" onClick={() => setIsMapOpen(false)} aria-label="Cerrar mapa">
+                  <button className="map-modal-close" onClick={handleCloseMap} aria-label="Cerrar mapa">
                     <X size={24} />
                   </button>
                 </div>
@@ -659,8 +841,35 @@ function OceanLandingInner() {
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
+
+      {/* Desktop floating navigation arrows (positioned OUTSIDE phone container) */}
+      {currentCityConfig && reorderedSpots.length > 0 && (
+        <div className="tiktok-desktop-arrows">
+          <button 
+            className="tiktok-desktop-arrow"
+            onClick={() => {
+              const prevIdx = Math.max(activeIndex - 1, 0);
+              scrollToSlide(prevIdx);
+            }}
+            disabled={activeIndex === 0}
+            aria-label="Anterior"
+          >
+            ▲
+          </button>
+          <button 
+            className="tiktok-desktop-arrow"
+            onClick={() => {
+              const nextIdx = Math.min(activeIndex + 1, reorderedSpots.length - 1);
+              scrollToSlide(nextIdx);
+            }}
+            disabled={activeIndex === reorderedSpots.length - 1}
+            aria-label="Siguiente"
+          >
+            ▼
+          </button>
+        </div>
+      )}
     </div>
   );
 }
