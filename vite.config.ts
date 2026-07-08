@@ -6,6 +6,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    hmr: {
+      host: 'drainpipe-latch-frolic.ngrok-free.dev',
+      protocol: 'wss',
+      clientPort: 443,
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

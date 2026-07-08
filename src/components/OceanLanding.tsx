@@ -14,7 +14,8 @@ import {
   X, 
   ExternalLink, 
   Calendar, 
-  ArrowLeft 
+  ArrowLeft,
+  MessageSquare
 } from 'lucide-react';
 import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
@@ -60,6 +61,42 @@ const createCustomMarkerIcon = (color: string) => {
   });
 };
 
+// Generates dynamic customized user reviews and curators explanations based on spot profile
+const getSpotReviewsAndDetails = (spot: Spot) => {
+  const isCafe = spot.type.toLowerCase().includes('caf');
+  const isRestaurante = spot.type.toLowerCase().includes('rest') || spot.type.toLowerCase().includes('comid');
+  const isExperiencia = spot.category === 'experiencia' || spot.type === 'Experiencia';
+
+  let explanation = `Este es uno de los rincones más especiales de la ciudad. Seleccionado por el equipo de Bruuk debido a su propuesta honesta, atmósfera acogedora y atención al detalle. Ideal para desconectarse o tener una plática profunda.`;
+  let reviews = [
+    { author: "Sofía M.", text: "Me encanta venir aquí por las tardes. La vibra es súper relajada y la música siempre está al volumen perfecto.", rating: 5 },
+    { author: "Carlos R.", text: "Excelente servicio. Se nota el cariño que le ponen a todo lo que hacen. Totalmente recomendado.", rating: 4 }
+  ];
+
+  if (isCafe) {
+    explanation = `Un refugio perfecto para los amantes del buen café. Destaca por su tostado artesanal, métodos de extracción impecables y un ambiente diseñado para sentarse a leer, escribir o trabajar con tranquilidad.`;
+    reviews = [
+      { author: "Mariana G.", text: "El café filtrado de aquí es de otro nivel. Los baristas saben muchísimo y te explican el origen del grano.", rating: 5 },
+      { author: "Daniel H.", text: "Muy buena conexión de internet y el pan dulce siempre fresco. Mi spot favorito para hacer home office.", rating: 5 },
+      { author: "Elena P.", text: "Un poco lleno los fines de semana, pero vale la pena hacer fila por ese latte.", rating: 4 }
+    ];
+  } else if (isExperiencia) {
+    explanation = `Una experiencia grupal diseñada para conectar con gente local mientras aprendes algo nuevo. Todas nuestras experiencias son guiadas por expertos apasionados y se realizan en grupos pequeños para mantener la intimidad.`;
+    reviews = [
+      { author: "Rodrigo T.", text: "Increíble dinámica. Fui solo y salí con tres nuevos amigos. Las risas no faltaron.", rating: 5 },
+      { author: "Lucía F.", text: "Muy bien organizada y las explicaciones súper claras. Ideal para hacer un plan diferente el fin de semana.", rating: 5 }
+    ];
+  } else if (isRestaurante) {
+    explanation = `Una parada obligatoria para los foodies. Su menú ofrece una mezcla de sabores locales frescos con técnicas culinarias creativas. Cada platillo cuenta una historia y está diseñado para ser compartido.`;
+    reviews = [
+      { author: "Mateo S.", text: "La comida es deliciosa y las porciones son perfectas. No se vayan sin probar el postre de la casa.", rating: 5 },
+      { author: "Valeria C.", text: "Ambiente muy íntimo y el maridaje de bebidas es excelente. Ideal para una cena especial.", rating: 4 }
+    ];
+  }
+
+  return { explanation, reviews };
+};
+
 export function OceanLanding() {
   const { city } = useParams();
   return <OceanLandingInner key={city || 'default'} />;
@@ -83,6 +120,12 @@ function OceanLandingInner() {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [selectedMapSpotId, setSelectedMapSpotId] = useState<string | null>(null);
   
+  // Sliding Reviews sheet active spot state
+  const [activeReviewsSpotId, setActiveReviewsSpotId] = useState<string | null>(null);
+
+  // Filters within the map modal itself
+  const [mapFilterCategory, setMapFilterCategory] = useState<'todo' | 'lugar' | 'experiencia'>('todo');
+
   // Custom drag state to disable snap scroll on active drag
   const [isGrabbing, setIsGrabbing] = useState(false);
 
@@ -121,6 +164,7 @@ function OceanLandingInner() {
   useEffect(() => {
     setReorderedSpots(filteredSpots);
     setActiveIndex(0);
+    setActiveReviewsSpotId(null);
     if (feedRef.current) {
       feedRef.current.scrollTop = 0;
     }
@@ -143,6 +187,7 @@ function OceanLandingInner() {
     const index = Math.round(scrollTop / clientHeight);
     if (index !== activeIndex && index >= 0 && index < reorderedSpots.length) {
       setActiveIndex(index);
+      setActiveReviewsSpotId(null); // Close reviews when switching slides
     }
   }, [activeIndex, reorderedSpots.length]);
 
@@ -155,6 +200,7 @@ function OceanLandingInner() {
       behavior: smooth ? 'smooth' : 'auto'
     });
     setActiveIndex(index);
+    setActiveReviewsSpotId(null); // Close reviews
   }, []);
 
   // Redirect desktop mouse wheel scrolls anywhere on the screen to the snap feed container
@@ -164,7 +210,7 @@ function OceanLandingInner() {
 
       const target = e.target as HTMLElement;
       // If cursor is already inside the feed, browser handles wheel scroll natively
-      if (target.closest('.tiktok-feed')) return;
+      if (target.closest('.tiktok-feed') || target.closest('.tiktok-reviews-sheet')) return;
 
       // Scroll the feed manually
       feedRef.current.scrollTop += e.deltaY;
@@ -178,14 +224,15 @@ function OceanLandingInner() {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return; // Left click only
     const target = e.target as HTMLElement;
-    // Prevent dragging when clicking buttons, links, maps, or specific interactive elements
+    // Prevent dragging when clicking buttons, links, maps, or reviews panel
     if (
       target.closest('.tiktok-actions') || 
       target.closest('.tiktok-cta-link') || 
       target.closest('a') || 
       target.closest('button') ||
       target.closest('.map-view-container') ||
-      target.closest('.leaflet-container')
+      target.closest('.leaflet-container') ||
+      target.closest('.tiktok-reviews-sheet')
     ) return;
 
     isDragging.current = true;
@@ -352,8 +399,15 @@ function OceanLandingInner() {
   useEffect(() => {
     if (!isMapOpen || !mapContainerRef.current || !currentCityConfig) return;
 
+    // Filter spots shown on the map based on mapFilterCategory
+    const mapFilteredSpots = filteredSpots.filter(spot => {
+      if (mapFilterCategory === 'todo') return true;
+      const cat = getCategory(spot);
+      return cat === mapFilterCategory;
+    });
+
     // Center coordinates: if selected a spot from the feed, center on it, otherwise city default
-    const focusedSpot = filteredSpots.find(s => s.id === selectedMapSpotId);
+    const focusedSpot = mapFilteredSpots.find(s => s.id === selectedMapSpotId);
     const lat = focusedSpot?.coordinates?.lat || activeCityConfig.defaultCoordinates.lat;
     const lng = focusedSpot?.coordinates?.lng || activeCityConfig.defaultCoordinates.lng;
 
@@ -369,8 +423,8 @@ function OceanLandingInner() {
       maxZoom: 19
     }).addTo(map);
 
-    // Add pins for current city's spots
-    filteredSpots.forEach((spot) => {
+    // Add pins for mapFilteredSpots
+    mapFilteredSpots.forEach((spot) => {
       if (!spot.coordinates) return;
 
       const accentColor = spot.colorAccent || activeCityConfig.accentColor;
@@ -463,7 +517,7 @@ function OceanLandingInner() {
       map.off('popupopen', handlePopupOpen);
       map.remove();
     };
-  }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap]);
+  }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap, mapFilterCategory]);
 
   return (
     <div 
@@ -500,16 +554,28 @@ function OceanLandingInner() {
           )}
         </AnimatePresence>
 
-        {/* Custom Translucent Header */}
+        {/* Custom Translucent Centered Header */}
         {currentCityConfig && (
           <header className="tiktok-header">
-            <div className="tiktok-header-row">
-              {/* Back to Home page (now inline in layout) */}
-              <button className="tiktok-back-btn" onClick={() => navigate('/')} aria-label="Inicio">
-                <ArrowLeft size={16} />
-              </button>
+            <div className="tiktok-header-row" style={{ flexDirection: 'column', gap: '0.6rem', alignItems: 'center' }}>
+              
+              {/* Row 1: Back, Logo, and Map buttons */}
+              <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button className="tiktok-back-btn" onClick={() => navigate('/')} aria-label="Inicio">
+                  <ArrowLeft size={16} />
+                </button>
 
-              {/* City Switcher dropdown trigger */}
+                {/* Centered Bruuk Logo */}
+                <div className="tiktok-logo" onClick={() => navigate('/')}>
+                  <BruukLogo />
+                </div>
+
+                <button className="tiktok-map-btn" onClick={() => setIsMapOpen(true)}>
+                  <Map size={14} /> Mapa
+                </button>
+              </div>
+
+              {/* Row 2: Centered City selector */}
               <div className="tiktok-city-container">
                 <button 
                   className="tiktok-city-btn"
@@ -517,8 +583,18 @@ function OceanLandingInner() {
                     e.stopPropagation();
                     setIsDropdownOpen(!isDropdownOpen);
                   }}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    fontSize: '0.82rem',
+                    letterSpacing: '1.5px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 0'
+                  }}
                 >
-                  {activeCityConfig.name} <ChevronDown size={14} />
+                  EXPLORANDO EN <span style={{ color: 'var(--city-accent)', textDecoration: 'underline', fontWeight: 900 }}>{activeCityConfig.name}</span> <ChevronDown size={12} />
                 </button>
 
                 <AnimatePresence>
@@ -531,7 +607,7 @@ function OceanLandingInner() {
                       transition={{ duration: 0.12 }}
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {/* Subtle GPS Auto Detect item */}
+                      {/* GPS auto locator */}
                       <button
                         className="tiktok-city-item"
                         style={{ 
@@ -568,11 +644,6 @@ function OceanLandingInner() {
                   )}
                 </AnimatePresence>
               </div>
-
-              {/* Map view modal toggle */}
-              <button className="tiktok-map-btn" onClick={() => setIsMapOpen(true)}>
-                <Map size={14} /> Mapa
-              </button>
             </div>
 
             {/* Subheader Filters: Todo / Lugares / Experiencias */}
@@ -663,6 +734,25 @@ function OceanLandingInner() {
                         <span className="tiktok-action-label">Guardar</span>
                       </div>
 
+                      {/* Opinions Drawer Toggle */}
+                      <div className="tiktok-action-item">
+                        <button 
+                          className={`tiktok-action-btn ${activeReviewsSpotId === spot.id ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveReviewsSpotId(activeReviewsSpotId === spot.id ? null : spot.id);
+                          }}
+                          aria-label="Opiniones"
+                          style={{
+                            color: activeReviewsSpotId === spot.id ? 'var(--city-accent)' : '#fff',
+                            borderColor: activeReviewsSpotId === spot.id ? 'var(--city-accent)' : 'rgba(255,255,255,0.15)'
+                          }}
+                        >
+                          <MessageSquare size={20} />
+                        </button>
+                        <span className="tiktok-action-label">Opiniones</span>
+                      </div>
+
                       {/* Share Action */}
                       <div className="tiktok-action-item">
                         <button 
@@ -710,7 +800,7 @@ function OceanLandingInner() {
 
                       <p className="tiktok-desc">"{spot.description}"</p>
 
-                      {/* Context-aware Dynamic CTA (Now opens Leaflet focused map) */}
+                      {/* Context-aware Dynamic CTA (Opens map focused or booking external site) */}
                       {isExperience && spot.bookingLink ? (
                         <a 
                           href={spot.bookingLink} 
@@ -735,6 +825,45 @@ function OceanLandingInner() {
                         </button>
                       )}
                     </div>
+
+                    {/* Bottom Sheet Drawer for Reviews & Explanations */}
+                    <AnimatePresence>
+                      {activeReviewsSpotId === spot.id && (
+                        <motion.div 
+                          className="tiktok-reviews-sheet"
+                          initial={{ y: '100%' }}
+                          animate={{ y: 0 }}
+                          exit={{ y: '100%' }}
+                          transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="reviews-sheet-header">
+                            <div className="reviews-sheet-handle" onClick={() => setActiveReviewsSpotId(null)} />
+                            <h3 className="reviews-sheet-title">Detalles y Opiniones</h3>
+                            <button className="reviews-sheet-close" onClick={() => setActiveReviewsSpotId(null)}>
+                              <X size={18} />
+                            </button>
+                          </div>
+                          <div className="reviews-sheet-body">
+                            <div className="reviews-section-title" style={{ color: spot.colorAccent || activeCityConfig.accentColor }}>El veredicto de Bruuk</div>
+                            <p className="reviews-explanation">{getSpotReviewsAndDetails(spot).explanation}</p>
+                            
+                            <div className="reviews-section-title" style={{ marginTop: '1.2rem', color: spot.colorAccent || activeCityConfig.accentColor }}>Opiniones de la Comunidad</div>
+                            <div className="reviews-list">
+                              {getSpotReviewsAndDetails(spot).reviews.map((r, i) => (
+                                <div key={i} className="review-item">
+                                  <div className="review-author-row">
+                                    <span className="review-author">{r.author}</span>
+                                    <span className="review-stars">{"★".repeat(r.rating)}</span>
+                                  </div>
+                                  <p className="review-text">"{r.text}"</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })
@@ -828,11 +957,28 @@ function OceanLandingInner() {
                 exit={{ scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="map-modal-header">
-                  <h3 className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
-                  <button className="map-modal-close" onClick={handleCloseMap} aria-label="Cerrar mapa">
-                    <X size={24} />
-                  </button>
+                {/* Header of Map Modal featuring dynamic category filters */}
+                <div className="map-modal-header" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
+                    <button className="map-modal-close" onClick={handleCloseMap} aria-label="Cerrar mapa">
+                      <X size={24} />
+                    </button>
+                  </div>
+                  
+                  {/* Category filters within Leaflet Map */}
+                  <div className="map-modal-filters">
+                    {(['todo', 'lugar', 'experiencia'] as const).map((cat) => (
+                      <button
+                        key={cat}
+                        className={`map-filter-pill ${mapFilterCategory === cat ? 'active' : ''}`}
+                        onClick={() => setMapFilterCategory(cat)}
+                        style={{ '--btn-accent': activeCityConfig.accentColor } as React.CSSProperties}
+                      >
+                        {cat === 'todo' ? 'Todo' : cat === 'lugar' ? 'Lugares' : 'Experiencias'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Leaflet map hook mount */}
