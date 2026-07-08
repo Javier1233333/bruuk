@@ -1162,5 +1162,81 @@
       "lng": -110.9622
     },
     "mapsLink": "https://maps.google.com/?q=Diente+de+Leon+Hermosillo"
+  },
+  {
+    "id": "exp_gdl_001",
+    "city": "guadalajara",
+    "category": "experiencia",
+    "type": "Experiencia",
+    "name": "Bar Hopping Americana",
+    "description": "Recorrido secreto por 3 speakeasies de la colonia Americana. Cócteles incluidos y grupo selecto.",
+    "imageUrl": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&q=80",
+    "colorAccent": "#7e5bef",
+    "rating": 4.9,
+    "price": "$450 MXN",
+    "coordinates": {
+      "lat": 20.6720,
+      "lng": -103.3660
+    },
+    "mapsLink": "https://maps.google.com/?q=Colonia+Americana+Guadalajara",
+    "bookingLink": "https://bruuk.com/experiencias/bar-hopping-gdl",
+    "schedule": "Sábados, 8:00 PM"
+  },
+  {
+    "id": "exp_gdl_002",
+    "city": "guadalajara",
+    "category": "experiencia",
+    "type": "Experiencia",
+    "name": "Taller de Pintura y Mezcal",
+    "description": "Pinta tu propio lienzo con mezcal local y música de vinilos. No necesitas experiencia previa.",
+    "imageUrl": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&q=80",
+    "colorAccent": "#7e5bef",
+    "rating": 4.8,
+    "price": "$350 MXN",
+    "coordinates": {
+      "lat": 20.6750,
+      "lng": -103.3720
+    },
+    "mapsLink": "https://maps.google.com/?q=Calle+Libertad+Guadalajara",
+    "bookingLink": "https://bruuk.com/experiencias/taller-mezcal-gdl",
+    "schedule": "Jueves, 7:00 PM"
+  },
+  {
+    "id": "exp_hmo_001",
+    "city": "hermosillo",
+    "category": "experiencia",
+    "type": "Experiencia",
+    "name": "Atardecer y Yoga en el Cerro",
+    "description": "Sesión de yoga y meditación al atardecer en el Cerro de la Campana. Té herbal incluido al final.",
+    "imageUrl": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80",
+    "colorAccent": "#ff7a45",
+    "rating": 4.9,
+    "price": "$150 MXN",
+    "coordinates": {
+      "lat": 29.0722,
+      "lng": -110.9575
+    },
+    "mapsLink": "https://maps.google.com/?q=Cerro+de+la+Campana+Hermosillo",
+    "bookingLink": "https://bruuk.com/experiencias/yoga-cerro-hmo",
+    "schedule": "Domingos, 6:00 PM"
+  },
+  {
+    "id": "exp_hmo_002",
+    "city": "hermosillo",
+    "category": "experiencia",
+    "type": "Experiencia",
+    "name": "Cata de Café de Especialidad",
+    "description": "Aprende a diferenciar notas, olores y métodos de extracción de café de especialidad de la mano de baristas expertos.",
+    "imageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=80",
+    "colorAccent": "#ff7a45",
+    "rating": 4.7,
+    "price": "$200 MXN",
+    "coordinates": {
+      "lat": 29.0805,
+      "lng": -110.9575
+    },
+    "mapsLink": "https://maps.google.com/?q=Ocotillo+Hermosillo",
+    "bookingLink": "https://bruuk.com/experiencias/cata-cafe-hmo",
+    "schedule": "Sábados, 10:00 AM"
   }
 ]

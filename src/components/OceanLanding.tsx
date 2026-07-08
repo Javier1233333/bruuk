@@ -2,15 +2,30 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
-import { SpotCard } from './SpotCard';
-import { OceanCanvas } from './OceanCanvas';
-import { ChevronDown, MapPin, Loader2 } from 'lucide-react';
+import { 
+  ChevronDown, 
+  MapPin, 
+  Loader2, 
+  Compass, 
+  Heart, 
+  Bookmark, 
+  Share2, 
+  Map, 
+  X, 
+  ExternalLink, 
+  Calendar, 
+  ArrowLeft 
+} from 'lucide-react';
 import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
 
 type Spot = {
   id: string;
+  city: string;
+  category?: 'lugar' | 'experiencia';
   name: string;
   type: string;
   description: string;
@@ -19,125 +34,32 @@ type Spot = {
   mapsLink: string;
   rating?: number;
   price?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  bookingLink?: string;
+  schedule?: string;
 };
 
-/* ── Handmade ripple types ── */
-interface RippleParams {
-  id: string;
-  x: number;
-  y: number;
-  freq: number;        // turbulence frequency — controls wobble density
-  displacement: number; // how "broken" the circle looks
-  seed: number;        // unique noise pattern per click
-  rings: number;       // 2–4 rings
-  strokeWidth: number; // base stroke thickness
-  hue: number;         // slight hue shift per click
-}
+/* ── Custom glowing neon pin creator for Leaflet ── */
+const createCustomMarkerIcon = (color: string) => {
+  return L.divIcon({
+    className: 'custom-neon-pin',
+    html: `<div style="
+      background-color: ${color}; 
+      box-shadow: 0 0 10px ${color}, 0 0 20px ${color}; 
+      width: 14px; 
+      height: 14px; 
+      border-radius: 50%; 
+      border: 2px solid #fff;
+      --color: ${color};
+    "></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+};
 
-interface ActiveSpot {
-  id: string;
-  spot: Spot;
-  x: number;
-  y: number;
-}
-
-// Cached at module level — only computed once
-const RIPPLE_SIZE = Math.max(window.innerWidth, window.innerHeight) * 1.9;
-const RIPPLE_C    = RIPPLE_SIZE / 2;
-
-/* ── Per-ring animated SVG circle ── */
-function HandmadeRing({
-  cx, cy, filterId, ringIndex, hue,
-}: {
-  cx: number; cy: number; filterId: string;
-  ringIndex: number; hue: number;
-}) {
-  const delay  = ringIndex * 0.18;
-  const dur    = 1.8 + ringIndex * 0.3;
-  const alpha  = 0.85 - ringIndex * 0.2;
-  const finalR = 100 + ringIndex * 90;
-
-  return (
-    <motion.circle
-      cx={cx} cy={cy}
-      fill="none"
-      stroke={`hsla(${hue}, 88%, 82%, ${alpha})`}
-      strokeWidth={3}
-      filter={`url(#${filterId})`}
-      initial={{ r: 10, opacity: alpha }}
-      animate={{ r: finalR, opacity: 0 }}
-      transition={{ delay, duration: dur, ease: [0.04, 0.72, 0.22, 1] }}
-    />
-  );
-}
-
-/* ── Full ripple: SVG with turbulence filter ── */
-function HandmadeRipple({ r }: { r: RippleParams }) {
-  const filterId = `wob-${r.id}`;
-
-  return (
-    <motion.svg
-      style={{
-        position: 'fixed',
-        left: r.x - RIPPLE_C,
-        top:  r.y - RIPPLE_C,
-        width: RIPPLE_SIZE,
-        height: RIPPLE_SIZE,
-        pointerEvents: 'none',
-        zIndex: 20,
-        overflow: 'visible',
-        willChange: 'opacity',
-      }}
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      <defs>
-        <filter id={filterId} x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence
-            type="turbulence"
-            baseFrequency={r.freq}
-            numOctaves={2}
-            seed={r.seed}
-            result="noise"
-          />
-          <feDisplacementMap
-            in="SourceGraphic" in2="noise"
-            scale={r.displacement}
-            xChannelSelector="R" yChannelSelector="G"
-          />
-        </filter>
-      </defs>
-
-      {/* Expanding wobbly rings */}
-      {Array.from({ length: r.rings }, (_, i) => (
-        <HandmadeRing
-          key={i} cx={RIPPLE_C} cy={RIPPLE_C}
-          filterId={filterId} ringIndex={i}
-          hue={r.hue}
-        />
-      ))}
-    </motion.svg>
-  );
-}
-
-/* ── Random params generator — different every click ── */
-function makeRipple(x: number, y: number, hueRange: [number, number] = [255, 325]): RippleParams {
-  const minHue = hueRange[0];
-  const maxHue = hueRange[1];
-  return {
-    id:           `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    x, y,
-    freq:         0.010 + Math.random() * 0.016,   // tighter range, cheaper
-    displacement: 10 + Math.random() * 18,          // 10–28 px
-    seed:         Math.floor(Math.random() * 999),
-    rings:        2,                                 // always 2 rings
-    strokeWidth:  3,
-    hue:          minHue + Math.random() * (maxHue - minHue),
-  };
-}
-
-/* ─────────────────────────────────────────────────────── */
 export function OceanLanding() {
   const { city } = useParams();
   return <OceanLandingInner key={city || 'default'} />;
@@ -147,31 +69,40 @@ function OceanLandingInner() {
   const navigate = useNavigate();
   const { city } = useParams();
 
-  const [showIntro, setShowIntro]     = useState(true);
-  const [ripple, setRipple]           = useState<RippleParams | null>(null);
-  const [activeSpot, setActiveSpot]   = useState<ActiveSpot | null>(null);
-  const [clickCount, setClickCount]   = useState(0);
+  // App States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLocating, setIsLocating]     = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
-
-  const [isMobile] = useState(() => window.innerWidth <= 768);
-  const [videoFailed, setVideoFailed] = useState(false);
   
-  const spotsQueue  = useRef<Spot[]>([]);
-  const lastSpotId  = useRef<string | null>(null);
-  const rippleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Custom Interaction States
+  const [likedSpots, setLikedSpots] = useState<Set<string>>(() => new Set());
+  const [savedSpots, setSavedSpots] = useState<Set<string>>(() => new Set());
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<'todo' | 'lugar' | 'experiencia'>('todo');
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
-  // Find active city config (or Hermosillo as fallback for backdrop visualization)
+  const feedRef = useRef<HTMLDivElement>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Find active city config (or Hermosillo as fallback)
   const currentCityConfig = citiesData.find(c => c.id === city);
   const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
 
-  // Filter spots dynamically
+  // Base spots list for this city
   const spots = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
 
-  useEffect(() => {
-    return () => { if (rippleTimer.current) clearTimeout(rippleTimer.current); };
-  }, []);
+  // Helper to categorize spots if category is not explicitly set
+  const getCategory = (spot: Spot): 'lugar' | 'experiencia' => {
+    return spot.category || (spot.type === 'Experiencia' ? 'experiencia' : 'lugar');
+  };
+
+  // Filtered spots list
+  const filteredSpots = spots.filter(s => {
+    const cat = getCategory(s);
+    if (activeCategory === 'todo') return true;
+    return cat === activeCategory;
+  });
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -181,54 +112,79 @@ function OceanLandingInner() {
     return () => document.removeEventListener('click', handleClose);
   }, [isDropdownOpen]);
 
-  const getNextSpot = useCallback(() => {
-    if (spotsQueue.current.length === 0) {
-      const s = [...spots].sort(() => Math.random() - 0.5);
-      if (lastSpotId.current && s[s.length - 1]?.id === lastSpotId.current) {
-        const last = s.pop()!;
-        s.splice(Math.floor(Math.random() * (s.length - 1)), 0, last);
-      }
-      spotsQueue.current = s;
+  // Handle vertical snapping scroll to find the active slide
+  const handleScroll = useCallback(() => {
+    if (!feedRef.current) return;
+    const scrollTop = feedRef.current.scrollTop;
+    const clientHeight = feedRef.current.clientHeight;
+    // Calculate which index is in view
+    const index = Math.round(scrollTop / clientHeight);
+    if (index !== activeIndex && index >= 0 && index < filteredSpots.length) {
+      setActiveIndex(index);
     }
-    const spot = spotsQueue.current.pop()!;
-    lastSpotId.current = spot.id;
-    return spot;
-  }, [spots]);
+  }, [activeIndex, filteredSpots.length]);
 
-  const handleOceanClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!currentCityConfig) return; // Block ripples while the selector modal is open
-    if (spots.length === 0) return;
-    const t = e.target as HTMLElement;
-    if (
-      t.closest('.spot-card')      ||
-      t.closest('.ocean-back-btn') ||
-      t.closest('.city-switcher-container') ||
-      t.closest('.city-selector-modal') ||
-      t.closest('.modal-overlay')
-    ) return;
+  // Scroll directly to a specific slide index
+  const scrollToSlide = useCallback((index: number) => {
+    if (!feedRef.current) return;
+    const clientHeight = feedRef.current.clientHeight;
+    feedRef.current.scrollTo({
+      top: index * clientHeight,
+      behavior: 'smooth'
+    });
+    setActiveIndex(index);
+  }, []);
 
-    const { clientX: x, clientY: y } = e;
+  // Handle Likes
+  const toggleLike = (id: string) => {
+    setLikedSpots(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
-    // New unique ripple every click
-    if (rippleTimer.current) clearTimeout(rippleTimer.current);
-    const rp = makeRipple(x, y, activeCityConfig.hueRange as [number, number]);
-    setRipple(rp);
-    rippleTimer.current = setTimeout(() => setRipple(null), 3200);
+  // Handle Saves
+  const toggleSave = (id: string) => {
+    setSavedSpots(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        triggerToast('Quitado de tus guardados');
+      } else {
+        next.add(id);
+        triggerToast('Guardado en tus favoritos');
+      }
+      return next;
+    });
+  };
 
-    setActiveSpot({ id: rp.id, spot: getNextSpot(), x, y });
-    setClickCount(n => n + 1);
-  }, [spots, getNextSpot, activeCityConfig, currentCityConfig]);
+  // Trigger Toast Messages
+  const triggerToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  };
 
+  // Handle Share link copying
+  const handleShare = (spotName: string) => {
+    const url = window.location.origin + `/descubrir/${activeCityConfig.id}`;
+    navigator.clipboard.writeText(`${url} - ¡Mira este plan en Bruuk: ${spotName}!`);
+    triggerToast('¡Enlace de Bruuk copiado!');
+  };
+
+  // Geolocation auto detect closest city
   const handleAutoLocation = useCallback(() => {
     if (navigator.geolocation) {
       setIsLocating(true);
       setLocationError(null);
-      console.log("Requesting geolocation...");
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setIsLocating(false);
           const { latitude: lat, longitude: lng } = position.coords;
-          console.log(`Geolocation success: lat=${lat}, lng=${lng}`);
           
           let closestCity = citiesData[0];
           let minDistance = Infinity;
@@ -239,12 +195,10 @@ function OceanLandingInner() {
               closestCity = c;
             }
           });
-          console.log(`Closest city detected: ${closestCity.name} (${closestCity.id})`);
           navigate(`/descubrir/${closestCity.id}`);
         },
         (error) => {
           setIsLocating(false);
-          console.error("Geolocation error:", error);
           let msg = "No pudimos detectar tu ubicación. Selecciona una ciudad manualmente.";
           if (error.code === error.PERMISSION_DENIED) {
             msg = "Permiso de ubicación denegado. Selecciona una ciudad manualmente.";
@@ -266,270 +220,447 @@ function OceanLandingInner() {
     }
   }, [navigate]);
 
-  // Automatically trigger location detection on mount if no city parameter is active
+  // Trigger geolocation on mount if no city parameter
   useEffect(() => {
     if (!currentCityConfig) {
       handleAutoLocation();
     }
   }, [currentCityConfig, handleAutoLocation]);
 
+  // Leaflet Map instance initializer
+  useEffect(() => {
+    if (!isMapOpen || !mapContainerRef.current || !currentCityConfig) return;
+
+    const lat = activeCityConfig.defaultCoordinates.lat;
+    const lng = activeCityConfig.defaultCoordinates.lng;
+
+    const map = L.map(mapContainerRef.current, {
+      center: [lat, lng],
+      zoom: 13,
+      zoomControl: true,
+      attributionControl: false
+    });
+
+    // Dark theme map tiles (CartoDB Dark Matter)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    // Add pins for current city's spots
+    filteredSpots.forEach((spot) => {
+      if (!spot.coordinates) return;
+
+      const accentColor = spot.colorAccent || activeCityConfig.accentColor;
+      const marker = L.marker([spot.coordinates.lat, spot.coordinates.lng], {
+        icon: createCustomMarkerIcon(accentColor)
+      }).addTo(map);
+
+      const isExperience = getCategory(spot) === 'experiencia';
+
+      marker.bindPopup(`
+        <div class="map-popup-inner" style="font-family: 'DM Sans', sans-serif; color: #fff;">
+          <h4 style="margin: 0 0 4px 0; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 0.95rem; color: #fff;">${spot.name}</h4>
+          <p style="margin: 0 0 6px 0; font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">
+            ${spot.type} · ${activeCityConfig.name}
+          </p>
+          <p style="margin: 0 0 8px 0; font-size: 0.8rem; color: rgba(255,255,255,0.85); font-style: italic;">
+            "${spot.description}"
+          </p>
+          ${isExperience && spot.schedule ? `
+            <p style="margin: 0 0 8px 0; font-size: 0.75rem; color: ${accentColor}; font-weight: bold;">
+              📅 ${spot.schedule}
+            </p>
+          ` : ''}
+          <button class="map-go-to-feed-btn" data-spot-id="${spot.id}" style="
+            width: 100%;
+            background: #fff;
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            border: 2px solid #000;
+            padding: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 2px 2px 0px ${accentColor};
+            transition: all 0.1s;
+          ">Ver en Feed</button>
+        </div>
+      `);
+    });
+
+    // Attach listener for map popup clicks
+    const handlePopupOpen = (e: L.PopupEvent) => {
+      const container = e.popup.getElement();
+      if (!container) return;
+      const btn = container.querySelector('.map-go-to-feed-btn');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const spotId = btn.getAttribute('data-spot-id');
+          if (spotId) {
+            const index = filteredSpots.findIndex(s => s.id === spotId);
+            if (index !== -1) {
+              scrollToSlide(index);
+              setIsMapOpen(false);
+            }
+          }
+        });
+      }
+    };
+
+    map.on('popupopen', handlePopupOpen);
+
+    return () => {
+      map.off('popupopen', handlePopupOpen);
+      map.remove();
+    };
+  }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, scrollToSlide]);
+
   return (
     <div 
-      className="ocean-container" 
-      onClick={handleOceanClick}
+      className="ocean-container"
       style={{
         '--city-accent': activeCityConfig.accentColor
       } as React.CSSProperties}
     >
-
-      {/* Background */}
-      <div className="ocean-bg">
-        {isMobile ? (
-          <>
-            <img
-              className="ocean-video"
-              src="/ocean-frame.jpg"
-              alt=""
-              draggable={false}
-            />
-            <div className="ocean-line" />
-          </>
-        ) : videoFailed ? (
-          <OceanCanvas />
-        ) : (
-          <video
-            className="ocean-video"
-            src="/ocean.mp4"
-            autoPlay loop muted playsInline
-            onError={() => setVideoFailed(true)}
-          />
-        )}
-        <div className="ocean-overlay" style={{ background: activeCityConfig.overlayGradient }} />
-      </div>
-
-      {/* ── Intro overlay ── */}
-      <AnimatePresence>
-        {showIntro && currentCityConfig && (
-          <motion.div
-            className="ocean-intro"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.6 } }}
-            transition={{ duration: 0.5 }}
-          >
-            <motion.div
-              className="ocean-intro__card"
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ delay: 0.15, duration: 0.55, ease: [0.1, 0.9, 0.2, 1] }}
-            >
-              <span className="ocean-intro__tag">/ Lista curada · {activeCityConfig.name}</span>
-
-              <h1 className="ocean-intro__title">
-                {activeCityConfig.introTitle.split('\n').map((line, idx) => (
-                  <span key={idx}>
-                    {line}
-                    {idx < activeCityConfig.introTitle.split('\n').length - 1 && <br />}
-                  </span>
-                ))}
-              </h1>
-
-              <p className="ocean-intro__body">
-                {activeCityConfig.introBody}
-              </p>
-
-              <p className="ocean-intro__sub">Navega lo desconocido.</p>
-
-              <button
-                className="ocean-intro__cta"
-                onClick={() => setShowIntro(false)}
-              >
-                Explorar el mar
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hint */}
-      <AnimatePresence>
-        {clickCount === 0 && currentCityConfig && (
-          <motion.div
-            className="ocean-hint"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.8, duration: 1 }}
-          >
-            Toca el mar para descubrir
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Ripple */}
-      <AnimatePresence>
-        {ripple && (
-          isMobile ? (
-            <motion.div
-              key={ripple.id}
-              className="mobile-ripple"
-              style={{
-                left: ripple.x,
-                top: ripple.y,
-              }}
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="mobile-ripple__flash" />
-              <div className="mobile-ripple__ring mobile-ripple__ring--1" />
-              <div className="mobile-ripple__ring mobile-ripple__ring--2" />
-              <div className="mobile-ripple__slash mobile-ripple__slash--1" />
-              <div className="mobile-ripple__slash mobile-ripple__slash--2" />
-            </motion.div>
-          ) : (
-            <HandmadeRipple key={ripple.id} r={ripple} />
-          )
-        )}
-      </AnimatePresence>
-
-      {/* Spot card */}
-      <AnimatePresence>
-        {activeSpot && (
-          <SpotCard
-            key={activeSpot.id}
-            spot={activeSpot.spot}
-            clickX={activeSpot.x}
-            clickY={activeSpot.y}
-            cityName={activeCityConfig.name}
-            onClose={() => setActiveSpot(null)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Back */}
-      <button className="ocean-back-btn" onClick={() => navigate('/')}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        Inicio
-      </button>
-
-      {/* City Switcher Dropdown */}
-      {currentCityConfig && (
-        <div className="city-switcher-container">
-          <button 
-            className="city-switcher-btn" 
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsDropdownOpen(!isDropdownOpen);
-            }}
-          >
-            {activeCityConfig.name} <ChevronDown size={14} />
-          </button>
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                className="city-switcher-menu"
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.12 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {citiesData.map(c => (
-                  <button
-                    key={c.id}
-                    className="city-switcher-item"
-                    onClick={() => {
-                      navigate(`/descubrir/${c.id}`);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    {c.name}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+      {/* Dynamic Desktop Blurred Background */}
+      {filteredSpots.length > 0 && (
+        <div 
+          className="desktop-bg-blur"
+          style={{
+            backgroundImage: `url(${filteredSpots[activeIndex]?.imageUrl})`
+          }}
+        />
       )}
 
-      {/* Logo */}
-      <div className="ocean-logo-container">
-        <BruukLogo />
-      </div>
-
-      {/* City Selector Modal Overlay */}
-      <AnimatePresence>
-        {!currentCityConfig && (
-          <motion.div
-            className="city-selector-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="city-selector-modal"
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 60, scale: 0.95 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+      {/* Main TikTok Device Container */}
+      <div className="tiktok-container-desktop">
+        
+        {/* Toast Alert popup */}
+        <AnimatePresence>
+          {toastMessage && (
+            <motion.div 
+              className="toast-alert"
+              initial={{ opacity: 0, y: -20, x: '-50%' }}
+              animate={{ opacity: 1, y: 0, x: '-50%' }}
+              exit={{ opacity: 0, y: -20, x: '-50%' }}
+              transition={{ duration: 0.2 }}
             >
-              <div className="city-selector-handle" />
-              <div className="city-selector-logo">
-                <BruukLogo />
-              </div>
-              <h1 className="city-selector-title">Elige tu mar</h1>
-              <p className="city-selector-subtitle">Selecciona una ciudad para descubrir rincones únicos sin algoritmos.</p>
-              
-              <div className="city-options-grid">
-                {citiesData.map(c => (
-                  <button
-                    key={c.id}
-                    className="city-option-btn"
-                    onClick={() => navigate(`/descubrir/${c.id}`)}
-                    style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
-                  >
-                    <span className="city-option-name">{c.name}</span>
-                    <span className="city-option-desc">
-                      {c.id === 'hermosillo' ? 'Desierto y Café' : 'Rincones y Barra'}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {locationError && (
-                <div style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
-                  {locationError}
-                </div>
-              )}
-
-              <div className="city-selector-divider">o</div>
-
-              <button
-                className="geolocation-btn"
-                onClick={handleAutoLocation}
-                disabled={isLocating}
-              >
-                {isLocating ? (
-                  <>
-                    <Loader2 className="animate-spin" size={16} />
-                    Detectando ubicación...
-                  </>
-                ) : (
-                  <>
-                    <MapPin size={16} />
-                    Detectar ubicación automática
-                  </>
-                )}
-              </button>
+              {toastMessage}
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
 
+        {/* Custom Translucent Header */}
+        {currentCityConfig && (
+          <header className="tiktok-header">
+            <div className="tiktok-header-row">
+              {/* Back to Home page */}
+              <button className="tiktok-back-btn" onClick={() => navigate('/')} aria-label="Inicio">
+                <ArrowLeft size={16} />
+              </button>
+
+              {/* City Switcher dropdown trigger */}
+              <div className="tiktok-city-container">
+                <button 
+                  className="tiktok-city-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDropdownOpen(!isDropdownOpen);
+                  }}
+                >
+                  {activeCityConfig.name} <ChevronDown size={14} />
+                </button>
+
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div 
+                      className="tiktok-city-dropdown"
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.12 }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {citiesData.map(c => (
+                        <button
+                          key={c.id}
+                          className="tiktok-city-item"
+                          onClick={() => {
+                            navigate(`/descubrir/${c.id}`);
+                            setIsDropdownOpen(false);
+                            setActiveIndex(0);
+                            if (feedRef.current) feedRef.current.scrollTop = 0;
+                          }}
+                        >
+                          {c.name}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Map view modal toggle */}
+              <button className="tiktok-map-btn" onClick={() => setIsMapOpen(true)}>
+                <Map size={14} /> Mapa
+              </button>
+            </div>
+
+            {/* Subheader Filters: Todo / Lugares / Experiencias */}
+            <div className="tiktok-tabs">
+              {(['todo', 'lugar', 'experiencia'] as const).map((cat) => (
+                <button
+                  key={cat}
+                  className={`tiktok-tab ${activeCategory === cat ? 'tiktok-tab-active' : ''}`}
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    setActiveIndex(0);
+                    if (feedRef.current) feedRef.current.scrollTop = 0;
+                  }}
+                >
+                  {cat === 'todo' ? 'Todo' : cat === 'lugar' ? 'Lugares' : 'Experiencias'}
+                </button>
+              ))}
+            </div>
+          </header>
+        )}
+
+        {/* Snap scrolling vertical feed container */}
+        {currentCityConfig && (
+          <div 
+            ref={feedRef}
+            className="tiktok-feed"
+            onScroll={handleScroll}
+          >
+            {filteredSpots.length === 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
+                <Compass size={40} style={{ color: 'var(--city-accent)' }} />
+                <p style={{ fontFamily: 'Outfit', fontWeight: 'bold', fontSize: '1rem' }}>No hay planes disponibles en esta categoría.</p>
+              </div>
+            ) : (
+              filteredSpots.map((spot, index) => {
+                const isLiked = likedSpots.has(spot.id);
+                const isSaved = savedSpots.has(spot.id);
+                const isExperience = getCategory(spot) === 'experiencia';
+                const inView = index === activeIndex;
+
+                return (
+                  <div key={spot.id} className="tiktok-slide">
+                    
+                    {/* Media Background container */}
+                    <div className="tiktok-media-container">
+                      <img 
+                        src={spot.imageUrl} 
+                        alt={spot.name} 
+                        className={`tiktok-media ${inView ? 'tiktok-media-active' : ''}`}
+                        loading="lazy"
+                      />
+                      <div className="tiktok-overlay-gradient" />
+                    </div>
+
+                    {/* Right-side Interaction icons */}
+                    <div className="tiktok-actions">
+                      {/* Like Action */}
+                      <div className="tiktok-action-item">
+                        <button 
+                          className={`tiktok-action-btn ${isLiked ? 'active' : ''}`}
+                          onClick={() => toggleLike(spot.id)}
+                          aria-label="Me gusta"
+                        >
+                          <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
+                        </button>
+                        <span className="tiktok-action-label">{isLiked ? '101' : '100'}</span>
+                      </div>
+
+                      {/* Save Action */}
+                      <div className="tiktok-action-item">
+                        <button 
+                          className={`tiktok-action-btn ${isSaved ? 'active-save' : ''}`}
+                          onClick={() => toggleSave(spot.id)}
+                          aria-label="Guardar"
+                        >
+                          <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
+                        </button>
+                        <span className="tiktok-action-label">Guardar</span>
+                      </div>
+
+                      {/* Share Action */}
+                      <div className="tiktok-action-item">
+                        <button 
+                          className="tiktok-action-btn"
+                          onClick={() => handleShare(spot.name)}
+                          aria-label="Compartir"
+                        >
+                          <Share2 size={20} />
+                        </button>
+                        <span className="tiktok-action-label">Compartir</span>
+                      </div>
+                    </div>
+
+                    {/* Bottom Info text panel */}
+                    <div className="tiktok-content">
+                      <div className="tiktok-tag-row">
+                        <span 
+                          className="tiktok-badge" 
+                          style={{ background: spot.colorAccent || activeCityConfig.accentColor }}
+                        >
+                          {spot.type}
+                        </span>
+                        <span className="tiktok-city-tag">{activeCityConfig.name}</span>
+                      </div>
+
+                      <h2 className="tiktok-title">{spot.name}</h2>
+
+                      <div className="tiktok-meta-row">
+                        {spot.rating && (
+                          <span className="tiktok-rating">
+                            ★ {spot.rating}
+                          </span>
+                        )}
+                        {spot.price && <span className="tiktok-price">{spot.price}</span>}
+                        {isExperience && spot.schedule && (
+                          <span className="tiktok-schedule" style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}>
+                            <Calendar size={12} style={{ marginRight: 2 }} />
+                            {spot.schedule}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="tiktok-desc">"{spot.description}"</p>
+
+                      {/* Context-aware Dynamic CTA */}
+                      {isExperience && spot.bookingLink ? (
+                        <a 
+                          href={spot.bookingLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="tiktok-cta-link"
+                          style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
+                        >
+                          <ExternalLink size={14} /> Reservar / Unirse
+                        </a>
+                      ) : (
+                        <a 
+                          href={spot.mapsLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="tiktok-cta-link"
+                          style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
+                        >
+                          <MapPin size={14} /> Ver en Maps
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
+
+        {/* Fallback City Selector Overlay Modal */}
+        <AnimatePresence>
+          {!currentCityConfig && (
+            <motion.div
+              className="city-selector-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="city-selector-modal"
+                initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 60, scale: 0.95 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              >
+                <div className="city-selector-handle" />
+                <div className="city-selector-logo">
+                  <BruukLogo />
+                </div>
+                <h1 className="city-selector-title">Elige tu mar</h1>
+                <p className="city-selector-subtitle">Selecciona una ciudad para descubrir planes y experiencias únicas sin algoritmos.</p>
+                
+                <div className="city-options-grid">
+                  {citiesData.map(c => (
+                    <button
+                      key={c.id}
+                      className="city-option-btn"
+                      onClick={() => navigate(`/descubrir/${c.id}`)}
+                      style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
+                    >
+                      <span className="city-option-name">{c.name}</span>
+                      <span className="city-option-desc">
+                        {c.id === 'hermosillo' ? 'Desierto y Café' : 'Rincones y Experiencias'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {locationError && (
+                  <div style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
+                    {locationError}
+                  </div>
+                )}
+
+                <div className="city-selector-divider">o</div>
+
+                <button
+                  className="geolocation-btn"
+                  onClick={handleAutoLocation}
+                  disabled={isLocating}
+                >
+                  {isLocating ? (
+                    <>
+                      <Loader2 className="animate-spin" size={16} />
+                      Detectando ubicación...
+                    </>
+                  ) : (
+                    <>
+                      <MapPin size={16} />
+                      Detectar ubicación automática
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Leaflet dark theme interactive map modal */}
+        <AnimatePresence>
+          {isMapOpen && currentCityConfig && (
+            <motion.div 
+              className="map-modal-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMapOpen(false)}
+            >
+              <motion.div 
+                className="map-modal-content"
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="map-modal-header">
+                  <h3 className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
+                  <button className="map-modal-close" onClick={() => setIsMapOpen(false)} aria-label="Cerrar mapa">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                {/* Leaflet map hook mount */}
+                <div ref={mapContainerRef} className="map-view-container" />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
     </div>
   );
 }
