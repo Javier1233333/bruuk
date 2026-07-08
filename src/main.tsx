@@ -18,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/descubrir" element={<OceanLanding />} />
+          <Route path="/descubrir/:city" element={<OceanLanding />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify" element={<VerifyInvitePage />} />
           <Route
