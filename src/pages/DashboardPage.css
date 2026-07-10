@@ -708,8 +708,10 @@
   font-family: 'DM Sans', sans-serif;
 }
 
-.spot-cta {
+.spot-cta,
+a.spot-cta {
   display: inline-flex;
+  text-decoration: none;
   align-items: center;
   gap: 0.3rem;
   background: var(--accent-light);
@@ -731,6 +733,198 @@
   transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0px #000;
 }
+
+/* ── Mis Spots (Maps URL) ── */
+.mapspot-form {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mapspot-search-wrap {
+  position: relative;
+}
+
+.mapspot-url-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  padding: 0 1rem;
+  transition: border-color 0.15s;
+}
+
+.mapspot-url-row:focus-within {
+  border-color: var(--accent-light);
+}
+
+.mapspot-icon {
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+
+.mapspot-url-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  padding: 0.9rem 0;
+}
+
+.mapspot-url-input::placeholder {
+  color: rgba(255,255,255,0.25);
+}
+
+.mapspot-searching {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  padding-right: 0.5rem;
+  opacity: 0.6;
+}
+
+.mapspot-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 2px solid var(--accent-light);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 50;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.mapspot-results li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.12s;
+  color: var(--text-secondary);
+}
+
+.mapspot-results li:last-child { border-bottom: none; }
+
+.mapspot-results li:hover {
+  background: rgba(139,124,246,0.1);
+  color: var(--text-primary);
+}
+
+.mapspot-results li svg { flex-shrink: 0; margin-top: 3px; }
+
+.mapspot-results li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.mapspot-result-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapspot-result-addr {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapspot-selected-addr {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+}
+
+.mapspot-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mapspot-nota-input {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.mapspot-nota-input:focus {
+  border-color: var(--accent-light);
+}
+
+.mapspot-nota-input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.mapspot-save-btn {
+  align-self: flex-start;
+}
+
+.mapspot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 3rem 0;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.mapspot-empty svg { opacity: 0.4; }
+
+.mapspot-empty p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+}
+
+.mapspot-delete-inline {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.mapspot-delete-inline:hover { color: #f87171; }
 
 /* ── Footer ── */
 .dashboard-footer {
