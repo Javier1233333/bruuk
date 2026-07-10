@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Map, Globe, ArrowRight, Users, Compass } from 'lucide-react';
+import { Sparkles, Globe, ArrowRight, Users, Compass } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
