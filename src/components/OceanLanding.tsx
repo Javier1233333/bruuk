@@ -160,6 +160,14 @@ function OceanLandingInner() {
   // Dynamic feed order
   const [reorderedSpots, setReorderedSpots] = useState<Spot[]>([]);
 
+  // Keep active city synced globally
+  useEffect(() => {
+    if (currentCityConfig) {
+      localStorage.setItem('bruuk_active_city', currentCityConfig.id);
+      window.dispatchEvent(new Event('bruuk_city_changed'));
+    }
+  }, [currentCityConfig]);
+
   // Keep reordered list synced with filters
   useEffect(() => {
     setReorderedSpots(filteredSpots);
@@ -388,10 +396,11 @@ function OceanLandingInner() {
     }
   }, [navigate]);
 
-  // Redirect to hermosillo by default on mount if no city parameter
+  // Redirect to saved city or hermosillo by default on mount if no city parameter
   useEffect(() => {
     if (!city) {
-      navigate('/descubrir/hermosillo', { replace: true });
+      const savedCity = localStorage.getItem('bruuk_active_city') || 'hermosillo';
+      navigate(`/descubrir/${savedCity}`, { replace: true });
     }
   }, [city, navigate]);
 
@@ -818,16 +827,16 @@ function OceanLandingInner() {
 
                       {/* Context-aware Dynamic CTA (Opens map focused or booking external site) */}
                       {isExperience && spot.bookingLink ? (
-                        <a 
-                          href={spot.bookingLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/experiencias/${activeCityConfig.id}`, { state: { selectedExpId: spot.id } });
+                          }}
                           className="tiktok-cta-link"
                           style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
-                          onClick={(e) => e.stopPropagation()}
                         >
                           <ExternalLink size={14} /> Reservar / Unirse
-                        </a>
+                        </button>
                       ) : (
                         <button 
                           className="tiktok-cta-link"
