@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Camera, Check } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
+import { PRESET_AVATARS } from '../components/AppShell';
+import citiesData from '../data/cities.json';
 import './ProfileSetupPage.css';
 
 const INTERESTS = [
@@ -44,21 +46,14 @@ const FAVORITE_OPTIONS = [
 
 export function ProfileSetupPage() {
   const navigate = useNavigate();
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState(0);
-  const [avatar, setAvatar] = useState<string | null>(null);
+  const [avatarId, setAvatarId] = useState<string>('avatar1');
   const [instagram, setInstagram] = useState('');
+  const [city, setCity] = useState('');
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [favorite, setFavorite] = useState('');
   const [customFavorite, setCustomFavorite] = useState('');
-
-  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatar(url);
-  };
 
   const toggleInterest = (id: string) => {
     setInterests(prev => {
@@ -71,13 +66,15 @@ export function ProfileSetupPage() {
   const handleFinish = () => {
     // Guardar en localStorage hasta que Supabase esté activo
     localStorage.setItem('bruuk_profile_done', 'true');
+    localStorage.setItem('bruuk_avatar_id', avatarId);
     localStorage.setItem('bruuk_instagram', instagram);
+    localStorage.setItem('bruuk_city', city);
     localStorage.setItem('bruuk_interests', JSON.stringify([...interests]));
     localStorage.setItem('bruuk_favorite', customFavorite || favorite);
     navigate('/app');
   };
 
-  const canNext0 = instagram.trim().length > 0;
+  const canNext0 = instagram.trim().length > 0 && city !== '';
   const canNext1 = interests.size >= 3;
   const canFinish = favorite !== '' || customFavorite.trim().length > 0;
 
@@ -101,16 +98,22 @@ export function ProfileSetupPage() {
             <h1 className="setup-title brand-gradient-text">Tu perfil.</h1>
             <p className="setup-subtitle">Así te verán los demás en BRUUK.</p>
 
-            <div className="avatar-upload" onClick={() => fileRef.current?.click()}>
-              {avatar
-                ? <img src={avatar} alt="avatar" className="avatar-preview" />
-                : <div className="avatar-placeholder"><Camera size={32} /><span>Subir foto</span></div>
-              }
-              <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} hidden />
+            <div className="preset-avatars-grid" style={{ marginBottom: '1.5rem', justifyContent: 'center' }}>
+              {PRESET_AVATARS.map(avatar => (
+                <button
+                  key={avatar.id}
+                  className={`preset-avatar-btn ${avatarId === avatar.id ? 'active' : ''}`}
+                  style={{ background: avatar.colors }}
+                  onClick={() => setAvatarId(avatar.id)}
+                >
+                  {avatar.emoji}
+                  {avatarId === avatar.id && <Check size={12} className="avatar-check-icon" />}
+                </button>
+              ))}
             </div>
 
             <div className="setup-field">
-              <label>Usuario de Instagram</label>
+              <label>Usuario</label>
               <div className="instagram-input">
                 <span className="at-sign">@</span>
                 <input
@@ -121,6 +124,21 @@ export function ProfileSetupPage() {
                   autoComplete="off"
                 />
               </div>
+            </div>
+
+            <div className="setup-field">
+              <label>Ciudad</label>
+              <select 
+                value={city} 
+                onChange={e => setCity(e.target.value)}
+                className="select-input"
+                style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }}
+              >
+                <option value="" disabled>Selecciona una ciudad</option>
+                {citiesData.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
             </div>
 
             <button

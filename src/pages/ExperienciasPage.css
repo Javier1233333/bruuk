@@ -20,11 +20,67 @@
   font-family: 'Outfit', sans-serif;
 }
 
-.exp-title {
+.exp-city-selector-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.exp-city-btn {
+  background: transparent;
+  border: none;
   font-size: 1.6rem;
   font-weight: 900;
   letter-spacing: -0.6px;
-  margin-top: 4px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.city-highlight {
+  color: var(--city-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--city-accent);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.exp-city-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: rgba(13, 12, 21, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 8px 0;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.exp-city-dropdown-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 10px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.exp-city-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .exp-sub {
@@ -141,11 +197,11 @@
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
-  width: 250px;
+  width: 280px;
 }
 
 .experience-card.card-large {
-  width: 280px;
+  width: 310px;
 }
 
 .experience-card:hover {
@@ -155,7 +211,7 @@
 }
 
 .card-image {
-  height: 150px;
+  height: 180px;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -163,7 +219,7 @@
 }
 
 .card-large .card-image {
-  height: 170px;
+  height: 210px;
 }
 
 .card-image-gradient {
@@ -231,23 +287,24 @@
 }
 
 .card-title {
-  font-size: 0.88rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 900;
   color: #fff;
   line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.2px;
 }
 
 .card-desc {
-  font-size: 0.7rem;
-  color: #d2d0df;
-  line-height: 1.4;
-  height: 2.8rem;
+  font-size: 0.8rem;
+  color: #e5e4ef;
+  line-height: 1.5;
+  height: 3.6rem;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
@@ -349,24 +406,37 @@
   background: rgba(13, 12, 21, 0.9);
 }
 
-.sheet-cover {
-  height: 180px;
-  background-size: cover;
-  background-position: center;
+.sheet-carousel-wrapper {
   position: relative;
+  height: 200px;
+  width: 100%;
 }
 
-.sheet-cover-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 30%, #111018);
+.sheet-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  height: 100%;
+  scrollbar-width: none;
+}
+
+.sheet-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.sheet-carousel-item {
+  min-width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  scroll-snap-align: center;
 }
 
 .sheet-category-badge {
   position: absolute;
   bottom: 0.9rem;
   left: 1.25rem;
-  background: #8b7cf6;
+  background: var(--city-accent, #8b7cf6);
   color: #fff;
   padding: 0.3rem 0.75rem;
   border-radius: 12px;
@@ -374,7 +444,8 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 0 10px rgba(139, 124, 246, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
 .sheet-body {
@@ -454,18 +525,27 @@
 }
 
 .section-heading {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: #8b7cf6;
   letter-spacing: 0.05em;
-  margin-bottom: 0.4rem;
+  color: #a5a3bf;
+  margin-bottom: 0.65rem;
 }
 
-.sheet-description-section p {
-  font-size: 0.78rem;
-  color: #9e9cb4;
+.sheet-description-section p, .sheet-reservation-info p {
+  font-size: 0.88rem;
+  color: #d2d0df;
   line-height: 1.5;
+}
+
+.sheet-reservation-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(139, 124, 246, 0.05);
+  border: 1px solid rgba(139, 124, 246, 0.15);
+  border-radius: 12px;
+  border-left: 3px solid var(--city-accent, #8b7cf6);
 }
 
 /* Logistics list */

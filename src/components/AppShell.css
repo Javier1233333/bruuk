@@ -235,8 +235,8 @@
 
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
-  /* Lock the browser window viewport height and overflow without fixing body position */
-  html, body, #root {
+  /* Lock the browser window viewport height and overflow only when AppShell is active */
+  html.app-shell-active, body.app-shell-active, body.app-shell-active #root {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;

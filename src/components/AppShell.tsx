@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Radar, Compass, MessageCircle, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Map, Compass, MessageCircle, User } from 'lucide-react';
+import { motion } from 'framer-motion';
 import './AppShell.css';
 
 // Preset avatar gradients (same as used in ProfilePage)
 export const PRESET_AVATARS = [
-  { id: 'avatar1', colors: 'linear-gradient(135deg, #8b7cf6, #ec4899)' },
-  { id: 'avatar2', colors: 'linear-gradient(135deg, #ff007f, #ffaa00)' },
-  { id: 'avatar3', colors: 'linear-gradient(135deg, #00ff87, #60efff)' },
-  { id: 'avatar4', colors: 'linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)' },
-  { id: 'avatar5', colors: 'linear-gradient(135deg, #11998e, #38ef7d)' },
-  { id: 'avatar6', colors: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)' },
+  { id: 'avatar1', colors: 'linear-gradient(135deg, #8b7cf6, #ec4899)', emoji: '🦊' },
+  { id: 'avatar2', colors: 'linear-gradient(135deg, #ff007f, #ffaa00)', emoji: '👽' },
+  { id: 'avatar3', colors: 'linear-gradient(135deg, #00ff87, #60efff)', emoji: '🚀' },
+  { id: 'avatar4', colors: 'linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)', emoji: '🎭' },
+  { id: 'avatar5', colors: 'linear-gradient(135deg, #11998e, #38ef7d)', emoji: '⚡' },
+  { id: 'avatar6', colors: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)', emoji: '🌊' },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -29,10 +29,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     loadProfile();
+    // Inyectar clase al documento para limitar estilos globales al app shell
+    document.documentElement.classList.add('app-shell-active');
+    document.body.classList.add('app-shell-active');
+    
     // Listen for custom profile update events to update header/tabbar dynamically
     window.addEventListener('bruuk_profile_updated', loadProfile);
     return () => {
       window.removeEventListener('bruuk_profile_updated', loadProfile);
+      document.documentElement.classList.remove('app-shell-active');
+      document.body.classList.remove('app-shell-active');
     };
   }, []);
 
@@ -40,8 +46,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Helper to check if a route is active
   const isActive = (path: string) => {
-    if (path === '/descubrir') {
-      return location.pathname.startsWith('/descubrir');
+    if (path === '/descubrir' || path === '/experiencias') {
+      return location.pathname.startsWith(path);
     }
     return location.pathname === path;
   };
@@ -61,19 +67,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Viewport for mobile web app content */}
         <div className="app-viewport">
-          <div className="app-content-area">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                style={{ height: '100%' }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
+          <div className="app-content-area" style={{ height: '100%' }}>
+            {children}
           </div>
 
           {/* Persistent Glassmorphism Tab Bar */}
@@ -89,7 +84,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <Radar size={22} strokeWidth={2.2} />
+              <Map size={22} strokeWidth={2.2} />
               <span>Explora</span>
             </Link>
 
@@ -141,7 +136,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className="tabbar-avatar-indicator"
                 style={{ background: currentAvatar.colors }}
               >
-                {username ? username.slice(0, 1).toUpperCase() : <User size={12} />}
+                {currentAvatar.emoji || (username ? username.slice(0, 1).toUpperCase() : <User size={12} />)}
               </div>
               <span>Perfil</span>
             </Link>

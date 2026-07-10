@@ -290,8 +290,40 @@
 }
 
 .input-group input:focus,
-.input-group textarea:focus {
+.input-group textarea:focus,
+.input-group .select-input:focus {
   border-color: #8b7cf6;
+}
+
+.input-disabled {
+  background: rgba(255, 255, 255, 0.01) !important;
+  color: #79788f !important;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.input-hint {
+  font-size: 0.65rem;
+  color: #79788f;
+  margin-top: -6px;
+  margin-bottom: 4px;
+}
+
+.select-input {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  color: #fff;
+  padding: 0.65rem 0.85rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+}
+.select-input option {
+  background: #111018;
+  color: #fff;
 }
 
 /* ── OAuth Accounts ── */

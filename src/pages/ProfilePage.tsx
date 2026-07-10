@@ -5,6 +5,7 @@ import { BruukLogo } from '../components/BruukLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { PRESET_AVATARS } from '../components/AppShell';
 import { supabase } from '../lib/supabase';
+import citiesData from '../data/cities.json';
 import './ProfilePage.css';
 
 interface Profile {
@@ -249,6 +250,7 @@ export function ProfilePage() {
                   onClick={() => handleAvatarSelect(avatar.id)}
                   title="Cambiar avatar"
                 >
+                  {avatar.emoji}
                   {avatarId === avatar.id && <Check size={12} className="avatar-check-icon" />}
                 </button>
               ))}
@@ -275,19 +277,26 @@ export function ProfilePage() {
                 <input 
                   type="text" 
                   value={instagram} 
-                  onChange={e => setInstagram(e.target.value.replace(/[^a-zA-Z0-9._]/g, ''))} 
+                  readOnly 
                   placeholder="usuario" 
+                  disabled
+                  className="input-disabled"
                 />
+                <span className="input-hint">El nombre de usuario es inmodificable.</span>
               </div>
 
               <div className="input-group">
                 <label>Ciudad</label>
-                <input 
-                  type="text" 
+                <select 
                   value={city} 
-                  onChange={e => setCity(e.target.value)} 
-                  placeholder="Ciudad" 
-                />
+                  onChange={e => setCity(e.target.value)}
+                  className="select-input"
+                >
+                  <option value="" disabled>Selecciona una ciudad</option>
+                  {citiesData.map(c => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="input-group">

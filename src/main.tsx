@@ -44,6 +44,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
           <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
           <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+          <Route path="/experiencias/:city" element={<AppShell><ExperienciasPage /></AppShell>} />
           <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
           <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
           <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
