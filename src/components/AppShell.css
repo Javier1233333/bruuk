@@ -235,6 +235,16 @@
 
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
+  /* Strictly lock the root viewport scroll to prevent iOS Safari address bar bounce */
+  html, body, #root, .desktop-browser-wrapper {
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    inset: 0;
+  }
+
   .desktop-browser-wrapper {
     background-color: #0b0a0f;
   }
@@ -257,11 +267,20 @@
   }
   
   .app-tabbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding-bottom: env(safe-area-inset-bottom);
     height: calc(64px + env(safe-area-inset-bottom));
+    z-index: 99999 !important; /* Ensure it floats above Leaflet map popups */
   }
 
   .app-content-area {
-    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+    /* Limit height strictly to remaining viewport above TabBar to prevent layout breakage */
+    height: calc(100vh - 64px - env(safe-area-inset-bottom));
+    height: calc(100dvh - 64px - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    padding-bottom: 0;
   }
 }
