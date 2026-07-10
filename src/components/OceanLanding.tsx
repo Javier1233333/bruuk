@@ -388,12 +388,12 @@ function OceanLandingInner() {
     }
   }, [navigate]);
 
-  // Trigger geolocation on mount if no city parameter
+  // Redirect to hermosillo by default on mount if no city parameter
   useEffect(() => {
-    if (!currentCityConfig) {
-      handleAutoLocation();
+    if (!city) {
+      navigate('/descubrir/hermosillo', { replace: true });
     }
-  }, [currentCityConfig, handleAutoLocation]);
+  }, [city, navigate]);
 
   // Leaflet Map instance initializer
   useEffect(() => {

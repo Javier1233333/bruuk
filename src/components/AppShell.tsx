@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Compass, Sparkles, MessageSquare, User } from 'lucide-react';
+import { Radar, Compass, MessageCircle, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AppShell.css';
 
@@ -89,7 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <Compass size={22} strokeWidth={2.2} />
+              <Radar size={22} strokeWidth={2.2} />
               <span>Explora</span>
             </Link>
 
@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <Sparkles size={22} strokeWidth={2.2} />
+              <Compass size={22} strokeWidth={2.2} />
               <span>Experiencias</span>
             </Link>
 
@@ -120,7 +120,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 />
               )}
               <div className="tabbar-badge-container">
-                <MessageSquare size={22} strokeWidth={2.2} />
+                <MessageCircle size={22} strokeWidth={2.2} />
                 <span className="tabbar-badge-dot"></span>
               </div>
               <span>Chats</span>

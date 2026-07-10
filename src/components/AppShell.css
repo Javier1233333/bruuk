@@ -146,7 +146,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #727188;
+  color: #a5a3bf;
   text-decoration: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 4px;
@@ -235,17 +235,20 @@
 
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
-  /* Strictly lock the root viewport scroll to prevent iOS Safari address bar bounce */
-  html, body, #root, .desktop-browser-wrapper {
-    height: 100vh !important;
-    height: 100dvh !important;
+  /* Lock the browser window viewport height and overflow without fixing body position */
+  html, body, #root {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    inset: 0;
   }
 
   .desktop-browser-wrapper {
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    position: relative;
+    width: 100%;
     background-color: #0b0a0f;
   }
   
@@ -277,9 +280,9 @@
   }
 
   .app-content-area {
-    /* Limit height strictly to remaining viewport above TabBar to prevent layout breakage */
-    height: calc(100vh - 64px - env(safe-area-inset-bottom));
-    height: calc(100dvh - 64px - env(safe-area-inset-bottom));
+    /* Full screen content area for immersive overlay behind the TabBar */
+    height: 100%;
+    width: 100%;
     overflow-y: auto;
     padding-bottom: 0;
   }

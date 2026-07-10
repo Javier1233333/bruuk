@@ -29,7 +29,7 @@
 
 .exp-sub {
   font-size: 0.78rem;
-  color: #9e9cb4;
+  color: #d2d0df;
   line-height: 1.5;
   margin-top: 6px;
 }
@@ -55,7 +55,7 @@
 .filter-badge-btn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #9e9cb4;
+  color: #d2d0df;
   padding: 0.45rem 1.1rem;
   border-radius: 20px;
   font-size: 0.72rem;
@@ -227,7 +227,7 @@
 }
 
 .card-rating span {
-  color: #9e9cb4;
+  color: #d2d0df;
 }
 
 .card-title {
@@ -242,7 +242,7 @@
 
 .card-desc {
   font-size: 0.7rem;
-  color: #9e9cb4;
+  color: #d2d0df;
   line-height: 1.4;
   height: 2.8rem;
   overflow: hidden;
@@ -271,7 +271,7 @@
   align-items: center;
   gap: 3px;
   font-size: 0.65rem;
-  color: #79788f;
+  color: #a2a1b9;
   font-weight: 600;
 }
 
@@ -560,4 +560,14 @@
 .whatsapp-reserve-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(37, 211, 102, 0.45);
+}
+
+/* TabBar safety padding-bottom for mobile carousels */
+@media (max-width: 768px) {
+  .carousels-container {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+  }
+  .experiences-list-area {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+  }
 }

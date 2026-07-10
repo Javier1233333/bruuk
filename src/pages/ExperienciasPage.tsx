@@ -17,6 +17,7 @@ type Experience = {
   description: string;
   nextDate: string;
   location: string;
+  city: 'Guadalajara' | 'Hermosillo';
   whatsAppLink: string;
   longDescription: string;
 };
@@ -34,6 +35,7 @@ const EXPERIENCES: Experience[] = [
     price: '$450 MXN',
     duration: '2.5 horas',
     location: 'Colonia Americana',
+    city: 'Guadalajara',
     nextDate: 'Sábado 18 de Julio',
     description: 'Aprende a degustar mezcal artesanal y ancestral maridado con chocolate y frutas en un patio secreto.',
     longDescription: 'Te abriremos las puertas de un patio colonial escondido en la Colonia Americana. Probaremos 4 variedades de mezcales de pequeños productores de Oaxaca y Jalisco, y aprenderemos sobre los procesos de destilación en ollas de barro y cobre. Cada mezcal irá acompañado de un bocado diseñado para resaltar sus notas de humo, tierra y agave.',
@@ -51,6 +53,7 @@ const EXPERIENCES: Experience[] = [
     price: '$380 MXN',
     duration: '3 horas',
     location: 'Tlaquepaque Centro',
+    city: 'Guadalajara',
     nextDate: 'Domingo 19 de Julio',
     description: 'Moldea tu propia pieza en torno tradicional de pedal guiado por una artesana oaxaqueña.',
     longDescription: 'Una experiencia práctica e íntima. Carmen, artesana de cuarta generación de barro negro, te enseñará las técnicas básicas de amasado, centrado en el torno tradicional de pedal y el posterior bruñido con cuarzo para darle ese brillo negro metálico tan característico. Te llevarás la pieza que moldees en el taller.',
@@ -67,11 +70,12 @@ const EXPERIENCES: Experience[] = [
     reviewsCount: 32,
     price: '$300 MXN',
     duration: '2 horas',
-    location: 'Centro Histórico',
+    location: 'Colonia Centenario',
+    city: 'Hermosillo',
     nextDate: 'Viernes 24 de Julio',
     description: 'Consigue perspectivas fotográficas espectaculares explorando azoteas escondidas del centro.',
-    longDescription: 'Subiremos a tres techos con acceso controlado que ofrecen las mejores vistas panorámicas y atardeceres de Guadalajara. Ideal tanto para fotógrafos con cámara profesional como para quienes quieran tomar fotos increíbles con su celular. Te daré tips de composición, iluminación urbana y retrato al atardecer.',
-    whatsAppLink: 'https://wa.me/523300000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20la%20Sesión%20de%20Fotos%20en%20Azoteas.'
+    longDescription: 'Subiremos a tres techos con acceso controlado que ofrecen las mejores vistas panorámicas y atardeceres de Hermosillo. Ideal tanto para fotógrafos con cámara profesional como para quienes quieran tomar fotos increíbles con su celular. Te daré tips de composición, iluminación urbana y retrato al atardecer.',
+    whatsAppLink: 'https://wa.me/526620000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20la%20Sesión%20de%20Fotos%20en%20Azoteas.'
   },
   {
     id: 'exp_004',
@@ -85,6 +89,7 @@ const EXPERIENCES: Experience[] = [
     price: '$350 MXN',
     duration: '4 horas',
     location: 'Barranca de Huentitán',
+    city: 'Guadalajara',
     nextDate: 'Sábado 25 de Julio',
     description: 'Camina por senderos iluminados por la luna llena hasta un mirador natural de la barranca.',
     longDescription: 'Una desconexión total de la ciudad. Haremos un descenso controlado por senderos no turísticos de la Barranca de Huentitán durante las horas frescas de la noche. Usaremos lámparas frontales y disfrutaremos del silencio natural y la vista del río Santiago iluminado por la luna llena. Incluye snacks energéticos e hidratación.',
@@ -101,11 +106,12 @@ const EXPERIENCES: Experience[] = [
     reviewsCount: 20,
     price: '$250 MXN',
     duration: '2 horas',
-    location: 'Zona Chapultepec',
+    location: 'Centro Histórico',
+    city: 'Hermosillo',
     nextDate: 'Jueves 30 de Julio',
     description: 'Un concierto acústico exclusivo de jazz y folk para solo 15 personas en un sótano secreto.',
     longDescription: 'Baja cuatro escalones y entra a un sótano de ladrillo expuesto donde el sonido rebota de forma perfecta. Disfrutarás de un set íntimo de 2 horas con tres músicos independientes locales. Una experiencia pensada para escuchar música con atención plena, tomar una copa de vino y charlar en un ambiente cercano y relajado.',
-    whatsAppLink: 'https://wa.me/523300000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20el%20Acústico%20Secreto.'
+    whatsAppLink: 'https://wa.me/526620000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20el%20Acústico%20Secreto.'
   }
 ];
 
@@ -261,7 +267,7 @@ export default function ExperienciasPage() {
                     <MapPin size={16} />
                     <div>
                       <h5>Punto de encuentro</h5>
-                      <p>{selectedExp.location}</p>
+                      <p>{selectedExp.location} · {selectedExp.city}</p>
                     </div>
                   </div>
                   <div className="logistics-item">
@@ -329,6 +335,8 @@ function ExperienceCard({
         <div className="card-rating">
           <Star size={11} fill="currentColor" />
           <span>{exp.rating} ({exp.reviewsCount})</span>
+          <span style={{ margin: '0 4px', opacity: 0.3 }}>•</span>
+          <span className="card-city-tag" style={{ color: exp.city === 'Hermosillo' ? '#ff7a45' : '#8b7cf6', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.62rem', letterSpacing: '0.5px' }}>{exp.city}</span>
         </div>
         <h3 className="card-title">{exp.name}</h3>
         <p className="card-desc">{exp.description}</p>

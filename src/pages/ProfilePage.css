@@ -29,7 +29,7 @@
   gap: 4px;
   background: transparent;
   border: none;
-  color: #9e9cb4;
+  color: #d2d0df;
   font-size: 0.76rem;
   font-weight: 700;
   cursor: pointer;
@@ -133,7 +133,7 @@
   gap: 3px;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #79788f;
+  color: #a2a1b9;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 4px;
@@ -149,7 +149,7 @@
 
 .avatar-hint-text {
   font-size: 0.72rem;
-  color: #79788f;
+  color: #a2a1b9;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -221,7 +221,7 @@
 
 .details-bio {
   font-size: 0.78rem;
-  color: #9e9cb4;
+  color: #d2d0df;
   line-height: 1.5;
   font-style: italic;
 }
@@ -421,5 +421,12 @@
 
 .profile-not-found h1 {
   font-size: 1.1rem;
-  color: #79788f;
+  color: #a2a1b9;
+}
+
+/* TabBar safety padding-bottom for mobile profile scroll area */
+@media (max-width: 768px) {
+  .profile-scroll-area {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+  }
 }
