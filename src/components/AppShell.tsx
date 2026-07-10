@@ -3,15 +3,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { Map, Compass, MessageCircle, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './AppShell.css';
+import citiesData from '../data/cities.json';
 
 // Preset avatar gradients (same as used in ProfilePage)
 export const PRESET_AVATARS = [
-  { id: 'avatar1', colors: 'linear-gradient(135deg, #8b7cf6, #ec4899)', emoji: '🦊' },
-  { id: 'avatar2', colors: 'linear-gradient(135deg, #ff007f, #ffaa00)', emoji: '👽' },
-  { id: 'avatar3', colors: 'linear-gradient(135deg, #00ff87, #60efff)', emoji: '🚀' },
-  { id: 'avatar4', colors: 'linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)', emoji: '🎭' },
-  { id: 'avatar5', colors: 'linear-gradient(135deg, #11998e, #38ef7d)', emoji: '⚡' },
-  { id: 'avatar6', colors: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)', emoji: '🌊' },
+  { id: 'avatar1', colors: '#8b7cf6', emoji: '' },
+  { id: 'avatar2', colors: '#ff007f', emoji: '' },
+  { id: 'avatar3', colors: '#00ff87', emoji: '' },
+  { id: 'avatar4', colors: '#0052d4', emoji: '' },
+  { id: 'avatar5', colors: '#11998e', emoji: '' },
+  { id: 'avatar6', colors: '#ff7a45', emoji: '' },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const savedUser = localStorage.getItem('bruuk_username') || '';
     setAvatarId(savedAvatar);
     setUsername(savedUser);
+
+    // Load active city accent color and set custom CSS variables
+    const savedCityId = localStorage.getItem('bruuk_active_city') || 'hermosillo';
+    const cityData = citiesData.find(c => c.id === savedCityId) || citiesData[0];
+    const accentColor = cityData.accentColor;
+    document.documentElement.style.setProperty('--global-accent', accentColor);
+    
+    // Parse hex to rgb for opacity-based styles in CSS
+    const hex = accentColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    document.documentElement.style.setProperty('--global-accent-rgb', `${r}, ${g}, ${b}`);
   };
 
   useEffect(() => {
@@ -33,10 +47,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.add('app-shell-active');
     document.body.classList.add('app-shell-active');
     
-    // Listen for custom profile update events to update header/tabbar dynamically
+    // Listen for custom profile and city update events to update dynamically
     window.addEventListener('bruuk_profile_updated', loadProfile);
+    window.addEventListener('bruuk_city_changed', loadProfile);
     return () => {
       window.removeEventListener('bruuk_profile_updated', loadProfile);
+      window.removeEventListener('bruuk_city_changed', loadProfile);
       document.documentElement.classList.remove('app-shell-active');
       document.body.classList.remove('app-shell-active');
     };
@@ -136,7 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className="tabbar-avatar-indicator"
                 style={{ background: currentAvatar.colors }}
               >
-                {currentAvatar.emoji || (username ? username.slice(0, 1).toUpperCase() : <User size={12} />)}
+                {username ? username.slice(0, 1).toUpperCase() : <User size={12} />}
               </div>
               <span>Perfil</span>
             </Link>

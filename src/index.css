@@ -4,7 +4,7 @@
   --bg-primary: #0e0d1a;
   --bg-secondary: #16152a;
   --bg-card: rgba(255, 255, 255, 0.05);
-  --accent-light: #8b7cf6;
+  --accent-light: var(--global-accent, #8b7cf6);
   --accent-text: #b8affe;
   --text-primary: #f0eeff;
   --text-secondary: #9490b8;
