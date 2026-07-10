@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, ChevronDown } from 'lucide-react';
 import citiesData from '../data/cities.json';
@@ -152,15 +152,40 @@ const CATEGORIES = ['Todo', 'Aventura', 'Gastronomía', 'Arte', 'Música'];
 export default function ExperienciasPage() {
   const navigate = useNavigate();
   const { city } = useParams();
+  const location = useLocation();
   
   const [activeCategory, setActiveCategory] = useState<string>('Todo');
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Default redirect to Hermosillo if no city parameter
+  // Auto-open experience if passed in location state
+  useEffect(() => {
+    if (location.state?.selectedExpId) {
+      const exp = EXPERIENCES.find(e => e.id === location.state.selectedExpId);
+      if (exp) {
+        setSelectedExp(exp);
+        navigate(location.pathname, { replace: true, state: {} });
+      }
+    }
+  }, [location.state, location.pathname, navigate]);
+
+  // Find active city config
+  const currentCityConfig = citiesData.find(c => c.id === city);
+  const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
+
+  // Keep active city synced globally
+  useEffect(() => {
+    if (currentCityConfig) {
+      localStorage.setItem('bruuk_active_city', currentCityConfig.id);
+      window.dispatchEvent(new Event('bruuk_city_changed'));
+    }
+  }, [currentCityConfig]);
+
+  // Default redirect to saved city if no city parameter
   useEffect(() => {
     if (!city) {
-      navigate('/experiencias/hermosillo', { replace: true });
+      const savedCity = localStorage.getItem('bruuk_active_city') || 'hermosillo';
+      navigate(`/experiencias/${savedCity}`, { replace: true });
     }
   }, [city, navigate]);
 
@@ -172,10 +197,6 @@ export default function ExperienciasPage() {
     return () => document.removeEventListener('click', handleClose);
   }, [isDropdownOpen]);
 
-  // Find active city config
-  const currentCityConfig = citiesData.find(c => c.id === city);
-  const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
-
   // Filter experiences by active city
   const cityExperiences = EXPERIENCES.filter(e => e.city.toLowerCase() === activeCityConfig.id.toLowerCase());
 
@@ -186,47 +207,54 @@ export default function ExperienciasPage() {
 
   return (
     <div className="experiences-page" style={{ '--city-accent': activeCityConfig.accentColor } as React.CSSProperties}>
-      {/* Search and Header Section */}
       <header className="experiences-header">
         <div className="header-text">
           <span className="exp-tag">/ experiencias</span>
+          <h1 className="exp-title brand-gradient-text" style={{ textShadow: '4px 4px 0px var(--city-accent, #8b7cf6)' }}>Rutas Locales</h1>
           
-          <div className="exp-city-selector-wrapper">
-            <button 
-              className="exp-city-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDropdownOpen(!isDropdownOpen);
-              }}
-            >
-              Conecta con <span className="city-highlight">{activeCityConfig.name}</span> <ChevronDown size={18} />
-            </button>
+          <div className="exp-city-selector-container">
+            <div className="exp-city-selector-wrapper">
+              <button 
+                className="exp-city-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDropdownOpen(!isDropdownOpen);
+                }}
+                style={{
+                  fontSize: '0.82rem',
+                  letterSpacing: '1.5px',
+                  padding: '4px 0'
+                }}
+              >
+                EXPLORANDO EN <span className="city-highlight" style={{ fontWeight: 900 }}>{activeCityConfig.name.toUpperCase()}</span> <ChevronDown size={12} />
+              </button>
 
-            <AnimatePresence>
-              {isDropdownOpen && (
-                <motion.div 
-                  className="exp-city-dropdown"
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.12 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {citiesData.map(c => (
-                    <button
-                      key={c.id}
-                      className="exp-city-dropdown-item"
-                      onClick={() => {
-                        navigate(`/experiencias/${c.id}`);
-                        setIsDropdownOpen(false);
-                      }}
-                    >
-                      {c.name}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div 
+                    className="exp-city-dropdown"
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.12 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {citiesData.map(c => (
+                      <button
+                        key={c.id}
+                        className="exp-city-dropdown-item"
+                        onClick={() => {
+                          navigate(`/experiencias/${c.id}`);
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        {c.name}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <p className="exp-sub">Aprende habilidades y vive rutas diseñadas por apasionados locales.</p>
@@ -320,7 +348,18 @@ export default function ExperienciasPage() {
               {/* Carousel Cover Images */}
               <div className="sheet-carousel-wrapper">
                 <div className="sheet-category-badge">{selectedExp.category}</div>
-                <div className="sheet-carousel">
+                <div 
+                  className="sheet-carousel"
+                  onScroll={(e) => {
+                    const el = e.currentTarget;
+                    const index = Math.round(el.scrollLeft / el.clientWidth);
+                    const dots = el.parentElement?.querySelectorAll('.carousel-dot');
+                    dots?.forEach((dot, i) => {
+                      if (i === index) dot.classList.add('active');
+                      else dot.classList.remove('active');
+                    });
+                  }}
+                >
                   {selectedExp.images.map((img, idx) => (
                     <div 
                       key={idx} 
@@ -329,6 +368,13 @@ export default function ExperienciasPage() {
                     />
                   ))}
                 </div>
+                {selectedExp.images.length > 1 && (
+                  <div className="carousel-dots-container">
+                    {selectedExp.images.map((_, idx) => (
+                      <div key={idx} className={`carousel-dot ${idx === 0 ? 'active' : ''}`} />
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Sheet Body Scrollable Area */}
@@ -362,11 +408,7 @@ export default function ExperienciasPage() {
                   <p>{selectedExp.longDescription}</p>
                 </div>
 
-                {/* Reservation Info */}
-                <div className="sheet-reservation-info">
-                  <h4 className="section-heading">¿Cómo reservo?</h4>
-                  <p>{selectedExp.reservationInfo}</p>
-                </div>
+
 
                 {/* Logistics */}
                 <div className="sheet-logistics-list">
