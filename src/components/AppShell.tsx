@@ -82,6 +82,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               to="/descubrir" 
               className={`tabbar-item ${isActive('/descubrir') ? 'active' : ''}`}
             >
+              {isActive('/descubrir') && (
+                <motion.div 
+                  layoutId="active-glow"
+                  className="tabbar-active-glow"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <Compass size={22} strokeWidth={2.2} />
               <span>Explora</span>
             </Link>
@@ -90,6 +97,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               to="/experiencias" 
               className={`tabbar-item ${isActive('/experiencias') ? 'active' : ''}`}
             >
+              {isActive('/experiencias') && (
+                <motion.div 
+                  layoutId="active-glow"
+                  className="tabbar-active-glow"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <Sparkles size={22} strokeWidth={2.2} />
               <span>Experiencias</span>
             </Link>
@@ -98,6 +112,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               to="/chats" 
               className={`tabbar-item ${isActive('/chats') ? 'active' : ''}`}
             >
+              {isActive('/chats') && (
+                <motion.div 
+                  layoutId="active-glow"
+                  className="tabbar-active-glow"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <div className="tabbar-badge-container">
                 <MessageSquare size={22} strokeWidth={2.2} />
                 <span className="tabbar-badge-dot"></span>
@@ -109,6 +130,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               to="/perfil" 
               className={`tabbar-item ${isActive('/perfil') ? 'active' : ''}`}
             >
+              {isActive('/perfil') && (
+                <motion.div 
+                  layoutId="active-glow"
+                  className="tabbar-active-glow"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <div 
                 className="tabbar-avatar-indicator"
                 style={{ background: currentAvatar.colors }}
