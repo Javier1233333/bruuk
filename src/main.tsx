@@ -11,6 +11,9 @@ import { VerifyInvitePage } from './pages/VerifyInvitePage'
 import { OceanLanding } from './components/OceanLanding'
 import { ProfileSetupPage } from './pages/ProfileSetupPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { AppShell } from './components/AppShell'
+import ExperienciasPage from './pages/ExperienciasPage'
+import ChatsPage from './pages/ChatsPage'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -19,11 +22,7 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/descubrir" element={<OceanLanding />} />
-          <Route path="/descubrir/:city" element={<OceanLanding />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/verify" element={<VerifyInvitePage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
           <Route
             path="/setup"
             element={
@@ -40,6 +39,15 @@ createRoot(document.getElementById('root')!).render(
               </ProtectedRoute>
             }
           />
+          
+          {/* Mobile App Shell Routes */}
+          <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
+          <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
+          <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+          <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
+          <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
+          <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
+          <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

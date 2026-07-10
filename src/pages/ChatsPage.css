@@ -1,0 +1,228 @@
+.chats-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #f1f1f3;
+  background-color: #0b0a0f;
+}
+
+/* ── Header ── */
+.chats-header {
+  padding: 1.75rem 1.25rem 0.75rem;
+}
+
+.chats-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #8b7cf6;
+  font-family: 'Outfit', sans-serif;
+}
+
+.chats-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  margin-top: 4px;
+}
+
+.chats-sub {
+  font-size: 0.78rem;
+  color: #9e9cb4;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+/* ── Main Chat List Container ── */
+.chats-list-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 0.5rem 1.25rem 2rem;
+}
+
+/* Blurred chat lines */
+.chats-blurred-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  filter: blur(6px);
+  opacity: 0.25;
+  user-select: none;
+  pointer-events: none;
+}
+
+.dummy-chat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: #111018;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.dummy-chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #1e1d28;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.dummy-chat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dummy-chat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dummy-chat-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.dummy-chat-time {
+  font-size: 0.65rem;
+  color: #79788f;
+}
+
+.dummy-chat-msg {
+  font-size: 0.72rem;
+  color: #9e9cb4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.dummy-chat-unread {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8b7cf6;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(139, 124, 246, 0.5);
+}
+
+/* ── Centered Lock Card Overlay ── */
+.chats-lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 10;
+}
+
+.chats-lock-card {
+  background: rgba(17, 16, 24, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(139, 124, 246, 0.06);
+}
+
+.lock-icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(139, 124, 246, 0.1);
+  border: 1px solid rgba(139, 124, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(139, 124, 246, 0.15);
+}
+
+.lock-svg {
+  color: #8b7cf6;
+}
+
+.lock-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.lock-desc {
+  font-size: 0.76rem;
+  color: #9e9cb4;
+  line-height: 1.5;
+}
+
+/* Notify Button */
+.notify-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: 1.5px solid #8b7cf6;
+  color: #8b7cf6;
+  padding: 0.68rem;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notify-btn:hover {
+  background: #8b7cf6;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(139, 124, 246, 0.4);
+}
+
+.notify-btn.active {
+  border-color: #10b981;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.05);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+}
+
+.notify-btn.active:hover {
+  background: #10b981;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.lock-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6rem;
+  color: #79788f;
+  margin-top: 0.25rem;
+}
