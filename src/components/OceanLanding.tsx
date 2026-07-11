@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
@@ -41,6 +41,14 @@ type Spot = {
   };
   bookingLink?: string;
   schedule?: string;
+};
+
+export type OceanLandingProps =
+  | { mode?: 'standalone' }
+  | { mode: 'embedded' };
+
+const getCategory = (spot: Spot): 'lugar' | 'experiencia' => {
+  return spot.category || (spot.type === 'Experiencia' ? 'experiencia' : 'lugar');
 };
 
 /* ── Custom glowing neon pin creator for Leaflet ── */
@@ -97,14 +105,18 @@ const getSpotReviewsAndDetails = (spot: Spot) => {
   return { explanation, reviews };
 };
 
-export function OceanLanding() {
+export function OceanLanding({ mode = 'standalone' }: OceanLandingProps = {}) {
   const { city } = useParams();
-  return <OceanLandingInner key={city || 'default'} />;
+  const instanceKey = mode === 'standalone' ? city || 'selector' : 'embedded';
+
+  return <OceanLandingInner key={instanceKey} mode={mode} />;
 }
 
-function OceanLandingInner() {
+function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const navigate = useNavigate();
-  const { city } = useParams();
+  const { city: routeCity } = useParams();
+  const [embeddedCity, setEmbeddedCity] = useState<string | null>(null);
+  const city = mode === 'embedded' ? embeddedCity : routeCity;
 
   // App States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -131,6 +143,12 @@ function OceanLandingInner() {
 
   const feedRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapDialogRef = useRef<HTMLDivElement>(null);
+  const mapCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const cityDialogRef = useRef<HTMLDivElement>(null);
+  const firstCityButtonRef = useRef<HTMLButtonElement>(null);
+  const reviewsDialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   // Drag-to-scroll references
   const isDragging = useRef(false);
@@ -138,37 +156,25 @@ function OceanLandingInner() {
   const scrollTopStart = useRef(0);
   const dragDistance = useRef(0);
 
-  // Find active city config (or Hermosillo as fallback)
+  // Find active city config. The fallback only provides an accent while the selector is visible.
   const currentCityConfig = citiesData.find(c => c.id === city);
   const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
 
   // Base spots list for this city
-  const spots = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
-
-  // Helper to categorize spots if category is not explicitly set
-  const getCategory = (spot: Spot): 'lugar' | 'experiencia' => {
-    return spot.category || (spot.type === 'Experiencia' ? 'experiencia' : 'lugar');
-  };
+  const spots = useMemo(
+    () => spotsData.filter(s => s.city === activeCityConfig.id) as Spot[],
+    [activeCityConfig.id]
+  );
 
   // Filtered spots list
-  const filteredSpots = spots.filter(s => {
-    const cat = getCategory(s);
+  const filteredSpots = useMemo(() => spots.filter(s => {
+    const category = getCategory(s);
     if (activeCategory === 'todo') return true;
-    return cat === activeCategory;
-  });
+    return category === activeCategory;
+  }), [activeCategory, spots]);
 
   // Dynamic feed order
-  const [reorderedSpots, setReorderedSpots] = useState<Spot[]>([]);
-
-  // Keep reordered list synced with filters
-  useEffect(() => {
-    setReorderedSpots(filteredSpots);
-    setActiveIndex(0);
-    setActiveReviewsSpotId(null);
-    if (feedRef.current) {
-      feedRef.current.scrollTop = 0;
-    }
-  }, [activeCategory, city]);
+  const [reorderedSpots, setReorderedSpots] = useState<Spot[]>(() => filteredSpots);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -203,8 +209,38 @@ function OceanLandingInner() {
     setActiveReviewsSpotId(null); // Close reviews
   }, []);
 
+  const selectCity = useCallback((cityId: string) => {
+    if (mode === 'embedded') {
+      setEmbeddedCity(cityId);
+    } else {
+      navigate(`/descubrir/${cityId}`);
+    }
+
+    setIsDropdownOpen(false);
+    setActiveCategory('todo');
+    setReorderedSpots(spotsData.filter(spot => spot.city === cityId) as Spot[]);
+    setActiveIndex(0);
+    setActiveReviewsSpotId(null);
+    if (feedRef.current) feedRef.current.scrollTop = 0;
+  }, [mode, navigate]);
+
+  // Invalid public slugs normalize to the city selector instead of silently using a fallback feed.
+  useEffect(() => {
+    if (mode === 'standalone' && routeCity && !currentCityConfig) {
+      navigate('/descubrir', { replace: true });
+    }
+  }, [currentCityConfig, mode, navigate, routeCity]);
+
+  useEffect(() => {
+    if (mode !== 'standalone' || currentCityConfig) return;
+    const focusTimer = window.setTimeout(() => firstCityButtonRef.current?.focus(), 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [currentCityConfig, mode]);
+
   // Redirect desktop mouse wheel scrolls anywhere on the screen to the snap feed container
   useEffect(() => {
+    if (mode !== 'standalone') return;
+
     const handleGlobalWheel = (e: WheelEvent) => {
       if (!feedRef.current || isMapOpen) return;
 
@@ -218,7 +254,7 @@ function OceanLandingInner() {
 
     window.addEventListener('wheel', handleGlobalWheel, { passive: true });
     return () => window.removeEventListener('wheel', handleGlobalWheel);
-  }, [isMapOpen]);
+  }, [isMapOpen, mode]);
 
   // Drag-to-scroll mouse click-drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -240,7 +276,6 @@ function OceanLandingInner() {
     startY.current = e.pageY;
     scrollTopStart.current = feedRef.current ? feedRef.current.scrollTop : 0;
     dragDistance.current = 0;
-    document.body.style.userSelect = 'none';
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -255,7 +290,6 @@ function OceanLandingInner() {
     if (!isDragging.current) return;
     isDragging.current = false;
     setIsGrabbing(false); // Enable snap scroll back
-    document.body.style.userSelect = '';
 
     if (!feedRef.current) return;
     
@@ -302,6 +336,74 @@ function OceanLandingInner() {
     setIsMapOpen(false);
     setSelectedMapSpotId(null);
   };
+
+  useEffect(() => {
+    if (!isMapOpen) return;
+
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    const focusTimer = window.setTimeout(() => mapCloseButtonRef.current?.focus(), 0);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      previouslyFocusedRef.current?.focus();
+      previouslyFocusedRef.current = null;
+    };
+  }, [isMapOpen]);
+
+  useEffect(() => {
+    if (!activeReviewsSpotId) return;
+    const focusTimer = window.setTimeout(() => reviewsDialogRef.current?.focus(), 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [activeReviewsSpotId]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (isMapOpen) {
+          setIsMapOpen(false);
+          setSelectedMapSpotId(null);
+        } else if (activeReviewsSpotId) {
+          setActiveReviewsSpotId(null);
+        } else if (isDropdownOpen) {
+          setIsDropdownOpen(false);
+        }
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const dialog = isMapOpen
+        ? mapDialogRef.current
+        : activeReviewsSpotId
+          ? reviewsDialogRef.current
+          : !currentCityConfig && mode === 'standalone'
+            ? cityDialogRef.current
+            : null;
+      if (!dialog) return;
+
+      const focusableElements = Array.from(dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      ));
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [activeReviewsSpotId, currentCityConfig, isDropdownOpen, isMapOpen, mode]);
 
   // Handle Likes
   const toggleLike = (id: string) => {
@@ -363,7 +465,7 @@ function OceanLandingInner() {
               closestCity = c;
             }
           });
-          navigate(`/descubrir/${closestCity.id}`);
+          selectCity(closestCity.id);
         },
         (error) => {
           setIsLocating(false);
@@ -386,14 +488,7 @@ function OceanLandingInner() {
     } else {
       setLocationError("Tu navegador no soporta geolocalización o estás en HTTP.");
     }
-  }, [navigate]);
-
-  // Redirect to hermosillo by default on mount if no city parameter
-  useEffect(() => {
-    if (!city) {
-      navigate('/descubrir/hermosillo', { replace: true });
-    }
-  }, [city, navigate]);
+  }, [selectCity]);
 
   // Leaflet Map instance initializer
   useEffect(() => {
@@ -521,7 +616,7 @@ function OceanLandingInner() {
 
   return (
     <div 
-      className="ocean-container"
+      className={`ocean-container ocean-container--${mode}`}
       style={{
         '--city-accent': activeCityConfig.accentColor
       } as React.CSSProperties}
@@ -544,6 +639,8 @@ function OceanLandingInner() {
           {toastMessage && (
             <motion.div 
               className="toast-alert"
+              role="status"
+              aria-live="polite"
               initial={{ opacity: 0, y: -20, x: '-50%' }}
               animate={{ opacity: 1, y: 0, x: '-50%' }}
               exit={{ opacity: 0, y: -20, x: '-50%' }}
@@ -568,19 +665,31 @@ function OceanLandingInner() {
                 alignItems: 'center',
                 minHeight: '36px' 
               }}>
-                <button 
-                  className="tiktok-back-btn" 
-                  onClick={() => navigate('/')} 
-                  aria-label="Inicio"
-                  style={{ position: 'absolute', left: 0 }}
-                >
-                  <ArrowLeft size={16} />
-                </button>
+                {mode === 'standalone' && (
+                  <button
+                    className="tiktok-back-btn"
+                    onClick={() => navigate('/')}
+                    aria-label="Volver al inicio"
+                    style={{ position: 'absolute', left: 0 }}
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
+                )}
 
                 {/* Centered Bruuk Logo */}
-                <div className="tiktok-logo" onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center' }}>
-                  <BruukLogo />
-                </div>
+                {mode === 'standalone' ? (
+                  <button
+                    className="tiktok-logo tiktok-logo-button"
+                    onClick={() => navigate('/')}
+                    aria-label="Ir al inicio"
+                  >
+                    <BruukLogo />
+                  </button>
+                ) : (
+                  <div className="tiktok-logo tiktok-logo--static">
+                    <BruukLogo />
+                  </div>
+                )}
 
                 <button 
                   className="tiktok-map-btn" 
@@ -595,6 +704,10 @@ function OceanLandingInner() {
               <div className="tiktok-city-container">
                 <button 
                   className="tiktok-city-btn"
+                  type="button"
+                  aria-label={`Cambiar ciudad. Ciudad actual: ${activeCityConfig.name}`}
+                  aria-expanded={isDropdownOpen}
+                  aria-controls="discover-city-menu"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsDropdownOpen(!isDropdownOpen);
@@ -616,7 +729,9 @@ function OceanLandingInner() {
                 <AnimatePresence>
                   {isDropdownOpen && (
                     <motion.div 
+                      id="discover-city-menu"
                       className="tiktok-city-dropdown"
+                      role="menu"
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
@@ -626,6 +741,7 @@ function OceanLandingInner() {
                       {/* GPS auto locator */}
                       <button
                         className="tiktok-city-item"
+                        role="menuitem"
                         style={{ 
                           borderBottom: '1px dashed rgba(255,255,255,0.15)',
                           color: 'var(--city-accent)',
@@ -646,11 +762,9 @@ function OceanLandingInner() {
                         <button
                           key={c.id}
                           className="tiktok-city-item"
+                          role="menuitem"
                           onClick={() => {
-                            navigate(`/descubrir/${c.id}`);
-                            setIsDropdownOpen(false);
-                            setActiveIndex(0);
-                            if (feedRef.current) feedRef.current.scrollTop = 0;
+                            selectCity(c.id);
                           }}
                         >
                           {c.name}
@@ -670,7 +784,9 @@ function OceanLandingInner() {
                   className={`tiktok-tab ${activeCategory === cat ? 'tiktok-tab-active' : ''}`}
                   onClick={() => {
                     setActiveCategory(cat);
+                    setReorderedSpots(spots.filter(spot => cat === 'todo' || getCategory(spot) === cat));
                     setActiveIndex(0);
+                    setActiveReviewsSpotId(null);
                     if (feedRef.current) feedRef.current.scrollTop = 0;
                   }}
                 >
@@ -846,7 +962,12 @@ function OceanLandingInner() {
                     <AnimatePresence>
                       {activeReviewsSpotId === spot.id && (
                         <motion.div 
+                          ref={reviewsDialogRef}
                           className="tiktok-reviews-sheet"
+                          role="dialog"
+                          aria-modal="true"
+                          aria-labelledby={`reviews-title-${spot.id}`}
+                          tabIndex={-1}
                           initial={{ y: '100%' }}
                           animate={{ y: 0 }}
                           exit={{ y: '100%' }}
@@ -854,9 +975,14 @@ function OceanLandingInner() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="reviews-sheet-header">
-                            <div className="reviews-sheet-handle" onClick={() => setActiveReviewsSpotId(null)} />
-                            <h3 className="reviews-sheet-title">Detalles y Opiniones</h3>
-                            <button className="reviews-sheet-close" onClick={() => setActiveReviewsSpotId(null)}>
+                            <button
+                              type="button"
+                              className="reviews-sheet-handle"
+                              onClick={() => setActiveReviewsSpotId(null)}
+                              aria-label="Cerrar opiniones"
+                            />
+                            <h3 id={`reviews-title-${spot.id}`} className="reviews-sheet-title">Detalles y Opiniones</h3>
+                            <button className="reviews-sheet-close" onClick={() => setActiveReviewsSpotId(null)} aria-label="Cerrar opiniones">
                               <X size={18} />
                             </button>
                           </div>
@@ -897,7 +1023,13 @@ function OceanLandingInner() {
               exit={{ opacity: 0 }}
             >
               <motion.div
+                ref={cityDialogRef}
                 className="city-selector-modal"
+                role="dialog"
+                aria-modal={mode === 'standalone' ? true : undefined}
+                aria-labelledby="city-selector-title"
+                aria-describedby="city-selector-description"
+                tabIndex={-1}
                 initial={{ opacity: 0, y: 60, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 60, scale: 0.95 }}
@@ -907,15 +1039,16 @@ function OceanLandingInner() {
                 <div className="city-selector-logo">
                   <BruukLogo />
                 </div>
-                <h1 className="city-selector-title">Elige tu mar</h1>
-                <p className="city-selector-subtitle">Selecciona una ciudad para descubrir planes y experiencias únicas sin algoritmos.</p>
-                
+                <h1 id="city-selector-title" className="city-selector-title">Elige tu ciudad</h1>
+                <p id="city-selector-description" className="city-selector-subtitle">Selecciona una ciudad para descubrir planes y experiencias únicas sin algoritmos.</p>
+
                 <div className="city-options-grid">
-                  {citiesData.map(c => (
+                  {citiesData.map((c, index) => (
                     <button
+                      ref={index === 0 ? firstCityButtonRef : undefined}
                       key={c.id}
                       className="city-option-btn"
-                      onClick={() => navigate(`/descubrir/${c.id}`)}
+                      onClick={() => selectCity(c.id)}
                       style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
                     >
                       <span className="city-option-name">{c.name}</span>
@@ -927,7 +1060,7 @@ function OceanLandingInner() {
                 </div>
 
                 {locationError && (
-                  <div style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
+                  <div role="alert" style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
                     {locationError}
                   </div>
                 )}
@@ -967,7 +1100,12 @@ function OceanLandingInner() {
               onClick={handleCloseMap}
             >
               <motion.div 
+                ref={mapDialogRef}
                 className="map-modal-content"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="map-modal-title"
+                tabIndex={-1}
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
@@ -976,8 +1114,8 @@ function OceanLandingInner() {
                 {/* Header of Map Modal featuring dynamic category filters */}
                 <div className="map-modal-header" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h3 className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
-                    <button className="map-modal-close" onClick={handleCloseMap} aria-label="Cerrar mapa">
+                    <h3 id="map-modal-title" className="map-modal-title">Mapa interactivo — {activeCityConfig.name}</h3>
+                    <button ref={mapCloseButtonRef} className="map-modal-close" onClick={handleCloseMap} aria-label="Cerrar mapa">
                       <X size={24} />
                     </button>
                   </div>

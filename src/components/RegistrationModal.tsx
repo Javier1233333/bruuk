@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { X, ArrowRight, ArrowLeft, Check, Headphones, Utensils, Coffee, Palette, Guitar, Paintbrush, Zap, Tent, Map, Users, PartyPopper, Network } from 'lucide-react';
 import * as validator from 'email-validator';
 import './RegistrationModal.css';
@@ -55,6 +55,55 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const previouslyFocused = document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                onClose();
+                return;
+            }
+
+            if (event.key !== 'Tab' || !dialogRef.current) return;
+
+            const focusable = Array.from(
+                dialogRef.current.querySelectorAll<HTMLElement>(
+                    'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+                ),
+            ).filter(element => !element.hasAttribute('hidden'));
+
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = previousOverflow;
+            previouslyFocused?.focus();
+        };
+    }, [isOpen, onClose]);
 
     if (!isOpen) return null;
 
@@ -153,7 +202,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 }, 500);
             }, 2500);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Submit error:', error);
             setErrorMsg("Ocurrió un error inesperado. Intenta de nuevo.");
             setIsSubmitting(false);
@@ -161,15 +210,22 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content animate-fade-in" onClick={e => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={onClose} role="presentation">
+            <div
+                ref={dialogRef}
+                className="modal-content animate-fade-in"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="registration-modal-title"
+                onClick={e => e.stopPropagation()}
+            >
                 <div className="modal-header-actions">
                     {step > 0 && !isSubmitted && (
                         <button className="modal-back" onClick={handleBack} aria-label="Retroceder">
                             <ArrowLeft size={24} />
                         </button>
                     )}
-                    <button className="modal-close-new" onClick={onClose} aria-label="Cerrar modal">
+                    <button ref={closeButtonRef} className="modal-close-new" onClick={onClose} aria-label="Cerrar modal">
                         <X size={24} />
                     </button>
                 </div>
@@ -181,7 +237,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                 <div className="step-indicator">
                                     Paso {step + 1} de {QUESTIONS.length}
                                 </div>
-                                <h2>{QUESTIONS[step].title}</h2>
+                                <h2 id="registration-modal-title">{QUESTIONS[step].title}</h2>
                                 <div className="options-grid">
                                     {QUESTIONS[step].options.map(opt => (
                                         <button
@@ -198,10 +254,12 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                         ) : (
                             <div className="modal-step">
                                 <div className="step-indicator">Paso Final</div>
-                                <h2>¿A dónde enviamos el acceso?</h2>
+                                <h2 id="registration-modal-title">¿A dónde enviamos el acceso?</h2>
                                 <p>Cero spam, cero distracciones. Solo tu boleto de salida.</p>
                                 <form onSubmit={handleSubmit} className="email-form">
+                                    <label className="sr-only" htmlFor="registration-email">Correo electrónico</label>
                                     <input
+                                        id="registration-email"
                                         type="email"
                                         placeholder="tu@correo.com"
                                         value={email}
@@ -211,7 +269,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                         className={errorMsg ? 'input-error' : ''}
                                     />
                                     {errorMsg && (
-                                        <p className="error-message">{errorMsg}</p>
+                                        <p className="error-message" role="alert">{errorMsg}</p>
                                     )}
                                     <button 
                                         type="submit" 
@@ -231,7 +289,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2>Ya estás en la lista.</h2>
+                        <h2 id="registration-modal-title">Ya estás en la lista.</h2>
                         <p>Este correo ya fue registrado antes. Revisa tu bandeja de entrada — y también <strong>spam</strong>, <strong>promociones</strong> y <strong>otras</strong>. El correo ya está ahí.</p>
                     </div>
                 ) : (
@@ -239,7 +297,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2>Ya estás dentro.</h2>
+                        <h2 id="registration-modal-title">Ya estás dentro.</h2>
                         <p>Hemos guardado tu perfil. Prepárate para dejar la pantalla y salir al mundo real.</p>
                     </div>
                 )}

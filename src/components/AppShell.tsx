@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Radar, Compass, MessageCircle, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import './AppShell.css';
 
 // Preset avatar gradients (same as used in ProfilePage)
+// Kept here for compatibility with ProfilePage's shared avatar picker.
+// eslint-disable-next-line react-refresh/only-export-components
 export const PRESET_AVATARS = [
   { id: 'avatar1', colors: 'linear-gradient(135deg, #8b7cf6, #ec4899)' },
   { id: 'avatar2', colors: 'linear-gradient(135deg, #ff007f, #ffaa00)' },
@@ -14,29 +17,27 @@ export const PRESET_AVATARS = [
   { id: 'avatar6', colors: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)' },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
-  const location = useLocation();
-  const [avatarId, setAvatarId] = useState<string>('avatar1');
-  const [username, setUsername] = useState<string>('');
-
-  // Sync profile details reactively from localStorage
-  const loadProfile = () => {
-    const savedAvatar = localStorage.getItem('bruuk_avatar_id') || 'avatar1';
-    const savedUser = localStorage.getItem('bruuk_username') || '';
-    setAvatarId(savedAvatar);
-    setUsername(savedUser);
+function readStoredProfile() {
+  return {
+    avatarId: localStorage.getItem('bruuk_avatar_id') || 'avatar1',
+    username: localStorage.getItem('bruuk_username') || '',
   };
+}
+
+export function AppShell({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
+  const [profile, setProfile] = useState(readStoredProfile);
 
   useEffect(() => {
-    loadProfile();
-    // Listen for custom profile update events to update header/tabbar dynamically
+    const loadProfile = () => setProfile(readStoredProfile());
     window.addEventListener('bruuk_profile_updated', loadProfile);
-    return () => {
-      window.removeEventListener('bruuk_profile_updated', loadProfile);
-    };
+    return () => window.removeEventListener('bruuk_profile_updated', loadProfile);
   }, []);
 
-  const currentAvatar = PRESET_AVATARS.find(a => a.id === avatarId) || PRESET_AVATARS[0];
+  const currentAvatar = PRESET_AVATARS.find(a => a.id === profile.avatarId) || PRESET_AVATARS[0];
+  const isImmersive = location.pathname.startsWith('/descubrir');
+  const shouldShowTabbar = location.pathname !== '/descubrir';
 
   // Helper to check if a route is active
   const isActive = (path: string) => {
@@ -47,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="desktop-browser-wrapper">
+    <div className="desktop-browser-wrapper app-shell-standalone">
       {/* Neon ambient glow backdrops */}
       <div className="ambient-glow glow-1"></div>
       <div className="ambient-glow glow-2"></div>
@@ -61,14 +62,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Viewport for mobile web app content */}
         <div className="app-viewport">
-          <div className="app-content-area">
-            <AnimatePresence mode="wait">
+          <div className={`app-content-area ${isImmersive ? 'app-content-area--immersive' : ''}`}>
+            <AnimatePresence mode="wait" initial={!shouldReduceMotion}>
               <motion.div
                 key={location.pathname}
-                initial={{ opacity: 0, y: 10 }}
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+                exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
                 style={{ height: '100%' }}
               >
                 {children}
@@ -77,10 +78,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Persistent Glassmorphism Tab Bar */}
-          <nav className="app-tabbar">
+          {shouldShowTabbar && (
+          <nav className="app-tabbar" aria-label="Navegación principal de la app">
             <Link 
               to="/descubrir" 
               className={`tabbar-item ${isActive('/descubrir') ? 'active' : ''}`}
+              aria-current={isActive('/descubrir') ? 'page' : undefined}
             >
               {isActive('/descubrir') && (
                 <motion.div 
@@ -96,6 +99,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link 
               to="/experiencias" 
               className={`tabbar-item ${isActive('/experiencias') ? 'active' : ''}`}
+              aria-current={isActive('/experiencias') ? 'page' : undefined}
             >
               {isActive('/experiencias') && (
                 <motion.div 
@@ -111,6 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link 
               to="/chats" 
               className={`tabbar-item ${isActive('/chats') ? 'active' : ''}`}
+              aria-current={isActive('/chats') ? 'page' : undefined}
             >
               {isActive('/chats') && (
                 <motion.div 
@@ -129,6 +134,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link 
               to="/perfil" 
               className={`tabbar-item ${isActive('/perfil') ? 'active' : ''}`}
+              aria-current={isActive('/perfil') ? 'page' : undefined}
             >
               {isActive('/perfil') && (
                 <motion.div 
@@ -141,11 +147,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className="tabbar-avatar-indicator"
                 style={{ background: currentAvatar.colors }}
               >
-                {username ? username.slice(0, 1).toUpperCase() : <User size={12} />}
+                {profile.username ? profile.username.slice(0, 1).toUpperCase() : <User size={12} />}
               </div>
               <span>Perfil</span>
             </Link>
           </nav>
+          )}
         </div>
       </div>
     </div>

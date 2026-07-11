@@ -12,6 +12,12 @@
   color: #f1f1f3;
 }
 
+.desktop-browser-wrapper *,
+.desktop-browser-wrapper *::before,
+.desktop-browser-wrapper *::after {
+  box-sizing: border-box;
+}
+
 /* Ambient Cyberpunk Glows (Matte) */
 .ambient-glow {
   position: absolute;
@@ -114,6 +120,11 @@
   padding-bottom: 74px; /* Tabbar height + padding */
   /* Hide scrollbar default Chrome/Safari */
   -webkit-overflow-scrolling: touch;
+}
+
+.app-content-area--immersive {
+  overflow: hidden;
+  padding-bottom: 0;
 }
 
 .app-content-area::-webkit-scrollbar {
@@ -233,21 +244,19 @@
   box-shadow: 0 0 8px rgba(139, 124, 246, 0.35);
 }
 
+.desktop-browser-wrapper :is(a, button, [tabindex]):focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
-  /* Lock the browser window viewport height and overflow without fixing body position */
-  html, body, #root {
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-  }
-
-  .desktop-browser-wrapper {
-    height: 100vh !important;
-    height: 100dvh !important;
-    overflow: hidden !important;
-    position: relative;
+  .app-shell-standalone {
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     width: 100%;
     background-color: #0b0a0f;
   }
@@ -258,7 +267,6 @@
   
   .phone-mockup-frame {
     width: 100%;
-    height: 100vh;
     height: 100dvh;
     border: none;
     border-radius: 0;
@@ -285,5 +293,20 @@
     width: 100%;
     overflow-y: auto;
     padding-bottom: 0;
+  }
+
+  .app-content-area--immersive {
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktop-browser-wrapper *,
+  .desktop-browser-wrapper *::before,
+  .desktop-browser-wrapper *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

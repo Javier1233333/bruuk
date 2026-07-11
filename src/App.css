@@ -1,15 +1,15 @@
 /* ============================================================
-   MAR INTERACTIVO SECTION
+   SCROLL INTERACTIVE SECTION
    ============================================================ */
 
-.mar-section {
+.scroll-section {
   background: #fff;
   border-top: 2px solid #000;
   border-bottom: 2px solid #000;
   padding: 4rem 6vw;
 }
 
-.mar-inner {
+.scroll-inner {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -18,13 +18,13 @@
   margin: 0 auto;
 }
 
-.mar-text {
+.scroll-text {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
-.mar-eyebrow {
+.scroll-eyebrow {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.7rem;
   font-weight: 700;
@@ -33,7 +33,7 @@
   color: #8b7cf6;
 }
 
-.mar-subtitle {
+.scroll-subtitle {
   font-family: 'Outfit', sans-serif;
   font-size: clamp(1.6rem, 4vw, 2.8rem);
   font-weight: 900;
@@ -44,7 +44,7 @@
   margin: 0.4rem 0 0;
 }
 
-.mar-title {
+.scroll-title {
   font-family: 'Outfit', sans-serif;
   font-size: clamp(3.8rem, 9vw, 7rem);
   font-weight: 900;
@@ -55,7 +55,7 @@
   margin: 0;
 }
 
-.mar-action {
+.scroll-action {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -65,7 +65,7 @@
   text-align: right;
 }
 
-.mar-sub {
+.scroll-sub {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
   color: #555;
@@ -73,7 +73,7 @@
   margin: 0;
 }
 
-.mar-cta {
+.scroll-cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -94,20 +94,20 @@
   white-space: nowrap;
 }
 
-.mar-cta:hover {
+.scroll-cta:hover {
   transform: translate(-3px, -3px);
   box-shadow: 7px 7px 0px #8b7cf6;
 }
 
-.mar-cta:active {
+.scroll-cta:active {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0px #8b7cf6;
 }
 
 @media (max-width: 640px) {
-  .mar-inner   { flex-direction: column; align-items: flex-start; gap: 2rem; }
-  .mar-action  { align-items: flex-start; text-align: left; max-width: 100%; }
-  .mar-cta     { width: 100%; justify-content: center; }
+  .scroll-inner   { flex-direction: column; align-items: flex-start; gap: 2rem; }
+  .scroll-action  { align-items: flex-start; text-align: left; max-width: 100%; }
+  .scroll-cta     { width: 100%; justify-content: center; }
 }
 
 .home-city-selector {
@@ -165,5 +165,181 @@
 @media (max-width: 640px) {
   .home-city-btn {
     justify-content: center;
+  }
+}
+
+/* ============================================================
+   PRODUCT TEASER
+   ============================================================ */
+
+#inicio {
+  scroll-margin-top: 7rem;
+}
+
+.home-app-teaser {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(139, 124, 246, 0.11), transparent 42%),
+    #090812;
+  border-top: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.home-app-teaser::before {
+  content: '';
+  position: absolute;
+  width: 34rem;
+  height: 34rem;
+  right: -12rem;
+  top: -12rem;
+  border-radius: 50%;
+  background: rgba(139, 124, 246, 0.16);
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.home-app-teaser__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  align-items: center;
+  gap: clamp(3rem, 8vw, 7rem);
+}
+
+.home-app-teaser__content {
+  max-width: 650px;
+}
+
+.home-app-teaser__eyebrow {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: var(--accent-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.home-app-teaser h2 {
+  margin: 0 0 1.5rem;
+  color: #fff;
+  font-size: clamp(2.8rem, 6vw, 5.6rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 0.91;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0 var(--accent-light);
+}
+
+.home-app-teaser__content p {
+  max-width: 58ch;
+  margin-bottom: 2rem;
+  color: #c8c4df;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.home-app-teaser__preview {
+  width: min(100%, 430px);
+  margin-inline: auto;
+  padding: 1.25rem;
+  border: 3px solid #fff;
+  background: #11101d;
+  box-shadow: 12px 12px 0 var(--accent-light);
+  transform: rotate(1.25deg);
+}
+
+.home-app-teaser__preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.home-app-teaser__preview-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 72px;
+  margin-top: 0.8rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.045);
+  color: #f5f3ff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.home-app-teaser__preview-card svg {
+  flex: 0 0 auto;
+  color: var(--accent-text);
+}
+
+.home-app-teaser__preview-card--primary {
+  border-color: var(--accent-light);
+  background: rgba(139, 124, 246, 0.16);
+}
+
+.newsletter-actions {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.newsletter-community {
+  border-color: #000;
+  background: #fff;
+  color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.newsletter-community:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000;
+}
+
+.newsletter-community:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .home-app-teaser__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .home-app-teaser__preview {
+    width: min(100%, 560px);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-app-teaser h2 {
+    font-size: clamp(2.6rem, 13vw, 4rem);
+    text-shadow: 3px 3px 0 var(--accent-light);
+  }
+
+  .home-app-teaser__preview {
+    padding: 1rem;
+    box-shadow: 7px 7px 0 var(--accent-light);
+    transform: none;
+  }
+
+  .home-app-teaser__content .btn,
+  .newsletter-actions .btn {
+    width: 100%;
   }
 }

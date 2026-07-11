@@ -1,41 +1,21 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Sparkles, Globe, ArrowRight, Users, Compass } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Sparkles, Globe, ArrowRight, Users, Compass, MapPinned } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
-import { ComingSoonModal } from './components/ComingSoonModal';
 import { RegistrationModal } from './components/RegistrationModal';
-import { BruukLogo } from './components/BruukLogo';
-import { useNavigate } from 'react-router-dom';
 import citiesData from './data/cities.json';
 import './App.css';
 
 function App() {
-  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleJoin = () => {
-    setIsComingSoonOpen(false);
-    setIsRegistrationOpen(true);
-  };
-
   return (
     <div className="app-wrapper">
-      <header className="header">
-        <div className="container">
-          <div className="logo">
-            <BruukLogo />
-          </div>
-          <Link to="/login" className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }}>
-            Inicia sesión
-          </Link>
-        </div>
-      </header>
-
       <main>
         {/* Hero Section */}
-        <section className="hero">
+        <section className="hero" id="inicio">
           <div className="hero-bg-glow"></div>
           <div className="container">
             <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
@@ -45,7 +25,7 @@ function App() {
               Planes curados para vivir la ciudad de verdad. Para los que vienen de visita y quieren ir más allá del itinerario. Para los que ya viven aquí y la olvidaron. Para los que quieren conocer gente real mientras la recorren.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
-              <button className="btn btn-primary" onClick={() => setIsComingSoonOpen(true)}>
+              <button className="btn btn-primary" onClick={() => navigate('/descubrir')}>
                 EXPLORAR PLANES <ArrowRight size={20} strokeWidth={3} />
               </button>
               <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
@@ -56,16 +36,16 @@ function App() {
           </div>
         </section>
 
-        {/* Mar Interactivo Section */}
-        <section className="mar-section">
-          <div className="mar-inner">
-            <div className="mar-text">
-              <span className="mar-eyebrow">Rincones locales · Sin algoritmos</span>
-              <h2 className="mar-title">Explora<br />el mar.</h2>
-              <p className="mar-subtitle">Navega lo desconocido.</p>
+        {/* Scroll Interactivo Section */}
+        <section className="scroll-section">
+          <div className="scroll-inner">
+            <div className="scroll-text">
+              <span className="scroll-eyebrow">Rincones locales · Sin algoritmos</span>
+              <h2 className="scroll-title">Explora<br />la ciudad.</h2>
+              <p className="scroll-subtitle">Desliza sin algoritmos.</p>
             </div>
-            <div className="mar-action">
-              <p className="mar-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
+            <div className="scroll-action">
+              <p className="scroll-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
               
               <div className="home-city-selector">
                 {citiesData.map(c => (
@@ -90,6 +70,41 @@ function App() {
           </div>
         </section>
 
+        {/* App Product Teaser */}
+        <section className="home-app-teaser" aria-labelledby="home-app-title">
+          <div className="container home-app-teaser__layout">
+            <div className="home-app-teaser__content">
+              <span className="home-app-teaser__eyebrow">/ Descubre Bruuk</span>
+              <h2 id="home-app-title">TU PRÓXIMA SALIDA EMPIEZA AQUÍ.</h2>
+              <p>
+                Descubre lugares, experiencias y personas que sí quieren salir. Una forma distinta de dejar de guardar planes y empezar a vivirlos.
+              </p>
+              <Link className="btn btn-primary" to="/explora">
+                CONOCE LA APP <ArrowRight size={20} strokeWidth={3} />
+              </Link>
+            </div>
+
+            <div className="home-app-teaser__preview" aria-hidden="true">
+              <div className="home-app-teaser__preview-header">
+                <span>BRUUK / EXPLORA</span>
+                <Compass size={20} />
+              </div>
+              <div className="home-app-teaser__preview-card home-app-teaser__preview-card--primary">
+                <MapPinned size={26} />
+                <span>Lugares que valen la vuelta</span>
+              </div>
+              <div className="home-app-teaser__preview-card">
+                <Sparkles size={26} />
+                <span>Experiencias que sí pasan</span>
+              </div>
+              <div className="home-app-teaser__preview-card">
+                <Users size={26} />
+                <span>Gente real, fuera de la pantalla</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Features Section */}
         <section className="features">
           <div className="container">
@@ -106,7 +121,7 @@ function App() {
                   <Sparkles size={28} color="#fff" />
                 </div>
                 <h3>Planes curados</h3>
-                <p>Cada plan fue pensado para sacar lo mejor de Guadalajara: sus colonias, su comida, su música, su gente. Nada genérico, nada de lo que ya conoces.</p>
+                <p>Cada plan fue pensado para sacar lo mejor de cada ciudad: sus barrios, su comida, su música, su gente. Nada genérico, nada de lo que ya conoces.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
@@ -120,39 +135,15 @@ function App() {
                   <Globe size={28} color="#fff" />
                 </div>
                 <h3>Para visitantes y locales</h3>
-                <p>Si vienes de visita, te mostramos la Guadalajara que los tapatíos quieren que veas. Si ya vives aquí, te apostamos que hay rincones que todavía no conoces.</p>
+                <p>Si vienes de visita, te mostramos la ciudad que sus locales quieren que veas. Si ya vives ahí, te apostamos que todavía guarda rincones que no conoces.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">
                   <Compass size={28} color="#fff" />
                 </div>
                 <h3>Más ciudades en camino</h3>
-                <p>Guadalajara es el inicio. BRUUK está construyendo lo mismo para Ciudad de México, Monterrey, Oaxaca y más. Cada ciudad, descubierta de manera auténtica.</p>
+                <p>Las primeras ciudades son solo el inicio. BRUUK está trazando nuevas rutas para llegar a más lugares. Cada ciudad, descubierta de manera auténtica.</p>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Nosotros Section */}
-        <section className="nosotros">
-          <div className="container">
-            <div className="nos-intro">
-              <span className="nos-tag">/ Por qué existe esto</span>
-              <p className="nos-big">Viniste a Guadalajara.<br />Viste lo mismo que todos.<br />Bruuk nació para eso.</p>
-            </div>
-
-            <div className="nos-layout">
-              <div className="nos-story">
-                <p>Hay una versión de Guadalajara que no sale en TripAdvisor. Que no aparece en los reels. Que solo conocen los que saben preguntar a las personas correctas.</p>
-                <p>Nosotros la mapeamos, la destilamos y la convertimos en planes concretos para que cualquiera pueda vivirla, sin importar si llegas hoy o llevas años aquí.</p>
-                <p>Y si quieres vivirla con alguien, también. <strong>Algunos de nuestros mejores planes están diseñados para hacerse con desconocidos que se vuelven conocidos.</strong> Esa es la magia.</p>
-              </div>
-            </div>
-
-            <div className="nos-closing">
-              <span>Bruuk es la bruújula.</span>
-              <span>Los planes son el pretexto.</span>
-              <span>La conexión es el destino.</span>
             </div>
           </div>
         </section>
@@ -162,11 +153,14 @@ function App() {
           <div className="container">
             <div className="newsletter-wrapper">
               <div className="newsletter-content">
-                <h2 className="glitch-hover">GUADALAJARA TE ESPERA</h2>
-                <p>Acceso anticipado a los primeros planes curados de BRUUK. Sé parte de la comunidad que está redescubriendo la ciudad.</p>
-                <div className="newsletter-form" style={{ justifyContent: 'center' }}>
-                  <button className="btn btn-primary" onClick={handleJoin}>
+                <h2 className="glitch-hover">TU CIUDAD TE ESPERA</h2>
+                <p>Acceso anticipado a nuevas rutas, planes y experiencias de BRUUK. Sé parte de una comunidad que está redescubriendo sus ciudades.</p>
+                <div className="newsletter-form newsletter-actions">
+                  <button className="btn btn-primary" onClick={() => navigate('/descubrir')}>
                     QUIERO EXPLORAR <ArrowRight size={20} strokeWidth={3} />
+                  </button>
+                  <button className="btn newsletter-community" onClick={() => setIsRegistrationOpen(true)}>
+                    ÚNETE A LA COMUNIDAD
                   </button>
                 </div>
                
@@ -175,19 +169,6 @@ function App() {
           </div>
         </section>
       </main>
-
-      <footer>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <p style={{ fontWeight: 'bold' }}>BRUUK</p>
-          <p>&copy; {new Date().getFullYear()} bruuk. No sigas las reglas.</p>
-        </div>
-      </footer>
-
-      <ComingSoonModal
-        isOpen={isComingSoonOpen}
-        onClose={() => setIsComingSoonOpen(false)}
-        onJoin={handleJoin}
-      />
 
       <RegistrationModal
         isOpen={isRegistrationOpen}

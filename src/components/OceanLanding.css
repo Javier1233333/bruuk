@@ -2,21 +2,23 @@
    BRUUK DISCOVER — TikTok-Style Feed & Dark Map
    ============================================================ */
 
-:root {
+.ocean-container {
   --neon-orange: #ff7a45;
   --neon-purple: #8b7cf6;
   --dark-bg: #080614;
   --card-bg: #0e0d1a;
-}
-
-/* Base Page Setup */
-* {
   -webkit-tap-highlight-color: transparent;
 }
 
-button:focus,
-a:focus {
-  outline: none;
+.ocean-container *,
+.ocean-container *::before,
+.ocean-container *::after {
+  box-sizing: border-box;
+}
+
+.ocean-container :is(a, button, [tabindex]):focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
 }
 
 .ocean-container {
@@ -27,6 +29,12 @@ a:focus {
   background-color: var(--dark-bg);
   color: #fff;
   font-family: 'DM Sans', sans-serif;
+  isolation: isolate;
+}
+
+.ocean-container--embedded {
+  min-height: 0;
+  contain: layout paint;
 }
 
 /* Desktop Mockup Layout */
@@ -69,6 +77,7 @@ a:focus {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
+  overscroll-behavior: contain;
 }
 
 .tiktok-feed::-webkit-scrollbar {
@@ -80,6 +89,7 @@ a:focus {
   scroll-snap-type: none !important;
   scroll-behavior: auto !important;
   cursor: grabbing;
+  user-select: none;
 }
 
 /* Individual Slides */
@@ -170,6 +180,22 @@ a:focus {
 
 .tiktok-logo:hover {
   transform: scale(1.02);
+}
+
+.tiktok-logo-button {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.tiktok-logo--static {
+  cursor: default;
+}
+
+.tiktok-logo--static:hover {
+  transform: none;
 }
 
 .tiktok-logo svg {
@@ -525,7 +551,7 @@ a:focus {
 
 /* Map Modal Overlay */
 .map-modal-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background: rgba(8, 6, 20, 0.85);
   backdrop-filter: blur(8px);
@@ -540,7 +566,7 @@ a:focus {
 .map-modal-content {
   width: 100%;
   max-width: 800px;
-  height: 80vh;
+  height: min(80%, 720px);
   background: var(--card-bg);
   border: 2px solid #fff;
   box-shadow: 8px 8px 0px var(--city-accent, var(--neon-purple));
@@ -551,7 +577,7 @@ a:focus {
 
 @media (max-width: 768px) {
   .map-modal-content {
-    height: 90vh;
+    height: calc(100% - 2rem);
     border-radius: 0px !important;
     border: 2px solid #fff;
     box-shadow: 8px 8px 0px var(--city-accent, var(--neon-purple));
@@ -671,7 +697,7 @@ a:focus {
    ============================================================ */
 
 .city-selector-overlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 500;
   display: flex;
@@ -813,7 +839,7 @@ a:focus {
   cursor: not-allowed;
 }
 
-.animate-spin {
+.ocean-container .animate-spin {
   animation: spin 1s linear infinite;
 }
 
@@ -849,12 +875,12 @@ a:focus {
 }
 
 /* Leaflet dark theme customization */
-.leaflet-container {
+.ocean-container .leaflet-container {
   font-family: 'DM Sans', sans-serif;
   background: var(--dark-bg) !important;
 }
 
-.leaflet-popup-content-wrapper {
+.ocean-container .leaflet-popup-content-wrapper {
   background: var(--card-bg) !important;
   color: #fff !important;
   border: 1px solid var(--city-accent, var(--neon-purple)) !important;
@@ -862,27 +888,27 @@ a:focus {
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.6) !important;
 }
 
-.leaflet-popup-content {
+.ocean-container .leaflet-popup-content {
   margin: 10px 14px !important;
 }
 
-.leaflet-popup-tip {
+.ocean-container .leaflet-popup-tip {
   background: var(--card-bg) !important;
   border: 1.5px solid var(--city-accent, var(--neon-purple)) !important;
 }
 
-.leaflet-bar {
+.ocean-container .leaflet-bar {
   border: 1.5px solid #fff !important;
   border-radius: 0px !important;
 }
 
-.leaflet-bar a {
+.ocean-container .leaflet-bar a {
   background-color: var(--card-bg) !important;
   color: #fff !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-.leaflet-bar a:hover {
+.ocean-container .leaflet-bar a:hover {
   background-color: var(--city-accent, var(--neon-purple)) !important;
   color: #000 !important;
 }
@@ -894,7 +920,7 @@ a:focus {
   100% { transform: scale(1); box-shadow: 0 0 10px var(--color), 0 0 20px var(--color); }
 }
 
-.custom-neon-pin div {
+.ocean-container .custom-neon-pin div {
   animation: pinGlow 2s infinite ease-in-out;
 }
 
@@ -926,6 +952,9 @@ a:focus {
 }
 
 .reviews-sheet-handle {
+  appearance: none;
+  padding: 0;
+  border: 0;
   width: 36px;
   height: 4px;
   background: rgba(255, 255, 255, 0.2);
@@ -1066,14 +1095,22 @@ a:focus {
   box-shadow: 2px 2px 0px #000;
 }
 
+.ocean-container--standalone .tiktok-content {
+  padding-bottom: calc(1.8rem + 74px + env(safe-area-inset-bottom, 0px));
+}
+
+.ocean-container--standalone .tiktok-actions {
+  bottom: calc(2.2rem + 74px + env(safe-area-inset-bottom, 0px));
+}
+
 /* Responsive UI shifts to sit text/actions safely above the bottom TabBar */
 @media (max-width: 768px) {
-  .tiktok-content {
+  .ocean-container--standalone .tiktok-content {
     /* Push bottom spot description and title up so they don't hide behind TabBar */
     padding: 0 4.5rem calc(1.8rem + 68px + env(safe-area-inset-bottom, 0px)) 1rem !important;
   }
 
-  .tiktok-actions {
+  .ocean-container--standalone .tiktok-actions {
     /* Push vertical interactions sidebar above the TabBar */
     bottom: calc(2rem + 68px + env(safe-area-inset-bottom, 0px)) !important;
     right: 0.6rem !important;
@@ -1083,5 +1120,16 @@ a:focus {
   /* Make map triggers and logo headers sit cleanly on mobile fullscreen */
   .tiktok-header {
     padding: calc(0.8rem + env(safe-area-inset-top, 0px)) 1rem 0.5rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocean-container *,
+  .ocean-container *::before,
+  .ocean-container *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

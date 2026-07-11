@@ -1,4 +1,4 @@
-
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import './ManifestoModal.css';
 
@@ -8,19 +8,56 @@ interface ManifestoModalProps {
 }
 
 export function ManifestoModal({ isOpen, onClose }: ManifestoModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="manifesto-modal-overlay" onClick={onClose}>
-      <div className="manifesto-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="manifesto-close-btn" onClick={onClose}>
+    <div className="manifesto-modal-overlay" onClick={onClose} role="presentation">
+      <div
+        className="manifesto-modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="manifesto-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button ref={closeButtonRef} className="manifesto-close-btn" onClick={onClose} aria-label="Cerrar manifiesto">
           <X size={32} />
         </button>
 
         <div className="manifesto-modal-bg-text">BRUUK</div>
         
         <div className="manifesto-modal-inner">
-          <h2 className="manifesto-lead">
+          <h2 id="manifesto-modal-title" className="manifesto-lead">
             Creemos que la vida ocurre fuera de la pantalla.
           </h2>
           
