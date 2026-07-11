@@ -1,21 +1,21 @@
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import { AuthProvider } from './contexts/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import App from './App.tsx'
 import { MarketingLayout } from './components/MarketingLayout'
+import App from './App.tsx'
 import './index.css'
 
 const ExploreLandingPage = lazy(() =>
   import('./pages/ExploreLandingPage').then(module => ({ default: module.ExploreLandingPage })),
 )
-const DiscoverExperience = lazy(() =>
-  import('./components/DiscoverExperience').then(module => ({ default: module.DiscoverExperience })),
-)
 const AppShell = lazy(() =>
   import('./components/AppShell').then(module => ({ default: module.AppShell })),
+)
+const OceanLanding = lazy(() =>
+  import('./components/OceanLanding').then(module => ({ default: module.OceanLanding })),
 )
 const LoginPage = lazy(() =>
   import('./pages/LoginPage').then(module => ({ default: module.LoginPage })),
@@ -39,35 +39,42 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/setup"
-            element={
-              <ProtectedRoute>
-                <ProfileSetupPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/app"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          
-          {/* Mobile App Shell Routes */}
-          <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
-          <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
-          <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
-          <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
-          <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
-          <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
-          <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
-        </Routes>
+        <Suspense fallback={<div className="loading-fallback" style={{ color: '#fff', padding: '2rem', textAlign: 'center' }}>Cargando...</div>}>
+          <Routes>
+            {/* Marketing Layout Routes (Header & Footer) */}
+            <Route element={<MarketingLayout />}>
+              <Route path="/" element={<App />} />
+              <Route path="/explora" element={<ExploreLandingPage />} />
+            </Route>
+
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/setup"
+              element={
+                <ProtectedRoute>
+                  <ProfileSetupPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Mobile App Shell Routes */}
+            <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
+            <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
+            <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+            <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
+            <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
+            <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
+            <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
     <Analytics />

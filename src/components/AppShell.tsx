@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Radar, Compass, MessageCircle, User } from 'lucide-react';
+import { Map, Compass, MessageCircle, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AppShell.css';
-import citiesData from '../data/cities.json';
 
 // Preset avatar gradients (same as used in ProfilePage)
 // Kept here for compatibility with ProfilePage's shared avatar picker.
@@ -17,13 +16,6 @@ export const PRESET_AVATARS = [
   { id: 'avatar5', colors: '#11998e', emoji: '' },
   { id: 'avatar6', colors: '#ff7a45', emoji: '' },
 ];
-
-function readStoredProfile() {
-  return {
-    avatarId: localStorage.getItem('bruuk_avatar_id') || 'avatar1',
-    username: localStorage.getItem('bruuk_username') || '',
-  };
-}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -47,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const currentAvatar = PRESET_AVATARS.find(a => a.id === profile.avatarId) || PRESET_AVATARS[0];
+  const currentAvatar = PRESET_AVATARS.find(a => a.id === avatarId) || PRESET_AVATARS[0];
   const isImmersive = location.pathname.startsWith('/descubrir');
   const shouldShowTabbar = location.pathname !== '/descubrir';
 
@@ -74,7 +66,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         {/* Viewport for mobile web app content */}
         <div className="app-viewport">
-          <div className="app-content-area">
+          <div className={`app-content-area ${isImmersive ? 'app-content-area--immersive' : ''}`}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
@@ -159,7 +151,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className="tabbar-avatar-indicator"
                 style={{ background: currentAvatar.colors }}
               >
-                {profile.username ? profile.username.slice(0, 1).toUpperCase() : <User size={12} />}
+                {username ? username.slice(0, 1).toUpperCase() : <User size={12} />}
               </div>
               <span>Perfil</span>
             </Link>
