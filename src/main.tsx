@@ -39,42 +39,35 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Suspense fallback={<div className="route-loading" role="status">Cargando Bruuk</div>}>
-          <Routes>
-            <Route element={<MarketingLayout />}>
-              <Route index element={<App />} />
-              <Route path="/explora" element={<ExploreLandingPage />} />
-            </Route>
-
-            <Route path="/mar" element={<Navigate to="/explora" replace />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/setup"
-              element={
-                <ProtectedRoute>
-                  <ProfileSetupPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/app"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Mobile App Shell Routes */}
-            <Route path="/descubrir" element={<DiscoverExperience mode="standalone" />} />
-            <Route path="/descubrir/:city" element={<DiscoverExperience mode="standalone" />} />
-            <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
-            <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
-            <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
-            <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
-            <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/setup"
+            element={
+              <ProtectedRoute>
+                <ProfileSetupPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Mobile App Shell Routes */}
+          <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
+          <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
+          <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+          <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
+          <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
+          <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
+          <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
     <Analytics />

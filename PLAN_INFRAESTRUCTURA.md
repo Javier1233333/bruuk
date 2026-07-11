@@ -1,4 +1,4 @@
-# Plan de Infraestructura — BRUUK
+ Plan de Infraestructura — BRUUK
 
 > Prioridad: ciberseguridad desde el diseño.
 > Stack: Supabase + Vercel + React (Vite)

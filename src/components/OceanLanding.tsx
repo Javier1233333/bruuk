@@ -174,7 +174,17 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   }), [activeCategory, spots]);
 
   // Dynamic feed order
-  const [reorderedSpots, setReorderedSpots] = useState<Spot[]>(() => filteredSpots);
+  const [reorderedSpots, setReorderedSpots] = useState<Spot[]>([]);
+
+  // Keep reordered list synced with filters
+  useEffect(() => {
+    setReorderedSpots(filteredSpots);
+    setActiveIndex(0);
+    setActiveReviewsSpotId(null);
+    if (feedRef.current) {
+      feedRef.current.scrollTop = 0;
+    }
+  }, [activeCategory, city]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -488,7 +498,14 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     } else {
       setLocationError("Tu navegador no soporta geolocalización o estás en HTTP.");
     }
-  }, [selectCity]);
+  }, [navigate]);
+
+  // Redirect to hermosillo by default on mount if no city parameter
+  useEffect(() => {
+    if (!city) {
+      navigate('/descubrir/hermosillo', { replace: true });
+    }
+  }, [city, navigate]);
 
   // Leaflet Map instance initializer
   useEffect(() => {
@@ -934,16 +951,16 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
                       {/* Context-aware Dynamic CTA (Opens map focused or booking external site) */}
                       {isExperience && spot.bookingLink ? (
-                        <a 
-                          href={spot.bookingLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/experiencias/${activeCityConfig.id}`, { state: { selectedExpId: spot.id } });
+                          }}
                           className="tiktok-cta-link"
                           style={{ '--city-accent': spot.colorAccent || activeCityConfig.accentColor } as React.CSSProperties}
-                          onClick={(e) => e.stopPropagation()}
                         >
                           <ExternalLink size={14} /> Reservar / Unirse
-                        </a>
+                        </button>
                       ) : (
                         <button 
                           className="tiktok-cta-link"

@@ -131,23 +131,21 @@
   display: none;
 }
 
-/* ── Tab Bar Navigation ── */
 .app-tabbar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 74px;
-  background: rgba(11, 10, 15, 0.85);
+  background: rgba(14, 13, 26, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding: 0 8px;
   z-index: 900;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .tabbar-item {
@@ -166,8 +164,8 @@
 
 .tabbar-item span {
   font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   font-family: 'Outfit', sans-serif;
   opacity: 0.85;
@@ -178,31 +176,17 @@
 }
 
 .tabbar-item.active {
-  color: #8b7cf6;
-  text-shadow: 0 0 8px rgba(139, 124, 246, 0.25);
+  color: var(--global-accent, #8b7cf6);
 }
 
-/* Sliding active tab indicator neon glow and soft light beam */
+/* Sliding active tab indicator flat light beam */
 .tabbar-active-glow {
   position: absolute;
-  top: -1px;
-  left: 15%;
-  right: 15%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #8b7cf6, transparent);
-  box-shadow: 0 0 8px #8b7cf6;
-}
-
-.tabbar-active-glow::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 35px;
-  background: radial-gradient(circle, rgba(139, 124, 246, 0.22) 0%, transparent 70%);
-  pointer-events: none;
+  top: 0px;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: var(--global-accent, #8b7cf6);
 }
 
 /* Notifications Badge Dot */
@@ -227,21 +211,20 @@
 .tabbar-avatar-indicator {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
+  border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-size: 0.68rem;
   font-weight: 800;
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border: 1.5px solid #fff;
   transition: all 0.2s;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .tabbar-item.active .tabbar-avatar-indicator {
-  border-color: #8b7cf6;
-  box-shadow: 0 0 8px rgba(139, 124, 246, 0.35);
+  border-color: var(--global-accent, #8b7cf6);
+  box-shadow: 2px 2px 0px var(--global-accent, #8b7cf6);
 }
 
 .desktop-browser-wrapper :is(a, button, [tabindex]):focus-visible {
@@ -251,12 +234,19 @@
 
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
-  .app-shell-standalone {
-    position: fixed;
-    inset: 0;
-    height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
+  /* Lock the browser window viewport height and overflow without fixing body position */
+  html, body, #root {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .desktop-browser-wrapper {
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    position: relative;
     width: 100%;
     background-color: #0b0a0f;
   }

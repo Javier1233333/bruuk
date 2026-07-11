@@ -2,19 +2,20 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Radar, Compass, MessageCircle, User } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import './AppShell.css';
+import citiesData from '../data/cities.json';
 
 // Preset avatar gradients (same as used in ProfilePage)
 // Kept here for compatibility with ProfilePage's shared avatar picker.
 // eslint-disable-next-line react-refresh/only-export-components
 export const PRESET_AVATARS = [
-  { id: 'avatar1', colors: 'linear-gradient(135deg, #8b7cf6, #ec4899)' },
-  { id: 'avatar2', colors: 'linear-gradient(135deg, #ff007f, #ffaa00)' },
-  { id: 'avatar3', colors: 'linear-gradient(135deg, #00ff87, #60efff)' },
-  { id: 'avatar4', colors: 'linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc)' },
-  { id: 'avatar5', colors: 'linear-gradient(135deg, #11998e, #38ef7d)' },
-  { id: 'avatar6', colors: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)' },
+  { id: 'avatar1', colors: '#8b7cf6', emoji: '' },
+  { id: 'avatar2', colors: '#ff007f', emoji: '' },
+  { id: 'avatar3', colors: '#00ff87', emoji: '' },
+  { id: 'avatar4', colors: '#0052d4', emoji: '' },
+  { id: 'avatar5', colors: '#11998e', emoji: '' },
+  { id: 'avatar6', colors: '#ff7a45', emoji: '' },
 ];
 
 function readStoredProfile() {
@@ -26,13 +27,24 @@ function readStoredProfile() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const shouldReduceMotion = useReducedMotion();
-  const [profile, setProfile] = useState(readStoredProfile);
+  const [avatarId, setAvatarId] = useState<string>('avatar1');
+  const [username, setUsername] = useState<string>('');
+
+  // Sync profile details reactively from localStorage
+  const loadProfile = () => {
+    const savedAvatar = localStorage.getItem('bruuk_avatar_id') || 'avatar1';
+    const savedUser = localStorage.getItem('bruuk_username') || '';
+    setAvatarId(savedAvatar);
+    setUsername(savedUser);
+  };
 
   useEffect(() => {
-    const loadProfile = () => setProfile(readStoredProfile());
+    loadProfile();
+    // Listen for custom profile update events to update header/tabbar dynamically
     window.addEventListener('bruuk_profile_updated', loadProfile);
-    return () => window.removeEventListener('bruuk_profile_updated', loadProfile);
+    return () => {
+      window.removeEventListener('bruuk_profile_updated', loadProfile);
+    };
   }, []);
 
   const currentAvatar = PRESET_AVATARS.find(a => a.id === profile.avatarId) || PRESET_AVATARS[0];
@@ -41,8 +53,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   // Helper to check if a route is active
   const isActive = (path: string) => {
-    if (path === '/descubrir') {
-      return location.pathname.startsWith('/descubrir');
+    if (path === '/descubrir' || path === '/experiencias') {
+      return location.pathname.startsWith(path);
     }
     return location.pathname === path;
   };
@@ -62,14 +74,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         {/* Viewport for mobile web app content */}
         <div className="app-viewport">
-          <div className={`app-content-area ${isImmersive ? 'app-content-area--immersive' : ''}`}>
-            <AnimatePresence mode="wait" initial={!shouldReduceMotion}>
+          <div className="app-content-area">
+            <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
                 style={{ height: '100%' }}
               >
                 {children}
@@ -92,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <Radar size={22} strokeWidth={2.2} />
+              <Map size={22} strokeWidth={2.2} />
               <span>Explora</span>
             </Link>
 

@@ -5,6 +5,7 @@ import { BruukLogo } from '../components/BruukLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { PRESET_AVATARS } from '../components/AppShell';
 import { supabase } from '../lib/supabase';
+import citiesData from '../data/cities.json';
 import './ProfilePage.css';
 
 interface Profile {
@@ -29,10 +30,10 @@ const PUBLIC_PROFILES: Record<string, Profile> = {
     favorite: 'Un concierto de último minuto',
     bio: 'Diseñadora de día, noctámbula de corazón. Busco lugares que no salgan en Google Maps.',
     interests: [
-      { emoji: '🎵', label: 'Música en vivo' },
-      { emoji: '🎨', label: 'Arte & Galerías' },
-      { emoji: '📸', label: 'Fotografía' },
-      { emoji: '🍸', label: 'Coctelerías' }
+      { emoji: '', label: 'Música en vivo' },
+      { emoji: '', label: 'Arte & Galerías' },
+      { emoji: '', label: 'Fotografía' },
+      { emoji: '', label: 'Coctelerías' }
     ],
     events: [
       { name: 'Noche Indie en El Plástico', date: 'En 3 días', role: 'Va' },
@@ -48,9 +49,9 @@ const PUBLIC_PROFILES: Record<string, Profile> = {
     favorite: 'Explorar un barrio nuevo',
     bio: 'Arquitecto urbano. Colecciono esquinas interesantes y bares sin nombre en la puerta.',
     interests: [
-      { emoji: '☕', label: 'Brunch & Cafés' },
-      { emoji: '🎧', label: 'DJ / Electrónica' },
-      { emoji: '🌮', label: 'Street Food' }
+      { emoji: '', label: 'Brunch & Cafés' },
+      { emoji: '', label: 'DJ / Electrónica' },
+      { emoji: '', label: 'Street Food' }
     ],
     events: [
       { name: 'Brunch Rooftop Colectivo', date: 'En 5 días', role: 'Va' }
@@ -191,7 +192,7 @@ export function ProfilePage() {
               <div className="details-interests-list">
                 {profile.interests.map(i => (
                   <span key={i.label} className="interest-tag-pill">
-                    {i.emoji} {i.label}
+                    {i.label}
                   </span>
                 ))}
               </div>
@@ -208,16 +209,22 @@ export function ProfilePage() {
   return (
     <div className="profile-page-container own-profile">
       <header className="profile-header-bar">
-        <h2 className="profile-header-title">Mi Perfil</h2>
-        {isEditing ? (
-          <button className="profile-edit-action-btn save" onClick={saveOwnProfile}>
-            Guardar
-          </button>
-        ) : (
-          <button className="profile-edit-action-btn" onClick={() => setIsEditing(true)}>
-            Editar
-          </button>
-        )}
+        <div className="profile-header-top">
+          <div className="profile-header-titles">
+            <span className="profile-tag">/ perfil</span>
+            <h1 className="profile-title brand-gradient-text">Mi Espacio</h1>
+          </div>
+          {isEditing ? (
+            <button className="profile-edit-action-btn save" onClick={saveOwnProfile}>
+              Guardar
+            </button>
+          ) : (
+            <button className="profile-edit-action-btn" onClick={() => setIsEditing(true)}>
+              Editar
+            </button>
+          )}
+        </div>
+        <p className="profile-sub">Gestiona tus intereses, credenciales y vinculaciones.</p>
       </header>
 
       <main className="profile-scroll-area">
@@ -249,6 +256,7 @@ export function ProfilePage() {
                   onClick={() => handleAvatarSelect(avatar.id)}
                   title="Cambiar avatar"
                 >
+                  {instagram ? instagram.slice(0, 1).toUpperCase() : <User size={12} />}
                   {avatarId === avatar.id && <Check size={12} className="avatar-check-icon" />}
                 </button>
               ))}
@@ -275,19 +283,26 @@ export function ProfilePage() {
                 <input 
                   type="text" 
                   value={instagram} 
-                  onChange={e => setInstagram(e.target.value.replace(/[^a-zA-Z0-9._]/g, ''))} 
+                  readOnly 
                   placeholder="usuario" 
+                  disabled
+                  className="input-disabled"
                 />
+                <span className="input-hint">El nombre de usuario es inmodificable.</span>
               </div>
 
               <div className="input-group">
                 <label>Ciudad</label>
-                <input 
-                  type="text" 
+                <select 
                   value={city} 
-                  onChange={e => setCity(e.target.value)} 
-                  placeholder="Ciudad" 
-                />
+                  onChange={e => setCity(e.target.value)}
+                  className="select-input"
+                >
+                  <option value="" disabled>Selecciona una ciudad</option>
+                  {citiesData.map(c => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="input-group">
