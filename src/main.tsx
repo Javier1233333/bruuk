@@ -8,9 +8,7 @@ import { MarketingLayout } from './components/MarketingLayout'
 import App from './App.tsx'
 import './index.css'
 
-const ExploreLandingPage = lazy(() =>
-  import('./pages/ExploreLandingPage').then(module => ({ default: module.ExploreLandingPage })),
-)
+
 const AppShell = lazy(() =>
   import('./components/AppShell').then(module => ({ default: module.AppShell })),
 )
@@ -32,6 +30,9 @@ const ProfileSetupPage = lazy(() =>
 const ProfilePage = lazy(() =>
   import('./pages/ProfilePage').then(module => ({ default: module.ProfilePage })),
 )
+const NosotrosPage = lazy(() =>
+  import('./pages/NosotrosPage').then(module => ({ default: module.NosotrosPage })),
+)
 const ExperienciasPage = lazy(() => import('./pages/ExperienciasPage'))
 const ChatsPage = lazy(() => import('./pages/ChatsPage'))
 
@@ -44,7 +45,7 @@ createRoot(document.getElementById('root')!).render(
             {/* Marketing Layout Routes (Header & Footer) */}
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<App />} />
-              <Route path="/explora" element={<ExploreLandingPage />} />
+              <Route path="/nosotros" element={<NosotrosPage />} />
             </Route>
 
             <Route path="/login" element={<LoginPage />} />
@@ -69,6 +70,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
             <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
             <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+            <Route path="/experiencias/:city" element={<AppShell><ExperienciasPage /></AppShell>} />
             <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
             <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
             <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />

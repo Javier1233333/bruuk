@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
-import L from 'leaflet';
+import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
 
@@ -190,8 +190,15 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   useEffect(() => {
     if (!isDropdownOpen) return;
     const handleClose = () => setIsDropdownOpen(false);
-    document.addEventListener('click', handleClose);
-    return () => document.removeEventListener('click', handleClose);
+    
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleClose);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClose);
+    };
   }, [isDropdownOpen]);
 
   // Handle vertical snapping scroll to find the active slide
@@ -220,6 +227,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   }, []);
 
   const selectCity = useCallback((cityId: string) => {
+    localStorage.setItem('bruuk_active_city', cityId);
     if (mode === 'embedded') {
       setEmbeddedCity(cityId);
     } else {
@@ -233,6 +241,23 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     setActiveReviewsSpotId(null);
     if (feedRef.current) feedRef.current.scrollTop = 0;
   }, [mode, navigate]);
+
+  // Keep active city synced in localStorage
+  useEffect(() => {
+    if (city && currentCityConfig) {
+      localStorage.setItem('bruuk_active_city', city);
+    }
+  }, [city, currentCityConfig]);
+
+  // Redirect to saved city on mount if no city parameter in standalone mode
+  useEffect(() => {
+    if (mode === 'standalone' && !routeCity) {
+      const savedCity = localStorage.getItem('bruuk_active_city');
+      if (savedCity && citiesData.some(c => c.id === savedCity)) {
+        navigate(`/descubrir/${savedCity}`, { replace: true });
+      }
+    }
+  }, [mode, routeCity, navigate]);
 
   // Invalid public slugs normalize to the city selector instead of silently using a fallback feed.
   useEffect(() => {
@@ -500,12 +525,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     }
   }, [navigate]);
 
-  // Redirect to hermosillo by default on mount if no city parameter
-  useEffect(() => {
-    if (!city) {
-      navigate('/descubrir/hermosillo', { replace: true });
-    }
-  }, [city, navigate]);
+
 
   // Leaflet Map instance initializer
   useEffect(() => {
@@ -523,96 +543,19 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     const lat = focusedSpot?.coordinates?.lat || activeCityConfig.defaultCoordinates.lat;
     const lng = focusedSpot?.coordinates?.lng || activeCityConfig.defaultCoordinates.lng;
 
-    const map = L.map(mapContainerRef.current, {
-      center: [lat, lng],
-      zoom: focusedSpot ? 15 : 13,
-      zoomControl: true,
-      attributionControl: false
-    });
-
-    // Dark theme map tiles (CartoDB Dark Matter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19
-    }).addTo(map);
-
-    // Add pins for mapFilteredSpots
-    mapFilteredSpots.forEach((spot) => {
-      if (!spot.coordinates) return;
-
-      const accentColor = spot.colorAccent || activeCityConfig.accentColor;
-      const marker = L.marker([spot.coordinates.lat, spot.coordinates.lng], {
-        icon: createCustomMarkerIcon(accentColor)
-      }).addTo(map);
-
-      const isExperience = getCategory(spot) === 'experiencia';
-
-      marker.bindPopup(`
-        <div class="map-popup-inner" style="font-family: 'DM Sans', sans-serif; color: #fff;">
-          <div style="width: 100%; height: 90px; overflow: hidden; margin-bottom: 8px;">
-            <img src="${spot.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
-          </div>
-          <h4 style="margin: 0 0 4px 0; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 0.95rem; color: #fff;">${spot.name}</h4>
-          <p style="margin: 0 0 6px 0; font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">
-            ${spot.type} · ${activeCityConfig.name}
-          </p>
-          <p style="margin: 0 0 8px 0; font-size: 0.8rem; color: rgba(255,255,255,0.85); font-style: italic;">
-            "${spot.description}"
-          </p>
-          ${isExperience && spot.schedule ? `
-            <p style="margin: 0 0 8px 0; font-size: 0.75rem; color: ${accentColor}; font-weight: bold;">
-              📅 ${spot.schedule}
-            </p>
-          ` : ''}
-          <div style="display: flex; gap: 8px; margin-top: 8px;">
-            <button class="map-go-to-feed-btn" data-spot-id="${spot.id}" style="
-              flex: 1;
-              background: #fff;
-              color: #000;
-              font-family: 'Outfit', sans-serif;
-              font-weight: 800;
-              border: 2px solid #000;
-              padding: 6px;
-              font-size: 0.7rem;
-              cursor: pointer;
-              text-transform: uppercase;
-              letter-spacing: 1px;
-              box-shadow: 2px 2px 0px ${accentColor};
-              transition: all 0.1s;
-            ">Ver en Feed</button>
-            <a href="${spot.mapsLink}" target="_blank" rel="noopener noreferrer" style="
-              flex: 1;
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              background: #0e0d1a;
-              color: #fff;
-              font-family: 'Outfit', sans-serif;
-              font-weight: 800;
-              border: 2px solid #fff;
-              padding: 6px;
-              font-size: 0.7rem;
-              cursor: pointer;
-              text-transform: uppercase;
-              letter-spacing: 1px;
-              text-decoration: none;
-              box-shadow: 2px 2px 0px ${accentColor};
-              transition: all 0.1s;
-            ">Cómo llegar</a>
-          </div>
-        </div>
-      `);
-
-      // Auto open popup if this marker was selected
-      if (spot.id === selectedMapSpotId) {
-        marker.openPopup();
-      }
-    });
+    // Prevent duplicate map initialization
+    const container = mapContainerRef.current;
+    if ((container as any)._leaflet_id) {
+      try {
+        delete (container as any)._leaflet_id;
+      } catch (e) {}
+    }
 
     // Delegate click on Ver en Feed inside Leaflet popup HTML
     const handlePopupOpen = (e: L.PopupEvent) => {
-      const container = e.popup.getElement();
-      if (!container) return;
-      const btn = container.querySelector('.map-go-to-feed-btn');
+      const popupContainer = e.popup.getElement();
+      if (!popupContainer) return;
+      const btn = popupContainer.querySelector('.map-go-to-feed-btn');
       if (btn) {
         btn.addEventListener('click', () => {
           const spotId = btn.getAttribute('data-spot-id');
@@ -623,11 +566,118 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
       }
     };
 
-    map.on('popupopen', handlePopupOpen);
+    let map: L.Map | null = null;
+    let sizeTimer: any;
+
+    try {
+      map = L.map(container, {
+        center: [lat, lng],
+        zoom: focusedSpot ? 15 : 13,
+        zoomControl: true,
+        attributionControl: false
+      });
+
+      // Dark theme map tiles (CartoDB Dark Matter)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19
+      }).addTo(map);
+
+      // Add pins for mapFilteredSpots
+      mapFilteredSpots.forEach((spot) => {
+        if (!spot.coordinates) return;
+
+        const accentColor = spot.colorAccent || activeCityConfig.accentColor;
+        const marker = L.marker([spot.coordinates.lat, spot.coordinates.lng], {
+          icon: createCustomMarkerIcon(accentColor)
+        }).addTo(map!);
+
+        const isExperience = getCategory(spot) === 'experiencia';
+
+        marker.bindPopup(`
+          <div class="map-popup-inner" style="font-family: 'DM Sans', sans-serif; color: #fff;">
+            <div style="width: 100%; height: 90px; overflow: hidden; margin-bottom: 8px;">
+              <img src="${spot.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <h4 style="margin: 0 0 4px 0; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 0.95rem; color: #fff;">${spot.name}</h4>
+            <p style="margin: 0 0 6px 0; font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px;">
+              ${spot.type} · ${activeCityConfig.name}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 0.8rem; color: rgba(255,255,255,0.85); font-style: italic;">
+              "${spot.description}"
+            </p>
+            ${isExperience && spot.schedule ? `
+              <p style="margin: 0 0 8px 0; font-size: 0.75rem; color: ${accentColor}; font-weight: bold;">
+                📅 ${spot.schedule}
+              </p>
+            ` : ''}
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="map-go-to-feed-btn" data-spot-id="${spot.id}" style="
+                flex: 1;
+                background: #fff;
+                color: #000;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 800;
+                border: 2px solid #000;
+                padding: 6px;
+                font-size: 0.7rem;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                box-shadow: 2px 2px 0px ${accentColor};
+                transition: all 0.1s;
+              ">Ver en Feed</button>
+              <a href="${spot.mapsLink}" target="_blank" rel="noopener noreferrer" style="
+                flex: 1;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #0e0d1a;
+                color: #fff;
+                font-family: 'Outfit', sans-serif;
+                font-weight: 800;
+                border: 2px solid #fff;
+                padding: 6px;
+                font-size: 0.7rem;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-decoration: none;
+                box-shadow: 2px 2px 0px ${accentColor};
+                transition: all 0.1s;
+              ">Cómo llegar</a>
+            </div>
+          </div>
+        `);
+
+        // Auto open popup if this marker was selected
+        if (spot.id === selectedMapSpotId) {
+          marker.openPopup();
+        }
+      });
+
+      map.on('popupopen', handlePopupOpen);
+
+      // Invalidate size after animation completes to fix grey map/hidden map bug in modal
+      sizeTimer = setTimeout(() => {
+        if (map) {
+          map.invalidateSize();
+        }
+      }, 300);
+
+    } catch (error) {
+      console.error("Error initializing Leaflet map:", error);
+    }
 
     return () => {
-      map.off('popupopen', handlePopupOpen);
-      map.remove();
+      if (sizeTimer) clearTimeout(sizeTimer);
+      if (map) {
+        try {
+          map.off('popupopen', handlePopupOpen);
+          map.remove();
+        } catch (e) {
+          console.warn("Error cleaning up Leaflet map:", e);
+        }
+      }
     };
   }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap, mapFilterCategory]);
 
@@ -1032,7 +1082,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
         {/* Fallback City Selector Overlay Modal */}
         <AnimatePresence>
-          {!currentCityConfig && (
+          {!currentCityConfig && !localStorage.getItem('bruuk_active_city') && (
             <motion.div
               className="city-selector-overlay"
               initial={{ opacity: 0 }}

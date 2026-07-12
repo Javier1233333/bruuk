@@ -62,15 +62,17 @@ export function ManifestoModal({ isOpen, onClose }: ManifestoModalProps) {
           </h2>
           
           <div className="manifesto-block">
-            <p className="manifesto-text">En conversaciones con desconocidos,</p>
-            <p className="manifesto-text">en un café improvisado,</p>
-            <p className="manifesto-text">en caminar sin rumbo por la ciudad.</p>
+            <p className="manifesto-text bold">¿POR QUÉ BRUUK?</p>
+            <p className="manifesto-text">
+              Nos llamamos BRUUK porque queremos ser la <strong>brújula</strong> de un mundo desconectado.
+              Una guía para apagar el scroll, explorar la ciudad y encontrar conexiones cara a cara.
+            </p>
           </div>
 
           <div className="manifesto-block manifesto-rotate-right">
-            <p className="manifesto-text bold">BRUUK existe para conectar personas a través de experiencias reales.</p>
-            <p className="manifesto-text">Para redescubrir lugares, compartir momentos y conocer gente nueva.</p>
+            <p className="manifesto-text">En conversaciones con desconocidos, en un café improvisado, al caminar sin rumbo por la ciudad.</p>
             <br />
+            <p className="manifesto-text bold">BRUUK existe para conectar personas a través de experiencias reales.</p>
             <p className="manifesto-text accent-bold">No somos solo una app.</p>
             <p className="manifesto-text">Somos una comunidad que cree en vivir más y scrollear menos.</p>
           </div>

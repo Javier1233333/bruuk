@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { RegistrationModal } from './RegistrationModal';
 import './MarketingLayout.css';
 
 const marketingLinks = [
-  { label: 'Inicio', to: '/', end: true },
-  { label: 'Descubre', to: '/explora', end: false },
+  { label: 'Inicio', to: '/' },
+  { label: 'Nosotros', to: '/nosotros' },
 ] as const;
 
 export function MarketingLayout() {
@@ -100,21 +100,23 @@ export function MarketingLayout() {
           </Link>
 
           <nav className="marketing-nav" aria-label="Navegación principal">
-            {marketingLinks.map(link => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) => `marketing-nav__link ${isActive ? 'is-active' : ''}`}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            {marketingLinks.map(link => {
+              const isLinkActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`marketing-nav__link ${isLinkActive ? 'is-active' : ''}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="marketing-header__actions">
             <button className="marketing-register" type="button" onClick={openRegistration}>
-              Registro anticipado
+              REGISTRO ANTICIPADO
             </button>
             <Link className="marketing-explore" to="/descubrir">
               Explorar <ArrowRight size={17} aria-hidden="true" />
@@ -149,19 +151,22 @@ export function MarketingLayout() {
             className="marketing-mobile-menu"
             aria-label="Navegación móvil"
           >
-            {marketingLinks.map(link => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) => `marketing-mobile-menu__link ${isActive ? 'is-active' : ''}`}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            {marketingLinks.map(link => {
+              const isLinkActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`marketing-mobile-menu__link ${isLinkActive ? 'is-active' : ''}`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             <div className="marketing-mobile-menu__divider" />
             <button className="marketing-mobile-menu__register" type="button" onClick={openRegistration}>
-              Registro anticipado
+              REGISTRO ANTICIPADO
             </button>
             <Link className="marketing-mobile-menu__cta" to="/descubrir">
               Explorar ahora <ArrowRight size={18} aria-hidden="true" />
@@ -176,13 +181,34 @@ export function MarketingLayout() {
 
       <footer className="marketing-footer">
         <div className="marketing-footer__inner">
-          <Link to="/" aria-label="Bruuk, ir al inicio">
-            <BruukLogo width={118} />
-          </Link>
-          <p>© {new Date().getFullYear()} Bruuk. Menos pantalla. Más mundo.</p>
-          <div className="marketing-footer__links">
-            <Link to="/explora">Descubre</Link>
-            <button type="button" onClick={openRegistration}>Registro anticipado</button>
+          <div className="marketing-footer__grid">
+            <div className="marketing-footer__col marketing-footer__brand-col">
+              <Link to="/" className="marketing-footer__logo-link" aria-label="Bruuk, ir al inicio">
+                <BruukLogo width={118} />
+              </Link>
+              <p className="marketing-footer__tagline">Menos pantalla. Más mundo.</p>
+              <div className="marketing-footer__contact-info">
+                <span>Contacto</span>
+                <a href="mailto:contacto@bruuk.space" className="marketing-footer__email">
+                  contacto@bruuk.space
+                </a>
+              </div>
+              <p className="marketing-footer__copyright">
+                © {new Date().getFullYear()} Bruuk. Todos los derechos reservados.
+              </p>
+            </div>
+            
+            <div className="marketing-footer__col marketing-footer__links-col">
+              <h3 className="marketing-footer__title">Enlaces</h3>
+              <div className="marketing-footer__links-list">
+                <Link to="/" className="marketing-footer__link">Inicio</Link>
+                <Link to="/nosotros" className="marketing-footer__link">Nosotros</Link>
+                <button type="button" className="marketing-footer__btn" onClick={openRegistration}>
+                  REGISTRO ANTICIPADO
+                </button>
+                <Link to="/descubrir" className="marketing-footer__link">Explorar App</Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Map, Compass, MessageCircle, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import './AppShell.css';
 
 // Preset avatar gradients (same as used in ProfilePage)
@@ -41,7 +41,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const currentAvatar = PRESET_AVATARS.find(a => a.id === avatarId) || PRESET_AVATARS[0];
   const isImmersive = location.pathname.startsWith('/descubrir');
-  const shouldShowTabbar = location.pathname !== '/descubrir';
 
   // Helper to check if a route is active
   const isActive = (path: string) => {
@@ -67,22 +66,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Viewport for mobile web app content */}
         <div className="app-viewport">
           <div className={`app-content-area ${isImmersive ? 'app-content-area--immersive' : ''}`}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                style={{ height: '100%' }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
+            {children}
           </div>
 
           {/* Persistent Glassmorphism Tab Bar */}
-          {shouldShowTabbar && (
           <nav className="app-tabbar" aria-label="Navegación principal de la app">
             <Link 
               to="/descubrir" 
@@ -156,7 +143,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span>Perfil</span>
             </Link>
           </nav>
-          )}
         </div>
       </div>
     </div>

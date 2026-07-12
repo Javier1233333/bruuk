@@ -145,7 +145,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 const joinRes = await fetch(window.location.origin + '/api/join', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
+                    body: JSON.stringify({ email: cleanEmail, tags: ['Radar Subscriber', ...userTags] }),
                 });
                 if (joinRes.ok) {
                     const joinData = await joinRes.json();
@@ -232,18 +232,40 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
                 {!isSubmitted ? (
                     <>
-                        {step < QUESTIONS.length ? (
+                        {step === 0 ? (
+                            /* Step 0: Welcome / Explanation */
+                            <div className="modal-step modal-step--intro">
+                                <span className="step-indicator">El Radar</span>
+                                <h2 id="registration-modal-title">EL RADAR DE LA COMUNIDAD</h2>
+                                <p className="intro-text">
+                                    ¿Sientes que necesitas saber más? Únete a esto.
+                                </p>
+                                <p className="intro-subtext">
+                                    El <strong>Radar de la Comunidad</strong> es nuestra señal semanal de actualizaciones con nuevas rutas locales, experiencias secretas y avisos de encuentros en tu ciudad antes que nadie.
+                                </p>
+                                <button 
+                                    className="btn btn-primary w-full mt-6"
+                                    onClick={() => setStep(1)}
+                                >
+                                    UNIRSE AL RADAR <ArrowRight size={18} />
+                                </button>
+                            </div>
+                        ) : step <= QUESTIONS.length ? (
+                            /* Step 1 to 4: Preferences Questionnaire */
                             <div className="modal-step">
                                 <div className="step-indicator">
-                                    Paso {step + 1} de {QUESTIONS.length}
+                                    Paso {step} de {QUESTIONS.length}
                                 </div>
-                                <h2 id="registration-modal-title">{QUESTIONS[step].title}</h2>
+                                <p className="question-purpose">
+                                    Estas preguntas sirven para reconocer qué tipo de miembro se une a nuestro Radar.
+                                </p>
+                                <h2 id="registration-modal-title">{QUESTIONS[step - 1].title}</h2>
                                 <div className="options-grid">
-                                    {QUESTIONS[step].options.map(opt => (
+                                    {QUESTIONS[step - 1].options.map(opt => (
                                         <button
                                             key={opt.id}
-                                            className={`option-btn ${answers[QUESTIONS[step].id] === opt.id ? 'selected' : ''}`}
-                                            onClick={() => handleOptionSelect(QUESTIONS[step].id, opt.id)}
+                                            className={`option-btn ${answers[QUESTIONS[step - 1].id] === opt.id ? 'selected' : ''}`}
+                                            onClick={() => handleOptionSelect(QUESTIONS[step - 1].id, opt.id)}
                                         >
                                             <span className="option-icon">{opt.icon}</span>
                                             <span className="option-label">{opt.label}</span>
@@ -252,10 +274,11 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                 </div>
                             </div>
                         ) : (
+                            /* Step 5: Email entry */
                             <div className="modal-step">
                                 <div className="step-indicator">Paso Final</div>
-                                <h2 id="registration-modal-title">¿A dónde enviamos el acceso?</h2>
-                                <p>Cero spam, cero distracciones. Solo tu boleto de salida.</p>
+                                <h2 id="registration-modal-title">¿A dónde enviamos el Radar?</h2>
+                                <p>Ingresa tu correo para recibir los avisos y actualizaciones.</p>
                                 <form onSubmit={handleSubmit} className="email-form">
                                     <label className="sr-only" htmlFor="registration-email">Correo electrónico</label>
                                     <input
@@ -277,7 +300,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? 'Procesando...' : (
-                                            <>Entrar a BRUUK <ArrowRight size={18} /></>
+                                            <>SUSCRIBIRSE AL RADAR <ArrowRight size={18} /></>
                                         )}
                                     </button>
                                 </form>
@@ -289,16 +312,16 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2 id="registration-modal-title">Ya estás en la lista.</h2>
-                        <p>Este correo ya fue registrado antes. Revisa tu bandeja de entrada — y también <strong>spam</strong>, <strong>promociones</strong> y <strong>otras</strong>. El correo ya está ahí.</p>
+                        <h2 id="registration-modal-title">Ya estás en el Radar.</h2>
+                        <p>Este correo ya está suscrito. Revisa tu bandeja de entrada (y carpetas de spam o promociones) para ver nuestras señales anteriores.</p>
                     </div>
                 ) : (
                     <div className="modal-success animate-fade-in">
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2 id="registration-modal-title">Ya estás dentro.</h2>
-                        <p>Hemos guardado tu perfil. Prepárate para dejar la pantalla y salir al mundo real.</p>
+                        <h2 id="registration-modal-title">¡Suscripción completa!</h2>
+                        <p>Te has unido al Radar de la Comunidad. Pronto recibirás nuestra primera señal en tu correo.</p>
                     </div>
                 )}
             </div>

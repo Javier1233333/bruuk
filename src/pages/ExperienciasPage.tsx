@@ -193,8 +193,15 @@ export default function ExperienciasPage() {
   useEffect(() => {
     if (!isDropdownOpen) return;
     const handleClose = () => setIsDropdownOpen(false);
-    document.addEventListener('click', handleClose);
-    return () => document.removeEventListener('click', handleClose);
+    
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleClose);
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClose);
+    };
   }, [isDropdownOpen]);
 
   // Filter experiences by active city

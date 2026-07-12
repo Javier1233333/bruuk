@@ -1,170 +1,256 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Globe, ArrowRight, Users, Compass, MapPinned } from 'lucide-react';
-import { ManifestoModal } from './components/ManifestoModal';
+import { useRef, useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Compass, MapPinned, Sparkles, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { RegistrationModal } from './components/RegistrationModal';
 import citiesData from './data/cities.json';
 import './App.css';
 
-function App() {
+const carouselSlides = [
+  {
+    id: 'descubre',
+    eyebrow: 'Explora sin algoritmo',
+    title: 'ENCUENTRA LO QUE NO ESTABAS BUSCANDO.',
+    description: 'Rincones locales y lugares curados para salir de las listas de siempre.',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=85',
+    badge: 'LUGAR CURADO',
+    cardTitle: 'Rincones que valen la vuelta',
+    meta: 'CERCA DE TI',
+  },
+  {
+    id: 'vive',
+    eyebrow: 'Planes que sí pasan',
+    title: 'VIVE LA CIUDAD, NO SOLO LA GUARDES.',
+    description: 'Experiencias concretas para moverte, probar algo nuevo y aparecer en el mundo real.',
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=85',
+    badge: 'EXPERIENCIA',
+    cardTitle: 'Una salida distinta empieza aquí',
+    meta: 'GRUPOS PEQUEÑOS',
+  },
+  {
+    id: 'conecta',
+    eyebrow: 'Comunidad en movimiento',
+    title: 'LA CIUDAD ES EL PRETEXTO. CONECTAR ES EL PUNTO.',
+    description: 'Personas con ganas de romper la rutina, compartir un plan y conocer su ciudad de otra forma.',
+    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1200&q=85',
+    badge: 'COMUNIDAD',
+    cardTitle: 'Más personas. Más ciudades. Más mundo.',
+    meta: 'BRUUK CRECE CONTIGO',
+  },
+] as const;
+
+export default function App() {
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
-  const [isManifestoOpen, setIsManifestoOpen] = useState(false);
-  const navigate = useNavigate();
+  const [activeSlide, setActiveSlide] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const slide = carouselSlides[activeSlide];
+
+  const showPreviousSlide = () => {
+    setActiveSlide(current => (current - 1 + carouselSlides.length) % carouselSlides.length);
+  };
+
+  const showNextSlide = () => {
+    setActiveSlide(current => (current + 1) % carouselSlides.length);
+  };
 
   return (
-    <div className="app-wrapper">
+    <div className="explore-landing">
       <main>
-        {/* Hero Section */}
-        <section className="hero" id="inicio">
-          <div className="hero-bg-glow"></div>
-          <div className="container">
-            <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos Pantalla. Más Mundo.">
-              Menos Pantalla. <br /> Más Mundo.
-            </h1>
-            <p className="animate-fade-in delay-1">
-              Planes curados para vivir la ciudad de verdad. Para los que vienen de visita y quieren ir más allá del itinerario. Para los que ya viven aquí y la olvidaron. Para los que quieren conocer gente real mientras la recorren.
-            </p>
-            <div className="hero-actions animate-fade-in delay-2">
-              <button className="btn btn-primary" onClick={() => navigate('/descubrir')}>
-                EXPLORAR PLANES <ArrowRight size={20} strokeWidth={3} />
-              </button>
-              <button className="btn btn-secondary" onClick={() => setIsManifestoOpen(true)}>
-                POR QUÉ BRUUK
-              </button>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Scroll Interactivo Section */}
-        <section className="scroll-section">
-          <div className="scroll-inner">
-            <div className="scroll-text">
-              <span className="scroll-eyebrow">Rincones locales · Sin algoritmos</span>
-              <h2 className="scroll-title">Explora<br />la ciudad.</h2>
-              <p className="scroll-subtitle">Desliza sin algoritmos.</p>
-            </div>
-            <div className="scroll-action">
-              <p className="scroll-sub">Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos.</p>
-              
-              <div className="home-city-selector">
-                {citiesData.map(c => (
-                  <button
-                    key={c.id}
-                    className="home-city-btn"
-                    onClick={() => navigate(`/descubrir/${c.id}`)}
-                    style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
-                  >
-                    {c.name}
-                    <ArrowRight size={14} />
-                  </button>
-                ))}
-                <button
-                  className="home-city-btn home-city-btn--all"
-                  onClick={() => navigate('/descubrir')}
-                >
-                  <Compass size={14} /> Elige ciudad
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* App Product Teaser */}
-        <section className="home-app-teaser" aria-labelledby="home-app-title">
-          <div className="container home-app-teaser__layout">
-            <div className="home-app-teaser__content">
-              <span className="home-app-teaser__eyebrow">/ Descubre Bruuk</span>
-              <h2 id="home-app-title">TU PRÓXIMA SALIDA EMPIEZA AQUÍ.</h2>
+        <section className="explore-hero" aria-labelledby="explore-hero-title">
+          <div className="explore-hero__glow" aria-hidden="true" />
+          <div className="explore-container explore-hero__layout">
+            <div className="explore-hero__content">
+              <span className="explore-kicker">/ Bruuk en cada ciudad</span>
+              <h1 id="explore-hero-title">LA CIUDAD NO VIENE CON ALGORITMO.</h1>
               <p>
-                Descubre lugares, experiencias y personas que sí quieren salir. Una forma distinta de dejar de guardar planes y empezar a vivirlos.
+                Bruuk reúne lugares, experiencias y personas para que dejes de guardar planes y empieces a vivirlos.
               </p>
-              <Link className="btn btn-primary" to="/explora">
-                CONOCE LA APP <ArrowRight size={20} strokeWidth={3} />
+              <div className="explore-actions">
+                <Link
+                  className="explore-cta explore-cta--primary"
+                  to="/descubrir"
+                >
+                  EMPEZAR AHORA <ArrowRight size={20} aria-hidden="true" />
+                </Link>
+                <a className="explore-cta explore-cta--secondary" href="#recorrido">
+                  VER EL RECORRIDO <ArrowRight size={18} aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+
+            <div className="explore-hero__signal" aria-label="Todo lo que encuentras en Bruuk">
+              <div className="explore-hero__signal-title">
+                <Compass size={24} aria-hidden="true" />
+                <span>Tu brújula local</span>
+              </div>
+              <div className="explore-hero__signal-row">
+                <MapPinned size={21} aria-hidden="true" />
+                <span>Lugares que no salen en las listas de siempre</span>
+              </div>
+              <div className="explore-hero__signal-row">
+                <Sparkles size={21} aria-hidden="true" />
+                <span>Experiencias para aparecer, no solo mirar</span>
+              </div>
+              <div className="explore-hero__signal-row">
+                <Users size={21} aria-hidden="true" />
+                <span>Personas con ganas de salir de la rutina</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="recorrido" className="explore-carousel" aria-labelledby="explore-carousel-title">
+          <div className="explore-container explore-carousel__intro">
+            <div>
+              <span className="explore-kicker">/ Así se vive Bruuk</span>
+              <h2 id="explore-carousel-title">UN RECORRIDO. MUCHAS FORMAS DE SALIR.</h2>
+            </div>
+            <p>
+              Recorre las ideas que mueven Bruuk: descubrir sin algoritmo, vivir planes reales y conectar con nuevas personas.
+            </p>
+          </div>
+
+          <div
+            className="explore-carousel__shell"
+            role="region"
+            aria-roledescription="carrusel"
+            aria-label="Recorrido por Bruuk"
+            tabIndex={0}
+            onKeyDown={event => {
+              if (event.key === 'ArrowLeft') showPreviousSlide();
+              if (event.key === 'ArrowRight') showNextSlide();
+            }}
+            onTouchStart={event => {
+              touchStartX.current = event.touches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={event => {
+              if (touchStartX.current === null) return;
+              const distance = event.changedTouches[0].clientX - touchStartX.current;
+              if (Math.abs(distance) > 45) {
+                if (distance > 0) showPreviousSlide();
+                else showNextSlide();
+              }
+              touchStartX.current = null;
+            }}
+          >
+            <div className="explore-carousel__viewport" aria-live="polite" aria-atomic="true">
+              <article key={slide.id} className="explore-carousel__slide">
+                <div className="explore-carousel__copy">
+                  <span>{slide.eyebrow}</span>
+                  <h3>{slide.title}</h3>
+                  <p>{slide.description}</p>
+                  <Link
+                    className="explore-carousel__link"
+                    to="/descubrir"
+                  >
+                    EMPEZAR AHORA <ArrowRight size={18} aria-hidden="true" />
+                  </Link>
+                </div>
+
+                <div className="explore-carousel__screen">
+                  <img src={slide.image} alt="" loading="lazy" draggable="false" />
+                  <div className="explore-carousel__screen-top">
+                    <Compass size={20} aria-hidden="true" />
+                    <span>BRUUK / EXPLORA</span>
+                  </div>
+                  <div className="explore-carousel__screen-card">
+                    <span>{slide.badge}</span>
+                    <strong>{slide.cardTitle}</strong>
+                    <small>{slide.meta}</small>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div className="explore-carousel__controls">
+              <button type="button" onClick={showPreviousSlide} aria-label="Ver pantalla anterior">
+                <ChevronLeft size={22} aria-hidden="true" />
+              </button>
+              <div className="explore-carousel__dots" aria-label="Elegir pantalla">
+                {carouselSlides.map((item, index) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={index === activeSlide ? 'is-active' : ''}
+                    aria-label={`Ir a pantalla ${index + 1}: ${item.eyebrow}`}
+                    aria-current={index === activeSlide ? 'true' : undefined}
+                    onClick={() => setActiveSlide(index)}
+                  />
+                ))}
+              </div>
+              <button type="button" onClick={showNextSlide} aria-label="Ver pantalla siguiente">
+                <ChevronRight size={22} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="explore-pillars" aria-labelledby="explore-pillars-title">
+          <div className="explore-container">
+            <div className="explore-pillars__heading">
+              <span className="explore-kicker">/ Todo en una experiencia</span>
+              <h2 id="explore-pillars-title">DESCUBRE. VIVE. CONECTA.</h2>
+            </div>
+            <div className="explore-pillars__grid">
+              <article>
+                <MapPinned size={30} aria-hidden="true" />
+                <h3>Lugares que valen la vuelta</h3>
+                <p>Cafés, bares y rincones elegidos por su vibra, no por cuántas veces aparecen en tu pantalla.</p>
+              </article>
+              <article>
+                <Sparkles size={30} aria-hidden="true" />
+                <h3>Experiencias que sí pasan</h3>
+                <p>Planes concretos para aprender, moverte, comer, escuchar y dejar que la ciudad te sorprenda.</p>
+              </article>
+              <article>
+                <Users size={30} aria-hidden="true" />
+                <h3>Personas con ganas de salir</h3>
+                <p>La ciudad es el pretexto. La conexión empieza cuando decides aparecer.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="explore-cities" aria-labelledby="explore-cities-title">
+          <div className="explore-container explore-cities__layout">
+            <div>
+              <span className="explore-kicker">/ El mapa apenas empieza</span>
+              <h2 id="explore-cities-title">EMPEZAMOS EN DOS. VAMOS POR MÁS.</h2>
+              <p>Las ciudades disponibles son el inicio de una red diseñada para crecer lugar por lugar.</p>
+            </div>
+            <div className="explore-cities__grid">
+              {citiesData.map(city => (
+                <Link
+                  key={city.id}
+                  className="explore-city-card"
+                  to={`/descubrir/${city.id}`}
+                  style={{ '--city-color': city.accentColor } as React.CSSProperties}
+                >
+                  <span>{city.name}</span>
+                  <ArrowRight size={22} aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="explore-closing" aria-labelledby="explore-closing-title">
+          <div className="explore-container explore-closing__content">
+            <h2 id="explore-closing-title">MENOS PANTALLA. MÁS MUNDO.</h2>
+            <p>Tu próximo lugar, plan o conexión no necesita otra lista. Necesita que aparezcas.</p>
+            <div className="explore-actions explore-actions--center">
+              <Link
+                className="explore-cta explore-cta--dark"
+                to="/descubrir"
+              >
+                EMPEZAR AHORA <ArrowRight size={20} aria-hidden="true" />
               </Link>
-            </div>
-
-            <div className="home-app-teaser__preview" aria-hidden="true">
-              <div className="home-app-teaser__preview-header">
-                <span>BRUUK / EXPLORA</span>
-                <Compass size={20} />
-              </div>
-              <div className="home-app-teaser__preview-card home-app-teaser__preview-card--primary">
-                <MapPinned size={26} />
-                <span>Lugares que valen la vuelta</span>
-              </div>
-              <div className="home-app-teaser__preview-card">
-                <Sparkles size={26} />
-                <span>Experiencias que sí pasan</span>
-              </div>
-              <div className="home-app-teaser__preview-card">
-                <Users size={26} />
-                <span>Gente real, fuera de la pantalla</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="features">
-          <div className="container">
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 className="brand-gradient-text" style={{ fontSize: '3rem', letterSpacing: '-1px' }}>UNA CIUDAD, DESCUBIERTA DE VERDAD</h2>
-              <p style={{ color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '1.2rem', maxWidth: '600px', margin: '1rem auto 0' }}>
-                No guías de turista. No listas de influencers. Planes pensados para que te pierdas en lo bueno y encuentres personas en el camino.
-              </p>
-            </div>
-
-            <div className="features-grid">
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <Sparkles size={28} color="#fff" />
-                </div>
-                <h3>Planes curados</h3>
-                <p>Cada plan fue pensado para sacar lo mejor de cada ciudad: sus barrios, su comida, su música, su gente. Nada genérico, nada de lo que ya conoces.</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <Users size={28} color="#fff" />
-                </div>
-                <h3>Planes con desconocidos</h3>
-                <p>¿Vienes solo o quieres conocer gente nueva? Algunos planes están diseñados para hacerse con extraños que comparten el mismo interés. La ciudad es el pretexto, la conexión es el punto.</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <Globe size={28} color="#fff" />
-                </div>
-                <h3>Para visitantes y locales</h3>
-                <p>Si vienes de visita, te mostramos la ciudad que sus locales quieren que veas. Si ya vives ahí, te apostamos que todavía guarda rincones que no conoces.</p>
-              </div>
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <Compass size={28} color="#fff" />
-                </div>
-                <h3>Más ciudades en camino</h3>
-                <p>Las primeras ciudades son solo el inicio. BRUUK está trazando nuevas rutas para llegar a más lugares. Cada ciudad, descubierta de manera auténtica.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Newsletter Section */}
-        <section className="newsletter">
-          <div className="container">
-            <div className="newsletter-wrapper">
-              <div className="newsletter-content">
-                <h2 className="glitch-hover">TU CIUDAD TE ESPERA</h2>
-                <p>Acceso anticipado a nuevas rutas, planes y experiencias de BRUUK. Sé parte de una comunidad que está redescubriendo sus ciudades.</p>
-                <div className="newsletter-form newsletter-actions">
-                  <button className="btn btn-primary" onClick={() => navigate('/descubrir')}>
-                    QUIERO EXPLORAR <ArrowRight size={20} strokeWidth={3} />
-                  </button>
-                  <button className="btn newsletter-community" onClick={() => setIsRegistrationOpen(true)}>
-                    ÚNETE A LA COMUNIDAD
-                  </button>
-                </div>
-               
-              </div>
+              <button
+                className="explore-cta explore-cta--light"
+                type="button"
+                onClick={() => setIsRegistrationOpen(true)}
+              >
+                ÚNETE A LA COMUNIDAD
+              </button>
             </div>
           </div>
         </section>
@@ -174,13 +260,6 @@ function App() {
         isOpen={isRegistrationOpen}
         onClose={() => setIsRegistrationOpen(false)}
       />
-
-      <ManifestoModal
-        isOpen={isManifestoOpen}
-        onClose={() => setIsManifestoOpen(false)}
-      />
     </div>
   );
 }
-
-export default App;
