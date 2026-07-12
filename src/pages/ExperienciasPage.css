@@ -407,10 +407,10 @@
 
 /* ── Bottom Sheet Details ── */
 .bottom-sheet-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 100000;
+  z-index: 999999;
   display: flex;
   align-items: flex-end;
 }
@@ -648,10 +648,10 @@
 
 /* Sticky Bottom Checkout */
 .sheet-checkout-row {
-  height: 72px;
+  height: calc(72px + env(safe-area-inset-bottom, 0px));
   background: #191822;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 0 1.25rem;
+  padding: 0 1.25rem env(safe-area-inset-bottom, 0px) 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -713,5 +713,8 @@
   }
   .experiences-list-area {
     padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+  }
+  .experiences-grid .experience-card {
+    width: 100% !important;
   }
 }
