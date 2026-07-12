@@ -212,6 +212,20 @@ export default function ExperienciasPage() {
     }
   }, [location.state, location.pathname, navigate]);
 
+  useEffect(() => {
+    if (selectedExp) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
+    };
+  }, [selectedExp]);
+
   // Find active city config
   const currentCityConfig = citiesData.find(c => c.id === city);
   const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
