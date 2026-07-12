@@ -13,9 +13,21 @@ const marketingLinks = [
 export function MarketingLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const scrollToLocation = () => {
@@ -92,7 +104,7 @@ export function MarketingLayout() {
   };
 
   return (
-    <div className="marketing-shell">
+    <div className={`marketing-shell ${isScrolled ? 'is-scrolled' : ''}`}>
       <header className="marketing-header">
         <div className="marketing-header__inner">
           <Link className="marketing-brand" to="/" aria-label="Bruuk, ir al inicio">
