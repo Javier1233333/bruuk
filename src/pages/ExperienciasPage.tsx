@@ -5,6 +5,49 @@ import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, C
 import citiesData from '../data/cities.json';
 import './ExperienciasPage.css';
 
+function getCookie(name: string): string | null {
+  try {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  } catch (e) {
+    console.warn("Cookies error:", e);
+  }
+  return null;
+}
+
+function setCookie(name: string, value: string, days = 365) {
+  try {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `; expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value || ""}${expires}; path=/; SameSite=Lax`;
+  } catch (e) {
+    console.warn("Cookies save error:", e);
+  }
+}
+
+function getSavedCity(): string | null {
+  try {
+    const cookieVal = getCookie('bruuk_active_city');
+    if (cookieVal) return cookieVal;
+  } catch (e) {}
+  try {
+    const localVal = localStorage.getItem('bruuk_active_city');
+    if (localVal) return localVal;
+  } catch (e) {}
+  return null;
+}
+
+function saveCity(cityId: string) {
+  try {
+    setCookie('bruuk_active_city', cityId);
+  } catch (e) {}
+  try {
+    localStorage.setItem('bruuk_active_city', cityId);
+  } catch (e) {}
+}
+
 type Experience = {
   id: string;
   name: string;
@@ -176,7 +219,7 @@ export default function ExperienciasPage() {
   // Keep active city synced globally
   useEffect(() => {
     if (currentCityConfig) {
-      localStorage.setItem('bruuk_active_city', currentCityConfig.id);
+      saveCity(currentCityConfig.id);
       window.dispatchEvent(new Event('bruuk_city_changed'));
     }
   }, [currentCityConfig]);
@@ -184,7 +227,7 @@ export default function ExperienciasPage() {
   // Default redirect to saved city if no city parameter
   useEffect(() => {
     if (!city) {
-      const savedCity = localStorage.getItem('bruuk_active_city') || 'hermosillo';
+      const savedCity = getSavedCity() || 'hermosillo';
       navigate(`/experiencias/${savedCity}`, { replace: true });
     }
   }, [city, navigate]);

@@ -23,6 +23,49 @@ import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
 
+function getCookie(name: string): string | null {
+  try {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  } catch (e) {
+    console.warn("Cookies error:", e);
+  }
+  return null;
+}
+
+function setCookie(name: string, value: string, days = 365) {
+  try {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `; expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value || ""}${expires}; path=/; SameSite=Lax`;
+  } catch (e) {
+    console.warn("Cookies save error:", e);
+  }
+}
+
+function getSavedCity(): string | null {
+  try {
+    const cookieVal = getCookie('bruuk_active_city');
+    if (cookieVal) return cookieVal;
+  } catch (e) {}
+  try {
+    const localVal = localStorage.getItem('bruuk_active_city');
+    if (localVal) return localVal;
+  } catch (e) {}
+  return null;
+}
+
+function saveCity(cityId: string) {
+  try {
+    setCookie('bruuk_active_city', cityId);
+  } catch (e) {}
+  try {
+    localStorage.setItem('bruuk_active_city', cityId);
+  } catch (e) {}
+}
+
 type Spot = {
   id: string;
   city: string;
@@ -227,7 +270,11 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   }, []);
 
   const selectCity = useCallback((cityId: string) => {
-    localStorage.setItem('bruuk_active_city', cityId);
+    saveCity(cityId);
+    try {
+      setCookie('bruuk_city_selected', 'true');
+      localStorage.setItem('bruuk_city_selected', 'true');
+    } catch (e) {}
     if (mode === 'embedded') {
       setEmbeddedCity(cityId);
     } else {
@@ -242,18 +289,19 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     if (feedRef.current) feedRef.current.scrollTop = 0;
   }, [mode, navigate]);
 
-  // Keep active city synced in localStorage
+  // Keep active city synced in storage
   useEffect(() => {
     if (city && currentCityConfig) {
-      localStorage.setItem('bruuk_active_city', city);
+      saveCity(city);
     }
   }, [city, currentCityConfig]);
 
-  // Redirect to saved city on mount if no city parameter in standalone mode
+  // Redirect to saved city on mount if no city parameter in standalone mode and they explicitly chose a city before
   useEffect(() => {
     if (mode === 'standalone' && !routeCity) {
-      const savedCity = localStorage.getItem('bruuk_active_city');
-      if (savedCity && citiesData.some(c => c.id === savedCity)) {
+      const isSelected = getCookie('bruuk_city_selected') === 'true' || localStorage.getItem('bruuk_city_selected') === 'true';
+      const savedCity = getSavedCity();
+      if (isSelected && savedCity && citiesData.some(c => c.id === savedCity)) {
         navigate(`/descubrir/${savedCity}`, { replace: true });
       }
     }
@@ -681,6 +729,30 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     };
   }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap, mapFilterCategory]);
 
+  const isExplicitlySelected = getCookie('bruuk_city_selected') === 'true' || localStorage.getItem('bruuk_city_selected') === 'true';
+
+  // If no city parameter is provided but we have a saved city, show a loader while redirecting
+  if (mode === 'standalone' && !routeCity && isExplicitlySelected && getSavedCity()) {
+    return (
+      <div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '100vh', 
+          background: '#0e0d1a', 
+          fontFamily: "'Outfit', sans-serif",
+          color: '#fff',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}
+      >
+        <Loader2 className="animate-spin" size={32} style={{ color: 'var(--accent-light, #8b7cf6)' }} />
+        <span style={{ fontSize: '0.9rem', letterSpacing: '1px', opacity: 0.8 }}>Cargando tu ciudad...</span>
+      </div>
+    );
+  }
+
   return (
     <div 
       className={`ocean-container ocean-container--${mode}`}
@@ -1082,7 +1154,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
         {/* Fallback City Selector Overlay Modal */}
         <AnimatePresence>
-          {!currentCityConfig && !localStorage.getItem('bruuk_active_city') && (
+          {!currentCityConfig && (!isExplicitlySelected || !getSavedCity()) && (
             <motion.div
               className="city-selector-overlay"
               initial={{ opacity: 0 }}
