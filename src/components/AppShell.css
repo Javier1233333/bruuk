@@ -236,7 +236,7 @@
 /* ── Mobile Fullscreen Fallback ── */
 @media (max-width: 768px) {
   /* Lock the browser window viewport height and overflow without fixing body position */
-  html, body, #root {
+  html.in-app, body.in-app, html.in-app #root {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;

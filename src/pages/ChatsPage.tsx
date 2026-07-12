@@ -1,19 +1,74 @@
-import { useState, useEffect } from 'react';
-import { Bell, Check, Lock, Shield } from 'lucide-react';
+import { useState } from 'react';
+import { Lock, Shield, Check } from 'lucide-react';
 import './ChatsPage.css';
 
 export default function ChatsPage() {
-  const [notified, setNotified] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('bruuk_chats_notified') === 'true';
-    setNotified(saved);
-  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleNotifyToggle = () => {
-    const next = !notified;
-    setNotified(next);
-    localStorage.setItem('bruuk_chats_notified', String(next));
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      setErrorMsg("Por favor, ingresa un correo electrónico válido.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Registrar en Beehiiv
+      let alreadyRegistered = false;
+      try {
+        const joinRes = await fetch(window.location.origin + '/api/join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, tags: ['Radar Subscriber', 'Chats Page'] }),
+        });
+        if (joinRes.ok) {
+          const joinData = await joinRes.json();
+          alreadyRegistered = joinData.alreadyRegistered === true;
+        }
+      } catch {
+        alreadyRegistered = false;
+      }
+
+      if (alreadyRegistered) {
+        setIsAlreadyRegistered(true);
+        setIsSubmitted(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Guardar en Google Sheets + Enviar correo de bienvenida
+      await Promise.allSettled([
+        fetch(window.location.origin + '/api/sheets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, preferences: { source: 'chats_page' } }),
+        }),
+        fetch(window.location.origin + '/api/welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail }),
+        }),
+      ]);
+
+      setIsSubmitted(true);
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error('Submit error:', error);
+      setErrorMsg("Ocurrió un error inesperado. Intenta de nuevo.");
+      setIsSubmitting(false);
+    }
   };
 
   const DUMMY_CHATS = [
@@ -63,23 +118,45 @@ export default function ChatsPage() {
             <p className="lock-desc">
               Esta sección está en desarrollo. Pronto podrás abrir salas de chat privadas y grupales con exploradores que reserven tus mismas experiencias o spots.
             </p>
-            
-            <button 
-              className={`notify-btn ${notified ? 'active' : ''}`}
-              onClick={handleNotifyToggle}
-            >
-              {notified ? (
-                <>
-                  <Check size={15} />
-                  <span>Te avisaremos</span>
-                </>
-              ) : (
-                <>
-                  <Bell size={15} />
-                  <span>Notificarme al lanzar</span>
-                </>
-              )}
-            </button>
+
+            {/* Radar Form Replacement */}
+            {!isSubmitted ? (
+              <form onSubmit={handleSubmit} className="chats-radar-form">
+                <p className="chats-radar-intro">
+                  Únete al <strong>Radar de la Comunidad</strong> para enterarte de los chats y recibir los planes semanales.
+                </p>
+                <div className="chats-radar-input-group">
+                  <input
+                    type="email"
+                    placeholder="tu@correo.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    className={`chats-radar-input ${errorMsg ? 'input-error' : ''}`}
+                  />
+                  <button 
+                    type="submit" 
+                    className="chats-radar-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? '...' : 'UNIRSE'}
+                  </button>
+                </div>
+                {errorMsg && (
+                  <p className="chats-radar-error">{errorMsg}</p>
+                )}
+              </form>
+            ) : isAlreadyRegistered ? (
+              <div className="chats-radar-success animate-fade-in">
+                <Check size={18} className="success-check-icon" />
+                <span>Ya estás en el Radar. ¡Revisa tu bandeja!</span>
+              </div>
+            ) : (
+              <div className="chats-radar-success animate-fade-in">
+                <Check size={18} className="success-check-icon" />
+                <span>¡Te has unido al Radar de la Comunidad!</span>
+              </div>
+            )}
 
             <div className="lock-footer">
               <Shield size={12} />

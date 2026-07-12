@@ -34,8 +34,15 @@ export function AppShell({ children }: { children: ReactNode }) {
     loadProfile();
     // Listen for custom profile update events to update header/tabbar dynamically
     window.addEventListener('bruuk_profile_updated', loadProfile);
+    
+    // Add in-app class to prevent global scroll bleeding on unmount
+    document.documentElement.classList.add('in-app');
+    document.body.classList.add('in-app');
+
     return () => {
       window.removeEventListener('bruuk_profile_updated', loadProfile);
+      document.documentElement.classList.remove('in-app');
+      document.body.classList.remove('in-app');
     };
   }, []);
 
