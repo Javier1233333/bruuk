@@ -68,7 +68,7 @@ function App() {
             <div className="cities-map-content">
               <span className="cities-eyebrow">/ El mapa apenas empieza</span>
               <h2 className="cities-title">
-                Empezamos en dos.<br />Vamos por más.
+                Empezamos por GDL<br />Vamos por más.
               </h2>
               <p className="cities-subtitle">
                 Las ciudades disponibles son el inicio de una red diseñada para crecer lugar por lugar.
