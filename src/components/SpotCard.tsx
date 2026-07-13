@@ -9,15 +9,16 @@ interface Spot {
   imageUrl: string;
   colorAccent: string;
   mapsLink: string;
+  city?: string;
   rating?: number;
   price?: string;
 }
 
 interface SpotCardProps {
   spot: Spot;
-  clickX: number;
-  clickY: number;
-  onClose: () => void;
+  clickX?: number;
+  clickY?: number;
+  onClose?: () => void;
 }
 
 const CARD_W = 300;
@@ -41,10 +42,12 @@ function getCardPos(cx: number, cy: number) {
 }
 
 export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
-  const pos = getCardPos(clickX, clickY);
+  const isAbsolute = clickX !== undefined && clickY !== undefined;
+  const pos = isAbsolute ? getCardPos(clickX!, clickY!) : { x: 0, y: 0 };
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!onClose || !isAbsolute) return;
     const handle = (e: MouseEvent) => {
       if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
         onClose();
@@ -52,18 +55,18 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
     };
     document.addEventListener('click', handle, true);
     return () => document.removeEventListener('click', handle, true);
-  }, [onClose]);
+  }, [onClose, isAbsolute]);
 
   return (
     <motion.div
       ref={cardRef}
       className="spot-card"
-      style={{ left: pos.x, top: pos.y }}
-      initial={{ opacity: 0, scale: 0.6, y: 16 }}
+      style={isAbsolute ? { left: pos.x, top: pos.y, position: 'fixed' } : { position: 'relative' }}
+      initial={isAbsolute ? { opacity: 0, scale: 0.6, y: 16 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.5, y: -8 }}
-      transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-      onClick={e => e.stopPropagation()}
+      exit={isAbsolute ? { opacity: 0, scale: 0.5, y: -8 } : undefined}
+      transition={isAbsolute ? { type: 'spring', stiffness: 420, damping: 26 } : { duration: 0.3 }}
+      onClick={(e: React.MouseEvent) => e.stopPropagation()}
     >
       {/* Accent color stripe */}
       <div
@@ -78,21 +81,23 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           alt={spot.name}
           className="spot-card__img"
           loading="lazy"
-          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
-        <button className="spot-card__close" onClick={onClose} aria-label="Cerrar">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="1" y1="1" x2="11" y2="11" />
-            <line x1="11" y1="1" x2="1" y2="11" />
-          </svg>
-        </button>
+        {onClose && (
+          <button className="spot-card__close" onClick={onClose} aria-label="Cerrar">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="1" y1="1" x2="11" y2="11" />
+              <line x1="11" y1="1" x2="1" y2="11" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Content */}
       <div className="spot-card__body">
         <div className="spot-card__meta">
           <span className="spot-card__type" style={{ background: spot.colorAccent }}>{spot.type}</span>
-          <span className="spot-card__label">Guadalajara</span>
+          <span className="spot-card__label" style={{ textTransform: 'capitalize' }}>{spot.city || 'Guadalajara'}</span>
         </div>
         <h3 className="spot-card__name">{spot.name}</h3>
         {(spot.rating || spot.price) && (
@@ -112,7 +117,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="spot-card__link"
-          onClick={e => e.stopPropagation()}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />

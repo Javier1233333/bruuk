@@ -1,9 +1,9 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
-import { OceanCanvas } from './OceanCanvas';
 import spotsData from '../data/spots.json';
 import './OceanLanding.css';
 
@@ -15,314 +15,224 @@ type Spot = {
   imageUrl: string;
   colorAccent: string;
   mapsLink: string;
+  city: string;
   rating?: number;
   price?: string;
 };
 
-/* ── Handmade ripple types ── */
-interface RippleParams {
-  id: string;
-  x: number;
-  y: number;
-  freq: number;        // turbulence frequency — controls wobble density
-  displacement: number; // how "broken" the circle looks
-  seed: number;        // unique noise pattern per click
-  rings: number;       // 2–4 rings
-  strokeWidth: number; // base stroke thickness
-  hue: number;         // slight hue shift per click
-}
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
-interface ActiveSpot {
-  id: string;
-  spot: Spot;
-  x: number;
-  y: number;
-}
+type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares';
 
-// Cached at module level — only computed once
-const RIPPLE_SIZE = Math.max(window.innerWidth, window.innerHeight) * 1.9;
-const RIPPLE_C    = RIPPLE_SIZE / 2;
-
-/* ── Per-ring animated SVG circle ── */
-function HandmadeRing({
-  cx, cy, filterId, ringIndex, hue,
-}: {
-  cx: number; cy: number; filterId: string;
-  ringIndex: number; hue: number;
-}) {
-  const delay  = ringIndex * 0.18;
-  const dur    = 1.8 + ringIndex * 0.3;
-  const alpha  = 0.85 - ringIndex * 0.2;
-  const finalR = 100 + ringIndex * 90;
-
-  return (
-    <motion.circle
-      cx={cx} cy={cy}
-      fill="none"
-      stroke={`hsla(${hue}, 88%, 82%, ${alpha})`}
-      strokeWidth={3}
-      filter={`url(#${filterId})`}
-      initial={{ r: 10, opacity: alpha }}
-      animate={{ r: finalR, opacity: 0 }}
-      transition={{ delay, duration: dur, ease: [0.04, 0.72, 0.22, 1] }}
-    />
-  );
-}
-
-/* ── Full ripple: SVG with turbulence filter ── */
-function HandmadeRipple({ r }: { r: RippleParams }) {
-  const filterId = `wob-${r.id}`;
-
-  return (
-    <motion.svg
-      style={{
-        position: 'fixed',
-        left: r.x - RIPPLE_C,
-        top:  r.y - RIPPLE_C,
-        width: RIPPLE_SIZE,
-        height: RIPPLE_SIZE,
-        pointerEvents: 'none',
-        zIndex: 20,
-        overflow: 'visible',
-        willChange: 'opacity',
-      }}
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
-    >
-      <defs>
-        <filter id={filterId} x="-40%" y="-40%" width="180%" height="180%">
-          <feTurbulence
-            type="turbulence"
-            baseFrequency={r.freq}
-            numOctaves={2}
-            seed={r.seed}
-            result="noise"
-          />
-          <feDisplacementMap
-            in="SourceGraphic" in2="noise"
-            scale={r.displacement}
-            xChannelSelector="R" yChannelSelector="G"
-          />
-        </filter>
-      </defs>
-
-      {/* Expanding wobbly rings */}
-      {Array.from({ length: r.rings }, (_, i) => (
-        <HandmadeRing
-          key={i} cx={RIPPLE_C} cy={RIPPLE_C}
-          filterId={filterId} ringIndex={i}
-          hue={r.hue}
-        />
-      ))}
-    </motion.svg>
-  );
-}
-
-/* ── Random params generator — different every click ── */
-function makeRipple(x: number, y: number): RippleParams {
-  return {
-    id:           `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    x, y,
-    freq:         0.010 + Math.random() * 0.016,   // tighter range, cheaper
-    displacement: 10 + Math.random() * 18,          // 10–28 px
-    seed:         Math.floor(Math.random() * 999),
-    rings:        2,                                 // always 2 rings
-    strokeWidth:  3,
-    hue:          255 + Math.random() * 70,
-  };
-}
-
-/* ─────────────────────────────────────────────────────── */
 export function OceanLanding() {
   const navigate = useNavigate();
-  const [showIntro, setShowIntro]   = useState(true);
-  const [ripple, setRipple]         = useState<RippleParams | null>(null);
-  const [activeSpot, setActiveSpot] = useState<ActiveSpot | null>(null);
-  const [clickCount, setClickCount] = useState(0);
-  const [spots]                     = useState<Spot[]>(spotsData as Spot[]);
+  const { city: urlCity } = useParams();
+  const activeCity = urlCity === 'hermosillo' ? 'hermosillo' : 'guadalajara';
 
-  const [isMobile] = useState(() => window.innerWidth <= 768);
-  const [videoFailed, setVideoFailed] = useState(false);
-  const spotsQueue  = useRef<Spot[]>([]);
-  const lastSpotId  = useRef<string | null>(null);
-  const rippleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
+  const [spots, setSpots] = useState<Spot[]>(() => 
+    shuffleArray((spotsData as Spot[]).filter(s => s.city === activeCity))
+  );
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    return () => { if (rippleTimer.current) clearTimeout(rippleTimer.current); };
-  }, []);
-
-  const getNextSpot = useCallback(() => {
-    if (spotsQueue.current.length === 0) {
-      let s = [...spots].sort(() => Math.random() - 0.5);
-      if (lastSpotId.current && s[s.length - 1]?.id === lastSpotId.current) {
-        const last = s.pop()!;
-        s.splice(Math.floor(Math.random() * (s.length - 1)), 0, last);
-      }
-      spotsQueue.current = s;
+    setSpots(shuffleArray((spotsData as Spot[]).filter(s => s.city === activeCity)));
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
     }
-    const spot = spotsQueue.current.pop()!;
-    lastSpotId.current = spot.id;
-    return spot;
-  }, [spots]);
+  }, [activeCity]);
 
-  const handleOceanClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (spots.length === 0) return;
-    const t = e.target as HTMLElement;
-    if (
-      t.closest('.spot-card')      ||
-      t.closest('.ocean-back-btn') ||
-      t.closest('.modal-overlay')
-    ) return;
+  // Categorize spots for filtering
+  const getCategoryGroup = (type: string): CategoryFilter => {
+    const t = type.toLowerCase();
+    if (t.includes('café') || t.includes('cafe') || t.includes('panader')) return 'cafes';
+    if (t.includes('bar') || t.includes('club') || t.includes('antro') || t.includes('disco') || t.includes('deportivo') || t.includes('jazz')) return 'bares';
+    if (t.includes('restaurante') || t.includes('comida') || t.includes('pizz') || t.includes('japon') || t.includes('asiat') || t.includes('marisco') || t.includes('vegetar') || t.includes('brunch') || t.includes('hamburgues') || t.includes('ramen')) return 'restaurantes';
+    return 'todos'; // fallback
+  };
 
-    const { clientX: x, clientY: y } = e;
+  const filteredSpots = spots.filter(spot => {
+    if (activeCategory === 'todos') return true;
+    const cat = getCategoryGroup(spot.type);
+    if (activeCategory === 'cafes') return cat === 'cafes';
+    if (activeCategory === 'bares') return cat === 'bares';
+    if (activeCategory === 'restaurantes') return cat === 'restaurantes';
+    return true;
+  });
 
-    // New unique ripple every click
-    if (rippleTimer.current) clearTimeout(rippleTimer.current);
-    const rp = makeRipple(x, y);
-    setRipple(rp);
-    rippleTimer.current = setTimeout(() => setRipple(null), 3200);
-
-    setActiveSpot({ id: rp.id, spot: getNextSpot(), x, y });
-    setClickCount(n => n + 1);
-  }, [spots, getNextSpot]);
+  // Reset scroll to top when category changes
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, [activeCategory]);
 
   return (
-    <div className="ocean-container" onClick={handleOceanClick}>
-
-      {/* Background */}
-      <div className="ocean-bg">
-        {isMobile ? (
-          <>
-            <img
-              className="ocean-video"
-              src="/ocean-frame.jpg"
-              alt=""
-              draggable={false}
-            />
-            <div className="ocean-line" />
-          </>
-        ) : videoFailed ? (
-          <OceanCanvas />
-        ) : (
-          <video
-            className="ocean-video"
-            src="/ocean.mp4"
-            autoPlay loop muted playsInline
-            onError={() => setVideoFailed(true)}
-          />
-        )}
-        <div className="ocean-overlay" />
+    <div className="tiktok-feed-wrapper">
+      {/* Immersive background video with overlay, visible behind all slides */}
+      <div className="spots-bg">
+        <video
+          className="spots-bg-video"
+          src="/ocean.mp4"
+          autoPlay loop muted playsInline
+        />
+        <div className="spots-bg-overlay" />
       </div>
 
-      {/* ── Intro overlay ── */}
-      <AnimatePresence>
-        {showIntro && (
-          <motion.div
-            className="ocean-intro"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.6 } }}
-            transition={{ duration: 0.5 }}
+      {/* Floating Header */}
+      <header className="spots-header-floating" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '90%', maxWidth: '800px', gap: '1rem' }}>
+        <button className="spots-back-btn" onClick={() => navigate('/')} style={{ flexShrink: 0 }}>
+          <ArrowLeft size={16} strokeWidth={2.5} />
+          Inicio
+        </button>
+
+        {/* City Toggle switcher */}
+        <div className="city-toggle-wrapper" style={{ display: 'flex', gap: '0.4rem', border: '2px solid rgba(255,255,255,0.15)', borderRadius: '30px', padding: '2px', background: 'rgba(0,0,0,0.6)', flexShrink: 0, pointerEvents: 'auto' }}>
+          <button
+            style={{
+              border: 'none',
+              background: activeCity === 'guadalajara' ? '#fff' : 'transparent',
+              color: activeCity === 'guadalajara' ? '#000' : '#fff',
+              fontSize: '0.75rem',
+              fontWeight: 'bold',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            onClick={() => {
+              navigate('/descubrir/guadalajara', { replace: true });
+            }}
           >
-            <motion.div
-              className="ocean-intro__card"
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ delay: 0.15, duration: 0.55, ease: [0.1, 0.9, 0.2, 1] }}
-            >
-              <span className="ocean-intro__tag">/ Lista curada</span>
+            GDL
+          </button>
+          <button
+            style={{
+              border: 'none',
+              background: activeCity === 'hermosillo' ? '#fff' : 'transparent',
+              color: activeCity === 'hermosillo' ? '#000' : '#fff',
+              fontSize: '0.75rem',
+              fontWeight: 'bold',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+            onClick={() => {
+              navigate('/descubrir/hermosillo', { replace: true });
+            }}
+          >
+            HMO
+          </button>
+        </div>
 
-              <h1 className="ocean-intro__title">
-                Lugares para salir.<br />Sin pensar tanto.
-              </h1>
+        <div className="spots-header-logo" style={{ margin: 0, flexShrink: 0 }}>
+          <BruukLogo width={85} />
+        </div>
+      </header>
 
-              <p className="ocean-intro__body">
-                Una selección de cafés, bares y rincones de la ciudad donde vale la pena aparecer. Toca el mar y descubre tu próximo spot.
-              </p>
+      {/* Floating Category Filters */}
+      <div className="category-filters-floating">
+        <div className="category-filters-inner">
+          <button
+            className={`filter-btn-floating ${activeCategory === 'todos' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('todos')}
+          >
+            Todos
+          </button>
+          <button
+            className={`filter-btn-floating ${activeCategory === 'cafes' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('cafes')}
+          >
+            Cafés
+          </button>
+          <button
+            className={`filter-btn-floating ${activeCategory === 'restaurantes' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('restaurantes')}
+          >
+            Comida
+          </button>
+          <button
+            className={`filter-btn-floating ${activeCategory === 'bares' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('bares')}
+          >
+            Bares
+          </button>
+        </div>
+      </div>
 
-              <p className="ocean-intro__sub">Navega lo desconocido.</p>
-
-              <button
-                className="ocean-intro__cta"
-                onClick={() => setShowIntro(false)}
+      {/* Vertical Snap Scroll Container */}
+      <div className="tiktok-scroll-container" ref={containerRef}>
+        
+        {/* Slide 0: Immersive Intro */}
+        <section className="tiktok-slide intro-slide">
+          <div className="intro-card-overlay">
+            <span className="spots-eyebrow" style={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
+              {activeCity === 'hermosillo' ? 'Hermosillo' : 'Guadalajara'}
+            </span>
+            <h1 className="spots-title brand-gradient-text">SPOTS CURADOS</h1>
+            <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>
+              Una selección honesta de rincones donde vale la pena aparecer. Sin algoritmos, sin filtros falsos.
+            </p>
+            <div className="scroll-indicator">
+              <span>Desliza para explorar spots</span>
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                style={{ marginTop: '5px' }}
               >
-                Explorar el mar
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                <ChevronDown size={20} color="#8b7cf6" strokeWidth={3} />
+              </motion.div>
+            </div>
+          </div>
+        </section>
 
-      {/* Hint */}
-      <AnimatePresence>
-        {clickCount === 0 && (
-          <motion.div
-            className="ocean-hint"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.8, duration: 1 }}
-          >
-            Toca el mar para descubrir
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Slides 1 to N: The Spot Cards */}
+        <AnimatePresence mode="wait">
+          {filteredSpots.map((spot) => (
+            <section className="tiktok-slide card-slide" key={`${spot.id}-${activeCategory}`}>
+              <div className="card-wrapper-centered">
+                <SpotCard spot={spot} />
+              </div>
+            </section>
+          ))}
+        </AnimatePresence>
 
-      {/* Ripple */}
-      <AnimatePresence>
-        {ripple && (
-          isMobile ? (
-            <motion.div
-              key={ripple.id}
-              className="mobile-ripple"
-              style={{
-                left: ripple.x,
-                top: ripple.y,
-              }}
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="mobile-ripple__flash" />
-              <div className="mobile-ripple__ring mobile-ripple__ring--1" />
-              <div className="mobile-ripple__ring mobile-ripple__ring--2" />
-              <div className="mobile-ripple__slash mobile-ripple__slash--1" />
-              <div className="mobile-ripple__slash mobile-ripple__slash--2" />
-            </motion.div>
-          ) : (
-            <HandmadeRipple key={ripple.id} r={ripple} />
-          )
-        )}
-      </AnimatePresence>
+        {/* Slide N+1: Snapping Final Footer */}
+        <section className="tiktok-slide footer-slide">
+          <div className="end-slide-card">
+            <div className="end-logo-wrap">
+              <BruukLogo width={160} />
+            </div>
+            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '-0.5px' }}>
+              Has llegado al final de la ruta.
+            </h3>
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', marginBottom: '1.5rem', maxWidth: '380px', margin: '0 auto 1.5rem' }}>
+              Bruuk es primero una comunidad. Sal a la calle, redescubre tu ciudad y conecta en persona.
+            </p>
+            <div className="end-contact-links">
+              <a href="mailto:contacto@bruuk.space" className="end-email-btn">
+                contacto@bruuk.space
+              </a>
+              <a href="/privacidad" className="end-privacy-btn">
+                Aviso de Privacidad
+              </a>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '2.5rem' }}>
+              &copy; {new Date().getFullYear()} bruuk. No sigas las reglas.
+            </p>
+          </div>
+        </section>
 
-      {/* Spot card */}
-      <AnimatePresence>
-        {activeSpot && (
-          <SpotCard
-            key={activeSpot.id}
-            spot={activeSpot.spot}
-            clickX={activeSpot.x}
-            clickY={activeSpot.y}
-            onClose={() => setActiveSpot(null)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Back */}
-      <button className="ocean-back-btn" onClick={() => navigate(-1)}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        Inicio
-      </button>
-
-      {/* Logo */}
-      <div className="ocean-logo-container">
-        <BruukLogo />
       </div>
-
     </div>
   );
 }
+export default OceanLanding;

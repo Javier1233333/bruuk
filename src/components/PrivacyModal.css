@@ -1,0 +1,140 @@
+.privacy-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  animation: fadeInPrivacyModal 0.3s ease forwards;
+}
+
+@keyframes fadeInPrivacyModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.privacy-modal-content {
+  background-color: var(--bg-primary);
+  border: 4px solid var(--border-color);
+  box-shadow: 12px 12px 0px #000;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 5rem 3rem 4rem;
+  transform: rotate(1deg);
+  animation: slideUpPrivacyModal 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes slideUpPrivacyModal {
+  from { opacity: 0; transform: translateY(40px) rotate(1deg); }
+  to { opacity: 1; transform: translateY(0) rotate(1deg); }
+}
+
+.privacy-close-btn {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 3px 3px 0px var(--border-color);
+}
+
+.privacy-close-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--accent-light);
+  border-color: var(--accent-light);
+  color: var(--accent-light);
+}
+
+.privacy-modal-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 25vw;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.03);
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.privacy-modal-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.privacy-eyebrow {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  margin-bottom: 0.3rem;
+}
+
+.privacy-lead {
+  font-size: 3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 2.5rem;
+  color: var(--text-primary);
+  text-shadow: 4px 4px 0px var(--accent-light);
+  letter-spacing: -1px;
+}
+
+.privacy-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.privacy-modal-content::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+}
+
+.privacy-modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent-light);
+}
+
+@media (max-width: 768px) {
+  .privacy-modal-overlay {
+    padding: 1rem;
+  }
+  
+  .privacy-modal-content {
+    padding: 4rem 1.5rem 2rem;
+    transform: none;
+    box-shadow: 6px 6px 0px #000;
+  }
+  
+  .privacy-close-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .privacy-lead {
+    font-size: 2.2rem;
+  }
+}

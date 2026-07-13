@@ -1,373 +1,374 @@
 /* ============================================================
-   OCEAN LANDING — Interactive Sea Experience
+   TIKTOK-STYLE SNAP SCROLL EXPERIENCE
    ============================================================ */
 
-.ocean-container {
-  position: fixed;
-  inset: 0;
+.tiktok-feed-wrapper {
+  position: relative;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  cursor: crosshair;
-  user-select: none;
+  background-color: #080614;
 }
 
-/* ── Ocean background ── */
-.ocean-bg {
-  position: absolute;
-  inset: 0;
-  background-color: #012d4e;
-}
-
-/* Video element */
-.ocean-video {
-  position: absolute;
+/* Background overlay with immersive video */
+.spots-bg {
+  position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   z-index: 1;
-}
-
-/* Purple Bruuk overlay — visible gradient tint */
-.ocean-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    160deg,
-    rgba(110, 60, 220, 0.58) 0%,
-    rgba(80, 30, 180, 0.50) 50%,
-    rgba(60, 20, 140, 0.62) 100%
-  );
-  z-index: 2;
   pointer-events: none;
 }
 
-.ocean-layer--deep {
+.spots-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.spots-bg-overlay {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 100% 60% at 50% 100%, #004e89 0%, transparent 70%),
-    radial-gradient(ellipse 80% 50% at 10% 20%, rgba(0, 119, 182, 0.5) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 45% at 90% 80%, rgba(0, 60, 110, 0.6) 0%, transparent 60%),
-    linear-gradient(170deg, #01243d 0%, #013a5e 35%, #0061a0 70%, #0077b6 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(14, 13, 26, 0.82) 0%,
+    rgba(14, 13, 26, 0.88) 50%,
+    rgba(8, 6, 20, 0.94) 100-percent
+  );
 }
 
-.ocean-layer--mid {
-  position: absolute;
-  inset: -10% -20%;
-  width: 140%;
-  height: 120%;
-  background-image:
-    repeating-linear-gradient(
-      105deg,
-      transparent 0px, transparent 60px,
-      rgba(0, 150, 199, 0.07) 60px, rgba(0, 150, 199, 0.07) 62px,
-      transparent 62px, transparent 120px
-    ),
-    repeating-linear-gradient(
-      75deg,
-      transparent 0px, transparent 80px,
-      rgba(0, 180, 230, 0.05) 80px, rgba(0, 180, 230, 0.05) 82px,
-      transparent 82px, transparent 160px
-    );
-  animation: ocean-drift-mid 18s linear infinite;
-}
+/* ============================================================
+   FLOATING FIXED HEADER
+   ============================================================ */
 
-.ocean-layer--surface {
-  position: absolute;
-  inset: -15% -25%;
-  width: 150%;
-  height: 130%;
-  background-image:
-    repeating-linear-gradient(
-      -30deg,
-      transparent 0px, transparent 40px,
-      rgba(100, 210, 255, 0.06) 40px, rgba(100, 210, 255, 0.06) 42px,
-      transparent 42px, transparent 90px
-    ),
-    repeating-linear-gradient(
-      50deg,
-      transparent 0px, transparent 55px,
-      rgba(0, 200, 255, 0.04) 55px, rgba(0, 200, 255, 0.04) 57px,
-      transparent 57px, transparent 110px
-    );
-  animation: ocean-drift-surface 11s linear infinite;
-}
-
-@keyframes ocean-drift-mid {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(4%, 1.5%); }
-  100% { transform: translate(0, 0); }
-}
-
-@keyframes ocean-drift-surface {
-  0%   { transform: translate(0, 0); }
-  50%  { transform: translate(-3%, 2%); }
-  100% { transform: translate(0, 0); }
-}
-
-.ocean-shimmer {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 30% 20% at 20% 30%, rgba(144, 224, 255, 0.12) 0%, transparent 100%),
-    radial-gradient(ellipse 25% 18% at 75% 65%, rgba(0, 180, 216, 0.1) 0%, transparent 100%),
-    radial-gradient(ellipse 20% 15% at 50% 50%, rgba(173, 232, 255, 0.08) 0%, transparent 100%);
-  animation: shimmer-drift 14s ease-in-out infinite alternate;
-}
-
-@keyframes shimmer-drift {
-  0%   { opacity: 0.6; transform: translate(0, 0) scale(1); }
-  50%  { opacity: 0.9; transform: translate(2%, -1%) scale(1.02); }
-  100% { opacity: 0.7; transform: translate(1%, -2%) scale(1.01); }
-}
-
-/* ── Intro overlay ── */
-.ocean-intro {
+.spots-header-floating {
   position: fixed;
-  inset: 0;
-  z-index: 200;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  pointer-events: none; /* Let clicks pass through to spots underlying */
+}
+
+.spots-header-floating .spots-back-btn,
+.spots-header-floating .spots-header-logo {
+  pointer-events: auto; /* Enable clicks on actual buttons */
+}
+
+.spots-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.45rem 1.1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  background: rgba(14, 13, 26, 0.8);
+  border: 2px solid #fff;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #8b7cf6;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spots-back-btn:hover {
+  background: #fff;
+  color: #000;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #8b7cf6;
+}
+
+.spots-back-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #8b7cf6;
+}
+
+.spots-header-logo {
+  height: 24px;
+}
+
+/* ============================================================
+   FLOATING CATEGORY CAPSULES
+   ============================================================ */
+
+.category-filters-floating {
+  position: fixed;
+  top: 4.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: auto;
+  width: 90%;
+  max-width: 480px;
+}
+
+.category-filters-inner {
+  display: flex;
+  gap: 0.4rem;
+  background: rgba(14, 13, 26, 0.95);
+  border: 2px solid #fff;
+  border-radius: 0px;
+  padding: 4px;
+  box-shadow: 6px 6px 0px #000;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  justify-content: space-between;
+}
+
+.filter-btn-floating {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 0px;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.filter-btn-floating:hover {
+  color: #fff;
+}
+
+.filter-btn-floating.active {
+  background: #8b7cf6;
+  color: #fff;
+}
+
+/* ============================================================
+   VERTICAL SNAP SCROLL CONTAINER (TIKTOK STYLE)
+   ============================================================ */
+
+.tiktok-scroll-container {
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 5;
+}
+
+.tiktok-scroll-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.tiktok-slide {
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
-  background: rgba(8, 6, 20, 0.72);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.ocean-intro__card {
-  width: 100%;
-  max-width: 480px;
-  background: #0e0d1a;
+/* Intro welcome slide */
+.intro-slide {
+  background: radial-gradient(circle at center, rgba(139, 124, 246, 0.15) 0%, transparent 70%);
+}
+
+.intro-card-overlay {
+  text-align: center;
+  max-width: 500px;
+  padding: 2.5rem;
+  background: rgba(14, 13, 26, 0.75);
   border: 2px solid #fff;
   box-shadow: 8px 8px 0px #8b7cf6;
-  padding: 2.8rem 2.4rem 2.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  font-family: 'DM Sans', sans-serif;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin: 0 1rem;
 }
 
-.ocean-intro__tag {
-  font-family: 'DM Sans', sans-serif;
+.spots-eyebrow {
+  display: block;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: #8b7cf6;
+  margin-bottom: 0.75rem;
 }
 
-.ocean-intro__title {
+.spots-title {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -1.5px;
   line-height: 0.95;
+  margin: 0;
   color: #fff;
-  text-shadow: 4px 4px 0px #8b7cf6;
-  margin: 0;
 }
 
-.ocean-intro__body {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #9490b8;
-  line-height: 1.65;
-  border-left: 3px solid #8b7cf6;
-  padding-left: 1rem;
-  margin: 0;
+.spots-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
 }
 
-.ocean-intro__sub {
-  font-family: 'DM Sans', sans-serif;
+.scroll-indicator {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #8b7cf6;
-  margin: 0;
-}
-
-.ocean-intro__cta {
-  align-self: flex-start;
-  margin-top: 0.4rem;
-  padding: 0.85rem 2rem;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #fff;
-  background: #8b7cf6;
-  border: 2px solid #8b7cf6;
-  border-radius: 0;
-  box-shadow: 4px 4px 0px #000;
-  cursor: pointer;
-  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ocean-intro__cta:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px #000;
-}
-
-.ocean-intro__cta:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #000;
-}
-
-@media (max-width: 480px) {
-  .ocean-intro__card {
-    padding: 2rem 1.5rem 1.8rem;
-  }
-  .ocean-intro__cta {
-    align-self: stretch;
-    text-align: center;
-  }
-}
-
-/* ── Hint text ── */
-.ocean-hint {
-  position: absolute;
-  bottom: 28%;
-  left: 50%;
-  transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  pointer-events: none;
-  white-space: nowrap;
+  gap: 6px;
+}
+
+/* Card slide centering */
+.card-slide {
+  padding-top: 6rem; /* Make sure card doesn't hit header logo */
+}
+
+.card-wrapper-centered {
+  position: relative;
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  width: 100%;
 }
 
-.ocean-hint::before,
-.ocean-hint::after {
-  content: '';
-  display: block;
-  width: 36px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.25);
+.card-wrapper-centered .spot-card {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  width: 90vw !important;
+  max-width: 320px;
+  z-index: 10;
+  box-shadow: 8px 8px 0px #000;
 }
 
-/* ── Ripple ── */
-.ripple-container {
-  position: fixed;
-  pointer-events: none;
-  z-index: 20;
-  transform: translate(-50%, -50%);
-}
-
-.ripple {
+.slide-counter-badge {
   position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid rgba(100, 220, 255, 0.8);
-  transform: translate(-50%, -50%);
-  animation: ripple-expand 1.4s ease-out forwards;
-}
-
-.ripple--1 { animation-delay: 0ms;   border-color: rgba(144, 224, 255, 0.9); }
-.ripple--2 { animation-delay: 140ms; border-color: rgba(100, 200, 255, 0.55); }
-.ripple--3 { animation-delay: 280ms; border-color: rgba(0, 170, 230, 0.3); }
-
-@keyframes ripple-expand {
-  0%   { width: 8px;   height: 8px;   opacity: 1; }
-  100% { width: 160px; height: 160px; opacity: 0; }
-}
-
-/* ── Bottom logo ── */
-.ocean-logo-container {
-  position: fixed;
-  bottom: 2rem;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 50;
-  opacity: 0.9;
-  pointer-events: none;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.72rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* ── Buttons — Bruuk design system ── */
-/* Shared base */
-.ocean-back-btn,
-.ocean-mute-btn {
-  position: fixed;
-  z-index: 50;
+/* End slide card (Replaces standard footer) */
+.end-slide-card {
+  text-align: center;
+  max-width: 480px;
+  padding: 3rem 2rem;
+  background: #0e0d1a;
+  border: 2px solid #fff;
+  box-shadow: 8px 8px 0px #8b7cf6;
+  margin: 0 1rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.end-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.end-contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.end-email-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 0;
-  cursor: pointer;
+  padding: 0.6rem 1.8rem;
   font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.12s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Back button — secondary style */
-.ocean-back-btn {
-  top: 1.5rem;
-  left: 1.5rem;
-  gap: 6px;
-  padding: 10px 18px 10px 14px;
+  color: #000;
+  background: #fff;
   border: 2px solid #fff;
-  background: rgba(14, 13, 26, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease;
+}
+
+.end-email-btn:hover {
+  background: transparent;
   color: #fff;
-  font-size: 0.78rem;
-  box-shadow: 3px 3px 0px #8b7cf6;
 }
 
-.ocean-back-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px #8b7cf6;
+.end-privacy-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
-.ocean-back-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #8b7cf6;
-}
-
-/* Mute button — compact square */
-.ocean-mute-btn {
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 44px;
-  height: 44px;
-  border: 2px solid #fff;
-  background: rgba(14, 13, 26, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #fff;
-  box-shadow: 3px 3px 0px #8b7cf6;
-}
-
-.ocean-mute-btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px #8b7cf6;
-}
-
-.ocean-mute-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #8b7cf6;
+.end-privacy-btn:hover {
+  color: #8b7cf6;
 }
 
 /* ============================================================
-   SPOT CARD — Bruuk aesthetic, black text
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .spots-header-floating {
+    padding: 1rem;
+  }
+  .category-filters-floating {
+    top: 4.2rem;
+  }
+  .filter-btn-floating {
+    padding: 6px 8px;
+    font-size: 0.65rem;
+  }
+  .intro-card-overlay {
+    padding: 1.8rem 1.25rem;
+  }
+  .end-slide-card {
+    padding: 2.2rem 1.25rem;
+  }
+}
+
+/* ============================================================
+   SPOT CARD INTERNAL DESIGN
    ============================================================ */
 
 .spot-card {
-  position: fixed;
   width: 300px;
   background: #ffffff;
   border: 2px solid #000;
@@ -377,13 +378,11 @@
   overflow: hidden;
 }
 
-/* Top accent stripe */
 .spot-card__stripe {
   height: 5px;
   width: 100%;
 }
 
-/* Image area */
 .spot-card__img-wrap {
   position: relative;
   height: 130px;
@@ -399,7 +398,6 @@
   filter: saturate(0.85);
 }
 
-/* Close button */
 .spot-card__close {
   position: absolute;
   top: 8px;
@@ -422,13 +420,11 @@
   color: #fff;
 }
 
-/* Body */
 .spot-card__body {
   padding: 14px 16px 16px;
   background: #fff;
 }
 
-/* Meta row: type badge + city */
 .spot-card__meta {
   display: flex;
   align-items: center;
@@ -455,7 +451,6 @@
   color: #999;
 }
 
-/* Spot name */
 .spot-card__name {
   font-family: 'Outfit', sans-serif;
   font-size: 1.15rem;
@@ -467,7 +462,6 @@
   line-height: 1.1;
 }
 
-/* Stats row: rating + price */
 .spot-card__stats {
   display: flex;
   align-items: center;
@@ -497,7 +491,6 @@
   letter-spacing: 0.3px;
 }
 
-/* Description */
 .spot-card__desc {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.88rem;
@@ -507,7 +500,6 @@
   font-style: italic;
 }
 
-/* Maps link */
 .spot-card__link {
   display: inline-flex;
   align-items: center;
@@ -526,121 +518,4 @@
 
 .spot-card__link:hover {
   opacity: 0.6;
-}
-
-/* ── Mobile ocean line animation (CSS only, no JS) ── */
-.ocean-line {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.ocean-line::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -100%;
-  width: 300%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(120, 200, 255, 0.5) 20%,
-    rgba(180, 230, 255, 0.7) 50%,
-    rgba(120, 200, 255, 0.5) 80%,
-    transparent 100%
-  );
-  filter: blur(4px);
-  animation: ocean-drift 6s ease-in-out infinite;
-}
-
-@keyframes ocean-drift {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(15%) translateY(-8px); }
-}
-
-/* ── Mobile ripple — disruptive flash ── */
-.mobile-ripple {
-  position: fixed;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.mobile-ripple__flash {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100vh;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at center, rgba(200, 180, 255, 0.4) 0%, transparent 60%);
-  animation: ripple-flash 0.6s ease-out forwards;
-}
-
-@keyframes ripple-flash {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.1); }
-  40% { opacity: 0.8; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
-}
-
-.mobile-ripple__ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  border: 2px solid rgba(200, 180, 255, 0.8);
-  transform: translate(-50%, -50%) scale(0);
-}
-
-.mobile-ripple__ring--1 {
-  width: 80px;
-  height: 80px;
-  animation: ripple-ring 1s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
-}
-
-.mobile-ripple__ring--2 {
-  width: 200px;
-  height: 200px;
-  animation: ripple-ring 1.2s cubic-bezier(0.1, 0.8, 0.2, 1) 0.1s forwards;
-}
-
-@keyframes ripple-ring {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-}
-
-.mobile-ripple__slash {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
-  transform-origin: center;
-  animation: ripple-slash 0.8s ease-out forwards;
-}
-
-.mobile-ripple__slash--1 {
-  transform: translate(-50%, -50%) rotate(25deg) scaleX(0);
-  animation-name: ripple-slash;
-}
-
-.mobile-ripple__slash--2 {
-  transform: translate(-50%, -50%) rotate(-35deg) scaleX(0);
-  animation-delay: 0.05s;
-  animation-name: ripple-slash-2;
-}
-
-@keyframes ripple-slash {
-  0% { transform: translate(-50%, -50%) rotate(25deg) scaleX(0); opacity: 1; }
-  30% { transform: translate(-50%, -50%) rotate(25deg) scaleX(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) rotate(25deg) scaleX(1.5); opacity: 0; }
-}
-
-@keyframes ripple-slash-2 {
-  0% { transform: translate(-50%, -50%) rotate(-35deg) scaleX(0); opacity: 1; }
-  30% { transform: translate(-50%, -50%) rotate(-35deg) scaleX(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) rotate(-35deg) scaleX(1.5); opacity: 0; }
 }
