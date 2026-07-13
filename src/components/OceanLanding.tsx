@@ -113,7 +113,7 @@ export function OceanLanding() {
           >
             GDL
           </button>
-          <button
+          {/* <button
             style={{
               border: 'none',
               background: activeCity === 'hermosillo' ? '#fff' : 'transparent',
@@ -130,7 +130,7 @@ export function OceanLanding() {
             }}
           >
             HMO
-          </button>
+          </button> */}
         </div>
 
         <div className="spots-header-logo" style={{ margin: 0, flexShrink: 0 }}>

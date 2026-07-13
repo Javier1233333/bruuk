@@ -38,7 +38,7 @@ function App() {
             <BruukLogo />
           </div>
           <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => setIsComingSoonOpen(true)}>
-            Radar
+            Registrarme
           </button>
         </div>
       </header>
@@ -47,8 +47,8 @@ function App() {
         {/* Spacious Dark Main Hero Section */}
         <section className="hero-main-dark">
           <div className="container">
-            <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Explora los spots.">
-              Explora los<br />spots.
+            <h1 className="animate-fade-in animate-glitch-loop brand-gradient-text glitch-hover" data-text="Menos pantalla. Más mundo.">
+              Menos pantalla.<br />Más mundo.
             </h1>
             <p className="hero-subtitle-p animate-fade-in delay-1">
               Navega la ciudad. Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos, sin filtros patrocinados, recomendado por personas reales.
@@ -75,13 +75,17 @@ function App() {
               </p>
             </div>
             <div className="cities-buttons">
-              <button className="city-map-btn btn-hermosillo" onClick={() => navigate('/descubrir/hermosillo')}>
+              {/* <button className="city-map-btn btn-hermosillo" onClick={() => navigate('/descubrir/hermosillo')}>
                 <span>HERMOSILLO</span>
                 <ArrowRight size={22} strokeWidth={3} />
-              </button>
+              </button> */}
               <button className="city-map-btn btn-guadalajara" onClick={() => navigate('/descubrir/guadalajara')}>
                 <span>GUADALAJARA</span>
                 <ArrowRight size={22} strokeWidth={3} />
+              </button>
+              <button className="city-map-btn btn-mas-ciudades" disabled>
+                <span>MÁS CIUDADES</span>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.6 }}>PRÓXIMAMENTE</span>
               </button>
             </div>
           </div>
