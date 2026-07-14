@@ -132,3 +132,64 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+-- =========================================================================
+-- MÓDULO 3: BASE DE DATOS DE SPOTS CURADOS
+-- =========================================================================
+
+-- Tabla de Spots
+create table if not exists public.spots (
+    id text primary key, -- ej. 'spot_003'
+    name text not null,
+    type text,
+    description text,
+    image_url text,
+    color_accent text,
+    rating numeric,
+    price text,
+    lat numeric,
+    lng numeric,
+    maps_link text,
+    city text not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Tabla de Spots Guardados (Saves)
+create table if not exists public.spot_saves (
+    user_id uuid references public.profiles(id) on delete cascade not null,
+    spot_id text references public.spots(id) on delete cascade not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    primary key (user_id, spot_id)
+);
+
+-- Tabla de Opiniones de Spots (Reviews)
+create table if not exists public.spot_reviews (
+    id uuid default gen_random_uuid() primary key,
+    user_id uuid references public.profiles(id) on delete cascade not null,
+    spot_id text references public.spots(id) on delete cascade not null,
+    rating int check (rating >= 1 and rating <= 5) not null,
+    comment text,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Habilitar RLS en las 3 tablas
+alter table public.spots enable row level security;
+alter table public.spot_saves enable row level security;
+alter table public.spot_reviews enable row level security;
+
+-- Políticas de RLS
+create policy "Allow public read on spots" on public.spots
+    for select using (true);
+
+create policy "Allow save operations for owner" on public.spot_saves
+    for all to authenticated
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+
+create policy "Allow read reviews" on public.spot_reviews
+    for select using (true);
+
+create policy "Allow write reviews for authenticated owners" on public.spot_reviews
+    for insert to authenticated
+    with check (auth.uid() = user_id);
+
+
