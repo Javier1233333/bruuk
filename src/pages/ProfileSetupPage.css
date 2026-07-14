@@ -71,6 +71,24 @@
   color: var(--accent-light);
 }
 
+.setup-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: 2px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem;
+  transition: all 0.15s;
+}
+.setup-close:hover {
+  border-color: var(--accent-light);
+  color: var(--accent-light);
+}
+
 .setup-step-label {
   font-size: 0.72rem;
   font-weight: 800;

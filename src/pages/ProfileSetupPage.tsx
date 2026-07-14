@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, X } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { PRESET_AVATARS } from '../components/AppShell';
 import { supabase } from '../lib/supabase';
@@ -139,6 +139,7 @@ export function ProfileSetupPage() {
         {/* STEP 0 — Foto + Instagram */}
         {step === 0 && (
           <div className="setup-card animate-fade-in">
+            <button className="setup-close" onClick={() => navigate('/descubrir')} aria-label="Cerrar"><X size={20} /></button>
             <p className="setup-step-label">Paso 1 de 3</p>
             <h1 className="setup-title brand-gradient-text">Tu perfil.</h1>
             <p className="setup-subtitle">Así te verán los demás en BRUUK.</p>
@@ -200,6 +201,7 @@ export function ProfileSetupPage() {
         {step === 1 && (
           <div className="setup-card animate-fade-in">
             <button className="setup-back" onClick={() => setStep(0)}><ArrowLeft size={20} /></button>
+            <button className="setup-close" onClick={() => navigate('/descubrir')} aria-label="Cerrar"><X size={20} /></button>
             <p className="setup-step-label">Paso 2 de 3</p>
             <h1 className="setup-title brand-gradient-text">Tus gustos.</h1>
             <p className="setup-subtitle">Elige mínimo 3. Así conectamos con quien va en serio.</p>
@@ -234,6 +236,7 @@ export function ProfileSetupPage() {
         {step === 2 && (
           <div className="setup-card animate-fade-in">
             <button className="setup-back" onClick={() => setStep(1)}><ArrowLeft size={20} /></button>
+            <button className="setup-close" onClick={() => navigate('/descubrir')} aria-label="Cerrar"><X size={20} /></button>
             <p className="setup-step-label">Paso 3 de 3</p>
             <h1 className="setup-title brand-gradient-text">Tu plan perfecto.</h1>
             <p className="setup-subtitle">¿Qué es lo que más te emociona hacer?</p>
