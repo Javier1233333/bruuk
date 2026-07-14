@@ -27,65 +27,6 @@ interface Event {
   type: string;
 }
 
-const MOCK_ATTENDEES: Attendee[] = [
-  { id: '1', name: 'Sofía R.',   instagram: 'sofiar__',  avatar: 'https://i.pravatar.cc/200?img=1',  favorite: 'Un concierto de último minuto' },
-  { id: '2', name: 'Diego M.',   instagram: 'diegomx',   avatar: 'https://i.pravatar.cc/200?img=3',  favorite: 'Explorar un barrio nuevo' },
-  { id: '3', name: 'Valeria L.', instagram: 'val.loza',  avatar: 'https://i.pravatar.cc/200?img=5',  favorite: 'Una cena larga con desconocidos' },
-  { id: '4', name: 'Andrés G.',  instagram: 'andresg_',  avatar: 'https://i.pravatar.cc/200?img=8',  favorite: 'Bailar hasta que cierren' },
-  { id: '5', name: 'Camila T.',  instagram: 'camitoro',  avatar: 'https://i.pravatar.cc/200?img=9',  favorite: 'Un road trip sin plan' },
-  { id: '6', name: 'Rodrigo P.', instagram: 'rodp__',    avatar: 'https://i.pravatar.cc/200?img=12', favorite: 'Perderse en una exposición' },
-  { id: '7', name: 'Isa V.',     instagram: 'isavega',   avatar: 'https://i.pravatar.cc/200?img=16', favorite: 'Una conversación de 4 horas' },
-];
-
-const now = new Date();
-const d = (days: number) => new Date(now.getTime() + days * 86400000);
-
-const CONFIRMED_EVENTS: Event[] = [
-  {
-    id: 'c1', name: 'Noche Indie en El Plástico', date: d(3),
-    location: 'Roma Norte, CDMX',
-    cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-    attendees: MOCK_ATTENDEES.slice(0, 5),
-    description: 'Una noche de música indie seleccionada por los mejores DJs underground de la ciudad. Entrada libre con drink mínimo.',
-    price: 'Entrada libre', capacity: 80, type: 'Música',
-  },
-  {
-    id: 'c2', name: 'Brunch Rooftop Colectivo', date: d(5),
-    location: 'Condesa, CDMX',
-    cover: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-    attendees: MOCK_ATTENDEES.slice(2, 7),
-    description: 'Brunch colectivo en terraza con vista panorámica. Menú de temporada, música ambient y buenas conversaciones.',
-    price: '$350 por persona', capacity: 30, type: 'Gastronomía',
-  },
-];
-
-const UPCOMING_EVENTS: Event[] = [
-  {
-    id: 'u1', name: 'Feria de Arte Urbano', date: d(5),
-    location: 'Parque Hundido, CDMX',
-    cover: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=800&q=80',
-    attendees: MOCK_ATTENDEES.slice(1, 6),
-    description: 'Más de 40 artistas urbanos en un mismo espacio. Murales en vivo, instalaciones interactivas y mercado de arte independiente.',
-    price: 'Entrada libre', capacity: 200, type: 'Arte',
-  },
-  {
-    id: 'u2', name: 'Festival Nómada', date: d(10),
-    location: 'Foro Indie Rocks, CDMX',
-    cover: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=800&q=80',
-    attendees: MOCK_ATTENDEES,
-    description: 'Festival de dos días con 12 bandas emergentes, food trucks y zona de camping. La experiencia BRUUK por excelencia.',
-    price: '$650 general / $900 VIP', capacity: 500, type: 'Festival',
-  },
-  {
-    id: 'u3', name: 'Noche de Jazz & Mezcal', date: d(15),
-    location: 'Xoco, CDMX',
-    cover: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&q=80',
-    attendees: MOCK_ATTENDEES.slice(0, 4),
-    description: 'Sesión íntima de jazz en vivo con cata de mezcales artesanales de Oaxaca. Cupo muy limitado.',
-    price: '$280 con copa incluida', capacity: 25, type: 'Jazz',
-  },
-];
-
 function daysUntil(date: Date) {
   return Math.ceil((date.getTime() - Date.now()) / 86400000);
 }
