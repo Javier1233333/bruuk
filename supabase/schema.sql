@@ -276,4 +276,4 @@ create policy "Manage bookings for self" on public.bookings
     with check (auth.uid() = user_id);
 
 create policy "Insert click logs publicly" on public.share_clicks 
-    for insert using (true);
+    for insert with check (true);
