@@ -192,4 +192,88 @@ create policy "Allow write reviews for authenticated owners" on public.spot_revi
     for insert to authenticated
     with check (auth.uid() = user_id);
 
+-- =========================================================================
+-- MÓDULO 4: EXPERIENCIAS, RESERVAS Y REFERIDOS
+-- =========================================================================
 
+-- Catálogo de Experiencias
+create table if not exists public.experiences (
+    id text primary key, -- ej. 'exp_001'
+    host_id uuid references public.profiles(id) on delete set null,
+    name text not null,
+    host_name text not null,
+    host_avatar text,
+    category text not null,
+    image_url text,
+    rating numeric default 5.0,
+    reviews_count int default 0,
+    price text not null,
+    duration text not null,
+    location text not null,
+    city text not null,
+    description text,
+    long_description text,
+    images text[],
+    reservation_info text,
+    whatsapp_link text,
+    status text default 'pending' not null, -- 'pending', 'approved'
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Instancias de Evento (Fechas y Cupos)
+create table if not exists public.events (
+    id text primary key, -- ej. 'event_001'
+    experience_id text references public.experiences(id) on delete cascade not null,
+    date timestamp with time zone not null,
+    location text not null,
+    capacity int not null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Reservas / Asistencias (Stripe Ready)
+do $$ begin
+    create type booking_status as enum ('pending_payment', 'confirmed', 'cancelled');
+exception
+    when duplicate_object then null;
+end $$;
+
+create table if not exists public.bookings (
+    id uuid default gen_random_uuid() primary key,
+    event_id text references public.events(id) on delete cascade not null,
+    user_id uuid references public.profiles(id) on delete cascade not null,
+    status booking_status default 'confirmed'::booking_status not null, -- default 'confirmed' de momento
+    stripe_session_id text,
+    referrer_id uuid references public.profiles(id) on delete set null, -- tracking de quién lo invitó
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    unique (event_id, user_id)
+);
+
+-- Tabla de Clicks de Links Compartidos (Referidos)
+create table if not exists public.share_clicks (
+    id uuid default gen_random_uuid() primary key,
+    experience_id text references public.experiences(id) on delete cascade,
+    referrer_id uuid references public.profiles(id) on delete cascade,
+    source text default 'whatsapp', -- 'whatsapp', 'instagram', etc.
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Habilitar RLS en las 4 tablas
+alter table public.experiences enable row level security;
+alter table public.events enable row level security;
+alter table public.bookings enable row level security;
+alter table public.share_clicks enable row level security;
+
+-- Políticas de RLS
+create policy "Read approved experiences" on public.experiences 
+    for select using (status = 'approved' or auth.uid() = host_id or (select role from public.profiles where id = auth.uid()) = 'admin');
+
+create policy "Read public events" on public.events 
+    for select using (true);
+
+create policy "Manage bookings for self" on public.bookings 
+    for all to authenticated 
+    using (auth.uid() = user_id) 
+    with check (auth.uid() = user_id);
+
+create policy "Insert click logs publicly" on public.share_clicks 
+    for insert using (true);
