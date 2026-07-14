@@ -7,7 +7,7 @@ import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 
 export function VerifyInvitePage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshSession } = useAuth();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,33 +20,29 @@ export function VerifyInvitePage() {
 
     const trimmed = code.trim().toUpperCase();
 
-    const { data: codeRow, error: codeErr } = await supabase
-      .from('invite_codes')
-      .select('id, used')
-      .eq('code', trimmed)
-      .single();
+    try {
+      const { data: isSuccess, error: rpcErr } = await supabase.rpc('verify_and_use_invite_code', {
+        user_code: trimmed,
+      });
 
-    if (codeErr || !codeRow) {
-      setError('Código inválido. ¿No tienes uno? Únete al newsletter VIP.');
+      if (rpcErr) {
+        throw rpcErr;
+      }
+
+      if (!isSuccess) {
+        setError('Código inválido o ya utilizado.');
+        setLoading(false);
+        return;
+      }
+
+      // Sincronizar el estado de la sesión local con los metadatos actualizados
+      await refreshSession();
+      navigate('/app');
+    } catch (err: any) {
+      setError(err?.message || 'Error al verificar el código. Inténtalo de nuevo.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    if (codeRow.used) {
-      setError('Este código ya fue utilizado.');
-      setLoading(false);
-      return;
-    }
-
-    await supabase
-      .from('invite_codes')
-      .update({ used: true, used_by: user?.email })
-      .eq('id', codeRow.id);
-
-    // Marcamos en el perfil que ya verificó el código
-    await supabase.auth.updateUser({ data: { invite_verified: true } });
-
-    navigate('/app');
   };
 
   const handleCancel = async () => {
