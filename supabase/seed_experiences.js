@@ -28,7 +28,7 @@ function loadEnv() {
 
 const env = loadEnv();
 const supabaseUrl = env.VITE_SUPABASE_URL;
-const supabaseKey = env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || supabaseUrl.includes('placeholder') || !supabaseKey || supabaseKey.includes('placeholder')) {
   console.warn('⚠️  Usa credenciales reales en tu archivo .env para poder sembrar la base de datos.');
