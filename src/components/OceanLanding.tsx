@@ -21,6 +21,7 @@ import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import experiencesData from '../data/experiences.json';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
@@ -214,37 +215,99 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     const fetchSpots = async () => {
       setLoadingSpots(true);
       try {
-        const { data, error } = await supabase
+        // Fetch spots
+        const { data: dbSpots, error: spotsErr } = await supabase
           .from('spots')
           .select('*')
           .eq('city', activeCityConfig.id);
 
-        if (error) throw error;
+        if (spotsErr) throw spotsErr;
 
-        if (data && data.length > 0) {
-          const mapped: Spot[] = data.map(s => ({
+        // Fetch experiences
+        const { data: dbExps, error: expsErr } = await supabase
+          .from('experiences')
+          .select('*')
+          .eq('city', activeCityConfig.id)
+          .eq('status', 'approved');
+
+        if (expsErr) console.warn('[BRUUK] Error loading experiences for feed:', expsErr);
+
+        const mappedSpots: Spot[] = (dbSpots || []).map(s => ({
+          id: s.id,
+          city: s.city,
+          category: 'lugar',
+          name: s.name,
+          type: s.type || '',
+          description: s.description || '',
+          imageUrl: s.image_url || '',
+          colorAccent: s.color_accent || '',
+          mapsLink: s.maps_link || '',
+          rating: s.rating ? Number(s.rating) : undefined,
+          price: s.price || undefined,
+          coordinates: s.lat && s.lng ? { lat: Number(s.lat), lng: Number(s.lng) } : undefined,
+        }));
+
+        const mappedExps: Spot[] = (dbExps || []).map(e => ({
+          id: e.id,
+          city: e.city,
+          category: 'experiencia',
+          name: e.name,
+          type: 'Experiencia',
+          description: e.description || '',
+          imageUrl: e.image_url || '',
+          colorAccent: '#8b7cf6',
+          mapsLink: `https://maps.google.com/?q=${encodeURIComponent(e.location)}`,
+          rating: e.rating ? Number(e.rating) : undefined,
+          price: e.price || undefined,
+          coordinates: e.lat && e.lng ? { lat: Number(e.lat), lng: Number(e.lng) } : undefined,
+          bookingLink: 'true',
+          schedule: 'Próximamente'
+        }));
+
+        if (mappedSpots.length === 0 && mappedExps.length === 0) {
+          throw new Error('No spots in DB, falling back to local');
+        }
+
+        setSpots([...mappedSpots, ...mappedExps]);
+      } catch (err) {
+        console.warn('[BRUUK] Fallback to local JSON for spots & experiences due to error:', err);
+        
+        const localSpots = spotsData
+          .filter(s => s.city === activeCityConfig.id)
+          .map((s: any) => ({
             id: s.id,
             city: s.city,
+            category: 'lugar',
             name: s.name,
             type: s.type || '',
             description: s.description || '',
-            imageUrl: s.image_url || '',
-            colorAccent: s.color_accent || '',
-            mapsLink: s.maps_link || '',
+            imageUrl: s.imageUrl || '',
+            colorAccent: s.colorAccent || '',
+            mapsLink: s.mapsLink || '',
             rating: s.rating ? Number(s.rating) : undefined,
             price: s.price || undefined,
-            coordinates: s.lat && s.lng ? { lat: Number(s.lat), lng: Number(s.lng) } : undefined,
+            coordinates: s.coordinates ? { lat: Number(s.coordinates.lat), lng: Number(s.coordinates.lng) } : undefined,
           }));
-          setSpots(mapped);
-        } else {
-          // Fallback to local JSON if DB is empty
-          const local = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
-          setSpots(local);
-        }
-      } catch (err) {
-        console.warn('[BRUUK] Fallback to local JSON for spots due to error:', err);
-        const local = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
-        setSpots(local);
+
+        const localExps = (experiencesData || [])
+          .filter(e => e.city.toLowerCase() === activeCityConfig.id.toLowerCase() && e.status === 'approved')
+          .map((e: any) => ({
+            id: e.id,
+            city: e.city,
+            category: 'experiencia',
+            name: e.name,
+            type: 'Experiencia',
+            description: e.description || '',
+            imageUrl: e.image_url || '',
+            colorAccent: '#8b7cf6',
+            mapsLink: `https://maps.google.com/?q=${encodeURIComponent(e.location)}`,
+            rating: e.rating ? Number(e.rating) : undefined,
+            price: e.price || undefined,
+            bookingLink: 'true',
+            schedule: 'Próximamente'
+          }));
+
+        setSpots([...localSpots, ...localExps]);
       } finally {
         setLoadingSpots(false);
       }
