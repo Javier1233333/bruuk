@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, MapPin, Calendar, Lock, Check, Users, Tag, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import { BruukLogo } from '../components/BruukLogo';
 import './DashboardPage.css';
 
@@ -224,10 +225,70 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<'confirmed' | 'upcoming'>('confirmed');
   const [confirmedIds, setConfirmedIds] = useState<Set<string>>(new Set());
+  
+  const [confirmedEvents, setConfirmedEvents] = useState<Event[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const instagram = localStorage.getItem('bruuk_instagram') || user?.email?.split('@')[0] || 'tú';
 
-  const handleConfirm = (id: string) => {
-    setConfirmedIds(prev => new Set(prev).add(id));
+  useEffect(() => {
+    async function fetchData() {
+      if (!user) return;
+      setLoading(true);
+      try {
+        const { data: bookings } = await supabase.from('bookings').select('event_id').eq('user_id', user.id);
+        const bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
+        setConfirmedIds(bookedEventIds);
+
+        const { data: evts } = await supabase.from('events').select(`
+          *,
+          experiences (*)
+        `).gte('date', new Date().toISOString());
+
+        const formatted = (evts || []).map((e: any) => ({
+          id: e.id,
+          name: e.experiences?.name || 'Evento',
+          date: new Date(e.date),
+          location: e.location,
+          cover: e.experiences?.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+          attendees: [], 
+          description: e.experiences?.description || '',
+          price: e.experiences?.price || '',
+          capacity: e.capacity,
+          type: e.experiences?.category || 'Evento'
+        }));
+
+        setConfirmedEvents(formatted.filter(e => bookedEventIds.has(e.id)));
+        setUpcomingEvents(formatted.filter(e => !bookedEventIds.has(e.id)));
+
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [user]);
+
+  const handleConfirm = async (id: string) => {
+    if (!user) return;
+    try {
+      await supabase.from('bookings').insert({
+        event_id: id,
+        user_id: user.id,
+        status: 'confirmed'
+      });
+      setConfirmedIds(prev => new Set(prev).add(id));
+      
+      const ev = upcomingEvents.find(e => e.id === id);
+      if (ev) {
+        setUpcomingEvents(prev => prev.filter(e => e.id !== id));
+        setConfirmedEvents(prev => [...prev, ev]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -250,17 +311,26 @@ export function DashboardPage() {
 
       <main className="dashboard-main">
         <div className="events-list">
-          {tab === 'confirmed' && CONFIRMED_EVENTS.map(e => (
-            <ConfirmedEventBlock key={e.id} event={e} />
-          ))}
-          {tab === 'upcoming' && UPCOMING_EVENTS.map(e => (
-            <UpcomingEventBlock
-              key={e.id}
-              event={e}
-              confirmed={confirmedIds.has(e.id)}
-              onConfirm={handleConfirm}
-            />
-          ))}
+          {loading ? (
+            <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem' }}>Cargando eventos...</p>
+          ) : (
+            <>
+              {tab === 'confirmed' && confirmedEvents.map(e => (
+                <ConfirmedEventBlock key={e.id} event={e} />
+              ))}
+              {tab === 'upcoming' && upcomingEvents.map(e => (
+                <UpcomingEventBlock
+                  key={e.id}
+                  event={e}
+                  confirmed={confirmedIds.has(e.id)}
+                  onConfirm={handleConfirm}
+                />
+              ))}
+              {tab === 'confirmed' && confirmedEvents.length === 0 && (
+                <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem' }}>Aún no tienes eventos confirmados.</p>
+              )}
+            </>
+          )}
         </div>
       </main>
     </div>

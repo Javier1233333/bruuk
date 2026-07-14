@@ -3,6 +3,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, ChevronDown } from 'lucide-react';
 import citiesData from '../data/cities.json';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import './ExperienciasPage.css';
 
 function getCookie(name: string): string | null {
@@ -67,129 +69,10 @@ type Experience = {
   longDescription: string;
   images: string[];
   reservationInfo: string;
+  nextEventId?: string;
 };
 
-const EXPERIENCES: Experience[] = [
-  {
-    id: 'exp_001',
-    name: 'Cata de Mezcales Ancestrales',
-    host: 'Mateo Silva',
-    hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80',
-    category: 'Gastronomía',
-    imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&q=80',
-    rating: 4.9,
-    reviewsCount: 24,
-    price: '$450 MXN',
-    duration: '2.5 horas',
-    location: 'Colonia Americana',
-    city: 'Guadalajara',
-    nextDate: 'Sábado 18 de Julio',
-    description: 'Aprende a degustar mezcal artesanal y ancestral maridado con chocolate y frutas en un patio secreto.',
-    longDescription: 'Te abriremos las puertas de un patio colonial escondido en la Colonia Americana. Probaremos 4 variedades de mezcales de pequeños productores de Oaxaca y Jalisco, y aprenderemos sobre los procesos de destilación en ollas de barro y cobre. Cada mezcal irá acompañado de un bocado diseñado para resaltar sus notas de humo, tierra y agave.',
-    whatsAppLink: 'https://wa.me/523300000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20la%20Cata%20de%20Mezcales%20Ancestrales.',
-    images: [
-      'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=500&q=80',
-      'https://images.unsplash.com/photo-1629168925203-8d26bb87d00f?w=500&q=80',
-      'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&q=80'
-    ],
-    reservationInfo: 'Reserva pagando el 50% por transferencia. El lugar exacto se compartirá 24h antes del evento.'
-  },
-  {
-    id: 'exp_002',
-    name: 'Taller de Barro Negro Oaxaqueño',
-    host: 'Carmen Mendoza',
-    hostAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80',
-    category: 'Arte',
-    imageUrl: 'https://images.unsplash.com/photo-1565192647048-f997ded87920?w=500&q=80',
-    rating: 5.0,
-    reviewsCount: 18,
-    price: '$380 MXN',
-    duration: '3 horas',
-    location: 'Tlaquepaque Centro',
-    city: 'Guadalajara',
-    nextDate: 'Domingo 19 de Julio',
-    description: 'Moldea tu propia pieza en torno tradicional de pedal guiado por una artesana oaxaqueña.',
-    longDescription: 'Una experiencia práctica e íntima. Carmen, artesana de cuarta generación de barro negro, te enseñará las técnicas básicas de amasado, centrado en el torno tradicional de pedal y el posterior bruñido con cuarzo para darle ese brillo negro metálico tan característico. Te llevarás la pieza que moldees en el taller.',
-    whatsAppLink: 'https://wa.me/523300000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20el%20Taller%20de%20Barro%20Negro.',
-    images: [
-      'https://images.unsplash.com/photo-1565192647048-f997ded87920?w=500&q=80',
-      'https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=500&q=80'
-    ],
-    reservationInfo: 'Reserva directa por WhatsApp. Se aparta con $150 MXN. Incluye materiales y tu pieza horneada.'
-  },
-  {
-    id: 'exp_003',
-    name: 'Fotos en Azoteas y Techos Urbanos',
-    host: 'Diego Morales',
-    hostAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
-    category: 'Aventura',
-    imageUrl: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&q=80',
-    rating: 4.8,
-    reviewsCount: 32,
-    price: '$300 MXN',
-    duration: '2 horas',
-    location: 'Colonia Centenario',
-    city: 'Hermosillo',
-    nextDate: 'Viernes 24 de Julio',
-    description: 'Consigue perspectivas fotográficas espectaculares explorando azoteas escondidas del centro.',
-    longDescription: 'Subiremos a tres techos con acceso controlado que ofrecen las mejores vistas panorámicas y atardeceres de Hermosillo. Ideal tanto para fotógrafos con cámara profesional como para quienes quieran tomar fotos increíbles con su celular. Te daré tips de composición, iluminación urbana y retrato al atardecer.',
-    whatsAppLink: 'https://wa.me/526620000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20la%20Sesión%20de%20Fotos%20en%20Azoteas.',
-    images: [
-      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&q=80',
-      'https://images.unsplash.com/photo-1517409240409-df6322987a02?w=500&q=80',
-      'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500&q=80'
-    ],
-    reservationInfo: 'Máximo 6 personas. Cupo se reserva pagando el total por transferencia.'
-  },
-  {
-    id: 'exp_004',
-    name: 'Senderismo Nocturno en la Barranca',
-    host: 'Sofía Ruiz',
-    hostAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80',
-    category: 'Aventura',
-    imageUrl: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=500&q=80',
-    rating: 4.9,
-    reviewsCount: 15,
-    price: '$350 MXN',
-    duration: '4 horas',
-    location: 'Barranca de Huentitán',
-    city: 'Guadalajara',
-    nextDate: 'Sábado 25 de Julio',
-    description: 'Camina por senderos iluminados por la luna llena hasta un mirador natural de la barranca.',
-    longDescription: 'Una desconexión total de la ciudad. Haremos un descenso controlado por senderos no turísticos de la Barranca de Huentitán durante las horas frescas de la noche. Usaremos lámparas frontales y disfrutaremos del silencio natural y la vista del río Santiago iluminado por la luna llena. Incluye snacks energéticos e hidratación.',
-    whatsAppLink: 'https://wa.me/523300000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20el%20Senderismo%20Nocturno.',
-    images: [
-      'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=500&q=80',
-      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=80'
-    ],
-    reservationInfo: 'Se requiere calzado de montaña. Se aparta lugar pagando el costo total.'
-  },
-  {
-    id: 'exp_005',
-    name: 'Acústico Secreto en Sótano de Jazz',
-    host: 'Rodrigo Peña',
-    hostAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80',
-    category: 'Música',
-    imageUrl: 'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=500&q=80',
-    rating: 4.9,
-    reviewsCount: 20,
-    price: '$250 MXN',
-    duration: '2 horas',
-    location: 'Centro Histórico',
-    city: 'Hermosillo',
-    nextDate: 'Jueves 30 de Julio',
-    description: 'Un concierto acústico exclusivo de jazz y folk para solo 15 personas en un sótano secreto.',
-    longDescription: 'Baja cuatro escalones y entra a un sótano de ladrillo expuesto donde el sonido rebota de forma perfecta. Disfrutarás de un set íntimo de 2 horas con tres músicos independientes locales. Una experiencia pensada para escuchar música con atención plena, tomar una copa de vino y charlar en un ambiente cercano y relajado.',
-    whatsAppLink: 'https://wa.me/526620000000?text=Hola!%20Quiero%20reservar%20un%20lugar%20para%20el%20Acústico%20Secreto.',
-    images: [
-      'https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=500&q=80',
-      'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=500&q=80',
-      'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&q=80'
-    ],
-    reservationInfo: 'Boletos físicos disponibles. Transferencia para asegurar tu lugar. BYOB permitido.'
-  }
-];
-
+// Datos extraídos para seed.
 const CATEGORIES = ['Todo', 'Aventura', 'Gastronomía', 'Arte', 'Música'];
 
 export default function ExperienciasPage() {
@@ -197,20 +80,142 @@ export default function ExperienciasPage() {
   const { city } = useParams();
   const location = useLocation();
   
+  const { user } = useAuth();
   const [activeCategory, setActiveCategory] = useState<string>('Todo');
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isReserving, setIsReserving] = useState(false);
+
+  const handleReserve = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!selectedExp || !selectedExp.nextEventId) {
+      alert('Esta experiencia no tiene eventos programados próximos.');
+      return;
+    }
+
+    setIsReserving(true);
+    try {
+      const searchParams = new URLSearchParams(location.search);
+      const referrerId = searchParams.get('ref') || null;
+
+      const { error } = await supabase.from('bookings').insert({
+        event_id: selectedExp.nextEventId,
+        user_id: user.id,
+        status: 'confirmed',
+        referrer_id: referrerId
+      });
+
+      if (error && error.code !== '23505') { 
+        throw error;
+      }
+
+      alert('¡Reserva confirmada con éxito!');
+      if (selectedExp.whatsAppLink) {
+        window.open(selectedExp.whatsAppLink, '_blank');
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert('Error al reservar: ' + err.message);
+    } finally {
+      setIsReserving(false);
+    }
+  };
+
+  // Fetch experiences and events
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      setLoading(true);
+      try {
+        const { data: expData, error: expError } = await supabase
+          .from('experiences')
+          .select('*')
+          .eq('status', 'approved');
+
+        if (expError) throw expError;
+
+        const { data: evtData, error: evtError } = await supabase
+          .from('events')
+          .select('*')
+          .gte('date', new Date().toISOString())
+          .order('date', { ascending: true });
+        
+        if (evtError) throw evtError;
+
+        const mapped: Experience[] = (expData || []).map((exp: any) => {
+          // Find next event for this experience
+          const nextEvent = (evtData || []).find((e: any) => e.experience_id === exp.id);
+          
+          return {
+            id: exp.id,
+            name: exp.name,
+            host: exp.host_name,
+            hostAvatar: exp.host_avatar || 'https://via.placeholder.com/100',
+            category: exp.category as any,
+            imageUrl: exp.image_url || 'https://via.placeholder.com/500',
+            rating: exp.rating ? Number(exp.rating) : 5.0,
+            reviewsCount: exp.reviews_count || 0,
+            price: exp.price,
+            duration: exp.duration,
+            location: exp.location,
+            city: exp.city.toLowerCase() === 'hermosillo' ? 'Hermosillo' : 'Guadalajara',
+            nextDate: nextEvent ? new Date(nextEvent.date).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }) : 'Próximamente',
+            description: exp.description || '',
+            longDescription: exp.long_description || '',
+            whatsAppLink: exp.whatsapp_link || '',
+            images: exp.images || [],
+            reservationInfo: exp.reservation_info || '',
+            nextEventId: nextEvent?.id
+          };
+        });
+        setExperiences(mapped);
+
+      } catch (err) {
+        console.error('Error fetching experiences:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExperiences();
+  }, []);
+
+  // Track share link clicks
+  useEffect(() => {
+    const logClick = async () => {
+      const searchParams = new URLSearchParams(location.search);
+      const ref = searchParams.get('ref');
+      const src = searchParams.get('src') || 'unknown';
+      const expId = searchParams.get('exp');
+      
+      if (ref && expId) {
+        try {
+          await supabase.from('share_clicks').insert({
+            experience_id: expId,
+            referrer_id: ref,
+            source: src
+          });
+        } catch (e) {
+          console.warn('Error logging click:', e);
+        }
+      }
+    };
+    logClick();
+  }, [location.search]);
 
   // Auto-open experience if passed in location state
   useEffect(() => {
-    if (location.state?.selectedExpId) {
-      const exp = EXPERIENCES.find(e => e.id === location.state.selectedExpId);
+    if (!loading && location.state?.selectedExpId) {
+      const exp = experiences.find(e => e.id === location.state.selectedExpId);
       if (exp) {
         setSelectedExp(exp);
         navigate(location.pathname, { replace: true, state: {} });
       }
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [loading, location.state, location.pathname, navigate, experiences]);
 
   useEffect(() => {
     if (selectedExp) {
@@ -262,7 +267,7 @@ export default function ExperienciasPage() {
   }, [isDropdownOpen]);
 
   // Filter experiences by active city
-  const cityExperiences = EXPERIENCES.filter(e => e.city.toLowerCase() === activeCityConfig.id.toLowerCase());
+  const cityExperiences = experiences.filter(e => e.city.toLowerCase() === activeCityConfig.id.toLowerCase());
 
   // Filter experiences based on selected category
   const filteredExperiences = activeCategory === 'Todo' 
@@ -411,7 +416,12 @@ export default function ExperienciasPage() {
 
               {/* Carousel Cover Images */}
               <div className="sheet-carousel-wrapper">
-                <div className="sheet-category-badge">{selectedExp.category}</div>
+                <div 
+                  className="sheet-category-badge"
+                  style={{ background: 'var(--city-accent)', color: '#000', borderColor: '#fff' }}
+                >
+                  {selectedExp.category}
+                </div>
                 <div 
                   className="sheet-carousel"
                   onScroll={(e) => {
@@ -499,14 +509,16 @@ export default function ExperienciasPage() {
                   <span className="price-label">PRECIO</span>
                   <span className="price-value">{selectedExp.price} <span className="price-unit">/ pers</span></span>
                 </div>
-                <a 
-                  href={selectedExp.whatsAppLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <button 
+                  onClick={handleReserve}
+                  disabled={isReserving || !selectedExp.nextEventId}
                   className="whatsapp-reserve-btn"
+                  style={{ opacity: isReserving || !selectedExp.nextEventId ? 0.7 : 1 }}
                 >
-                  Reservar lugar <MessageCircle size={15} fill="currentColor" />
-                </a>
+                  {isReserving ? 'Procesando...' : (
+                    <>Reservar lugar <MessageCircle size={15} fill="currentColor" /></>
+                  )}
+                </button>
               </div>
             </motion.div>
           </div>
@@ -536,7 +548,16 @@ function ExperienceCard({
         style={{ backgroundImage: `url(${exp.imageUrl})` }}
       >
         <div className="card-image-gradient"></div>
-        <span className="card-badge">{exp.category}</span>
+        <span 
+          className="card-badge" 
+          style={{ 
+            borderColor: 'var(--city-accent)', 
+            color: 'var(--city-accent)',
+            boxShadow: '2px 2px 0px var(--city-accent)' 
+          }}
+        >
+          {exp.category}
+        </span>
         
         {/* Hover action preview */}
         <div className="card-hover-action">
