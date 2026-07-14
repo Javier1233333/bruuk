@@ -89,9 +89,9 @@ create table if not exists public.profiles (
 alter table public.profiles enable row level security;
 
 -- Políticas de RLS para profiles
-create policy "Allow select for verified users" on public.profiles
+create policy "Allow select for verified users or owner" on public.profiles
     for select to authenticated
-    using (coalesce(((auth.jwt() -> 'user_metadata'::text) ->> 'invite_verified'::text)::boolean, false) = true);
+    using (auth.uid() = id or coalesce(((auth.jwt() -> 'user_metadata'::text) ->> 'invite_verified'::text)::boolean, false) = true);
 
 create policy "Allow update for owners" on public.profiles
     for update to authenticated
