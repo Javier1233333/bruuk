@@ -7,7 +7,7 @@ import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 
 export function VerifyInvitePage() {
-  const { user, signOut, refreshSession } = useAuth();
+  const { signOut, refreshSession } = useAuth();
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
