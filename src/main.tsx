@@ -49,19 +49,20 @@ createRoot(document.getElementById('root')!).render(
             </Route>
 
             <Route path="/login" element={<LoginPage />} />
+            
+            {/* Public Mobile App Shell Routes */}
+            <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
+            <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
+            <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
+            <Route path="/experiencias/:city" element={<AppShell><ExperienciasPage /></AppShell>} />
+            <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
+
             {/* Rutas Protegidas de la Aplicación */}
             <Route element={<ProtectedRoute />}>
               <Route path="/setup" element={<ProfileSetupPage />} />
               <Route path="/app" element={<DashboardPage />} />
-              
-              {/* Mobile App Shell Routes */}
-              <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
-              <Route path="/descubrir/:city" element={<AppShell><OceanLanding /></AppShell>} />
-              <Route path="/experiencias" element={<AppShell><ExperienciasPage /></AppShell>} />
-              <Route path="/experiencias/:city" element={<AppShell><ExperienciasPage /></AppShell>} />
               <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
               <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
-              <Route path="/profile/:username" element={<AppShell><ProfilePage /></AppShell>} />
               <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
             </Route>
           </Routes>
