@@ -5,6 +5,7 @@ import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, C
 import citiesData from '../data/cities.json';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import experiencesData from '../data/experiences.json';
 import './ExperienciasPage.css';
 
 function getCookie(name: string): string | null {
@@ -79,6 +80,10 @@ export default function ExperienciasPage() {
   const navigate = useNavigate();
   const { city } = useParams();
   const location = useLocation();
+
+  // Find active city config
+  const currentCityConfig = citiesData.find(c => c.id === city);
+  const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
   
   const { user } = useAuth();
   const [activeCategory, setActiveCategory] = useState<string>('Todo');
@@ -175,13 +180,34 @@ export default function ExperienciasPage() {
         setExperiences(mapped);
 
       } catch (err) {
-        console.error('Error fetching experiences:', err);
+        console.warn('[BRUUK] Error fetching experiences from Supabase, falling back to local JSON:', err);
+        const mappedFallback: Experience[] = (experiencesData || []).map((exp: any) => ({
+          id: exp.id,
+          name: exp.name,
+          host: exp.host_name,
+          hostAvatar: exp.host_avatar || 'https://via.placeholder.com/100',
+          category: exp.category as any,
+          imageUrl: exp.image_url || 'https://via.placeholder.com/500',
+          rating: exp.rating ? Number(exp.rating) : 5.0,
+          reviewsCount: exp.reviews_count || 0,
+          price: exp.price,
+          duration: exp.duration,
+          location: exp.location,
+          city: exp.city.toLowerCase() === 'hermosillo' ? 'Hermosillo' : 'Guadalajara',
+          nextDate: 'Próximamente',
+          description: exp.description || '',
+          longDescription: exp.long_description || '',
+          whatsAppLink: exp.whatsapp_link || '',
+          images: exp.images || [],
+          reservationInfo: exp.reservation_info || ''
+        }));
+        setExperiences(mappedFallback);
       } finally {
         setLoading(false);
       }
     };
     fetchExperiences();
-  }, []);
+  }, [activeCityConfig.id]);
 
   // Track share link clicks
   useEffect(() => {
@@ -231,9 +257,7 @@ export default function ExperienciasPage() {
     };
   }, [selectedExp]);
 
-  // Find active city config
-  const currentCityConfig = citiesData.find(c => c.id === city);
-  const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
+
 
   // Keep active city synced globally
   useEffect(() => {
@@ -347,7 +371,23 @@ export default function ExperienciasPage() {
 
       {/* Main Experiences Area */}
       <main className="experiences-list-area">
-        {activeCategory === 'Todo' ? (
+        {loading ? (
+          <div className="experiences-skeleton-grid">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="experience-card skeleton-card">
+                <div className="card-image skeleton-image">
+                  <div className="skeleton-shimmer" />
+                </div>
+                <div className="card-body">
+                  <div className="skeleton-line short"><div className="skeleton-shimmer" /></div>
+                  <div className="skeleton-line title"><div className="skeleton-shimmer" /></div>
+                  <div className="skeleton-line"><div className="skeleton-shimmer" /></div>
+                  <div className="skeleton-line"><div className="skeleton-shimmer" /></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : activeCategory === 'Todo' ? (
           /* Show organized carousels when 'Todo' is selected */
           <div className="carousels-container">
             {/* Row 1: Featured */}
@@ -570,7 +610,7 @@ function ExperienceCard({
           <Star size={11} fill="currentColor" />
           <span>{exp.rating} ({exp.reviewsCount})</span>
           <span style={{ margin: '0 4px', opacity: 0.3 }}>•</span>
-          <span className="card-city-tag" style={{ color: exp.city === 'Hermosillo' ? '#ff7a45' : '#8b7cf6', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.62rem', letterSpacing: '0.5px' }}>{exp.city}</span>
+          <span className="card-city-tag" style={{ color: 'var(--city-accent, #8b7cf6)', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.62rem', letterSpacing: '0.5px' }}>{exp.city}</span>
         </div>
         <h3 className="card-title">{exp.name}</h3>
         <p className="card-desc">{exp.description}</p>

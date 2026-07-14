@@ -718,3 +718,70 @@
     width: 100% !important;
   }
 }
+
+/* ── Skeleton Loading ── */
+.experiences-skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 769px) {
+  .experiences-skeleton-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+.experience-card.skeleton-card {
+  box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  background: #0e0d1a;
+  width: 100%;
+}
+
+.card-image.skeleton-image {
+  background-color: rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+  height: 180px;
+}
+
+.skeleton-line {
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line.short {
+  width: 40%;
+}
+
+.skeleton-line.title {
+  width: 75%;
+  height: 18px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-card .skeleton-shimmer,
+.skeleton-line .skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  animation: shimmer 1.6s infinite;
+}
