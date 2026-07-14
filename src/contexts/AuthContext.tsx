@@ -6,16 +6,44 @@ import { supabase } from '../lib/supabase';
 interface AuthContextType {
   session: Session | null;
   user: User | null;
+  profile: any | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshSession: () => Promise<Session | null>;
+  refreshProfile: () => Promise<any | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      if (error) return null;
+      return data;
+    } catch {
+      return null;
+    }
+  };
+
+  const refreshProfile = async () => {
+    const currentUserId = session?.user?.id;
+    if (!currentUserId) {
+      setProfile(null);
+      return null;
+    }
+    const p = await fetchProfile(currentUserId);
+    setProfile(p);
+    return p;
+  };
 
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | null = null;
@@ -24,6 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const { data } = await supabase.auth.getSession();
         setSession(data.session);
+        if (data.session?.user?.id) {
+          const p = await fetchProfile(data.session.user.id);
+          setProfile(p);
+        }
       } catch {
         // Supabase no está configurado aún — la app sigue funcionando
       } finally {
@@ -31,8 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       try {
-        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-          setSession(session);
+        const { data } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+          setSession(newSession);
+          if (newSession?.user?.id) {
+            const p = await fetchProfile(newSession.user.id);
+            setProfile(p);
+          } else {
+            setProfile(null);
+          }
         });
         subscription = data.subscription;
       } catch {
@@ -51,7 +89,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await supabase.auth.signOut();
     } catch {
+      // Ignorar
+    } finally {
       setSession(null);
+      setProfile(null);
     }
   };
 
@@ -60,18 +101,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.refreshSession();
       if (error) throw error;
       setSession(data.session);
+      if (data.session?.user?.id) {
+        const p = await fetchProfile(data.session.user.id);
+        setProfile(p);
+      }
       return data.session;
     } catch (err) {
       console.warn('[BRUUK] Falló al refrescar la sesión:', err);
       // Intentar obtener la sesión actual si el refresco falla
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
+      if (data.session?.user?.id) {
+        const p = await fetchProfile(data.session.user.id);
+        setProfile(p);
+      }
       return data.session;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut, refreshSession }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, profile, loading, signOut, refreshSession, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
