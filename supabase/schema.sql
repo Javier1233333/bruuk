@@ -120,11 +120,11 @@ begin
     new.id,
     final_username,
     'avatar1',
-    'explorer'::user_role
+    'explorer'::public.user_role
   );
   return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = public;
 
 -- Crear el disparador (Trigger)
 drop trigger if exists on_auth_user_created on auth.users;
