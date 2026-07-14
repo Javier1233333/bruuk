@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<Session | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,8 +55,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) throw error;
+      setSession(data.session);
+      return data.session;
+    } catch (err) {
+      console.warn('[BRUUK] Falló al refrescar la sesión:', err);
+      // Intentar obtener la sesión actual si el refresco falla
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      return data.session;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
