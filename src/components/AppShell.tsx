@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Map, Compass, MessageCircle, User } from 'lucide-react';
+import { Map, Compass, Calendar, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './AppShell.css';
 
@@ -111,22 +111,19 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
 
             <Link 
-              to="/chats" 
-              className={`tabbar-item ${isActive('/chats') ? 'active' : ''}`}
-              aria-current={isActive('/chats') ? 'page' : undefined}
+              to="/app" 
+              className={`tabbar-item ${isActive('/app') ? 'active' : ''}`}
+              aria-current={isActive('/app') ? 'page' : undefined}
             >
-              {isActive('/chats') && (
+              {isActive('/app') && (
                 <motion.div 
                   layoutId="active-glow"
                   className="tabbar-active-glow"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <div className="tabbar-badge-container">
-                <MessageCircle size={22} strokeWidth={2.2} />
-                <span className="tabbar-badge-dot"></span>
-              </div>
-              <span>Chats</span>
+              <Calendar size={22} strokeWidth={2.2} />
+              <span>Mis Eventos</span>
             </Link>
 
             <Link 

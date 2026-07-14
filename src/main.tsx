@@ -60,7 +60,7 @@ createRoot(document.getElementById('root')!).render(
             {/* Rutas Protegidas de la Aplicación */}
             <Route element={<ProtectedRoute />}>
               <Route path="/setup" element={<ProfileSetupPage />} />
-              <Route path="/app" element={<DashboardPage />} />
+              <Route path="/app" element={<AppShell><DashboardPage /></AppShell>} />
               <Route path="/chats" element={<AppShell><ChatsPage /></AppShell>} />
               <Route path="/perfil" element={<AppShell><ProfilePage /></AppShell>} />
               <Route path="/verify" element={<AppShell><VerifyInvitePage /></AppShell>} />
