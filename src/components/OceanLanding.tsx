@@ -1080,18 +1080,23 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                 const isSaved = savedSpots.has(spot.id);
                 const isExperience = getCategory(spot) === 'experiencia';
                 const inView = index === activeIndex;
+                const isNear = Math.abs(index - activeIndex) <= 1;
 
                 return (
                   <div key={spot.id} className="tiktok-slide">
                     
                     {/* Media Background container */}
                     <div className="tiktok-media-container">
-                      <img 
-                        src={spot.imageUrl} 
-                        alt={spot.name} 
-                        className={`tiktok-media ${inView ? 'tiktok-media-active' : ''}`}
-                        loading="lazy"
-                      />
+                      {isNear ? (
+                        <img 
+                          src={spot.imageUrl} 
+                          alt={spot.name} 
+                          className={`tiktok-media ${inView ? 'tiktok-media-active' : ''}`}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div style={{ width: '100%', height: '100%', background: '#0e0d1a' }} />
+                      )}
                       <div className="tiktok-overlay-gradient" />
                     </div>
 

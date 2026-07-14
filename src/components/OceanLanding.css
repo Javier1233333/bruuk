@@ -862,7 +862,7 @@
     border-right: none;
     border-top: 3px solid #fff;
     box-shadow: 0px -8px 0px var(--city-accent, var(--neon-purple));
-    padding: 1.5rem 1.5rem 2rem;
+    padding: 1.5rem 1.5rem calc(2rem + 80px + env(safe-area-inset-bottom));
   }
 
   .city-selector-handle {
