@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
@@ -160,6 +162,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const { city: routeCity } = useParams();
   const [embeddedCity, setEmbeddedCity] = useState<string | null>(null);
   const city = mode === 'embedded' ? embeddedCity : routeCity;
+  const { user } = useAuth();
 
   // App States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -203,11 +206,78 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const currentCityConfig = citiesData.find(c => c.id === city);
   const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
 
-  // Base spots list for this city
-  const spots = useMemo(
-    () => spotsData.filter(s => s.city === activeCityConfig.id) as Spot[],
-    [activeCityConfig.id]
-  );
+  const [spots, setSpots] = useState<Spot[]>([]);
+  const [loadingSpots, setLoadingSpots] = useState(true);
+
+  // Fetch spots from Supabase or fallback to local JSON
+  useEffect(() => {
+    const fetchSpots = async () => {
+      setLoadingSpots(true);
+      try {
+        const { data, error } = await supabase
+          .from('spots')
+          .select('*')
+          .eq('city', activeCityConfig.id);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped: Spot[] = data.map(s => ({
+            id: s.id,
+            city: s.city,
+            name: s.name,
+            type: s.type || '',
+            description: s.description || '',
+            imageUrl: s.image_url || '',
+            colorAccent: s.color_accent || '',
+            mapsLink: s.maps_link || '',
+            rating: s.rating ? Number(s.rating) : undefined,
+            price: s.price || undefined,
+            coordinates: s.lat && s.lng ? { lat: Number(s.lat), lng: Number(s.lng) } : undefined,
+          }));
+          setSpots(mapped);
+        } else {
+          // Fallback to local JSON if DB is empty
+          const local = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
+          setSpots(local);
+        }
+      } catch (err) {
+        console.warn('[BRUUK] Fallback to local JSON for spots due to error:', err);
+        const local = spotsData.filter(s => s.city === activeCityConfig.id) as Spot[];
+        setSpots(local);
+      } finally {
+        setLoadingSpots(false);
+      }
+    };
+
+    fetchSpots();
+  }, [activeCityConfig.id]);
+
+  // Load saved spots from Supabase
+  useEffect(() => {
+    const fetchSavedSpots = async () => {
+      if (!user) {
+        setSavedSpots(new Set());
+        return;
+      }
+      try {
+        const { data, error } = await supabase
+          .from('spot_saves')
+          .select('spot_id')
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        if (data) {
+          setSavedSpots(new Set(data.map(item => item.spot_id)));
+        }
+      } catch (err) {
+        console.warn('[BRUUK] Error loading saved spots:', err);
+      }
+    };
+
+    fetchSavedSpots();
+  }, [user]);
 
   // Filtered spots list
   const filteredSpots = useMemo(() => spots.filter(s => {
@@ -227,7 +297,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     if (feedRef.current) {
       feedRef.current.scrollTop = 0;
     }
-  }, [activeCategory, city]);
+  }, [activeCategory, city, filteredSpots]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -283,7 +353,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
     setIsDropdownOpen(false);
     setActiveCategory('todo');
-    setReorderedSpots(spotsData.filter(spot => spot.city === cityId) as Spot[]);
+    setSpots([]); // Limpia spots para gatillar el esqueleto de carga
     setActiveIndex(0);
     setActiveReviewsSpotId(null);
     if (feedRef.current) feedRef.current.scrollTop = 0;
@@ -502,18 +572,49 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   };
 
   // Handle Saves
-  const toggleSave = (id: string) => {
+  const toggleSave = async (id: string) => {
+    if (!user) {
+      triggerToast('Inicia sesión para guardar spots');
+      return;
+    }
+    
+    const isSaved = savedSpots.has(id);
+    
+    // UI Optimista
     setSavedSpots(prev => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-        triggerToast('Quitado de tus guardados');
-      } else {
-        next.add(id);
-        triggerToast('Guardado en tus favoritos');
-      }
+      if (isSaved) next.delete(id);
+      else next.add(id);
       return next;
     });
+
+    try {
+      if (isSaved) {
+        const { error } = await supabase
+          .from('spot_saves')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('spot_id', id);
+        if (error) throw error;
+        triggerToast('Quitado de tus guardados');
+      } else {
+        const { error } = await supabase
+          .from('spot_saves')
+          .insert({ user_id: user.id, spot_id: id });
+        if (error) throw error;
+        triggerToast('Guardado en tus favoritos');
+      }
+    } catch (err) {
+      console.error('Error al guardar/eliminar en Supabase:', err);
+      // Revertir cambio optimista
+      setSavedSpots(prev => {
+        const next = new Set(prev);
+        if (isSaved) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+      triggerToast('Error de conexión. Inténtalo de nuevo.');
+    }
   };
 
   // Trigger Toast Messages
@@ -947,7 +1048,28 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
-            {reorderedSpots.length === 0 ? (
+            {loadingSpots ? (
+              [1, 2, 3].map((n) => (
+                <div key={n} className="tiktok-slide" style={{ background: 'var(--bg-primary)', overflow: 'hidden', position: 'relative' }}>
+                  <div className="skeleton-shimmer" />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '120px',
+                    left: '1.5rem',
+                    width: '70%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    zIndex: 10
+                  }}>
+                    <div style={{ height: '20px', width: '30%', background: 'rgba(255,255,255,0.06)', borderRadius: '4px' }} />
+                    <div style={{ height: '36px', width: '85%', background: 'rgba(255,255,255,0.06)', borderRadius: '4px' }} />
+                    <div style={{ height: '16px', width: '100%', background: 'rgba(255,255,255,0.06)', borderRadius: '4px' }} />
+                    <div style={{ height: '16px', width: '60%', background: 'rgba(255,255,255,0.06)', borderRadius: '4px' }} />
+                  </div>
+                </div>
+              ))
+            ) : reorderedSpots.length === 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'column', gap: '1rem', padding: '2rem', textAlign: 'center' }}>
                 <Compass size={40} style={{ color: 'var(--city-accent)' }} />
                 <p style={{ fontFamily: 'Outfit', fontWeight: 'bold', fontSize: '1rem' }}>No hay planes disponibles en esta categoría.</p>
@@ -1040,17 +1162,17 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                       </div>
                     </div>
 
-                    {/* Bottom Info text panel */}
-                    <div className="tiktok-content">
-                      <div className="tiktok-tag-row">
-                        <span 
-                          className="tiktok-badge" 
-                          style={{ background: spot.colorAccent || activeCityConfig.accentColor }}
-                        >
-                          {spot.type}
-                        </span>
-                        <span className="tiktok-city-tag">{activeCityConfig.name}</span>
-                      </div>
+                      {/* Bottom Info text panel */}
+                      <div className="tiktok-content">
+                        <div className="tiktok-tag-row">
+                          <span 
+                            className="tiktok-badge" 
+                            style={{ background: spot.colorAccent || activeCityConfig.accentColor }}
+                          >
+                            {spot.type}
+                          </span>
+                          <span className="tiktok-city-tag">{activeCityConfig.name}</span>
+                        </div>
 
                       <h2 className="tiktok-title">{spot.name}</h2>
 
