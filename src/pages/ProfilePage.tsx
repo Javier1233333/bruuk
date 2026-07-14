@@ -74,38 +74,111 @@ export function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [authMsg, setAuthMsg] = useState<string | null>(null);
 
-  // Sync own profile data from localStorage
-  const loadOwnProfile = () => {
-    setName(localStorage.getItem('bruuk_name') || user?.email?.split('@')[0] || 'Mi Nombre');
-    setInstagram(localStorage.getItem('bruuk_instagram') || 'tusuario');
-    setCity(localStorage.getItem('bruuk_city') || 'Guadalajara');
-    setBio(localStorage.getItem('bruuk_bio') || 'Explorando la ciudad con Bruuk.');
-    setAvatarId(localStorage.getItem('bruuk_avatar_id') || 'avatar1');
+  const [role, setRole] = useState<'explorer' | 'host' | 'admin'>('explorer');
+  const [profileLoading, setProfileLoading] = useState(true);
+
+  // For Explorer
+  const [savedSpots, setSavedSpots] = useState<any[]>([]);
+  const [myEvents, setMyEvents] = useState<any[]>([]);
+
+  // For Host
+  const [myExperiences, setMyExperiences] = useState<any[]>([]);
+  const [hostMetrics, setHostMetrics] = useState({ clicks: 0, bookings: 0 });
+
+  // For Admin
+  const [pendingExperiences, setPendingExperiences] = useState<any[]>([]);
+
+  // Sync own profile data from Supabase
+  const loadOwnProfile = async () => {
+    if (!user) return;
+    setProfileLoading(true);
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setName(data.username || user?.email?.split('@')[0] || 'Mi Nombre');
+        setInstagram(data.instagram || 'tusuario');
+        setCity(data.city || 'Guadalajara');
+        setBio(data.favorite_plan || 'Explorando la ciudad con Bruuk.');
+        setAvatarId(data.avatar_id || 'avatar1');
+        setRole(data.role || 'explorer');
+      }
+
+      // Fetch role-specific data
+      if (data?.role === 'explorer' || !data?.role) {
+        // Fetch saved spots
+        const { data: spots } = await supabase.from('spot_saves').select('spot_id, spots(*)').eq('user_id', user.id);
+        if (spots) setSavedSpots(spots.map(s => s.spots));
+
+        // Fetch bookings
+        const { data: bks } = await supabase.from('bookings').select('event_id, events(*, experiences(*))').eq('user_id', user.id);
+        if (bks) setMyEvents(bks.map(b => b.events));
+      } else if (data?.role === 'host') {
+        // Fetch experiences created by host and its events + bookings
+        const { data: exps } = await supabase.from('experiences').select('*, events(*, bookings(*, profiles(*)))').eq('host_id', user.id);
+        if (exps) setMyExperiences(exps);
+
+        // Fetch metrics
+        const expIds = exps?.map(e => e.id) || [];
+        if (expIds.length > 0) {
+          const { count: clicksCount } = await supabase.from('share_clicks').select('*', { count: 'exact', head: true }).in('experience_id', expIds);
+          const { count: bookingsCount } = await supabase.from('bookings').select('*, events!inner(experience_id)', { count: 'exact', head: true }).in('events.experience_id', expIds);
+          setHostMetrics({ clicks: clicksCount || 0, bookings: bookingsCount || 0 });
+        }
+      } else if (data?.role === 'admin') {
+        const { data: pendings } = await supabase.from('experiences').select('*').eq('status', 'pending');
+        if (pendings) setPendingExperiences(pendings);
+      }
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    } finally {
+      setProfileLoading(false);
+    }
   };
 
   useEffect(() => {
     setIsOwnProfile(!username);
-    if (!username) {
+    if (!username && user) {
       loadOwnProfile();
     }
   }, [username, user]);
 
-  const saveOwnProfile = () => {
-    localStorage.setItem('bruuk_name', name);
-    localStorage.setItem('bruuk_instagram', instagram);
-    localStorage.setItem('bruuk_city', city);
-    localStorage.setItem('bruuk_bio', bio);
-    localStorage.setItem('bruuk_avatar_id', avatarId);
-    setIsEditing(false);
-    
-    // Dispatch a custom event to notify AppShell to update the avatar reactively
-    window.dispatchEvent(new Event('bruuk_profile_updated'));
+  const saveOwnProfile = async () => {
+    if (!user) return;
+    try {
+      await supabase.from('profiles').update({
+        username: name,
+        instagram,
+        city,
+        favorite_plan: bio,
+        avatar_id: avatarId
+      }).eq('id', user.id);
+
+      setIsEditing(false);
+      window.dispatchEvent(new Event('bruuk_profile_updated'));
+    } catch (err) {
+      console.error('Error saving profile:', err);
+    }
   };
 
-  const handleAvatarSelect = (id: string) => {
+  const handleAvatarSelect = async (id: string) => {
     setAvatarId(id);
-    localStorage.setItem('bruuk_avatar_id', id);
-    window.dispatchEvent(new Event('bruuk_profile_updated'));
+    if (user) {
+      await supabase.from('profiles').update({ avatar_id: id }).eq('id', user.id);
+      window.dispatchEvent(new Event('bruuk_profile_updated'));
+    }
+  };
+
+  const handleApproveExperience = async (expId: string) => {
+    try {
+      await supabase.from('experiences').update({ status: 'approved' }).eq('id', expId);
+      setPendingExperiences(prev => prev.filter(e => e.id !== expId));
+      alert('Experiencia aprobada exitosamente.');
+    } catch (err) {
+      console.error(err);
+      alert('Error aprobando la experiencia.');
+    }
   };
 
   // OAuth triggering function (Google & Apple)
@@ -321,11 +394,111 @@ export function ProfilePage() {
                 <h1 className="profile-display-name brand-gradient-text">{name}</h1>
                 <span className="profile-username-tag">@{instagram}</span>
                 <span className="profile-city-tag"><MapPin size={12} /> {city}</span>
+                <span className="profile-city-tag" style={{ marginLeft: 8, color: '#ff7a45' }}>• Rol: {role.toUpperCase()}</span>
               </div>
               <p className="details-bio">"{bio}"</p>
             </div>
           )}
         </div>
+
+        {/* Dynamic Role Panels */}
+        {!isEditing && !profileLoading && (
+          <div className="role-panels-section" style={{ marginTop: '2rem' }}>
+            {role === 'explorer' && (
+              <div className="explorer-panel">
+                <h3 className="section-title-tag">Mi Exploración</h3>
+                <div style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px' }}>
+                    <h4>Spots Guardados ({savedSpots.length})</h4>
+                    <ul style={{ paddingLeft: '1rem', marginTop: '0.5rem', opacity: 0.8 }}>
+                      {savedSpots.map(s => <li key={s.id}>{s.name} - {s.city}</li>)}
+                      {savedSpots.length === 0 && <li>No tienes spots guardados aún.</li>}
+                    </ul>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px' }}>
+                    <h4>Próximos Eventos ({myEvents.length})</h4>
+                    <ul style={{ paddingLeft: '1rem', marginTop: '0.5rem', opacity: 0.8 }}>
+                      {myEvents.map(e => <li key={e.id}>{e.experiences?.name} ({new Date(e.date).toLocaleDateString()})</li>)}
+                      {myEvents.length === 0 && <li>No tienes eventos programados aún.</li>}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {role === 'host' && (
+              <div className="host-panel">
+                <h3 className="section-title-tag">Panel de Host</h3>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
+                  <div style={{ background: 'rgba(139, 124, 246, 0.1)', padding: '1rem', borderRadius: '12px', flex: 1, border: '1px solid rgba(139, 124, 246, 0.3)' }}>
+                    <h4>Vistas (Clicks)</h4>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#8b7cf6' }}>{hostMetrics.clicks}</p>
+                  </div>
+                  <div style={{ background: 'rgba(255, 122, 69, 0.1)', padding: '1rem', borderRadius: '12px', flex: 1, border: '1px solid rgba(255, 122, 69, 0.3)' }}>
+                    <h4>Reservas</h4>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ff7a45' }}>{hostMetrics.bookings}</p>
+                  </div>
+                </div>
+                
+                <h4 style={{ marginTop: '1.5rem', marginBottom: '0.5rem' }}>Mis Experiencias</h4>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {myExperiences.map(exp => (
+                    <div key={exp.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
+                      <h5 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{exp.name} <span style={{ fontSize: '0.8rem', opacity: 0.5, fontWeight: 'normal' }}>({exp.status})</span></h5>
+                      
+                      {exp.events?.map((ev: any) => (
+                        <div key={ev.id} style={{ marginTop: '0.8rem', padding: '0.8rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
+                          <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
+                            <Check size={12} style={{ marginRight: 4 }}/>
+                            {new Date(ev.date).toLocaleDateString()} - Asistentes: {ev.bookings?.length || 0}/{ev.capacity}
+                          </p>
+                          {ev.bookings?.length > 0 && (
+                            <ul style={{ paddingLeft: '1rem', fontSize: '0.8rem', opacity: 0.8 }}>
+                              {ev.bookings.map((b: any) => (
+                                <li key={b.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                  <span>{b.profiles?.username || 'Usuario anónimo'}</span>
+                                  {b.profiles?.instagram && (
+                                    <a href={`https://instagram.com/${b.profiles.instagram}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8b7cf6' }}>
+                                      Contactar
+                                    </a>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                  {myExperiences.length === 0 && <p style={{ opacity: 0.6 }}>Aún no has creado experiencias.</p>}
+                </div>
+              </div>
+            )}
+
+            {role === 'admin' && (
+              <div className="admin-panel">
+                <h3 className="section-title-tag" style={{ color: '#ff4d4f' }}>Panel de Administración</h3>
+                <div style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
+                  <h4 style={{ marginBottom: '0.5rem' }}>Experiencias Pendientes de Aprobación</h4>
+                  {pendingExperiences.map(exp => (
+                    <div key={exp.id} style={{ background: 'rgba(255,77,79,0.1)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,77,79,0.3)' }}>
+                      <h5 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{exp.name}</h5>
+                      <p style={{ fontSize: '0.9rem', opacity: 0.8, marginBottom: '0.5rem' }}>Host: {exp.host_name} | Categoría: {exp.category}</p>
+                      <button 
+                        className="btn-confirm" 
+                        style={{ padding: '4px 12px', fontSize: '0.8rem', marginTop: '0.5rem', background: '#ff4d4f', border: 'none' }}
+                        onClick={() => handleApproveExperience(exp.id)}
+                      >
+                        Aprobar Experiencia
+                      </button>
+                    </div>
+                  ))}
+                  {pendingExperiences.length === 0 && <p style={{ opacity: 0.6 }}>No hay experiencias pendientes de aprobación.</p>}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Social Accounts Linked Section */}
         <div className="profile-social-accounts-section">
