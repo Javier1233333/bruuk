@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { PRESET_AVATARS } from '../components/AppShell';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import citiesData from '../data/cities.json';
 import './ProfileSetupPage.css';
 
@@ -46,6 +48,7 @@ const FAVORITE_OPTIONS = [
 
 export function ProfileSetupPage() {
   const navigate = useNavigate();
+  const { user, refreshProfile } = useAuth();
 
   const [step, setStep] = useState(0);
   const [avatarId, setAvatarId] = useState<string>('avatar1');
@@ -54,6 +57,8 @@ export function ProfileSetupPage() {
   const [interests, setInterests] = useState<Set<string>>(new Set());
   const [favorite, setFavorite] = useState('');
   const [customFavorite, setCustomFavorite] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleInterest = (id: string) => {
     setInterests(prev => {
@@ -63,15 +68,55 @@ export function ProfileSetupPage() {
     });
   };
 
-  const handleFinish = () => {
-    // Guardar en localStorage hasta que Supabase esté activo
-    localStorage.setItem('bruuk_profile_done', 'true');
-    localStorage.setItem('bruuk_avatar_id', avatarId);
-    localStorage.setItem('bruuk_instagram', instagram);
-    localStorage.setItem('bruuk_city', city);
-    localStorage.setItem('bruuk_interests', JSON.stringify([...interests]));
-    localStorage.setItem('bruuk_favorite', customFavorite || favorite);
-    navigate('/app');
+  const handleFinish = async () => {
+    if (!user) {
+      setError('No estás autenticado.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+
+    const finalFavorite = customFavorite || favorite;
+
+    try {
+      const { error: updateErr } = await supabase
+        .from('profiles')
+        .update({
+          username: instagram, // el hook instagram guarda el username del input "Usuario"
+          instagram: instagram, // por compatibilidad legacy
+          avatar_id: avatarId,
+          city,
+          interests: Array.from(interests),
+          favorite_plan: finalFavorite,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      if (updateErr) {
+        throw updateErr;
+      }
+
+      // Sincronizar el perfil local en el contexto
+      await refreshProfile();
+
+      // Guardar también en localStorage por compatibilidad legacy
+      localStorage.setItem('bruuk_profile_done', 'true');
+      localStorage.setItem('bruuk_avatar_id', avatarId);
+      localStorage.setItem('bruuk_instagram', instagram);
+      localStorage.setItem('bruuk_city', city);
+      localStorage.setItem('bruuk_interests', JSON.stringify(Array.from(interests)));
+      localStorage.setItem('bruuk_favorite', finalFavorite);
+
+      // Despachar evento custom para actualizar el header reactivamente si es necesario
+      window.dispatchEvent(new Event('bruuk_profile_updated'));
+
+      navigate('/app');
+    } catch (err: any) {
+      console.error(err);
+      setError(err?.message || 'Error al actualizar tu perfil. Inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const canNext0 = instagram.trim().length > 0 && city !== '';
@@ -215,13 +260,29 @@ export function ProfileSetupPage() {
                 maxLength={60}
               />
             </div>
+ 
+            {error && (
+              <p style={{
+                color: '#ff4d4f',
+                fontSize: '0.85rem',
+                background: 'rgba(255, 77, 79, 0.1)',
+                border: '1px solid #ff4d4f',
+                padding: '0.6rem 0.9rem',
+                margin: '1rem 0 0 0',
+                borderRadius: '8px',
+                width: '100%',
+                boxSizing: 'border-box',
+              }}>
+                {error}
+              </p>
+            )}
 
             <button
               className="btn btn-primary setup-btn"
-              disabled={!canFinish}
+              disabled={!canFinish || loading}
               onClick={handleFinish}
             >
-              Entrar a BRUUK <ArrowRight size={18} strokeWidth={3} />
+              {loading ? 'Guardando...' : <>Entrar a BRUUK <ArrowRight size={18} strokeWidth={3} /></>}
             </button>
           </div>
         )}
