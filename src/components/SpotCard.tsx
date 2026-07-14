@@ -111,7 +111,6 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
             {spot.price && <span className="spot-card__price">{spot.price}</span>}
           </div>
         )}
-        <p className="spot-card__desc">"{spot.description}"</p>
         <a
           href={spot.mapsLink}
           target="_blank"

@@ -38,6 +38,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
             <ul style={{ paddingLeft: '1.5rem', margin: '0.8rem 0' }}>
               <li><strong>Información de registro:</strong> Correo electrónico que utilizas para crear tu cuenta y confirmar accesos.</li>
               <li><strong>Perfil básico:</strong> Nombre o alias opcional para que otros usuarios te reconozcan en la comunidad.</li>
+              <li><strong>Registro para ser Bruuko:</strong> Si completas el formulario “Tu ciudad necesita Bruuk”, recopilamos tu correo electrónico y la ciudad que seleccionas o escribes.</li>
             </ul>
 
             <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.2rem', marginTop: '2rem', marginBottom: '0.8rem', color: '#ffffff', borderBottom: '2px solid #ffffff', paddingBottom: '0.3rem' }}>
@@ -51,7 +52,9 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
               <li>Mostrarte quién forma parte de la comunidad.</li>
               <li>Enviarte alertas importantes relacionadas con cambios de última hora en los spots del día.</li>
               <li>Enviarte actualizaciones, novedades e información sobre lo nuevo en BRUUK en general.</li>
+              <li><strong>Coordinar la red de Bruukos:</strong> Identificar ciudades con interés, evaluar dónde expandir BRUUK y contactarte sobre oportunidades para compartir tus rincones favoritos, participar en la comunidad local o activar experiencias en tu ciudad.</li>
             </ul>
+            <p>La ciudad que compartes para ser Bruuko se usa únicamente para organizar y expandir la comunidad. No publicamos tu correo ni tu información de contacto.</p>
             <p style={{ fontStyle: 'italic', marginTop: '1rem' }}>No vendemos, comercializamos, ni compartimos tu información personal con anunciantes ni terceros ajenos a BRUUK.</p>
 
             <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.2rem', marginTop: '2rem', marginBottom: '0.8rem', color: '#ffffff', borderBottom: '2px solid #ffffff', paddingBottom: '0.3rem' }}>

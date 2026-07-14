@@ -491,15 +491,6 @@
   letter-spacing: 0.3px;
 }
 
-.spot-card__desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  color: #333;
-  line-height: 1.45;
-  margin-bottom: 14px;
-  font-style: italic;
-}
-
 .spot-card__link {
   display: inline-flex;
   align-items: center;
