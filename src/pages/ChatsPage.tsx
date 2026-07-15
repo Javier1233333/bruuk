@@ -134,8 +134,8 @@ export default function ChatsPage() {
                     required
                     className={`chats-radar-input ${errorMsg ? 'input-error' : ''}`}
                   />
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="chats-radar-btn"
                     disabled={isSubmitting}
                   >
@@ -168,3 +168,4 @@ export default function ChatsPage() {
     </div>
   );
 }
+// nada que ver
