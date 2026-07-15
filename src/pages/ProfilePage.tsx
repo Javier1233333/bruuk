@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { PRESET_AVATARS } from '../components/AppShell';
 import { supabase } from '../lib/supabase';
 import citiesData from '../data/cities.json';
+import { INTERESTS } from './ProfileSetupPage';
 import './ProfilePage.css';
 
 interface Profile {
@@ -71,6 +72,7 @@ export function ProfilePage() {
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
   const [avatarId, setAvatarId] = useState('avatar1');
+  const [interests, setInterests] = useState<Set<string>>(new Set());
   const [isEditing, setIsEditing] = useState(false);
   const [authMsg, setAuthMsg] = useState<string | null>(null);
 
@@ -103,6 +105,7 @@ export function ProfilePage() {
         setBio(data.favorite_plan || 'Explorando la ciudad con Bruuk.');
         setAvatarId(data.avatar_id || 'avatar1');
         setRole(data.role || 'explorer');
+        setInterests(new Set(data.interests || []));
       }
 
       // Fetch role-specific data
@@ -152,8 +155,11 @@ export function ProfilePage() {
         instagram,
         city,
         favorite_plan: bio,
-        avatar_id: avatarId
+        avatar_id: avatarId,
+        interests: Array.from(interests)
       }).eq('id', user.id);
+      
+      localStorage.setItem('bruuk_interests', JSON.stringify(Array.from(interests)));
 
       setIsEditing(false);
       window.dispatchEvent(new Event('bruuk_profile_updated'));
@@ -387,6 +393,28 @@ export function ProfilePage() {
                   rows={3}
                 />
               </div>
+              <div className="input-group" style={{ marginTop: '1rem' }}>
+                <label>Mis Gustos</label>
+                <div className="interests-grid" style={{ marginTop: '0.5rem', maxHeight: 'none' }}>
+                  {INTERESTS.map(item => (
+                    <button
+                      key={item.id}
+                      className={`interest-btn ${interests.has(item.id) ? 'selected' : ''}`}
+                      onClick={() => {
+                        setInterests(prev => {
+                          const next = new Set(prev);
+                          if (next.has(item.id)) next.delete(item.id);
+                          else next.add(item.id);
+                          return next;
+                        });
+                      }}
+                    >
+                      <span className="interest-emoji">{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="view-fields-list">
@@ -397,6 +425,22 @@ export function ProfilePage() {
                 <span className="profile-city-tag" style={{ marginLeft: 8, color: '#ff7a45' }}>• Rol: {role.toUpperCase()}</span>
               </div>
               <p className="details-bio">"{bio}"</p>
+              
+              <div style={{ marginTop: '1rem' }}>
+                <h3 className="section-title-tag" style={{ marginBottom: '0.5rem' }}>Mis Gustos</h3>
+                <div className="details-interests-list">
+                  {Array.from(interests).map(id => {
+                    const item = INTERESTS.find(i => i.id === id);
+                    if (!item) return null;
+                    return (
+                      <span key={id} className="interest-tag-pill">
+                        {item.emoji} {item.label}
+                      </span>
+                    );
+                  })}
+                  {interests.size === 0 && <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>No hay gustos seleccionados.</span>}
+                </div>
+              </div>
             </div>
           )}
         </div>

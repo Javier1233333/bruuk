@@ -8,7 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import citiesData from '../data/cities.json';
 import './ProfileSetupPage.css';
 
-const INTERESTS = [
+export const INTERESTS = [
   { id: 'live_music',    label: 'Música en vivo',     emoji: '🎵' },
   { id: 'festivals',     label: 'Festivales',          emoji: '🎪' },
   { id: 'electronic',    label: 'DJ / Electrónica',    emoji: '🎧' },
@@ -54,7 +54,18 @@ export function ProfileSetupPage() {
   const [avatarId, setAvatarId] = useState<string>('avatar1');
   const [instagram, setInstagram] = useState('');
   const [city, setCity] = useState('');
-  const [interests, setInterests] = useState<Set<string>>(new Set());
+  const [interests, setInterests] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem('bruuk_guest_preferences');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return new Set(parsed);
+        }
+      }
+    } catch (e) {}
+    return new Set();
+  });
   const [favorite, setFavorite] = useState('');
   const [customFavorite, setCustomFavorite] = useState('');
   const [loading, setLoading] = useState(false);
