@@ -1,0 +1,105 @@
+.auth-prompt-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.auth-prompt-modal {
+  background: #0e0d1a;
+  border: 2px solid #fff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 0px;
+  position: relative;
+  box-shadow: 8px 8px 0px var(--city-accent, #8b7cf6);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.auth-prompt-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #a5a3bf;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.auth-prompt-close:hover {
+  color: #fff;
+}
+
+.auth-prompt-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+}
+
+.auth-prompt-desc {
+  font-size: 0.95rem;
+  color: #d2d0df;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.auth-prompt-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--city-accent, #8b7cf6);
+  color: #000;
+  border: 2px solid #000;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.auth-prompt-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000;
+}
+
+.auth-prompt-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.auth-prompt-cancel {
+  background: transparent;
+  border: none;
+  color: #a5a3bf;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-family: inherit;
+}
+
+.auth-prompt-cancel:hover {
+  color: #fff;
+  text-decoration: underline;
+}
