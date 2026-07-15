@@ -14,6 +14,37 @@
     align-items: flex-start;
     padding-top: 2rem;
     overflow-y: auto;
+    background: rgba(8, 6, 20, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+  }
+}
+
+.login-close-mobile {
+  display: none;
+}
+
+@media (max-width: 500px) {
+  .login-close-mobile {
+    display: flex;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .login-close-mobile:active {
+    color: white;
   }
 }
 
@@ -269,16 +300,21 @@
   color: var(--text-secondary);
 }
 
-.login-back a {
+.login-back .btn-link {
+  background: transparent;
+  border: none;
   color: var(--text-secondary);
-  text-decoration: none;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: color 0.2s;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.875rem;
+  font-family: inherit;
 }
 
-.login-back a:hover {
+.login-back .btn-link:hover {
   color: var(--accent-light);
 }
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { ArrowRight, Eye, EyeOff, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
@@ -9,13 +9,24 @@ type Mode = 'login' | 'signup';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState<Mode>('login');
+  
+  const from = location.state?.from?.pathname || '/app';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +39,7 @@ export function LoginPage() {
       if (error) {
         setError(translateError(error.message));
       } else {
-        navigate('/app');
+        navigate(from, { replace: true });
       }
     } else {
       const { error: signUpErr } = await supabase.auth.signUp({ email, password });
@@ -46,14 +57,14 @@ export function LoginPage() {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/app' },
+      options: { redirectTo: window.location.origin + from },
     });
   };
 
   const handleAppleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'apple',
-      options: { redirectTo: window.location.origin + '/app' },
+      options: { redirectTo: window.location.origin + from },
     });
   };
 
@@ -62,6 +73,10 @@ export function LoginPage() {
       <div className="login-bg-glow"></div>
 
       <div className="login-container animate-fade-in">
+        <button className="login-close-mobile" onClick={handleBack} aria-label="Cerrar">
+          <X size={24} />
+        </button>
+
         <Link to="/" className="login-logo">
           <BruukLogo />
         </Link>
@@ -163,7 +178,7 @@ export function LoginPage() {
         </div>
 
         <p className="login-back">
-          <Link to="/">← Volver al inicio</Link>
+          <button onClick={handleBack} className="btn-link">← Volver</button>
         </p>
       </div>
     </div>
