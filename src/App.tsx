@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { RegistrationModal } from './components/RegistrationModal';
 import citiesData from './data/cities.json';
 import './App.css';
-
+//hola
 const carouselSlides = [
   {
     id: 'descubre',
