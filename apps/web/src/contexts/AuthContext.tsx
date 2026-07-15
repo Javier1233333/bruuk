@@ -1,122 +1,36 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
-import { authService, userService } from '@bruuk/shared-logic/services';
+import { useSessionStore } from '@bruuk/shared-logic/stores';
 
 interface AuthContextType {
-  session: Session | null;
-  user: User | null;
-  profile: any | null;
+  session: any;
+  user: any;
+  profile: any;
   loading: boolean;
   signOut: () => Promise<void>;
-  refreshSession: () => Promise<Session | null>;
-  refreshProfile: () => Promise<any | null>;
+  refreshSession: () => Promise<any>;
+  refreshProfile: () => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const data = await userService.getProfile(userId);
-      if (!data) return null;
-      return data;
-    } catch {
-      return null;
-    }
-  };
-
-  const refreshProfile = async () => {
-    const currentUserId = session?.user?.id;
-    if (!currentUserId) {
-      setProfile(null);
-      return null;
-    }
-    const p = await fetchProfile(currentUserId);
-    setProfile(p);
-    return p;
-  };
+  const session = useSessionStore((state) => state.session);
+  const user = useSessionStore((state) => state.user);
+  const profile = useSessionStore((state) => state.profile);
+  const loading = useSessionStore((state) => state.loading);
+  
+  const initialize = useSessionStore((state) => state.initialize);
+  const signOut = useSessionStore((state) => state.signOut);
+  const refreshSession = useSessionStore((state) => state.refreshSession);
+  const refreshProfile = useSessionStore((state) => state.refreshProfile);
 
   useEffect(() => {
-    let subscription: { unsubscribe: () => void } | null = null;
-
-    const init = async () => {
-      try {
-        const { data } = await authService.getSession();
-        setSession(data.session);
-        if (data.session?.user?.id) {
-          const p = await fetchProfile(data.session.user.id);
-          setProfile(p);
-        }
-      } catch {
-        // Supabase no está configurado aún — la app sigue funcionando
-      } finally {
-        setLoading(false);
-      }
-
-      try {
-        const { data } = authService.onAuthStateChange(async (_event, newSession) => {
-          setSession(newSession);
-          if (newSession?.user?.id) {
-            const p = await fetchProfile(newSession.user.id);
-            setProfile(p);
-          } else {
-            setProfile(null);
-          }
-        });
-        subscription = data.subscription;
-      } catch {
-        // Ignorar si Supabase no está disponible
-      }
-    };
-
-    init();
-
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, []);
-
-  const signOut = async () => {
-    try {
-      await authService.signOut();
-    } catch {
-      // Ignorar
-    } finally {
-      setSession(null);
-      setProfile(null);
-    }
-  };
-
-  const refreshSession = async () => {
-    try {
-      const { data, error } = await authService.refreshSession();
-      if (error) throw error;
-      setSession(data.session);
-      if (data.session?.user?.id) {
-        const p = await fetchProfile(data.session.user.id);
-        setProfile(p);
-      }
-      return data.session;
-    } catch (err) {
-      console.warn('[BRUUK] Falló al refrescar la sesión:', err);
-      // Intentar obtener la sesión actual si el refresco falla
-      const { data } = await authService.getSession();
-      setSession(data.session);
-      if (data.session?.user?.id) {
-        const p = await fetchProfile(data.session.user.id);
-        setProfile(p);
-      }
-      return data.session;
-    }
-  };
+    initialize();
+  }, [initialize]);
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, profile, loading, signOut, refreshSession, refreshProfile }}>
+    <AuthContext.Provider value={{ session, user, profile, loading, signOut, refreshSession, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
