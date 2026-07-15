@@ -1,9 +1,8 @@
-import { useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Clock, MapPin, Calendar, X, MessageCircle, AlertTriangle } from 'lucide-react';
-import * as L from 'leaflet';
 import { getOptimizedImageUrl } from '../../../lib/utils';
 import type { Experience } from './ExperienceCard';
+import { ExperienceMap } from './ExperienceMap';
 import styles from './ExperienceDetailModal.module.css';
 
 interface Attendee {
@@ -28,8 +27,6 @@ export function ExperienceDetailModal({
   onClose,
   onReserve,
 }: ExperienceDetailModalProps) {
-  const activeDotRef = useRef<number>(0);
-
   const handleCarouselScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const index = Math.round(el.scrollLeft / el.clientWidth);
@@ -38,7 +35,6 @@ export function ExperienceDetailModal({
       if (i === index) dot.classList.add(styles.activeDot);
       else dot.classList.remove(styles.activeDot);
     });
-    activeDotRef.current = index;
   };
 
   return (
@@ -141,30 +137,11 @@ export function ExperienceDetailModal({
 
               {/* Map */}
               {exp.lat && exp.lng && (
-                <div className={styles.mapSection}>
-                  <h4 className={styles.sectionHeading}>Ubicación</h4>
-                  <div
-                    className={styles.mapContainer}
-                    ref={(el) => {
-                      if (el && !el.hasChildNodes()) {
-                        const map = L.map(el, {
-                          zoomControl: false,
-                          attributionControl: false,
-                          dragging: false,
-                          scrollWheelZoom: false,
-                          doubleClickZoom: false,
-                        }).setView([exp.lat!, exp.lng!], 15);
-                        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-                        const icon = L.divIcon({
-                          className: 'custom-neon-pin',
-                          html: `<div style="background-color: var(--city-accent, #8b7cf6); box-shadow: 0 0 10px var(--city-accent, #8b7cf6); width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff;"></div>`,
-                          iconSize: [14, 14],
-                        });
-                        L.marker([exp.lat!, exp.lng!], { icon }).addTo(map);
-                      }
-                    }}
-                  />
-                </div>
+                <ExperienceMap
+                  lat={exp.lat}
+                  lng={exp.lng}
+                  accentColor="var(--city-accent, #8b7cf6)"
+                />
               )}
 
               {/* Logistics */}

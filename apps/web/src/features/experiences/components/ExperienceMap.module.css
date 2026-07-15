@@ -1,0 +1,21 @@
+.mapSection {
+  margin-top: 1.5rem;
+}
+
+.sectionHeading {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a5a3bf;
+  margin-bottom: 0.65rem;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 140px;
+  border-radius: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0.65rem;
+  z-index: 1;
+}
