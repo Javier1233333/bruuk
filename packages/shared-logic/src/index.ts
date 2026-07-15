@@ -1,0 +1,2 @@
+// Shared logic entrypoint
+export {};

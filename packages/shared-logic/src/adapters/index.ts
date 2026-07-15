@@ -1,0 +1,2 @@
+// Adapters entrypoint
+export {};

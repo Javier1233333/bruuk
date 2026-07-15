@@ -1,0 +1,17 @@
+{
+  "name": "@bruuk/shared-logic",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./adapters": "./src/adapters/index.ts",
+    "./hooks": "./src/hooks/index.ts",
+    "./services": "./src/services/index.ts",
+    "./stores": "./src/stores/index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "zustand": "^4.4.0"
+  }
+}

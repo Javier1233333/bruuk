@@ -1,0 +1,2 @@
+// Stores entrypoint
+export {};
