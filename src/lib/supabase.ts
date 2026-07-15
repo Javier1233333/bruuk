@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { storageAdapter } from '../shared/adapters/storageAdapter';
 
 const rawUrl = import.meta.env.VITE_SUPABASE_URL ?? '';
 const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
@@ -11,4 +12,9 @@ if (!rawUrl.startsWith('https://')) {
   console.warn('[BRUUK] Configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tu .env');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storage: storageAdapter,
+    persistSession: true
+  }
+});

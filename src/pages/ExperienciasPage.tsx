@@ -5,7 +5,7 @@ import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, C
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import citiesData from '../data/cities.json';
-import { supabase } from '../lib/supabase';
+import { experienceService } from '../features/experiences/services/experienceService';
 import { useAuth } from '../contexts/AuthContext';
 import { getOptimizedImageUrl } from '../lib/utils';
 import AuthPromptModal from '../components/AuthPromptModal';
@@ -146,7 +146,7 @@ export default function ExperienciasPage() {
       const searchParams = new URLSearchParams(location.search);
       const referrerId = searchParams.get('ref') || null;
 
-      const { error } = await supabase.from('bookings').insert({
+      const { error } = await experienceService.createBooking({
         event_id: selectedExp.nextEventId,
         user_id: user.id,
         status: 'confirmed',
@@ -174,18 +174,11 @@ export default function ExperienciasPage() {
     const fetchExperiences = async () => {
       setLoading(true);
       try {
-        const { data: expData, error: expError } = await supabase
-          .from('experiences')
-          .select('*')
-          .eq('status', 'approved');
+        const { data: expData, error: expError } = await experienceService.getApprovedExperiences();
 
         if (expError) throw expError;
 
-        const { data: evtData, error: evtError } = await supabase
-          .from('events')
-          .select('*')
-          .gte('date', new Date().toISOString())
-          .order('date', { ascending: true });
+        const { data: evtData, error: evtError } = await experienceService.getUpcomingEvents();
         
         if (evtError) throw evtError;
 
@@ -259,7 +252,7 @@ export default function ExperienciasPage() {
       
       if (ref && expId) {
         try {
-          await supabase.from('share_clicks').insert({
+          await experienceService.logShareClick({
             experience_id: expId,
             referrer_id: ref,
             source: src
@@ -303,12 +296,7 @@ export default function ExperienciasPage() {
   useEffect(() => {
     if (selectedExp?.nextEventId) {
       const fetchAttendees = async () => {
-        const { data, count, error } = await supabase
-          .from('bookings')
-          .select('profiles(id, first_name, avatar_url)', { count: 'exact' })
-          .eq('event_id', selectedExp.nextEventId)
-          .eq('status', 'confirmed')
-          .limit(5);
+        const { data, count, error } = await experienceService.getAttendees(selectedExp.nextEventId, 5);
         if (!error && data) {
           setAttendees(data.map((d: any) => d.profiles));
           setAttendeesCount(count || 0);

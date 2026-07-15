@@ -7,7 +7,7 @@ import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
 import { getOptimizedImageUrl } from '../lib/utils';
 import AuthPromptModal from './AuthPromptModal';
-import { supabase } from '../lib/supabase';
+import { oceanService } from '../features/ocean/services/oceanService';
 import { useAuth } from '../contexts/AuthContext';
 import experiencesData from '../data/experiences.json';
 import { INTERESTS } from '../pages/ProfileSetupPage';
@@ -368,7 +368,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
         setSpotLikesCount(counts);
 
         // Fetch user/guest likes
-        let query = supabase.from('spot_likes').select('spot_id');
+        let query = oceanService.getSpotLikes();
         if (user) {
           query = query.eq('user_id', user.id);
         } else {
@@ -736,7 +736,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
     try {
       if (isLiked) {
-        let query = supabase.from('spot_likes').delete().eq('spot_id', id);
+        let query = oceanService.deleteSpotLike(id);
         if (user) query = query.eq('user_id', user.id);
         else query = query.eq('guest_uuid', guestId);
         
@@ -747,7 +747,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
           ? { user_id: user.id, spot_id: id }
           : { guest_uuid: guestId, spot_id: id };
         
-        const { error } = await supabase.from('spot_likes').insert(payload);
+        const { error } = await oceanService.insertSpotLike(payload);
         if (error) throw error;
       }
     } catch (err) {

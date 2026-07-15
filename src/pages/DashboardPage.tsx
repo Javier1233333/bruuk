@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, MapPin, Calendar, Lock, Check, Users, Tag, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { dashboardService } from '../features/dashboard/services/dashboardService';
 import { BruukLogo } from '../components/BruukLogo';
 import './DashboardPage.css';
 
@@ -179,16 +179,12 @@ export function DashboardPage() {
       try {
         let bookedEventIds = new Set<string>();
         if (user) {
-          const { data: bookings } = await supabase.from('bookings').select('event_id').eq('user_id', user.id);
+          const { data: bookings } = await dashboardService.getUserBookings(user.id);
           bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
         }
         setConfirmedIds(bookedEventIds);
 
-        const { data: evts } = await supabase.from('events').select(`
-          *,
-          experiences (*)
-        `).gte('date', new Date().toISOString());
-
+        const { data: evts } = await dashboardService.getDashboardEvents();
         const formatted = (evts || []).map((e: any) => ({
           id: e.id,
           name: e.experiences?.name || 'Evento',
@@ -220,7 +216,7 @@ export function DashboardPage() {
       return;
     }
     try {
-      await supabase.from('bookings').insert({
+      await dashboardService.createBooking({
         event_id: id,
         user_id: user.id,
         status: 'confirmed'

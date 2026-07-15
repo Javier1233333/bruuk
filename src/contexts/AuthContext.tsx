@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { authService } from '../features/auth/services/authService';
+import { userService } from '../features/users/services/userService';
 
 interface AuthContextType {
   session: Session | null;
@@ -22,12 +23,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      if (error) return null;
+      const data = await userService.getProfile(userId);
+      if (!data) return null;
       return data;
     } catch {
       return null;
@@ -50,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const init = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        const { data } = await authService.getSession();
         setSession(data.session);
         if (data.session?.user?.id) {
           const p = await fetchProfile(data.session.user.id);
@@ -63,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       try {
-        const { data } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+        const { data } = authService.onAuthStateChange(async (_event, newSession) => {
           setSession(newSession);
           if (newSession?.user?.id) {
             const p = await fetchProfile(newSession.user.id);
@@ -87,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await authService.signOut();
     } catch {
       // Ignorar
     } finally {
@@ -98,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = async () => {
     try {
-      const { data, error } = await supabase.auth.refreshSession();
+      const { data, error } = await authService.refreshSession();
       if (error) throw error;
       setSession(data.session);
       if (data.session?.user?.id) {
@@ -109,7 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       console.warn('[BRUUK] Falló al refrescar la sesión:', err);
       // Intentar obtener la sesión actual si el refresco falla
-      const { data } = await supabase.auth.getSession();
+      const { data } = await authService.getSession();
       setSession(data.session);
       if (data.session?.user?.id) {
         const p = await fetchProfile(data.session.user.id);

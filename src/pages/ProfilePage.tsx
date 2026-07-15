@@ -4,7 +4,8 @@ import { ArrowLeft, MapPin, Check, LogOut, Sparkles, User } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { PRESET_AVATARS } from '../components/AppShell';
-import { supabase } from '../lib/supabase';
+import { userService } from '../features/users/services/userService';
+import { authService } from '../features/auth/services/authService';
 import citiesData from '../data/cities.json';
 import { INTERESTS } from './ProfileSetupPage';
 import './ProfilePage.css';
@@ -95,7 +96,7 @@ export function ProfilePage() {
     if (!user) return;
     setProfileLoading(true);
     try {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+      const { data, error } = await userService.getProfile(user.id);
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
@@ -111,26 +112,26 @@ export function ProfilePage() {
       // Fetch role-specific data
       if (data?.role === 'explorer' || !data?.role) {
         // Fetch saved spots
-        const { data: spots } = await supabase.from('spot_saves').select('spot_id, spots(*)').eq('user_id', user.id);
+        const { data: spots } = await userService.getUserSpotSaves(user.id);
         if (spots) setSavedSpots(spots.map(s => s.spots));
 
         // Fetch bookings
-        const { data: bks } = await supabase.from('bookings').select('event_id, events(*, experiences(*))').eq('user_id', user.id);
+        const { data: bks } = await userService.getUserBookings(user.id);
         if (bks) setMyEvents(bks.map(b => b.events));
       } else if (data?.role === 'host') {
         // Fetch experiences created by host and its events + bookings
-        const { data: exps } = await supabase.from('experiences').select('*, events(*, bookings(*, profiles(*)))').eq('host_id', user.id);
+        const { data: exps } = await userService.getUserExperiences(user.id);
         if (exps) setMyExperiences(exps);
 
         // Fetch metrics
         const expIds = exps?.map(e => e.id) || [];
         if (expIds.length > 0) {
-          const { count: clicksCount } = await supabase.from('share_clicks').select('*', { count: 'exact', head: true }).in('experience_id', expIds);
-          const { count: bookingsCount } = await supabase.from('bookings').select('*, events!inner(experience_id)', { count: 'exact', head: true }).in('events.experience_id', expIds);
+          const { count: clicksCount } = await userService.getShareClicksCount(expIds);
+          const { count: bookingsCount } = await userService.getBookingsCount(expIds);
           setHostMetrics({ clicks: clicksCount || 0, bookings: bookingsCount || 0 });
         }
       } else if (data?.role === 'admin') {
-        const { data: pendings } = await supabase.from('experiences').select('*').eq('status', 'pending');
+        const { data: pendings } = await userService.getPendingExperiences();
         if (pendings) setPendingExperiences(pendings);
       }
     } catch (err) {
@@ -150,7 +151,7 @@ export function ProfilePage() {
   const saveOwnProfile = async () => {
     if (!user) return;
     try {
-      await supabase.from('profiles').update({
+      await userService.updateProfile(user.id, {
         username: name,
         instagram,
         city,
@@ -171,14 +172,14 @@ export function ProfilePage() {
   const handleAvatarSelect = async (id: string) => {
     setAvatarId(id);
     if (user) {
-      await supabase.from('profiles').update({ avatar_id: id }).eq('id', user.id);
+      await userService.updateProfile(user.id, { avatar_id: id });
       window.dispatchEvent(new Event('bruuk_profile_updated'));
     }
   };
 
   const handleApproveExperience = async (expId: string) => {
     try {
-      await supabase.from('experiences').update({ status: 'approved' }).eq('id', expId);
+      await userService.approveExperience(expId);
       setPendingExperiences(prev => prev.filter(e => e.id !== expId));
       alert('Experiencia aprobada exitosamente.');
     } catch (err) {
@@ -192,7 +193,7 @@ export function ProfilePage() {
     try {
       setAuthMsg(null);
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await authService.signInWithOAuth({
         provider,
         options: {
           redirectTo: window.location.origin + '/perfil',

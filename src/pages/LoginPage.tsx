@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, X } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { authService } from '../features/auth/services/authService';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 
@@ -35,14 +35,14 @@ export function LoginPage() {
     setSuccessMsg(null);
 
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await authService.signInWithPassword({ email, password });
       if (error) {
         setError(translateError(error.message));
       } else {
         navigate(from, { replace: true });
       }
     } else {
-      const { error: signUpErr } = await supabase.auth.signUp({ email, password });
+      const { error: signUpErr } = await authService.signUp({ email, password });
       if (signUpErr) {
         setError(translateError(signUpErr.message));
         setLoading(false);
@@ -55,14 +55,14 @@ export function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
+    await authService.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + from },
     });
   };
 
   const handleAppleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
+    await authService.signInWithOAuth({
       provider: 'apple',
       options: { redirectTo: window.location.origin + from },
     });
