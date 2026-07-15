@@ -1,30 +1,10 @@
 import { Star, Clock, ArrowRight } from 'lucide-react';
 import { getOptimizedImageUrl } from '../../../lib/utils';
+import type { Experience } from '@bruuk/shared-logic/hooks';
 import styles from './ExperienceCard.module.css';
 
-export type Experience = {
-  id: string;
-  name: string;
-  host: string;
-  hostAvatar: string;
-  category: 'Aventura' | 'Gastronomía' | 'Arte' | 'Música';
-  imageUrl: string;
-  rating: number;
-  reviewsCount: number;
-  price: string;
-  duration: string;
-  description: string;
-  nextDate: string;
-  location: string;
-  city: 'Guadalajara' | 'Hermosillo';
-  whatsAppLink: string;
-  longDescription: string;
-  images: string[];
-  reservationInfo: string;
-  nextEventId?: string;
-  lat?: number;
-  lng?: number;
-};
+export type { Experience };
+
 
 interface ExperienceCardProps {
   exp: Experience;
