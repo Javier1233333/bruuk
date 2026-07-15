@@ -1,0 +1,151 @@
+.experienceCard {
+  display: flex;
+  flex-direction: column;
+  background: #0e0d1a;
+  border-radius: 0px;
+  border: 2px solid #fff;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  width: 280px;
+  box-shadow: 4px 4px 0px var(--city-accent, #8b7cf6);
+}
+
+.experienceCard.cardLarge {
+  width: 310px;
+}
+
+.experienceCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--city-accent, #8b7cf6);
+}
+
+.cardImage {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cardLarge .cardImage {
+  height: 210px;
+}
+
+.cardImageGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(13, 12, 21, 0.8));
+}
+
+.cardBadge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(13, 12, 21, 0.9);
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 0.25rem 0.65rem;
+  border-radius: 0px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardHoverAction {
+  position: absolute;
+  inset: 0;
+  background: rgba(139, 124, 246, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transition: opacity 0.2s;
+  backdrop-filter: blur(2px);
+}
+
+.experienceCard:hover .cardHoverAction {
+  opacity: 1;
+}
+
+.cardBody {
+  padding: 0.9rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cardRating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f59e0b;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.cardRating span {
+  color: #d2d0df;
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
+}
+
+.cardDesc {
+  font-size: 0.8rem;
+  color: #e5e4ef;
+  line-height: 1.5;
+  height: 3.6rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.35rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.cardPrice {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.cardDuration {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.65rem;
+  color: #a2a1b9;
+  font-weight: 600;
+}
+
+.cardCityTag {
+  color: var(--city-accent, #8b7cf6);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.62rem;
+  letter-spacing: 0.5px;
+}

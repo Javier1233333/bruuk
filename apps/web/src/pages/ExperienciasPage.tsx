@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Star, Clock, MapPin, Calendar, X, Compass, MessageCircle, ChevronDown, AlertTriangle } from 'lucide-react';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import citiesData from '../data/cities.json';
@@ -55,29 +55,8 @@ function saveCity(cityId: string) {
   } catch (e) {}
 }
 
-type Experience = {
-  id: string;
-  name: string;
-  host: string;
-  hostAvatar: string;
-  category: 'Aventura' | 'Gastronomía' | 'Arte' | 'Música';
-  imageUrl: string;
-  rating: number;
-  reviewsCount: number;
-  price: string;
-  duration: string;
-  description: string;
-  nextDate: string;
-  location: string;
-  city: 'Guadalajara' | 'Hermosillo';
-  whatsAppLink: string;
-  longDescription: string;
-  images: string[];
-  reservationInfo: string;
-  nextEventId?: string;
-  lat?: number;
-  lng?: number;
-};
+import { ExperienceCard } from '../features/experiences/components/ExperienceCard';
+import type { Experience } from '../features/experiences/components/ExperienceCard';
 
 // Datos extraídos para seed.
 const CATEGORIES = ['Todo', 'Aventura', 'Gastronomía', 'Arte', 'Música'];
@@ -699,57 +678,3 @@ export default function ExperienciasPage() {
   );
 }
 
-/* Helper Card Component */
-function ExperienceCard({ 
-  exp, 
-  onClick, 
-  size = 'standard' 
-}: { 
-  exp: Experience; 
-  onClick: (exp: Experience) => void;
-  size?: 'standard' | 'large';
-}) {
-  return (
-    <div 
-      className={`experience-card ${size === 'large' ? 'card-large' : ''}`}
-      onClick={() => onClick(exp)}
-    >
-      <div 
-        className="card-image"
-        style={{ backgroundImage: `url(${getOptimizedImageUrl(exp.imageUrl, 400)})` }}
-      >
-        <div className="card-image-gradient"></div>
-        <span 
-          className="card-badge" 
-          style={{ 
-            borderColor: 'var(--city-accent)', 
-            color: 'var(--city-accent)',
-            boxShadow: '2px 2px 0px var(--city-accent)' 
-          }}
-        >
-          {exp.category}
-        </span>
-        
-        {/* Hover action preview */}
-        <div className="card-hover-action">
-          <span>Ver Detalles</span>
-          <ArrowRight size={13} strokeWidth={2.5} />
-        </div>
-      </div>
-      <div className="card-body">
-        <div className="card-rating">
-          <Star size={11} fill="currentColor" />
-          <span>{exp.rating} ({exp.reviewsCount})</span>
-          <span style={{ margin: '0 4px', opacity: 0.3 }}>•</span>
-          <span className="card-city-tag" style={{ color: 'var(--city-accent, #8b7cf6)', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.62rem', letterSpacing: '0.5px' }}>{exp.city}</span>
-        </div>
-        <h3 className="card-title">{exp.name}</h3>
-        <p className="card-desc">{exp.description}</p>
-        <div className="card-footer">
-          <span className="card-price">{exp.price}</span>
-          <span className="card-duration"><Clock size={11} /> {exp.duration}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
