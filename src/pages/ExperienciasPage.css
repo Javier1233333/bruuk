@@ -118,21 +118,11 @@
   margin-bottom: 1.25rem;
 }
 
-.exp-filters-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 45px;
-  height: 100%;
-  background: linear-gradient(to right, transparent, #0b0a0f);
-  pointer-events: none;
-  z-index: 2;
-}
+
 
 .exp-filters-scroll {
   display: flex;
-  gap: 0.5rem;
+  gap: 6px;
   overflow-x: auto;
   padding: 4px 0;
   scrollbar-width: none;
@@ -784,4 +774,93 @@
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
   animation: shimmer 1.6s infinite;
+}
+
+/* ── Sheet Attendees ── */
+.sheet-attendees-section {
+  margin-top: 1.5rem;
+}
+
+.attendees-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+}
+
+.attendees-avatars {
+  display: flex;
+}
+
+.attendee-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid #111018;
+  margin-left: -8px;
+  object-fit: cover;
+}
+
+.attendee-avatar:first-child {
+  margin-left: 0;
+}
+
+.attendees-text {
+  font-size: 0.8rem;
+  color: #e5e4ef;
+}
+
+/* ── Sheet Map ── */
+.sheet-map-section {
+  margin-top: 1.5rem;
+}
+
+.sheet-map-container {
+  width: 100%;
+  height: 140px;
+  border-radius: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0.65rem;
+  z-index: 1; /* Below the modal overlays */
+}
+
+/* ── Sheet Actions ── */
+.sheet-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.sheet-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sheet-action-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sheet-action-btn.danger {
+  border-color: transparent;
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.05);
+}
+
+.sheet-action-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.1);
 }

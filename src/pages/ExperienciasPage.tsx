@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, ChevronDown } from 'lucide-react';
+import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, ChevronDown, AlertTriangle } from 'lucide-react';
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import citiesData from '../data/cities.json';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { getOptimizedImageUrl } from '../lib/utils';
+import AuthPromptModal from '../components/AuthPromptModal';
 import experiencesData from '../data/experiences.json';
 import './ExperienciasPage.css';
 
@@ -71,6 +75,8 @@ type Experience = {
   images: string[];
   reservationInfo: string;
   nextEventId?: string;
+  lat?: number;
+  lng?: number;
 };
 
 // Datos extraídos para seed.
@@ -92,10 +98,42 @@ export default function ExperienciasPage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [isReserving, setIsReserving] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
+
+  const handleAutoLocation = () => {
+    if (navigator.geolocation) {
+      setIsLocating(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsLocating(false);
+          const { latitude: lat, longitude: lng } = position.coords;
+          
+          let closestCity = citiesData[0];
+          let minDistance = Infinity;
+          citiesData.forEach(c => {
+            const dist = Math.pow(c.defaultCoordinates.lat - lat, 2) + Math.pow(c.defaultCoordinates.lng - lng, 2);
+            if (dist < minDistance) {
+              minDistance = dist;
+              closestCity = c;
+            }
+          });
+          navigate(`/experiencias/${closestCity.id}`);
+        },
+        () => {
+          setIsLocating(false);
+          alert('No pudimos detectar tu ubicación automáticamente.');
+        },
+        { enableHighAccuracy: false, timeout: 6000, maximumAge: 600000 }
+      );
+    } else {
+      alert("Tu navegador no soporta geolocalización.");
+    }
+  };
 
   const handleReserve = async () => {
     if (!user) {
-      navigate('/login');
+      setAuthPromptOpen(true);
       return;
     }
     if (!selectedExp || !selectedExp.nextEventId) {
@@ -174,7 +212,9 @@ export default function ExperienciasPage() {
             whatsAppLink: exp.whatsapp_link || '',
             images: exp.images || [],
             reservationInfo: exp.reservation_info || '',
-            nextEventId: nextEvent?.id
+            nextEventId: nextEvent?.id,
+            lat: exp.lat ? Number(exp.lat) : undefined,
+            lng: exp.lng ? Number(exp.lng) : undefined
           };
         });
         setExperiences(mapped);
@@ -257,6 +297,30 @@ export default function ExperienciasPage() {
     };
   }, [selectedExp]);
 
+  const [attendees, setAttendees] = useState<any[]>([]);
+  const [attendeesCount, setAttendeesCount] = useState(0);
+
+  useEffect(() => {
+    if (selectedExp?.nextEventId) {
+      const fetchAttendees = async () => {
+        const { data, count, error } = await supabase
+          .from('bookings')
+          .select('profiles(id, first_name, avatar_url)', { count: 'exact' })
+          .eq('event_id', selectedExp.nextEventId)
+          .eq('status', 'confirmed')
+          .limit(5);
+        if (!error && data) {
+          setAttendees(data.map((d: any) => d.profiles));
+          setAttendeesCount(count || 0);
+        }
+      };
+      fetchAttendees();
+    } else {
+      setAttendees([]);
+      setAttendeesCount(0);
+    }
+  }, [selectedExp]);
+
 
 
   // Keep active city synced globally
@@ -332,6 +396,24 @@ export default function ExperienciasPage() {
                     transition={{ duration: 0.12 }}
                     onClick={(e) => e.stopPropagation()}
                   >
+                    <button
+                      className="exp-city-dropdown-item"
+                      style={{ 
+                        borderBottom: '1px dashed rgba(255,255,255,0.15)',
+                        color: 'var(--city-accent)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDropdownOpen(false);
+                        handleAutoLocation();
+                      }}
+                    >
+                      <MapPin size={12} /> {isLocating ? 'Detectando...' : 'Detectar GPS'}
+                    </button>
+
                     {citiesData.map(c => (
                       <button
                         key={c.id}
@@ -478,7 +560,7 @@ export default function ExperienciasPage() {
                     <div 
                       key={idx} 
                       className="sheet-carousel-item"
-                      style={{ backgroundImage: `url(${img})` }}
+                      style={{ backgroundImage: `url(${getOptimizedImageUrl(img, 800)})` }}
                     />
                   ))}
                 </div>
@@ -522,7 +604,50 @@ export default function ExperienciasPage() {
                   <p>{selectedExp.longDescription}</p>
                 </div>
 
+                {/* Attendees */}
+                {attendeesCount > 0 && (
+                  <div className="sheet-attendees-section">
+                    <h4 className="section-heading">Quiénes van</h4>
+                    <div className="attendees-row">
+                      <div className="attendees-avatars">
+                        {attendees.map((att, i) => (
+                          <img key={i} src={att.avatar_url || 'https://via.placeholder.com/40'} alt={att.first_name} className="attendee-avatar" />
+                        ))}
+                      </div>
+                      <span className="attendees-text">
+                        {attendees[0]?.first_name}
+                        {attendeesCount > 1 && `, ${attendees[1]?.first_name}`}
+                        {attendeesCount > 2 && ` y ${attendeesCount - 2} más`}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
+                {/* Map */}
+                {selectedExp.lat && selectedExp.lng && (
+                  <div className="sheet-map-section">
+                    <h4 className="section-heading">Ubicación</h4>
+                    <div className="sheet-map-container" ref={(el) => {
+                      if (el && !el.hasChildNodes()) {
+                        const map = L.map(el, {
+                          zoomControl: false,
+                          attributionControl: false,
+                          dragging: false,
+                          scrollWheelZoom: false,
+                          doubleClickZoom: false
+                        }).setView([selectedExp.lat!, selectedExp.lng!], 15);
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+                        
+                        const icon = L.divIcon({
+                          className: 'custom-neon-pin',
+                          html: `<div style="background-color: var(--city-accent, #8b7cf6); box-shadow: 0 0 10px var(--city-accent, #8b7cf6); width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff;"></div>`,
+                          iconSize: [14, 14]
+                        });
+                        L.marker([selectedExp.lat!, selectedExp.lng!], { icon }).addTo(map);
+                      }
+                    }} />
+                  </div>
+                )}
 
                 {/* Logistics */}
                 <div className="sheet-logistics-list">
@@ -540,6 +665,16 @@ export default function ExperienciasPage() {
                       <p>{selectedExp.nextDate}</p>
                     </div>
                   </div>
+                </div>
+
+                {/* Actions */}
+                <div className="sheet-actions-row">
+                  <button className="sheet-action-btn" onClick={() => window.open(selectedExp.whatsAppLink || '#', '_blank')}>
+                    <MessageCircle size={15} /> Contactar Host
+                  </button>
+                  <button className="sheet-action-btn danger">
+                    <AlertTriangle size={15} /> Reportar
+                  </button>
                 </div>
               </div>
 
@@ -564,6 +699,13 @@ export default function ExperienciasPage() {
           </div>
         )}
       </AnimatePresence>
+
+      <AuthPromptModal 
+        isOpen={authPromptOpen} 
+        onClose={() => setAuthPromptOpen(false)} 
+        message="Regístrate para reservar un lugar en esta experiencia."
+        action="Iniciar Sesión"
+      />
     </div>
   );
 }
@@ -585,7 +727,7 @@ function ExperienceCard({
     >
       <div 
         className="card-image"
-        style={{ backgroundImage: `url(${exp.imageUrl})` }}
+        style={{ backgroundImage: `url(${getOptimizedImageUrl(exp.imageUrl, 400)})` }}
       >
         <div className="card-image-gradient"></div>
         <span 
