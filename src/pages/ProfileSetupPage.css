@@ -51,6 +51,7 @@
   padding: 2.5rem 2rem;
   box-shadow: 8px 8px 0px var(--accent-light);
   position: relative;
+  border-radius: 0px;
 }
 
 .setup-back {
@@ -65,6 +66,7 @@
   align-items: center;
   padding: 0.3rem;
   transition: all 0.15s;
+  border-radius: 0px;
 }
 .setup-back:hover {
   border-color: var(--accent-light);
@@ -83,6 +85,7 @@
   align-items: center;
   padding: 0.3rem;
   transition: all 0.15s;
+  border-radius: 0px;
 }
 .setup-close:hover {
   border-color: var(--accent-light);
@@ -129,6 +132,7 @@
   background: var(--bg-primary);
   transition: all 0.15s;
   position: relative;
+  border-radius: 0px;
 }
 .avatar-upload::after {
   content: '';
@@ -192,6 +196,7 @@
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.15s, box-shadow 0.15s;
+  border-radius: 0px;
 }
 .setup-field input:focus {
   border-color: var(--accent-light);
@@ -205,6 +210,7 @@
   background: var(--bg-primary);
   border: 2px solid var(--border-color);
   transition: border-color 0.15s, box-shadow 0.15s;
+  border-radius: 0px;
 }
 .instagram-input:focus-within {
   border-color: var(--accent-light);
@@ -222,6 +228,7 @@
   box-shadow: none !important;
   padding: 0.8rem 1rem 0.8rem 0;
   flex: 1;
+  border-radius: 0px;
 }
 .instagram-input input:focus { border: none; }
 
@@ -255,6 +262,7 @@
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  border-radius: 0px;
 }
 .interest-btn:hover {
   border-color: var(--accent-light);
@@ -267,6 +275,7 @@
   border-color: var(--accent-light);
   color: #fff;
   box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  border-radius: 0px;
 }
 .interest-emoji { font-size: 1rem; flex-shrink: 0; }
 .interest-check { margin-left: auto; flex-shrink: 0; }
@@ -303,6 +312,7 @@
   line-height: 1.3;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  border-radius: 0px;
 }
 .favorite-btn:hover {
   border-color: var(--accent-light);
@@ -315,6 +325,7 @@
   border-color: var(--accent-light);
   color: #fff;
   box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  border-radius: 0px;
 }
 
 /* ─── BUTTON ────────────────────────────────────────────────── */
