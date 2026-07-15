@@ -27,5 +27,8 @@ export const userService = {
   },
   approveExperience: async (expId: string) => {
     return await supabase.from('experiences').update({ status: 'approved' }).eq('id', expId);
+  },
+  verifyInviteCode: async (code: string) => {
+    return await supabase.rpc('verify_and_use_invite_code', { user_code: code });
   }
 };

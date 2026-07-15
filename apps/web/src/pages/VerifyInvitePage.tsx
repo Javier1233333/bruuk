@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Lock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { userService } from '../features/users/services/userService';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
@@ -21,9 +21,7 @@ export function VerifyInvitePage() {
     const trimmed = code.trim().toUpperCase();
 
     try {
-      const { data: isSuccess, error: rpcErr } = await supabase.rpc('verify_and_use_invite_code', {
-        user_code: trimmed,
-      });
+      const { data: isSuccess, error: rpcErr } = await userService.verifyInviteCode(trimmed);
 
       if (rpcErr) {
         throw rpcErr;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check, X } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { PRESET_AVATARS } from '../components/AppShell';
-import { supabase } from '../lib/supabase';
+import { userService } from '../features/users/services/userService';
 import { useAuth } from '../contexts/AuthContext';
 import citiesData from '../data/cities.json';
 import './ProfileSetupPage.css';
@@ -90,18 +90,15 @@ export function ProfileSetupPage() {
     const finalFavorite = customFavorite || favorite;
 
     try {
-      const { error: updateErr } = await supabase
-        .from('profiles')
-        .update({
-          username: instagram, // el hook instagram guarda el username del input "Usuario"
-          instagram: instagram, // por compatibilidad legacy
-          avatar_id: avatarId,
-          city,
-          interests: Array.from(interests),
-          favorite_plan: finalFavorite,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+      const { error: updateErr } = await userService.updateProfile(user.id, {
+        username: instagram, // el hook instagram guarda el username del input "Usuario"
+        instagram: instagram, // por compatibilidad legacy
+        avatar_id: avatarId,
+        city,
+        interests: Array.from(interests),
+        favorite_plan: finalFavorite,
+        updated_at: new Date().toISOString(),
+      });
 
       if (updateErr) {
         throw updateErr;
