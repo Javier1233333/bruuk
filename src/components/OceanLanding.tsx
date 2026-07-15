@@ -2,23 +2,11 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
-import { 
-  ChevronDown, 
-  MapPin, 
-  Loader2, 
-  Compass, 
-  Heart, 
-  Bookmark, 
-  Share2, 
-  Map, 
-  X, 
-  ExternalLink, 
-  Calendar, 
-  ArrowLeft,
-  MessageSquare
-} from 'lucide-react';
+import { Share2, MapPin, ExternalLink, Bookmark, ChevronDown, Compass, Heart, Loader2, Map, X, Calendar, ArrowLeft, MessageSquare } from 'lucide-react';
 import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
+import { getOptimizedImageUrl } from '../lib/utils';
+import AuthPromptModal from './AuthPromptModal';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import experiencesData from '../data/experiences.json';
@@ -59,6 +47,15 @@ function getSavedCity(): string | null {
     if (localVal) return localVal;
   } catch (e) {}
   return null;
+}
+
+function getGuestId(): string {
+  let guestId = localStorage.getItem('bruuk_guest_id');
+  if (!guestId) {
+    guestId = crypto.randomUUID ? crypto.randomUUID() : '00000000-0000-4000-8000-' + Math.random().toString(16).substring(2, 14).padEnd(12, '0');
+    localStorage.setItem('bruuk_guest_id', guestId);
+  }
+  return guestId;
 }
 
 function saveCity(cityId: string) {
@@ -177,8 +174,10 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   
   // Custom Interaction States
   const [likedSpots, setLikedSpots] = useState<Set<string>>(() => new Set());
+  const [spotLikesCount, setSpotLikesCount] = useState<Record<string, number>>({});
   const [savedSpots, setSavedSpots] = useState<Set<string>>(() => new Set());
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<'todo' | 'lugar' | 'experiencia'>('todo');
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -277,12 +276,12 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
       } catch (err) {
         console.warn('[BRUUK] Fallback to local JSON for spots & experiences due to error:', err);
         
-        const localSpots = spotsData
+        const localSpots: Spot[] = spotsData
           .filter(s => s.city === activeCityConfig.id)
           .map((s: any) => ({
             id: s.id,
             city: s.city,
-            category: 'lugar',
+            category: 'lugar' as const,
             name: s.name,
             type: s.type || '',
             description: s.description || '',
@@ -294,12 +293,12 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
             coordinates: s.coordinates ? { lat: Number(s.coordinates.lat), lng: Number(s.coordinates.lng) } : undefined,
           }));
 
-        const localExps = (experiencesData || [])
+        const localExps: Spot[] = (experiencesData || [])
           .filter(e => e.city.toLowerCase() === activeCityConfig.id.toLowerCase() && e.status === 'approved')
           .map((e: any) => ({
             id: e.id,
             city: e.city,
-            category: 'experiencia',
+            category: 'experiencia' as const,
             name: e.name,
             type: 'Experiencia',
             description: e.description || '',
@@ -345,6 +344,49 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     };
 
     fetchSavedSpots();
+  }, [user]);
+
+  // Load likes from Supabase
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const guestId = !user ? getGuestId() : null;
+
+        // Fetch counts for spots
+        const { data: countsData, error: countsErr } = await supabase
+          .from('spot_likes')
+          .select('spot_id');
+
+        if (countsErr) throw countsErr;
+
+        const counts: Record<string, number> = {};
+        if (countsData) {
+          countsData.forEach(item => {
+            counts[item.spot_id] = (counts[item.spot_id] || 0) + 1;
+          });
+        }
+        setSpotLikesCount(counts);
+
+        // Fetch user/guest likes
+        let query = supabase.from('spot_likes').select('spot_id');
+        if (user) {
+          query = query.eq('user_id', user.id);
+        } else {
+          query = query.eq('guest_uuid', guestId);
+        }
+
+        const { data: userLikes, error: userLikesErr } = await query;
+        if (userLikesErr) throw userLikesErr;
+
+        if (userLikes) {
+          setLikedSpots(new Set(userLikes.map(item => item.spot_id)));
+        }
+      } catch (err) {
+        console.warn('[BRUUK] Error loading likes:', err);
+      }
+    };
+
+    fetchLikes();
   }, [user]);
 
   // Filtered and sorted spots list based on preferences
@@ -676,22 +718,57 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   }, [activeReviewsSpotId, currentCityConfig, isDropdownOpen, isMapOpen, mode]);
 
   // Handle Likes
-  const toggleLike = (id: string) => {
+  const toggleLike = async (id: string) => {
+    const isLiked = likedSpots.has(id);
+    const guestId = !user ? getGuestId() : null;
+
     setLikedSpots(prev => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      if (isLiked) next.delete(id);
+      else next.add(id);
       return next;
     });
+
+    setSpotLikesCount(prev => ({
+      ...prev,
+      [id]: (prev[id] || 0) + (isLiked ? -1 : 1)
+    }));
+
+    try {
+      if (isLiked) {
+        let query = supabase.from('spot_likes').delete().eq('spot_id', id);
+        if (user) query = query.eq('user_id', user.id);
+        else query = query.eq('guest_uuid', guestId);
+        
+        const { error } = await query;
+        if (error) throw error;
+      } else {
+        const payload = user 
+          ? { user_id: user.id, spot_id: id }
+          : { guest_uuid: guestId, spot_id: id };
+        
+        const { error } = await supabase.from('spot_likes').insert(payload);
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error('Error in toggleLike:', err);
+      setLikedSpots(prev => {
+        const next = new Set(prev);
+        if (isLiked) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+      setSpotLikesCount(prev => ({
+        ...prev,
+        [id]: (prev[id] || 0) + (isLiked ? 1 : -1)
+      }));
+    }
   };
 
   // Handle Saves
   const toggleSave = async (id: string) => {
     if (!user) {
-      triggerToast('Inicia sesión para guardar spots');
+      setAuthPromptOpen(true);
       return;
     }
     
@@ -789,7 +866,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     } else {
       setLocationError("Tu navegador no soporta geolocalización o estás en HTTP.");
     }
-  }, [navigate]);
+  }, [navigate, selectCity]);
 
 
 
@@ -952,6 +1029,17 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   
   // Show onboarding modal if neither city is selected nor onboarding is completed, or if onboarding is in progress
   const showOnboardingModal = (!currentCityConfig && (!isExplicitlySelected || !getSavedCity())) || (!hasOnboardingCompleted && !user);
+
+  useEffect(() => {
+    if (showOnboardingModal) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showOnboardingModal]);
 
   // If no city parameter is provided but we have a saved city, show a loader while redirecting
   if (mode === 'standalone' && !routeCity && isExplicitlySelected && getSavedCity()) {
@@ -1148,7 +1236,13 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                     setReorderedSpots(spots.filter(spot => cat === 'todo' || getCategory(spot) === cat));
                     setActiveIndex(0);
                     setActiveReviewsSpotId(null);
-                    if (feedRef.current) feedRef.current.scrollTop = 0;
+                    if (feedRef.current) {
+                      feedRef.current.style.scrollSnapType = 'none';
+                      feedRef.current.scrollTo({ top: 0, behavior: 'instant' });
+                      requestAnimationFrame(() => {
+                        if (feedRef.current) feedRef.current.style.scrollSnapType = '';
+                      });
+                    }
                   }}
                 >
                   {cat === 'todo' ? 'Todo' : cat === 'lugar' ? 'Lugares' : 'Experiencias'}
@@ -1210,7 +1304,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                     <div className="tiktok-media-container">
                       {isNear ? (
                         <img 
-                          src={spot.imageUrl} 
+                          src={getOptimizedImageUrl(spot.imageUrl, 800)} 
                           alt={spot.name} 
                           className={`tiktok-media ${inView ? 'tiktok-media-active' : ''}`}
                           loading="lazy"
@@ -1235,7 +1329,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                         >
                           <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
                         </button>
-                        <span className="tiktok-action-label">{isLiked ? '101' : '100'}</span>
+                        <span className="tiktok-action-label">{spotLikesCount[spot.id] || 0}</span>
                       </div>
 
                       {/* Save Action */}
@@ -1503,7 +1597,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                     
                     <button
                       className="btn btn-primary"
-                      style={{ width: '100%', padding: '1rem', borderRadius: '12px' }}
+                      style={{ width: '100%', padding: '1rem', borderRadius: 0 }}
                       onClick={() => {
                         localStorage.setItem('bruuk_guest_preferences', JSON.stringify(Array.from(onboardingInterests)));
                         setOnboardingStep(2);
@@ -1522,7 +1616,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem' }}>
                       <button
                         className="btn btn-primary"
-                        style={{ padding: '1rem', borderRadius: '12px', fontSize: '1rem' }}
+                        style={{ padding: '1rem', borderRadius: 0, fontSize: '1rem' }}
                         onClick={() => navigate('/?modal=login')}
                       >
                         Iniciar Sesión / Crear Cuenta
@@ -1530,7 +1624,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                       
                       <button
                         className="btn btn-secondary"
-                        style={{ padding: '1rem', borderRadius: '12px', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+                        style={{ padding: '1rem', borderRadius: 0, background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
                         onClick={() => {
                           setCookie('bruuk_onboarding_completed', 'true');
                           localStorage.setItem('bruuk_onboarding_completed', 'true');
@@ -1603,6 +1697,12 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
             </motion.div>
           )}
         </AnimatePresence>
+        
+        <AuthPromptModal 
+          isOpen={authPromptOpen} 
+          onClose={() => setAuthPromptOpen(false)} 
+          message="Guarda tus lugares favoritos y organízalos creando una cuenta gratuita."
+        />
       </div>
 
       {/* Desktop floating navigation arrows (positioned OUTSIDE phone container) */}
