@@ -1,4 +1,6 @@
-export const storageAdapter = {
+import type { IStorageAdapter } from '@bruuk/shared-logic/adapters';
+
+export const storageAdapter: IStorageAdapter = {
   getItem: (key: string): string | null => {
     try {
       if (typeof window === 'undefined') return null;

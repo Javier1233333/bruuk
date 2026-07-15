@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { storageAdapter } from '../shared/adapters/storageAdapter';
+import { storageAdapter } from './adapters/storageAdapter';
 
 const rawUrl = import.meta.env.VITE_SUPABASE_URL ?? '';
 const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';

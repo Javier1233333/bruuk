@@ -8,6 +8,11 @@ import { MarketingLayout } from './components/MarketingLayout'
 import App from './App.tsx'
 import './index.css'
 
+import { setStorageAdapter } from '@bruuk/shared-logic/adapters'
+import { storageAdapter } from './lib/adapters/storageAdapter'
+
+setStorageAdapter(storageAdapter)
+
 
 const AppShell = lazy(() =>
   import('./components/AppShell').then(module => ({ default: module.AppShell })),

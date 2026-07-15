@@ -1,2 +1,2 @@
-// Adapters entrypoint
-export {};
+export * from './storageAdapter';
+
