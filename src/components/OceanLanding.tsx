@@ -22,6 +22,7 @@ import citiesData from '../data/cities.json';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import experiencesData from '../data/experiences.json';
+import { INTERESTS } from '../pages/ProfileSetupPage';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './OceanLanding.css';
@@ -169,6 +170,10 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+
+  // Onboarding States
+  const [onboardingStep, setOnboardingStep] = useState<number>(0);
+  const [onboardingInterests, setOnboardingInterests] = useState<Set<string>>(new Set());
   
   // Custom Interaction States
   const [likedSpots, setLikedSpots] = useState<Set<string>>(() => new Set());
@@ -342,12 +347,54 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     fetchSavedSpots();
   }, [user]);
 
-  // Filtered spots list
-  const filteredSpots = useMemo(() => spots.filter(s => {
-    const category = getCategory(s);
-    if (activeCategory === 'todo') return true;
-    return category === activeCategory;
-  }), [activeCategory, spots]);
+  // Filtered and sorted spots list based on preferences
+  const filteredSpots = useMemo(() => {
+    let base = spots.filter(s => {
+      const category = getCategory(s);
+      if (activeCategory === 'todo') return true;
+      return category === activeCategory;
+    });
+
+    // Score and sort if we have interests
+    let userInterests: string[] = [];
+    try {
+      const stored = localStorage.getItem('bruuk_interests') || localStorage.getItem('bruuk_guest_preferences');
+      if (stored) {
+        userInterests = JSON.parse(stored);
+      }
+    } catch (e) {}
+
+    if (userInterests.length > 0) {
+      base = base.sort((a, b) => {
+        const getScore = (spot: Spot) => {
+           let score = 0;
+           const searchStr = (spot.type + ' ' + spot.description + ' ' + spot.name).toLowerCase();
+           
+           userInterests.forEach(interest => {
+             const interestObj = INTERESTS.find(i => i.id === interest);
+             if (interestObj) {
+               const labelWords = interestObj.label.toLowerCase().split(/[ &\/]+/);
+               labelWords.forEach(w => {
+                 if (w.length > 3 && searchStr.includes(w)) score += 1;
+               });
+             }
+             if (searchStr.includes(interest.toLowerCase())) score += 1;
+             
+             // Mappings for better accuracy
+             if (interest === 'gastronomy' && (searchStr.includes('comida') || searchStr.includes('restaurante') || searchStr.includes('cena'))) score += 2;
+             if (interest === 'live_music' && (searchStr.includes('concierto') || searchStr.includes('banda') || searchStr.includes('música'))) score += 2;
+             if (interest === 'art' && (searchStr.includes('galería') || searchStr.includes('museo') || searchStr.includes('pintura'))) score += 2;
+             if (interest === 'brunch' && (searchStr.includes('café') || searchStr.includes('desayuno'))) score += 2;
+             if (interest === 'nightlife' && (searchStr.includes('bar') || searchStr.includes('antro') || searchStr.includes('cerveza') || searchStr.includes('noche'))) score += 2;
+           });
+           return score;
+        };
+        return getScore(b) - getScore(a);
+      });
+    }
+
+    return base;
+  }, [activeCategory, spots]);
 
   // Dynamic feed order
   const [reorderedSpots, setReorderedSpots] = useState<Spot[]>([]);
@@ -408,19 +455,26 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
       setCookie('bruuk_city_selected', 'true');
       localStorage.setItem('bruuk_city_selected', 'true');
     } catch (e) {}
-    if (mode === 'embedded') {
-      setEmbeddedCity(cityId);
+
+    // Check if onboarding needs to continue
+    const hasOnboarding = getCookie('bruuk_onboarding_completed') === 'true' || localStorage.getItem('bruuk_onboarding_completed') === 'true';
+    if (!hasOnboarding && !user) {
+      setOnboardingStep(1); // Move to interests step
     } else {
-      navigate(`/descubrir/${cityId}`);
+      if (mode === 'embedded') {
+        setEmbeddedCity(cityId);
+      } else {
+        navigate(`/descubrir/${cityId}`);
+      }
+      setIsDropdownOpen(false);
     }
 
-    setIsDropdownOpen(false);
     setActiveCategory('todo');
     setSpots([]); // Limpia spots para gatillar el esqueleto de carga
     setActiveIndex(0);
     setActiveReviewsSpotId(null);
     if (feedRef.current) feedRef.current.scrollTop = 0;
-  }, [mode, navigate]);
+  }, [mode, navigate, user]);
 
   // Keep active city synced in storage
   useEffect(() => {
@@ -894,6 +948,10 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   }, [isMapOpen, filteredSpots, activeCityConfig, currentCityConfig, selectedMapSpotId, handleSelectSpotFromMap, mapFilterCategory]);
 
   const isExplicitlySelected = getCookie('bruuk_city_selected') === 'true' || localStorage.getItem('bruuk_city_selected') === 'true';
+  const hasOnboardingCompleted = getCookie('bruuk_onboarding_completed') === 'true' || localStorage.getItem('bruuk_onboarding_completed') === 'true';
+  
+  // Show onboarding modal if neither city is selected nor onboarding is completed, or if onboarding is in progress
+  const showOnboardingModal = (!currentCityConfig && (!isExplicitlySelected || !getSavedCity())) || (!hasOnboardingCompleted && !user);
 
   // If no city parameter is provided but we have a saved city, show a loader while redirecting
   if (mode === 'standalone' && !routeCity && isExplicitlySelected && getSavedCity()) {
@@ -1342,9 +1400,9 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
           </div>
         )}
 
-        {/* Fallback City Selector Overlay Modal */}
+        {/* Multi-step Onboarding Modal Overlay */}
         <AnimatePresence>
-          {!currentCityConfig && (!isExplicitlySelected || !getSavedCity()) && (
+          {showOnboardingModal && (
             <motion.div
               className="city-selector-overlay"
               initial={{ opacity: 0 }}
@@ -1356,8 +1414,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                 className="city-selector-modal"
                 role="dialog"
                 aria-modal={mode === 'standalone' ? true : undefined}
-                aria-labelledby="city-selector-title"
-                aria-describedby="city-selector-description"
+                aria-labelledby="onboarding-title"
                 tabIndex={-1}
                 initial={{ opacity: 0, y: 60, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -1368,51 +1425,127 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                 <div className="city-selector-logo">
                   <BruukLogo />
                 </div>
-                <h1 id="city-selector-title" className="city-selector-title">Elige tu ciudad</h1>
-                <p id="city-selector-description" className="city-selector-subtitle">Selecciona una ciudad para descubrir planes y experiencias únicas sin algoritmos.</p>
+                
+                {onboardingStep === 0 && (
+                  <>
+                    <h1 id="onboarding-title" className="city-selector-title">Elige tu ciudad</h1>
+                    <p className="city-selector-subtitle">Selecciona una ciudad para descubrir planes y experiencias únicas sin algoritmos.</p>
 
-                <div className="city-options-grid">
-                  {citiesData.map((c, index) => (
+                    <div className="city-options-grid">
+                      {citiesData.map((c, index) => (
+                        <button
+                          ref={index === 0 ? firstCityButtonRef : undefined}
+                          key={c.id}
+                          className="city-option-btn"
+                          onClick={() => selectCity(c.id)}
+                          style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
+                        >
+                          <span className="city-option-name">{c.name}</span>
+                          <span className="city-option-desc">
+                            {c.id === 'hermosillo' ? 'Desierto y Café' : 'Rincones y Experiencias'}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {locationError && (
+                      <div role="alert" style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
+                        {locationError}
+                      </div>
+                    )}
+
+                    <div className="city-selector-divider">o</div>
+
                     <button
-                      ref={index === 0 ? firstCityButtonRef : undefined}
-                      key={c.id}
-                      className="city-option-btn"
-                      onClick={() => selectCity(c.id)}
-                      style={{ '--btn-accent': c.accentColor } as React.CSSProperties}
+                      className="geolocation-btn"
+                      onClick={handleAutoLocation}
+                      disabled={isLocating}
                     >
-                      <span className="city-option-name">{c.name}</span>
-                      <span className="city-option-desc">
-                        {c.id === 'hermosillo' ? 'Desierto y Café' : 'Rincones y Experiencias'}
-                      </span>
+                      {isLocating ? (
+                        <>
+                          <Loader2 className="animate-spin" size={16} />
+                          Detectando ubicación...
+                        </>
+                      ) : (
+                        <>
+                          <MapPin size={16} />
+                          Detectar ubicación automática
+                        </>
+                      )}
                     </button>
-                  ))}
-                </div>
-
-                {locationError && (
-                  <div role="alert" style={{ color: '#ff7a45', fontSize: '0.8rem', marginTop: '1rem', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.5px' }}>
-                    {locationError}
-                  </div>
+                  </>
                 )}
 
-                <div className="city-selector-divider">o</div>
+                {onboardingStep === 1 && (
+                  <>
+                    <h1 id="onboarding-title" className="city-selector-title">¿Qué quieres ver?</h1>
+                    <p className="city-selector-subtitle">Selecciona algunos intereses para personalizar tu feed.</p>
+                    
+                    <div className="interests-grid" style={{ marginTop: '1rem', marginBottom: '1.5rem', maxHeight: '40vh', overflowY: 'auto' }}>
+                      {INTERESTS.map(item => (
+                        <button
+                          key={item.id}
+                          className={`interest-btn ${onboardingInterests.has(item.id) ? 'selected' : ''}`}
+                          onClick={() => {
+                            setOnboardingInterests(prev => {
+                              const next = new Set(prev);
+                              if (next.has(item.id)) next.delete(item.id);
+                              else next.add(item.id);
+                              return next;
+                            });
+                          }}
+                        >
+                          <span className="interest-emoji">{item.emoji}</span>
+                          <span>{item.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                    
+                    <button
+                      className="btn btn-primary"
+                      style={{ width: '100%', padding: '1rem', borderRadius: '12px' }}
+                      onClick={() => {
+                        localStorage.setItem('bruuk_guest_preferences', JSON.stringify(Array.from(onboardingInterests)));
+                        setOnboardingStep(2);
+                      }}
+                    >
+                      Continuar
+                    </button>
+                  </>
+                )}
 
-                <button
-                  className="geolocation-btn"
-                  onClick={handleAutoLocation}
-                  disabled={isLocating}
-                >
-                  {isLocating ? (
-                    <>
-                      <Loader2 className="animate-spin" size={16} />
-                      Detectando ubicación...
-                    </>
-                  ) : (
-                    <>
-                      <MapPin size={16} />
-                      Detectar ubicación automática
-                    </>
-                  )}
-                </button>
+                {onboardingStep === 2 && (
+                  <>
+                    <h1 id="onboarding-title" className="city-selector-title">Únete a la comunidad</h1>
+                    <p className="city-selector-subtitle">Guarda tus gustos y asegura tus lugares en las mejores experiencias.</p>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem' }}>
+                      <button
+                        className="btn btn-primary"
+                        style={{ padding: '1rem', borderRadius: '12px', fontSize: '1rem' }}
+                        onClick={() => navigate('/?modal=login')}
+                      >
+                        Iniciar Sesión / Crear Cuenta
+                      </button>
+                      
+                      <button
+                        className="btn btn-secondary"
+                        style={{ padding: '1rem', borderRadius: '12px', background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}
+                        onClick={() => {
+                          setCookie('bruuk_onboarding_completed', 'true');
+                          localStorage.setItem('bruuk_onboarding_completed', 'true');
+                          if (mode === 'embedded' && getSavedCity()) {
+                            setEmbeddedCity(getSavedCity());
+                          } else if (getSavedCity()) {
+                            navigate(`/descubrir/${getSavedCity()}`);
+                          }
+                        }}
+                      >
+                        Explorar como invitado
+                      </button>
+                    </div>
+                  </>
+                )}
               </motion.div>
             </motion.div>
           )}

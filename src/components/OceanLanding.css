@@ -1262,3 +1262,43 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
   animation: shimmer 1.6s infinite;
 }
+
+/* ─── INTERESTS ─────────────────────────────────────────────── */
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 0.5rem;
+}
+.interests-grid::-webkit-scrollbar { width: 3px; }
+.interests-grid::-webkit-scrollbar-track { background: transparent; }
+.interests-grid::-webkit-scrollbar-thumb { background: var(--accent-light); }
+
+.interest-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-align: left;
+}
+.interest-btn:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.2);
+}
+.interest-btn.selected {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+  color: #fff;
+  transform: scale(0.98);
+}
+.interest-emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+}
