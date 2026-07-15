@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:cap": "pnpm build && cap sync",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bruuk/shared-logic": "workspace:*",
+    "@capacitor/core": "^6.2.1",
     "@supabase/supabase-js": "^2.102.1",
     "@types/leaflet": "^1.9.21",
     "@vercel/analytics": "^2.0.1",
@@ -20,10 +23,10 @@
     "lucide-react": "^0.577.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.14.0",
-    "@bruuk/shared-logic": "workspace:*"
+    "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^6.2.1",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",

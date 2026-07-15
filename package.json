@@ -5,6 +5,7 @@
   "scripts": {
     "dev:web": "pnpm --filter @bruuk/web run dev",
     "build:web": "pnpm --filter @bruuk/web run build",
+    "build:web:cap": "pnpm --filter @bruuk/web run build:cap",
     "test": "pnpm -r run test"
   }
 }
