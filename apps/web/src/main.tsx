@@ -8,10 +8,12 @@ import { MarketingLayout } from './components/MarketingLayout'
 import App from './App.tsx'
 import './index.css'
 
-import { setStorageAdapter } from '@bruuk/shared-logic/adapters'
+import { setStorageAdapter, setGeoAdapter } from '@bruuk/shared-logic/adapters'
 import { storageAdapter } from './lib/adapters/storageAdapter'
+import { webGeoAdapter } from './lib/adapters/geoAdapter'
 
 setStorageAdapter(storageAdapter)
+setGeoAdapter(webGeoAdapter)
 
 
 const AppShell = lazy(() =>
