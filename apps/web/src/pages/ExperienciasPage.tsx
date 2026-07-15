@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Clock, MapPin, Calendar, X, Compass, MessageCircle, ChevronDown, AlertTriangle } from 'lucide-react';
-import * as L from 'leaflet';
+import { MapPin, Compass, ChevronDown } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import citiesData from '../data/cities.json';
 import { experienceService } from '@bruuk/shared-logic/services';
 import { useAuth } from '../contexts/AuthContext';
-import { getOptimizedImageUrl } from '../lib/utils';
 import AuthPromptModal from '../components/AuthPromptModal';
 import experiencesData from '../data/experiences.json';
 import './ExperienciasPage.css';
@@ -57,6 +55,7 @@ function saveCity(cityId: string) {
 
 import { ExperienceCard } from '../features/experiences/components/ExperienceCard';
 import type { Experience } from '../features/experiences/components/ExperienceCard';
+import { ExperienceDetailModal } from '../features/experiences/components/ExperienceDetailModal';
 
 // Datos extraídos para seed.
 const CATEGORIES = ['Todo', 'Aventura', 'Gastronomía', 'Arte', 'Música'];
@@ -487,186 +486,14 @@ export default function ExperienciasPage() {
         )}
       </main>
 
-      {/* Bottom Sheet Modal Detail */}
-      <AnimatePresence>
-        {selectedExp && (
-          <div className="bottom-sheet-backdrop" onClick={() => setSelectedExp(null)}>
-            <motion.div
-              className="bottom-sheet-content"
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button className="sheet-close-btn" onClick={() => setSelectedExp(null)}>
-                <X size={18} />
-              </button>
-
-              {/* Carousel Cover Images */}
-              <div className="sheet-carousel-wrapper">
-                <div 
-                  className="sheet-category-badge"
-                  style={{ background: 'var(--city-accent)', color: '#000', borderColor: '#fff' }}
-                >
-                  {selectedExp.category}
-                </div>
-                <div 
-                  className="sheet-carousel"
-                  onScroll={(e) => {
-                    const el = e.currentTarget;
-                    const index = Math.round(el.scrollLeft / el.clientWidth);
-                    const dots = el.parentElement?.querySelectorAll('.carousel-dot');
-                    dots?.forEach((dot, i) => {
-                      if (i === index) dot.classList.add('active');
-                      else dot.classList.remove('active');
-                    });
-                  }}
-                >
-                  {selectedExp.images.map((img, idx) => (
-                    <div 
-                      key={idx} 
-                      className="sheet-carousel-item"
-                      style={{ backgroundImage: `url(${getOptimizedImageUrl(img, 800)})` }}
-                    />
-                  ))}
-                </div>
-                {selectedExp.images.length > 1 && (
-                  <div className="carousel-dots-container">
-                    {selectedExp.images.map((_, idx) => (
-                      <div key={idx} className={`carousel-dot ${idx === 0 ? 'active' : ''}`} />
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Sheet Body Scrollable Area */}
-              <div className="sheet-body">
-                <h2 className="sheet-title">{selectedExp.name}</h2>
-                
-                {/* Meta details strip */}
-                <div className="sheet-meta-strip">
-                  <div className="sheet-meta-item">
-                    <Star size={13} fill="currentColor" className="star-icon" />
-                    <span>{selectedExp.rating} ({selectedExp.reviewsCount} reseñas)</span>
-                  </div>
-                  <div className="sheet-meta-item">
-                    <Clock size={13} />
-                    <span>{selectedExp.duration}</span>
-                  </div>
-                </div>
-
-                {/* Host Card Section */}
-                <div className="host-section-card">
-                  <img src={selectedExp.hostAvatar} alt={selectedExp.host} className="host-avatar" />
-                  <div>
-                    <span className="host-label">Anfitrión local</span>
-                    <h3 className="host-name">{selectedExp.host}</h3>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="sheet-description-section">
-                  <h4 className="section-heading">¿De qué se trata?</h4>
-                  <p>{selectedExp.longDescription}</p>
-                </div>
-
-                {/* Attendees */}
-                {attendeesCount > 0 && (
-                  <div className="sheet-attendees-section">
-                    <h4 className="section-heading">Quiénes van</h4>
-                    <div className="attendees-row">
-                      <div className="attendees-avatars">
-                        {attendees.map((att, i) => (
-                          <img key={i} src={att.avatar_url || 'https://via.placeholder.com/40'} alt={att.first_name} className="attendee-avatar" />
-                        ))}
-                      </div>
-                      <span className="attendees-text">
-                        {attendees[0]?.first_name}
-                        {attendeesCount > 1 && `, ${attendees[1]?.first_name}`}
-                        {attendeesCount > 2 && ` y ${attendeesCount - 2} más`}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Map */}
-                {selectedExp.lat && selectedExp.lng && (
-                  <div className="sheet-map-section">
-                    <h4 className="section-heading">Ubicación</h4>
-                    <div className="sheet-map-container" ref={(el) => {
-                      if (el && !el.hasChildNodes()) {
-                        const map = L.map(el, {
-                          zoomControl: false,
-                          attributionControl: false,
-                          dragging: false,
-                          scrollWheelZoom: false,
-                          doubleClickZoom: false
-                        }).setView([selectedExp.lat!, selectedExp.lng!], 15);
-                        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-                        
-                        const icon = L.divIcon({
-                          className: 'custom-neon-pin',
-                          html: `<div style="background-color: var(--city-accent, #8b7cf6); box-shadow: 0 0 10px var(--city-accent, #8b7cf6); width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff;"></div>`,
-                          iconSize: [14, 14]
-                        });
-                        L.marker([selectedExp.lat!, selectedExp.lng!], { icon }).addTo(map);
-                      }
-                    }} />
-                  </div>
-                )}
-
-                {/* Logistics */}
-                <div className="sheet-logistics-list">
-                  <div className="logistics-item">
-                    <MapPin size={16} />
-                    <div>
-                      <h5>Punto de encuentro</h5>
-                      <p>{selectedExp.location} · {selectedExp.city}</p>
-                    </div>
-                  </div>
-                  <div className="logistics-item">
-                    <Calendar size={16} />
-                    <div>
-                      <h5>Próxima fecha disponible</h5>
-                      <p>{selectedExp.nextDate}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="sheet-actions-row">
-                  <button className="sheet-action-btn" onClick={() => window.open(selectedExp.whatsAppLink || '#', '_blank')}>
-                    <MessageCircle size={15} /> Contactar Host
-                  </button>
-                  <button className="sheet-action-btn danger">
-                    <AlertTriangle size={15} /> Reportar
-                  </button>
-                </div>
-              </div>
-
-              {/* Sticky bottom checkout row */}
-              <div className="sheet-checkout-row">
-                <div className="price-box">
-                  <span className="price-label">PRECIO</span>
-                  <span className="price-value">{selectedExp.price} <span className="price-unit">/ pers</span></span>
-                </div>
-                <button 
-                  onClick={handleReserve}
-                  disabled={isReserving || !selectedExp.nextEventId}
-                  className="whatsapp-reserve-btn"
-                  style={{ opacity: isReserving || !selectedExp.nextEventId ? 0.7 : 1 }}
-                >
-                  {isReserving ? 'Procesando...' : (
-                    <>Reservar lugar <MessageCircle size={15} fill="currentColor" /></>
-                  )}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <ExperienceDetailModal
+        exp={selectedExp}
+        attendees={attendees}
+        attendeesCount={attendeesCount}
+        isReserving={isReserving}
+        onClose={() => setSelectedExp(null)}
+        onReserve={handleReserve}
+      />
 
       <AuthPromptModal 
         isOpen={authPromptOpen} 
