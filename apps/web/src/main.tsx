@@ -43,12 +43,15 @@ const NosotrosPage = lazy(() =>
 const ExperienciasPage = lazy(() => import('./pages/ExperienciasPage'))
 const ChatsPage = lazy(() => import('./pages/ChatsPage'))
 
+import { NavigationAdapterProvider } from './lib/adapters/navigationAdapter'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<div className="loading-fallback" style={{ color: '#fff', padding: '2rem', textAlign: 'center' }}>Cargando...</div>}>
-          <Routes>
+      <NavigationAdapterProvider>
+        <AuthProvider>
+          <Suspense fallback={<div className="loading-fallback" style={{ color: '#fff', padding: '2rem', textAlign: 'center' }}>Cargando...</div>}>
+            <Routes>
             {/* Marketing Layout Routes (Header & Footer) */}
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<App />} />
@@ -75,7 +78,8 @@ createRoot(document.getElementById('root')!).render(
           </Routes>
         </Suspense>
       </AuthProvider>
-    </BrowserRouter>
-    <Analytics />
-  </StrictMode>,
+    </NavigationAdapterProvider>
+  </BrowserRouter>
+  <Analytics />
+</StrictMode>,
 )
