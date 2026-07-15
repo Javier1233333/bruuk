@@ -175,11 +175,13 @@ export function DashboardPage() {
 
   useEffect(() => {
     async function fetchData() {
-      if (!user) return;
       setLoading(true);
       try {
-        const { data: bookings } = await supabase.from('bookings').select('event_id').eq('user_id', user.id);
-        const bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
+        let bookedEventIds = new Set<string>();
+        if (user) {
+          const { data: bookings } = await supabase.from('bookings').select('event_id').eq('user_id', user.id);
+          bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
+        }
         setConfirmedIds(bookedEventIds);
 
         const { data: evts } = await supabase.from('events').select(`
@@ -213,7 +215,10 @@ export function DashboardPage() {
   }, [user]);
 
   const handleConfirm = async (id: string) => {
-    if (!user) return;
+    if (!user) {
+      navigate('/');
+      return;
+    }
     try {
       await supabase.from('bookings').insert({
         event_id: id,
