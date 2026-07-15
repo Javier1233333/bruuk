@@ -4,7 +4,7 @@
 > Stack: Supabase + Vercel + React (Vite)
 
 ---
-
+hhh
 ## 1. Estado actuald
 
 ### Lo que ya existe
