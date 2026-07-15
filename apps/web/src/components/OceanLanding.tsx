@@ -220,19 +220,12 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
       setLoadingSpots(true);
       try {
         // Fetch spots
-        const { data: dbSpots, error: spotsErr } = await supabase
-          .from('spots')
-          .select('*')
-          .eq('city', activeCityConfig.id);
+        const { data: dbSpots, error: spotsErr } = await oceanService.getSpotsByCity(activeCityConfig.id);
 
         if (spotsErr) throw spotsErr;
 
         // Fetch experiences
-        const { data: dbExps, error: expsErr } = await supabase
-          .from('experiences')
-          .select('*')
-          .eq('city', activeCityConfig.id)
-          .eq('status', 'approved');
+        const { data: dbExps, error: expsErr } = await oceanService.getExperiencesByCity(activeCityConfig.id);
 
         if (expsErr) console.warn('[BRUUK] Error loading experiences for feed:', expsErr);
 
@@ -328,10 +321,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
         return;
       }
       try {
-        const { data, error } = await supabase
-          .from('spot_saves')
-          .select('spot_id')
-          .eq('user_id', user.id);
+        const { data, error } = await oceanService.getSavedSpots(user.id);
 
         if (error) throw error;
 
@@ -353,9 +343,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
         const guestId = !user ? getGuestId() : null;
 
         // Fetch counts for spots
-        const { data: countsData, error: countsErr } = await supabase
-          .from('spot_likes')
-          .select('spot_id');
+        const { data: countsData, error: countsErr } = await oceanService.getSpotLikes();
 
         if (countsErr) throw countsErr;
 
@@ -736,11 +724,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
     try {
       if (isLiked) {
-        let query = oceanService.deleteSpotLike(id);
-        if (user) query = query.eq('user_id', user.id);
-        else query = query.eq('guest_uuid', guestId);
-        
-        const { error } = await query;
+        const { error } = await oceanService.deleteSpotLike(id, user?.id, !user ? guestId : null);
         if (error) throw error;
       } else {
         const payload = user 
@@ -784,17 +768,11 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
     try {
       if (isSaved) {
-        const { error } = await supabase
-          .from('spot_saves')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('spot_id', id);
+        const { error } = await oceanService.deleteSpotSave(user.id, id);
         if (error) throw error;
         triggerToast('Quitado de tus guardados');
       } else {
-        const { error } = await supabase
-          .from('spot_saves')
-          .insert({ user_id: user.id, spot_id: id });
+        const { error } = await oceanService.insertSpotSave({ user_id: user.id, spot_id: id });
         if (error) throw error;
         triggerToast('Guardado en tus favoritos');
       }

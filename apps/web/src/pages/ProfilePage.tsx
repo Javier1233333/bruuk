@@ -158,7 +158,7 @@ export function ProfilePage() {
         favorite_plan: bio,
         avatar_id: avatarId,
         interests: Array.from(interests)
-      }).eq('id', user.id);
+      });
       
       localStorage.setItem('bruuk_interests', JSON.stringify(Array.from(interests)));
 

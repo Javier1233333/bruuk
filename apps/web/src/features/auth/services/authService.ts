@@ -1,5 +1,5 @@
 import { supabase } from '../../../lib/supabase';
-import type { Session, User } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
 
 export const authService = {
   getSession: async () => {

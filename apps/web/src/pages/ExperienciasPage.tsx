@@ -294,9 +294,10 @@ export default function ExperienciasPage() {
   const [attendeesCount, setAttendeesCount] = useState(0);
 
   useEffect(() => {
-    if (selectedExp?.nextEventId) {
+    const eventId = selectedExp?.nextEventId;
+    if (eventId) {
       const fetchAttendees = async () => {
-        const { data, count, error } = await experienceService.getAttendees(selectedExp.nextEventId, 5);
+        const { data, count, error } = await experienceService.getAttendees(eventId, 5);
         if (!error && data) {
           setAttendees(data.map((d: any) => d.profiles));
           setAttendeesCount(count || 0);
