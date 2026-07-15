@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check, X } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { PRESET_AVATARS } from '../components/AppShell';
-import { userService } from '../features/users/services/userService';
+import { userService } from '@bruuk/shared-logic/services';
 import { useAuth } from '../contexts/AuthContext';
 import citiesData from '../data/cities.json';
 import './ProfileSetupPage.css';

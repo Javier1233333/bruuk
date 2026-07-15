@@ -5,7 +5,7 @@ import { Star, Clock, MapPin, Calendar, X, Compass, ArrowRight, MessageCircle, C
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import citiesData from '../data/cities.json';
-import { experienceService } from '../features/experiences/services/experienceService';
+import { experienceService } from '@bruuk/shared-logic/services';
 import { useAuth } from '../contexts/AuthContext';
 import { getOptimizedImageUrl } from '../lib/utils';
 import AuthPromptModal from '../components/AuthPromptModal';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, X } from 'lucide-react';
-import { authService } from '../features/auth/services/authService';
+import { authService } from '@bruuk/shared-logic/services';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 

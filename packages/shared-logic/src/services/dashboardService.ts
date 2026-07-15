@@ -1,4 +1,4 @@
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../lib/supabaseClient';
 
 export const dashboardService = {
   getUserBookings: async (userId: string) => {

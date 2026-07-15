@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { authService } from '../features/auth/services/authService';
-import { userService } from '../features/users/services/userService';
+import { authService, userService } from '@bruuk/shared-logic/services';
 
 interface AuthContextType {
   session: Session | null;

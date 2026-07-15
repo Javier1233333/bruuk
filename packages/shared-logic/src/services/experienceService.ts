@@ -1,4 +1,4 @@
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../lib/supabaseClient';
 
 export const experienceService = {
   createBooking: async (data: any) => {

@@ -7,7 +7,7 @@ import spotsData from '../data/spots.json';
 import citiesData from '../data/cities.json';
 import { getOptimizedImageUrl } from '../lib/utils';
 import AuthPromptModal from './AuthPromptModal';
-import { oceanService } from '../features/ocean/services/oceanService';
+import { oceanService } from '@bruuk/shared-logic/services';
 import { useAuth } from '../contexts/AuthContext';
 import experiencesData from '../data/experiences.json';
 import { INTERESTS } from '../pages/ProfileSetupPage';

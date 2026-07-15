@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, MapPin, Calendar, Lock, Check, Users, Tag, Info } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { dashboardService } from '../features/dashboard/services/dashboardService';
+import { dashboardService } from '@bruuk/shared-logic/services';
 import { BruukLogo } from '../components/BruukLogo';
 import './DashboardPage.css';
 
