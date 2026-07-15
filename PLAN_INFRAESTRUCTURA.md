@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Estado actual
+## 1. Estado actuald
 
 ### Lo que ya existe
 
