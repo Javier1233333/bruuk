@@ -56,6 +56,7 @@ function saveCity(cityId: string) {
 import { ExperienceCard } from '../features/experiences/components/ExperienceCard';
 import type { Experience } from '../features/experiences/components/ExperienceCard';
 import { ExperienceDetailModal } from '../features/experiences/components/ExperienceDetailModal';
+import { CategorySelector } from '../features/experiences/components/CategorySelector';
 
 // Datos extraídos para seed.
 const CATEGORIES = ['Todo', 'Aventura', 'Gastronomía', 'Arte', 'Música'];
@@ -403,20 +404,11 @@ export default function ExperienciasPage() {
         </div>
       </header>
 
-      {/* Horizontal Category Filters */}
-      <div className="exp-filters-container">
-        <div className="exp-filters-scroll">
-          {CATEGORIES.map(category => (
-            <button
-              key={category}
-              className={`filter-badge-btn ${activeCategory === category ? 'active' : ''}`}
-              onClick={() => setActiveCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
+      <CategorySelector
+        categories={CATEGORIES}
+        activeCategory={activeCategory}
+        onSelect={setActiveCategory}
+      />
 
       {/* Main Experiences Area */}
       <main className="experiences-list-area">
