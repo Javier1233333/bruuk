@@ -20,12 +20,38 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [showResendBtn, setShowResendBtn] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const handleBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
       navigate('/');
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) return;
+    setResendLoading(true);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      const { error: resendErr } = await authService.resendConfirmationEmail(email);
+      if (resendErr) {
+        if (resendErr.message?.toLowerCase().includes('rate limit') || (resendErr as any).status === 429) {
+          setError('Espera un momento antes de volver a solicitar el reenvío.');
+        } else {
+          setError(resendErr.message || 'Error al reenviar el correo de confirmación.');
+        }
+      } else {
+        setSuccessMsg('Te hemos enviado un nuevo correo. Revisa tu bandeja de entrada y spam.');
+        setShowResendBtn(false);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Error de conexión.');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -36,9 +62,15 @@ export function LoginPage() {
     setSuccessMsg(null);
 
     if (mode === 'login') {
+      setShowResendBtn(false);
       const { error } = await authService.signInWithPassword({ email, password });
       if (error) {
-        setError(translateError(error.message));
+        if (error.message?.toLowerCase().includes('email not confirmed')) {
+          setError('Tu correo aún no ha sido verificado. Por favor confirma tu cuenta.');
+          setShowResendBtn(true);
+        } else {
+          setError(translateError(error.message));
+        }
       } else {
         navigate(from, { replace: true });
       }
@@ -107,7 +139,7 @@ export function LoginPage() {
               </p>
               <button 
                 type="button"
-                onClick={() => { setSuccessMsg(null); setMode('login'); }} 
+                onClick={() => { setSuccessMsg(null); setMode('login'); setShowResendBtn(false); }} 
                 className="btn btn-primary w-full"
               >
                 Volver a Iniciar Sesión
@@ -118,13 +150,13 @@ export function LoginPage() {
               <div className="login-tabs">
                 <button
                   className={`login-tab ${mode === 'login' ? 'active' : ''}`}
-                  onClick={() => { setMode('login'); setError(null); setSuccessMsg(null); }}
+                  onClick={() => { setMode('login'); setError(null); setSuccessMsg(null); setShowResendBtn(false); }}
                 >
                   Entrar
                 </button>
                 <button
                   className={`login-tab ${mode === 'signup' ? 'active' : ''}`}
-                  onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); }}
+                  onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); setShowResendBtn(false); }}
                 >
                   Crear cuenta
                 </button>
@@ -204,6 +236,18 @@ export function LoginPage() {
                 </div>
 
                 {error && <p className="login-error">{error}</p>}
+
+                {showResendBtn && (
+                  <button
+                    type="button"
+                    onClick={handleResendConfirmation}
+                    disabled={resendLoading}
+                    className="btn btn-secondary w-full"
+                    style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                  >
+                    {resendLoading ? 'Reenviando...' : 'Reenviar correo de confirmación'}
+                  </button>
+                )}
 
                 <button type="submit" className="btn btn-primary w-full" disabled={loading}>
                   {loading ? 'Procesando...' : (

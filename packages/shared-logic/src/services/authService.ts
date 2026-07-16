@@ -30,5 +30,14 @@ export const authService = {
   },
   updatePassword: async (newPassword: string) => {
     return await supabase.auth.updateUser({ password: newPassword });
+  },
+  resendConfirmationEmail: async (email: string) => {
+    return await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: window.location.origin + '/setup'
+      }
+    });
   }
 };
