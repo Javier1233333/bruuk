@@ -46,6 +46,11 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    // Force-clear any leftover modal-open state from previous pages on navigation
+    document.body.classList.remove('modal-open');
+  }, [location.pathname]);
+
   const currentAvatar = PRESET_AVATARS.find(a => a.id === avatarId) || PRESET_AVATARS[0];
   const isImmersive = location.pathname.startsWith('/descubrir');
 

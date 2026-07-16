@@ -7,7 +7,8 @@ export const dashboardService = {
   getDashboardEvents: async () => {
     return await supabase.from('events').select(`
           *,
-          experiences (*)
+          experiences (*),
+          bookings (*, profiles (*))
         `).gte('date', new Date().toISOString());
   },
   createBooking: async (data: any) => {

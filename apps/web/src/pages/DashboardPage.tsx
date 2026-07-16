@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, MapPin, Calendar, Lock, Check, Users, Tag, Info } from 'lucide-react';
+import { LogOut, MapPin, Calendar, Lock, Tag } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { dashboardService } from '@bruuk/shared-logic/services';
+import { dashboardService, oceanService, supabase } from '@bruuk/shared-logic';
 import { BruukLogo } from '../components/BruukLogo';
+import { PRESET_AVATARS } from '../components/AppShell';
 import './DashboardPage.css';
 
 interface Attendee {
@@ -55,7 +56,26 @@ function AttendeesSection({ attendees, locked }: { attendees: Attendee[]; locked
         {attendees.map(a => (
           <Link to={`/profile/${a.instagram}`} key={a.id} className="attendee-tile">
             <div className="attendee-tile-img-wrap">
-              <img src={a.avatar} alt={a.name} className="attendee-tile-img" />
+              {a.avatar.startsWith('http') ? (
+                <img src={a.avatar} alt={a.name} className="attendee-tile-img" />
+              ) : (
+                <div 
+                  className="attendee-tile-img"
+                  style={{ 
+                    background: a.avatar, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    color: '#fff', 
+                    fontWeight: 900,
+                    fontSize: '1rem',
+                    height: '100%',
+                    width: '100%'
+                  }}
+                >
+                  {a.instagram ? a.instagram.slice(0, 1).toUpperCase() : '?'}
+                </div>
+              )}
             </div>
             <span className="attendee-tile-handle">@{a.instagram}</span>
             <span className="attendee-tile-fav">"{a.favorite}"</span>
@@ -89,73 +109,51 @@ function ConfirmedEventBlock({ event }: { event: Event }) {
   );
 }
 
-// Bloque para próximos eventos (con info expandible + confirmar)
-function UpcomingEventBlock({ event, confirmed, onConfirm }: {
-  event: Event;
-  confirmed: boolean;
-  onConfirm: (id: string) => void;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const days = daysUntil(event.date);
-  const spotsLeft = event.capacity - event.attendees.length;
-
+// Bloque para spots o experiencias guardadas
+function SavedSpotBlock({ spot }: { spot: any }) {
+  const isExperience = spot.category === 'experiencia';
+  const accent = spot.colorAccent || '#8b7cf6';
+  
   return (
-    <div className={`event-block upcoming-block ${confirmed ? 'is-confirmed' : ''}`}>
-      {/* Cover */}
+    <div className="event-block saved-spot-block" style={{ borderLeft: `6px solid ${accent}` }}>
       <div className="event-cover">
-        <img src={event.cover} alt={event.name} />
+        <img src={spot.imageUrl || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80'} alt={spot.name} />
         <div className="event-cover-overlay" />
         <div className="event-cover-content">
-          <div className="event-badges-row">
-            <span className="event-type-badge">{event.type}</span>
-            {days <= 7 && <span className="event-badge urgent">En {days}d</span>}
-          </div>
-          <h2 className="event-title">{event.name}</h2>
+          <span className="event-type-badge" style={{ borderColor: accent, background: accent, color: '#000', fontWeight: 900 }}>
+            {spot.type}
+          </span>
+          <span className="event-city-badge-tag" style={{ marginLeft: '8px', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.7)' }}>{spot.city}</span>
+          <h2 className="event-title" style={{ textShadow: `3px 3px 0px ${accent}` }}>{spot.name}</h2>
           <div className="event-meta">
-            <span><Calendar size={13} />{formatDate(event.date)}</span>
-            <span><MapPin size={13} />{event.location}</span>
+            {spot.rating && <span className="event-type-badge" style={{ borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.5)' }}>★ {spot.rating}</span>}
+            {spot.price && <span className="event-type-badge" style={{ borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.5)' }}><Tag size={10} style={{ marginRight: '4px' }} />{spot.price}</span>}
           </div>
         </div>
       </div>
-
-      {/* Info rápida */}
-      <div className="event-info-bar">
-        <div className="event-info-item">
-          <Tag size={13} />
-          <span>{event.price}</span>
-        </div>
-        <div className="event-info-item">
-          <Users size={13} />
-          <span>{spotsLeft} lugares</span>
-        </div>
-        <button className="event-info-toggle" onClick={() => setExpanded(v => !v)}>
-          <Info size={13} />
-          <span>{expanded ? 'Menos' : 'Más info'}</span>
-        </button>
+      <div className="event-description">
+        <p style={{ fontStyle: 'italic', borderLeft: `3px solid ${accent}` }}>"{spot.description}"</p>
       </div>
-
-      {/* Descripción expandible */}
-      {expanded && (
-        <div className="event-description animate-fade-in">
-          <p>{event.description}</p>
-        </div>
-      )}
-
-      {/* Attendees o locked */}
-      <AttendeesSection attendees={event.attendees} locked={days > 7} />
-
-      {/* CTA Confirmar */}
-      <div className="event-confirm-bar">
-        {confirmed ? (
-          <div className="confirm-done">
-            <Check size={16} strokeWidth={3} />
-            <span>Confirmado — te vemos ahí</span>
-          </div>
-        ) : (
-          <button className="btn-confirm" onClick={() => onConfirm(event.id)}>
-            Confirmar asistencia
-          </button>
-        )}
+      <div className="event-confirm-bar" style={{ display: 'flex', gap: '1rem' }}>
+        <a 
+          href={spot.mapsLink} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="btn-confirm" 
+          style={{ 
+            textAlign: 'center', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            background: 'transparent', 
+            borderColor: '#fff', 
+            color: '#fff', 
+            textDecoration: 'none', 
+            flex: 1 
+          }}
+        >
+          {isExperience ? 'Ver Detalles' : 'Ver Ubicación en Mapa'}
+        </a>
       </div>
     </div>
   );
@@ -164,42 +162,90 @@ function UpcomingEventBlock({ event, confirmed, onConfirm }: {
 export function DashboardPage() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'confirmed' | 'upcoming'>('confirmed');
-  const [confirmedIds, setConfirmedIds] = useState<Set<string>>(new Set());
-  
+  const [tab, setTab] = useState<'confirmed' | 'saved'>('confirmed');
   const [confirmedEvents, setConfirmedEvents] = useState<Event[]>([]);
-  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [savedSpots, setSavedSpots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const instagram = localStorage.getItem('bruuk_instagram') || user?.email?.split('@')[0] || 'tú';
 
   useEffect(() => {
     async function fetchData() {
+      if (!user) return;
       setLoading(true);
       try {
-        let bookedEventIds = new Set<string>();
-        if (user) {
-          const { data: bookings } = await dashboardService.getUserBookings(user.id);
-          bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
-        }
-        setConfirmedIds(bookedEventIds);
+        // 1. Fetch user bookings and events
+        const { data: bookings } = await dashboardService.getUserBookings(user.id);
+        const bookedEventIds = new Set(bookings?.map(b => b.event_id) || []);
 
         const { data: evts } = await dashboardService.getDashboardEvents();
-        const formatted = (evts || []).map((e: any) => ({
-          id: e.id,
-          name: e.experiences?.name || 'Evento',
-          date: new Date(e.date),
-          location: e.location,
-          cover: e.experiences?.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-          attendees: [], 
-          description: e.experiences?.description || '',
-          price: e.experiences?.price || '',
-          capacity: e.capacity,
-          type: e.experiences?.category || 'Evento'
-        }));
+        const formatted = (evts || []).map((e: any) => {
+          const attendees = (e.bookings || []).map((b: any) => ({
+            id: b.id,
+            name: b.profiles?.username || 'Usuario',
+            instagram: b.profiles?.instagram || '',
+            avatar: PRESET_AVATARS.find(a => a.id === b.profiles?.avatar_id)?.colors || PRESET_AVATARS[0].colors,
+            avatarId: b.profiles?.avatar_id || 'avatar1',
+            favorite: b.profiles?.favorite_plan || '',
+          }));
+          return {
+            id: e.id,
+            name: e.experiences?.name || 'Evento',
+            date: new Date(e.date),
+            location: e.location,
+            cover: e.experiences?.image_url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+            attendees,
+            description: e.experiences?.description || '',
+            price: e.experiences?.price || '',
+            capacity: e.capacity,
+            type: e.experiences?.category || 'Evento'
+          };
+        });
 
         setConfirmedEvents(formatted.filter(e => bookedEventIds.has(e.id)));
-        setUpcomingEvents(formatted.filter(e => !bookedEventIds.has(e.id)));
+
+        // 2. Fetch saved spots and experiences
+        const { data: savedData } = await oceanService.getSavedSpots(user.id);
+        const savedIds = savedData?.map(s => s.spot_id) || [];
+        
+        if (savedIds.length > 0) {
+          const [spotsRes, expsRes] = await Promise.all([
+            supabase.from('spots').select('*').in('id', savedIds),
+            supabase.from('experiences').select('*').in('id', savedIds).eq('status', 'approved')
+          ]);
+          
+          const mappedSpots = (spotsRes.data || []).map(s => ({
+            id: s.id,
+            city: s.city,
+            category: 'lugar',
+            name: s.name,
+            type: s.type || 'Lugar',
+            description: s.description || '',
+            imageUrl: s.image_url || '',
+            colorAccent: s.color_accent || '',
+            mapsLink: s.maps_link || '',
+            rating: s.rating ? Number(s.rating) : undefined,
+            price: s.price || undefined,
+          }));
+
+          const mappedExps = (expsRes.data || []).map(e => ({
+            id: e.id,
+            city: e.city,
+            category: 'experiencia',
+            name: e.name,
+            type: 'Experiencia',
+            description: e.description || '',
+            imageUrl: e.image_url || '',
+            colorAccent: '#8b7cf6',
+            mapsLink: `https://maps.google.com/?q=${encodeURIComponent(e.location)}`,
+            rating: e.rating ? Number(e.rating) : undefined,
+            price: e.price || undefined,
+          }));
+          
+          setSavedSpots([...mappedSpots, ...mappedExps]);
+        } else {
+          setSavedSpots([]);
+        }
 
       } catch (e) {
         console.error(e);
@@ -210,37 +256,14 @@ export function DashboardPage() {
     fetchData();
   }, [user]);
 
-  const handleConfirm = async (id: string) => {
-    if (!user) {
-      navigate('/');
-      return;
-    }
-    try {
-      await dashboardService.createBooking({
-        event_id: id,
-        user_id: user.id,
-        status: 'confirmed'
-      });
-      setConfirmedIds(prev => new Set(prev).add(id));
-      
-      const ev = upcomingEvents.find(e => e.id === id);
-      if (ev) {
-        setUpcomingEvents(prev => prev.filter(e => e.id !== id));
-        setConfirmedEvents(prev => [...prev, ev]);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="dashboard-header-inner">
           <div className="header-logo"><BruukLogo /></div>
           <div className="header-tabs">
-            <button className={`header-tab ${tab === 'confirmed' ? 'active' : ''}`} onClick={() => setTab('confirmed')}>Mis Eventos</button>
-            <button className={`header-tab ${tab === 'upcoming' ? 'active' : ''}`} onClick={() => setTab('upcoming')}>Próximos</button>
+            <button className={`header-tab ${tab === 'confirmed' ? 'active' : ''}`} onClick={() => setTab('confirmed')}>Registrado</button>
+            <button className={`header-tab ${tab === 'saved' ? 'active' : ''}`} onClick={() => setTab('saved')}>Mis Guardados</button>
           </div>
           <div className="header-user">
             <span className="header-handle">@{instagram}</span>
@@ -251,25 +274,31 @@ export function DashboardPage() {
         </div>
       </header>
 
-      <main className="dashboard-main">
+      <main className="dashboard-main" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div className="events-list">
           {loading ? (
-            <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem' }}>Cargando eventos...</p>
+            <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem' }}>Cargando...</p>
           ) : (
             <>
-              {tab === 'confirmed' && confirmedEvents.map(e => (
-                <ConfirmedEventBlock key={e.id} event={e} />
-              ))}
-              {tab === 'upcoming' && upcomingEvents.map(e => (
-                <UpcomingEventBlock
-                  key={e.id}
-                  event={e}
-                  confirmed={confirmedIds.has(e.id)}
-                  onConfirm={handleConfirm}
-                />
-              ))}
-              {tab === 'confirmed' && confirmedEvents.length === 0 && (
-                <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem' }}>Aún no tienes eventos confirmados.</p>
+              {tab === 'confirmed' && (
+                <>
+                  {confirmedEvents.map(e => (
+                    <ConfirmedEventBlock key={e.id} event={e} />
+                  ))}
+                  {confirmedEvents.length === 0 && (
+                    <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem', fontSize: '0.85rem' }}>No tienes eventos registrados aún.</p>
+                  )}
+                </>
+              )}
+              {tab === 'saved' && (
+                <>
+                  {savedSpots.map(s => (
+                    <SavedSpotBlock key={s.id} spot={s} />
+                  ))}
+                  {savedSpots.length === 0 && (
+                    <p style={{ textAlign: 'center', opacity: 0.5, marginTop: '2rem', fontSize: '0.85rem' }}>No tienes spots ni experiencias guardadas aún.</p>
+                  )}
+                </>
               )}
             </>
           )}

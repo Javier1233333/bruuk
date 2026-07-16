@@ -208,7 +208,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const dragDistance = useRef(0);
 
   // Find active city config. The fallback only provides an accent while the selector is visible.
-  const currentCityConfig = citiesData.find(c => c.id === city);
+  const currentCityConfig = citiesData.find(c => c.id === city?.toLowerCase() || c.name.toLowerCase() === city?.toLowerCase());
   const activeCityConfig = currentCityConfig || citiesData.find(c => c.id === 'hermosillo') || citiesData[0];
 
   const [spots, setSpots] = useState<Spot[]>([]);

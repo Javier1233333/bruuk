@@ -115,6 +115,13 @@ export function ProfileSetupPage() {
       localStorage.setItem('bruuk_interests', JSON.stringify(Array.from(interests)));
       localStorage.setItem('bruuk_favorite', finalFavorite);
 
+      // Save city ID for OceanLanding redirect compatibility
+      const matchedCity = citiesData.find(c => c.name.toLowerCase() === city.toLowerCase() || c.id.toLowerCase() === city.toLowerCase());
+      if (matchedCity) {
+        localStorage.setItem('bruuk_active_city', matchedCity.id);
+        document.cookie = `bruuk_active_city=${matchedCity.id}; path=/; SameSite=Lax`;
+      }
+
       // Despachar evento custom para actualizar el header reactivamente si es necesario
       window.dispatchEvent(new Event('bruuk_profile_updated'));
 

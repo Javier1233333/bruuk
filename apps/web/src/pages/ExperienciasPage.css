@@ -176,6 +176,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 0 1.25rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .experiences-list-area::-webkit-scrollbar {
@@ -209,6 +210,7 @@
   overflow-x: auto;
   scrollbar-width: none;
   padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .horizontal-carousel::-webkit-scrollbar {

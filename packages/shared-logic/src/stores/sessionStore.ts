@@ -32,7 +32,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       const session = data.session;
       set({ session, user: session?.user ?? null });
       if (session?.user?.id) {
-        const profile = await userService.getProfile(session.user.id);
+        const { data: profile } = await userService.getProfile(session.user.id);
         set({ profile });
       }
     } catch {
@@ -45,7 +45,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       authService.onAuthStateChange(async (_event, newSession) => {
         set({ session: newSession, user: newSession?.user ?? null });
         if (newSession?.user?.id) {
-          const profile = await userService.getProfile(newSession.user.id);
+          const { data: profile } = await userService.getProfile(newSession.user.id);
           set({ profile });
         } else {
           set({ profile: null });
@@ -73,7 +73,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       const session = data.session;
       set({ session, user: session?.user ?? null });
       if (session?.user?.id) {
-        const profile = await userService.getProfile(session.user.id);
+        const { data: profile } = await userService.getProfile(session.user.id);
         set({ profile });
       }
       return session;
@@ -84,7 +84,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
         const session = data.session;
         set({ session, user: session?.user ?? null });
         if (session?.user?.id) {
-          const profile = await userService.getProfile(session.user.id);
+          const { data: profile } = await userService.getProfile(session.user.id);
           set({ profile });
         }
         return session;
@@ -101,7 +101,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       return null;
     }
     try {
-      const profile = await userService.getProfile(currentUserId);
+      const { data: profile } = await userService.getProfile(currentUserId);
       set({ profile });
       return profile;
     } catch {

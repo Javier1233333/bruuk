@@ -103,6 +103,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 1.25rem 1.25rem 2rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .profile-scroll-area::-webkit-scrollbar {
@@ -317,7 +318,8 @@
 .input-group input:focus,
 .input-group textarea:focus,
 .input-group .select-input:focus {
-  border-color: #8b7cf6;
+  border-color: var(--accent-light, #8b7cf6);
+  box-shadow: 3px 3px 0px var(--accent-light, #8b7cf6);
 }
 
 .input-disabled {

@@ -279,15 +279,16 @@
   }
 
   .app-content-area {
-    /* Full screen content area for immersive overlay behind the TabBar */
+    /* Set padding-bottom by default so elements don't get trapped behind the absolute tabbar */
     height: 100%;
     width: 100%;
     overflow-y: auto;
-    padding-bottom: 0;
+    padding-bottom: calc(74px + env(safe-area-inset-bottom));
   }
 
   .app-content-area--immersive {
     overflow: hidden;
+    padding-bottom: 0 !important;
   }
 }
 

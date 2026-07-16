@@ -497,3 +497,23 @@
   .event-confirm-bar { padding: 1rem; }
   .btn-confirm { font-size: 0.82rem; padding: 0.8rem; }
 }
+
+/* ── SAVED SPOTS ── */
+.saved-spot-block {
+  transition: all 0.15s ease-in-out;
+}
+.saved-spot-block:hover {
+  transform: translate(-3px, -3px);
+}
+.event-city-badge-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a2a1b9;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.18rem 0.6rem;
+  vertical-align: middle;
+}
