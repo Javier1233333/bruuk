@@ -30,5 +30,13 @@ export const userService = {
   },
   verifyInviteCode: async (code: string) => {
     return await supabase.rpc('verify_and_use_invite_code', { user_code: code });
+  },
+  checkUsernameAvailability: async (username: string, excludeUserId?: string) => {
+    let query = supabase.from('profiles').select('id').eq('username', username);
+    if (excludeUserId) {
+      query = query.neq('id', excludeUserId);
+    }
+    const { data, error } = await query;
+    return { isAvailable: error ? false : (data?.length === 0), error };
   }
 };

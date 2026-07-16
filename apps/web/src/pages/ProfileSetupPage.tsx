@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check, X } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
@@ -71,6 +71,47 @@ export function ProfileSetupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [checkingUsername, setCheckingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const val = instagram.trim();
+    if (val.length < 3) {
+      setUsernameAvailable(null);
+      setUsernameError(val.length > 0 ? 'Mínimo 3 caracteres' : null);
+      return;
+    }
+
+    setCheckingUsername(true);
+    setUsernameError(null);
+    setUsernameAvailable(null);
+
+    const timer = setTimeout(async () => {
+      try {
+        const { isAvailable, error: checkErr } = await userService.checkUsernameAvailability(val, user?.id);
+        if (checkErr) {
+          console.warn('[BRUUK] Error checking username:', checkErr);
+          setUsernameError('Error al verificar disponibilidad');
+          setUsernameAvailable(null);
+        } else {
+          setUsernameAvailable(isAvailable);
+          if (!isAvailable) {
+            setUsernameError('Este nombre de usuario ya está tomado');
+          } else {
+            setUsernameError(null);
+          }
+        }
+      } catch (e) {
+        setUsernameError('Error de red al verificar');
+      } finally {
+        setCheckingUsername(false);
+      }
+    }, 400); // 400ms debounce
+
+    return () => clearTimeout(timer);
+  }, [instagram, user?.id]);
+
   const toggleInterest = (id: string) => {
     setInterests(prev => {
       const next = new Set(prev);
@@ -134,7 +175,7 @@ export function ProfileSetupPage() {
     }
   };
 
-  const canNext0 = instagram.trim().length > 0 && city !== '';
+  const canNext0 = instagram.trim().length >= 3 && city !== '' && !checkingUsername && usernameAvailable === true && !usernameError;
   const canNext1 = interests.size >= 3;
   const canFinish = favorite !== '' || customFavorite.trim().length > 0;
 
@@ -185,6 +226,21 @@ export function ProfileSetupPage() {
                   autoComplete="off"
                 />
               </div>
+              {checkingUsername && (
+                <span style={{ fontSize: '0.75rem', color: '#a6a6a6', marginTop: '4px', display: 'block' }}>
+                  Verificando disponibilidad...
+                </span>
+              )}
+              {usernameError && (
+                <span style={{ fontSize: '0.75rem', color: '#ff4d4f', marginTop: '4px', display: 'block' }}>
+                  ⚠️ {usernameError}
+                </span>
+              )}
+              {usernameAvailable && (
+                <span style={{ fontSize: '0.75rem', color: '#52c41a', marginTop: '4px', display: 'block' }}>
+                  ✓ Nombre de usuario disponible
+                </span>
+              )}
             </div>
 
             <div className="setup-field">
