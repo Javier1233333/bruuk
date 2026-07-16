@@ -351,11 +351,16 @@
   .avatar-upload { width: 100px; height: 100px; }
 
   .interests-grid {
-    grid-template-columns: repeat(2, 1fr);
-    max-height: 300px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    max-height: 240px;
+    gap: 0.35rem;
   }
-  .interest-btn { font-size: 0.75rem; padding: 0.5rem 0.6rem; }
-  .interest-emoji { font-size: 0.9rem; }
+  .interest-btn { 
+    font-size: 0.7rem; 
+    padding: 0.4rem 0.5rem; 
+    gap: 0.35rem;
+  }
+  .interest-emoji { font-size: 0.85rem; }
 
   .favorite-grid { grid-template-columns: 1fr; }
   .favorite-btn { font-size: 0.78rem; padding: 0.7rem 0.8rem; }

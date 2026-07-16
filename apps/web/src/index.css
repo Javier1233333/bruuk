@@ -552,3 +552,69 @@ footer {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Global City Switcher Style (Brutalism/Retro style) */
+.tiktok-city-container {
+  position: relative;
+}
+
+.tiktok-city-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(14, 13, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0px;
+}
+
+.tiktok-city-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+.tiktok-city-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 50%;
+  transform: translateX(50%);
+  width: 150px;
+  background: #16152a; /* Fallback for --card-bg */
+  border: 1.5px solid #fff;
+  box-shadow: 4px 4px 0px var(--city-accent, #8b7cf6);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000; /* High z-index to overlap everything */
+}
+
+.tiktok-city-item {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tiktok-city-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tiktok-city-item:hover {
+  background: var(--city-accent, #8b7cf6);
+  color: #000;
+}

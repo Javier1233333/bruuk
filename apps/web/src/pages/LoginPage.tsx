@@ -42,6 +42,28 @@ export function LoginPage() {
         navigate(from, { replace: true });
       }
     } else {
+      // Validate password security requirements (standard rules)
+      if (password.length < 8) {
+        setError('La contraseña debe tener al menos 8 caracteres.');
+        setLoading(false);
+        return;
+      }
+      if (!/[A-Z]/.test(password)) {
+        setError('La contraseña debe tener al menos una letra mayúscula.');
+        setLoading(false);
+        return;
+      }
+      if (!/[a-z]/.test(password)) {
+        setError('La contraseña debe tener al menos una letra minúscula.');
+        setLoading(false);
+        return;
+      }
+      if (!/\d/.test(password)) {
+        setError('La contraseña debe tener al menos un número.');
+        setLoading(false);
+        return;
+      }
+
       const { error: signUpErr } = await authService.signUp({ 
         email, 
         password,
@@ -150,11 +172,11 @@ export function LoginPage() {
                     <input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder={mode === 'signup' ? 'Mínimo 6 caracteres' : '••••••••'}
+                      placeholder={mode === 'signup' ? 'Crea una contraseña' : '••••••••'}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       required
-                      minLength={6}
+                      minLength={mode === 'signup' ? 8 : 6}
                       autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                     />
                     <button
@@ -166,6 +188,25 @@ export function LoginPage() {
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
+                  {mode === 'signup' && (
+                    <div className="password-requirements">
+                      <span>La contraseña debe tener:</span>
+                      <ul>
+                        <li className={password.length >= 8 ? 'valid' : ''}>
+                          Mínimo 8 caracteres
+                        </li>
+                        <li className={/[A-Z]/.test(password) ? 'valid' : ''}>
+                          Al menos una mayúscula
+                        </li>
+                        <li className={/[a-z]/.test(password) ? 'valid' : ''}>
+                          Al menos una minúscula
+                        </li>
+                        <li className={/\d/.test(password) ? 'valid' : ''}>
+                          Al menos un número
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
                 {error && <p className="login-error">{error}</p>}

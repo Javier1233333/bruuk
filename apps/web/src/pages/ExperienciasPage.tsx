@@ -123,24 +123,42 @@ export default function ExperienciasPage() {
         <div className="header-text">
           <span className="exp-tag">/ experiencias</span>
           <h1 className="exp-title brand-gradient-text" style={{ textShadow: '4px 4px 0px var(--city-accent, #8b7cf6)' }}>Rutas Locales</h1>
-          <div className="exp-city-selector-container">
-            <div className="exp-city-selector-wrapper">
-              <button className="exp-city-btn" onClick={e => { e.stopPropagation(); setIsDropdownOpen(v => !v); }} style={{ fontSize: '0.82rem', letterSpacing: '1.5px', padding: '4px 0' }}>
-                EXPLORANDO EN <span className="city-highlight" style={{ fontWeight: 900 }}>{activeCityConfig.name.toUpperCase()}</span> <ChevronDown size={12} />
-              </button>
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div className="exp-city-dropdown" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.12 }} onClick={e => e.stopPropagation()}>
-                    <button className="exp-city-dropdown-item" style={{ borderBottom: '1px dashed rgba(255,255,255,0.15)', color: 'var(--city-accent)', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={e => { e.stopPropagation(); setIsDropdownOpen(false); handleAutoLocation(); }}>
-                      <MapPin size={12} /> {isLocating ? 'Detectando...' : 'Detectar GPS'}
+          <div className="tiktok-city-container" style={{ margin: '12px auto 4px', width: 'fit-content' }}>
+            <button 
+              className="tiktok-city-btn" 
+              onClick={e => { e.stopPropagation(); setIsDropdownOpen(v => !v); }}
+            >
+              EXPLORANDO EN <span style={{ color: 'var(--city-accent)', textDecoration: 'underline', fontWeight: 900 }}>{activeCityConfig.name.toUpperCase()}</span> <ChevronDown size={12} />
+            </button>
+            <AnimatePresence>
+              {isDropdownOpen && (
+                <motion.div 
+                  className="tiktok-city-dropdown" 
+                  initial={{ opacity: 0, y: -8 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -8 }} 
+                  transition={{ duration: 0.12 }} 
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button 
+                    className="tiktok-city-item" 
+                    style={{ borderBottom: '1px dashed rgba(255,255,255,0.15)', color: 'var(--city-accent)', display: 'flex', alignItems: 'center', gap: '6px' }} 
+                    onClick={e => { e.stopPropagation(); setIsDropdownOpen(false); handleAutoLocation(); }}
+                  >
+                    <MapPin size={12} /> {isLocating ? 'Detectando...' : 'Detectar GPS'}
+                  </button>
+                  {citiesData.map(c => (
+                    <button 
+                      key={c.id} 
+                      className="tiktok-city-item" 
+                      onClick={() => { navigate(`/experiencias/${c.id}`); setIsDropdownOpen(false); }}
+                    >
+                      {c.name}
                     </button>
-                    {citiesData.map(c => (
-                      <button key={c.id} className="exp-city-dropdown-item" onClick={() => { navigate(`/experiencias/${c.id}`); setIsDropdownOpen(false); }}>{c.name}</button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           <p className="exp-sub">Aprende habilidades y vive rutas diseñadas por apasionados locales.</p>
         </div>

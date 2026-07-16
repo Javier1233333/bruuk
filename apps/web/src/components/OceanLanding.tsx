@@ -182,6 +182,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [selectedMapSpotId, setSelectedMapSpotId] = useState<string | null>(null);
+  const [spotPinId, setSpotPinId] = useState<string | null>(null);
   
   // Sliding Reviews sheet active spot state
   const [activeReviewsSpotId, setActiveReviewsSpotId] = useState<string | null>(null);
@@ -311,7 +312,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     };
 
     fetchSpots();
-  }, [activeCityConfig.id]);
+  }, [activeCityConfig.id, city]);
 
   // Load saved spots from Supabase
   useEffect(() => {
@@ -431,13 +432,34 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
   // Keep reordered list synced with filters
   useEffect(() => {
-    setReorderedSpots(filteredSpots);
+    let list = [...filteredSpots];
+    let activePin = spotPinId;
+
+    // If the pinned spot doesn't match the new category filter, reset pin
+    if (activePin) {
+      const hasPin = list.some(s => s.id === activePin);
+      if (!hasPin) {
+        activePin = null;
+        setSpotPinId(null);
+      }
+    }
+
+    if (activePin) {
+      const pinIndex = list.findIndex(s => s.id === activePin);
+      if (pinIndex > -1) {
+        const pinSpot = list[pinIndex];
+        list.splice(pinIndex, 1);
+        list = [pinSpot, ...list];
+      }
+    }
+
+    setReorderedSpots(list);
     setActiveIndex(0);
     setActiveReviewsSpotId(null);
     if (feedRef.current) {
       feedRef.current.scrollTop = 0;
     }
-  }, [activeCategory, city, filteredSpots]);
+  }, [activeCategory, city, filteredSpots, spotPinId]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -500,11 +522,18 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
     }
 
     setActiveCategory('todo');
-    setSpots([]); // Limpia spots para gatillar el esqueleto de carga
+    setSpotPinId(null); // Clear pinned spot on city change
+    
+    // Only clear spots if the city is actually changing, to avoid getting stuck with empty spots if the city remains the same and useEffect doesn't run
+    const currentCityId = city || activeCityConfig.id;
+    if (currentCityId.toLowerCase() !== cityId.toLowerCase()) {
+      setSpots([]); // Limpia spots para gatillar el esqueleto de carga
+    }
+
     setActiveIndex(0);
     setActiveReviewsSpotId(null);
     if (feedRef.current) feedRef.current.scrollTop = 0;
-  }, [mode, navigate, user]);
+  }, [mode, navigate, user, city, activeCityConfig.id]);
 
   // Keep active city synced in storage
   useEffect(() => {
@@ -613,17 +642,11 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
 
   // Select a spot from map popup: places it at index 0 and jumps instantly
   const handleSelectSpotFromMap = useCallback((spotId: string) => {
-    const selectedSpot = filteredSpots.find(s => s.id === spotId);
-    if (!selectedSpot) return;
-
-    const rest = filteredSpots.filter(s => s.id !== spotId);
-    const newOrder = [selectedSpot, ...rest];
-    
-    setReorderedSpots(newOrder);
-    scrollToSlide(0, false); // Instant jump
+    setActiveCategory('todo');
+    setSpotPinId(spotId);
     setIsMapOpen(false);
     setSelectedMapSpotId(null);
-  }, [filteredSpots, scrollToSlide]);
+  }, []);
 
   // Open map focused on a specific spot
   const handleOpenMapForSpot = (spotId: string) => {
@@ -878,7 +901,10 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
       if (!popupContainer) return;
       const btn = popupContainer.querySelector('.map-go-to-feed-btn');
       if (btn) {
-        btn.addEventListener('click', () => {
+        L.DomEvent.disableClickPropagation(btn as HTMLElement);
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
           const spotId = btn.getAttribute('data-spot-id');
           if (spotId) {
             handleSelectSpotFromMap(spotId);
@@ -1211,6 +1237,7 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
                   className={`tiktok-tab ${activeCategory === cat ? 'tiktok-tab-active' : ''}`}
                   onClick={() => {
                     setActiveCategory(cat);
+                    setSpotPinId(null); // Clear the pinned spot when user manually changes category
                     setReorderedSpots(spots.filter(spot => cat === 'todo' || getCategory(spot) === cat));
                     setActiveIndex(0);
                     setActiveReviewsSpotId(null);
@@ -1240,6 +1267,10 @@ function OceanLandingInner({ mode }: { mode: 'standalone' | 'embedded' }) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            style={{
+              scrollSnapType: activeReviewsSpotId ? 'none' : undefined,
+              overflowY: activeReviewsSpotId ? 'hidden' : 'scroll'
+            }}
           >
             {loadingSpots ? (
               [1, 2, 3].map((n) => (
