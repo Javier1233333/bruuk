@@ -22,5 +22,13 @@ export const authService = {
   },
   signInWithOAuth: async (options: any) => {
     return await supabase.auth.signInWithOAuth(options);
+  },
+  requestPasswordReset: async (email: string) => {
+    return await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password',
+    });
+  },
+  updatePassword: async (newPassword: string) => {
+    return await supabase.auth.updateUser({ password: newPassword });
   }
 };

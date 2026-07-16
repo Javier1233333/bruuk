@@ -1,5 +1,5 @@
 export interface NavigationTarget {
-  screen: 'home' | 'nosotros' | 'login' | 'descubrir' | 'experiences' | 'profile-username' | 'setup' | 'dashboard' | 'chats' | 'profile' | 'verify';
+  screen: 'home' | 'nosotros' | 'login' | 'descubrir' | 'experiences' | 'profile-username' | 'setup' | 'dashboard' | 'chats' | 'profile' | 'verify' | 'forgot-password' | 'reset-password';
   params?: Record<string, any>;
 }
 

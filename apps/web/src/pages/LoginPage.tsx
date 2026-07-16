@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, X } from 'lucide-react';
 import { authService } from '@bruuk/shared-logic/services';
 import { BruukLogo } from '../components/BruukLogo';
+import { validatePassword } from '../lib/authValidation';
 import './LoginPage.css';
 
 type Mode = 'login' | 'signup';
@@ -43,23 +44,9 @@ export function LoginPage() {
       }
     } else {
       // Validate password security requirements (standard rules)
-      if (password.length < 8) {
-        setError('La contraseña debe tener al menos 8 caracteres.');
-        setLoading(false);
-        return;
-      }
-      if (!/[A-Z]/.test(password)) {
-        setError('La contraseña debe tener al menos una letra mayúscula.');
-        setLoading(false);
-        return;
-      }
-      if (!/[a-z]/.test(password)) {
-        setError('La contraseña debe tener al menos una letra minúscula.');
-        setLoading(false);
-        return;
-      }
-      if (!/\d/.test(password)) {
-        setError('La contraseña debe tener al menos un número.');
+      const valResult = validatePassword(password);
+      if (!valResult.isValid) {
+        setError(valResult.error || 'Contraseña inválida.');
         setLoading(false);
         return;
       }
@@ -205,6 +192,13 @@ export function LoginPage() {
                           Al menos un número
                         </li>
                       </ul>
+                    </div>
+                  )}
+                  {mode === 'login' && (
+                    <div style={{ textAlign: 'right', marginTop: '6px' }}>
+                      <Link to="/forgot-password" style={{ fontSize: '0.8rem', color: '#8b7cf6', textDecoration: 'none', fontWeight: 600 }}>
+                        ¿Olvidaste tu contraseña?
+                      </Link>
                     </div>
                   )}
                 </div>

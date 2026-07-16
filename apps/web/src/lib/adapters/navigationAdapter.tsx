@@ -15,6 +15,8 @@ const routeMap: Record<NavigationTarget['screen'], string | ((params?: Record<st
   chats: '/chats',
   profile: '/perfil',
   verify: '/verify',
+  'forgot-password': '/forgot-password',
+  'reset-password': '/reset-password',
 };
 
 export function NavigationAdapterProvider({ children }: { children: ReactNode }) {

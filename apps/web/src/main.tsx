@@ -34,6 +34,12 @@ const VerifyInvitePage = lazy(() =>
 const ProfileSetupPage = lazy(() =>
   import('./pages/ProfileSetupPage').then(module => ({ default: module.ProfileSetupPage })),
 )
+const ForgotPasswordPage = lazy(() =>
+  import('./pages/ForgotPasswordPage').then(module => ({ default: module.ForgotPasswordPage })),
+)
+const ResetPasswordPage = lazy(() =>
+  import('./pages/ResetPasswordPage').then(module => ({ default: module.ResetPasswordPage })),
+)
 const ProfilePage = lazy(() =>
   import('./pages/ProfilePage').then(module => ({ default: module.ProfilePage })),
 )
@@ -59,6 +65,8 @@ createRoot(document.getElementById('root')!).render(
             </Route>
 
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             
             {/* Public Mobile App Shell Routes */}
             <Route path="/descubrir" element={<AppShell><OceanLanding /></AppShell>} />
