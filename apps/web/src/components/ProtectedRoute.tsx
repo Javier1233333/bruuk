@@ -2,7 +2,7 @@ import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export function ProtectedRoute({ children }: { children?: React.ReactNode }) {
-  const { session, user, profile, loading } = useAuth();
+  const { session, profile, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -28,20 +28,7 @@ export function ProtectedRoute({ children }: { children?: React.ReactNode }) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // 2. Si no tiene el código de invitación verificado, redirigir a /verify
-  const isInviteUnverified = !user?.user_metadata?.invite_verified;
-  if (isInviteUnverified) {
-    if (location.pathname !== '/verify') {
-      return <Navigate to="/verify" replace />;
-    }
-  } else {
-    // Si ya está verificado, no debe poder entrar a /verify
-    if (location.pathname === '/verify') {
-      return <Navigate to="/app" replace />;
-    }
-  }
-
-  // 3. Si está autenticado pero no tiene el perfil configurado (falta username o ciudad)
+  // 2. Si está autenticado pero no tiene el perfil configurado (falta username o ciudad)
   const isProfileIncomplete = !profile || !profile.username || !profile.city;
   
   if (isProfileIncomplete) {
