@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Check, LogOut, Sparkles, User } from 'lucide-react';
+import { ArrowLeft, MapPin, Check, LogOut, Sparkles, User, Eye, EyeOff, AlertTriangle, X } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { PRESET_AVATARS } from '../components/AppShell';
 import { userService, authService } from '@bruuk/shared-logic/services';
 import citiesData from '../data/cities.json';
 import { INTERESTS } from './ProfileSetupPage';
+import { validatePassword } from '../lib/authValidation';
 import './ProfilePage.css';
 
 interface Profile {
@@ -78,6 +79,16 @@ export function ProfilePage() {
 
   const [role, setRole] = useState<'explorer' | 'host' | 'admin'>('explorer');
   const [profileLoading, setProfileLoading] = useState(true);
+
+  // Security Modal States
+  const [securityModal, setSecurityModal] = useState<'email' | 'password' | 'delete' | null>(null);
+  const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [securityLoading, setSecurityLoading] = useState(false);
+  const [securityError, setSecurityError] = useState<string | null>(null);
 
   // For Explorer
   const [savedSpots, setSavedSpots] = useState<any[]>([]);
@@ -223,6 +234,59 @@ export function ProfilePage() {
     await signOut();
     localStorage.removeItem('bruuk_profile_done');
     navigate('/');
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!newEmail) return;
+    setSecurityLoading(true);
+    setSecurityError(null);
+    const { error } = await authService.updateEmail(newEmail);
+    setSecurityLoading(false);
+    if (error) {
+      setSecurityError(error.message);
+    } else {
+      setAuthMsg('Revisa tu correo actual y el nuevo para confirmar el cambio.');
+      setSecurityModal(null);
+      setNewEmail('');
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setSecurityError('Las contraseñas no coinciden.');
+      return;
+    }
+    const valResult = validatePassword(newPassword);
+    if (!valResult.isValid) {
+      setSecurityError(valResult.error || 'Contraseña inválida.');
+      return;
+    }
+    setSecurityLoading(true);
+    setSecurityError(null);
+    const { error } = await authService.updatePassword(newPassword);
+    setSecurityLoading(false);
+    if (error) {
+      setSecurityError(error.message);
+    } else {
+      setAuthMsg('Contraseña actualizada correctamente.');
+      setSecurityModal(null);
+      setNewPassword('');
+      setConfirmPassword('');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setSecurityLoading(true);
+    setSecurityError(null);
+    try {
+      const { error } = await userService.deleteOwnAccount();
+      if (error) throw error;
+      await signOut();
+      navigate('/');
+    } catch (err: any) {
+      setSecurityLoading(false);
+      setSecurityError(err.message || 'Error al eliminar la cuenta.');
+    }
   };
 
   // Rendering Public Profile Mode
@@ -574,6 +638,19 @@ export function ProfilePage() {
               <span>Vincular Apple</span>
             </button>
           </div>
+
+          <h4 style={{ marginTop: '2rem', marginBottom: '1rem', fontSize: '1rem' }}>Gestión de Cuenta</h4>
+          <div style={{ display: 'grid', gap: '0.8rem' }}>
+            <button className="btn btn-secondary" style={{ textAlign: 'left', display: 'block', width: '100%' }} onClick={() => setSecurityModal('email')}>
+              Cambiar Correo Electrónico
+            </button>
+            <button className="btn btn-secondary" style={{ textAlign: 'left', display: 'block', width: '100%' }} onClick={() => setSecurityModal('password')}>
+              Cambiar Contraseña
+            </button>
+            <button className="btn btn-secondary" style={{ textAlign: 'left', display: 'block', width: '100%', borderColor: 'rgba(255, 77, 79, 0.3)', color: '#ff4d4f', background: 'rgba(255, 77, 79, 0.05)' }} onClick={() => setSecurityModal('delete')}>
+              Eliminar Cuenta
+            </button>
+          </div>
         </div>
 
         {/* Sign Out Button */}
@@ -582,6 +659,80 @@ export function ProfilePage() {
             <LogOut size={14} /> Cerrar Sesión
           </button>
         </div>
+
+        {/* Security Modal */}
+        {securityModal && (
+          <div className="security-modal-overlay">
+            <div className="security-modal-content animate-fade-in">
+              <button className="security-modal-close" onClick={() => { setSecurityModal(null); setSecurityError(null); }}>
+                <X size={20} />
+              </button>
+              
+              {securityModal === 'email' && (
+                <>
+                  <h3>Cambiar Correo</h3>
+                  <p style={{ opacity: 0.8, fontSize: '0.9rem', marginBottom: '1.5rem', marginTop: '0.5rem' }}>Enviaremos un enlace de confirmación a tu correo actual y al nuevo.</p>
+                  <input type="email" placeholder="Nuevo correo electrónico" value={newEmail} onChange={e => setNewEmail(e.target.value)} className="security-input" />
+                  {securityError && <p className="security-error">{securityError}</p>}
+                  <button className="btn btn-primary w-full" onClick={handleUpdateEmail} disabled={securityLoading}>
+                    {securityLoading ? 'Actualizando...' : 'Actualizar Correo'}
+                  </button>
+                </>
+              )}
+
+              {securityModal === 'password' && (
+                <>
+                  <h3>Cambiar Contraseña</h3>
+                  <p style={{ opacity: 0.8, fontSize: '0.9rem', marginBottom: '1.5rem', marginTop: '0.5rem' }}>Ingresa tu nueva contraseña y confírmala.</p>
+                  <div className="password-wrapper" style={{ position: 'relative', marginBottom: '1rem' }}>
+                    <input type={showPassword ? 'text' : 'password'} placeholder="Nueva contraseña" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="security-input" style={{ width: '100%', paddingRight: '40px' }} />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '10px', top: '15px', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  <div className="password-wrapper" style={{ position: 'relative', marginBottom: '1rem' }}>
+                    <input type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirmar contraseña" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="security-input" style={{ width: '100%', paddingRight: '40px' }} />
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: '10px', top: '15px', background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  <div className="password-requirements">
+                    <span>La contraseña debe tener:</span>
+                    <ul>
+                      <li className={newPassword.length >= 8 ? 'valid' : ''}>
+                        Mínimo 8 caracteres
+                      </li>
+                      <li className={/[A-Z]/.test(newPassword) ? 'valid' : ''}>
+                        Al menos una mayúscula
+                      </li>
+                      <li className={/[a-z]/.test(newPassword) ? 'valid' : ''}>
+                        Al menos una minúscula
+                      </li>
+                      <li className={/\d/.test(newPassword) ? 'valid' : ''}>
+                        Al menos un número
+                      </li>
+                    </ul>
+                  </div>
+                  {securityError && <p className="security-error">{securityError}</p>}
+                  <button className="btn btn-primary w-full" onClick={handleUpdatePassword} disabled={securityLoading}>
+                    {securityLoading ? 'Actualizando...' : 'Actualizar Contraseña'}
+                  </button>
+                </>
+              )}
+
+              {securityModal === 'delete' && (
+                <>
+                  <h3 style={{ color: '#ff4d4f' }}><AlertTriangle size={20} style={{ verticalAlign: 'middle', marginRight: '8px', marginTop: '-2px' }} /> Eliminar Cuenta</h3>
+                  <p style={{ opacity: 0.8, fontSize: '0.9rem', marginBottom: '1.5rem', marginTop: '0.5rem' }}><strong>Esta acción es irreversible.</strong> Se eliminarán todos tus datos, reservas, spots guardados y tu perfil de forma permanente.</p>
+                  {securityError && <p className="security-error" style={{ color: '#ff4d4f', fontSize: '0.85rem', marginBottom: '1rem' }}>{securityError}</p>}
+                  <button className="btn btn-primary w-full" style={{ background: '#ff4d4f', color: '#fff', borderColor: '#ff4d4f', marginTop: '1rem' }} onClick={handleDeleteAccount} disabled={securityLoading}>
+                    {securityLoading ? 'Eliminando...' : 'Sí, eliminar mi cuenta'}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

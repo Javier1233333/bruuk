@@ -492,3 +492,146 @@
     padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* ── Security Modal ── */
+.security-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(11, 10, 15, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1.5rem;
+}
+
+.security-modal-content {
+  background: #0e0d1a;
+  border: 2px solid #fff;
+  padding: 2rem;
+  border-radius: 0px;
+  box-shadow: 6px 6px 0px var(--accent-light, #8b7cf6);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.security-modal-content h3 {
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.security-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.security-modal-close:hover {
+  opacity: 1;
+}
+
+.security-input:focus {
+  outline: none;
+  border-color: #8b7cf6 !important;
+  box-shadow: 0 0 0 2px rgba(139, 124, 246, 0.3);
+}
+
+/* ── Security Input Styles ── */
+.security-input {
+  background: #0e0d1a !important;
+  border: 2px solid #fff !important;
+  border-radius: 0px !important;
+  color: #fff !important;
+  padding: 0.65rem 0.85rem !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 0.8rem !important;
+  outline: none !important;
+  box-shadow: 3px 3px 0px var(--accent-light, #8b7cf6) !important;
+  margin-bottom: 1.25rem !important;
+  width: 100%;
+}
+
+.security-input:focus {
+  outline: none !important;
+  border-color: #8b7cf6 !important;
+  box-shadow: 4px 4px 0px var(--accent-light, #8b7cf6) !important;
+}
+
+/* Password Requirements in Profile Settings */
+.password-requirements {
+  margin-top: 0.6rem;
+  margin-bottom: 1.25rem;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid #fff;
+  font-size: 0.78rem;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-secondary);
+}
+
+.password-requirements span {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.4rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.password-requirements ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.password-requirements li {
+  position: relative;
+  padding-left: 1.2rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  transition: color 0.15s ease;
+  text-align: left;
+}
+
+.password-requirements li::before {
+  content: '○';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.password-requirements li.valid {
+  color: #52c41a;
+}
+
+.password-requirements li.valid::before {
+  content: '✓';
+  color: #52c41a;
+  font-size: 0.85rem;
+}
+
+.security-error {
+  color: #ff4d4f;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+}
