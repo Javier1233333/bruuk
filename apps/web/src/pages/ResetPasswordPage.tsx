@@ -9,7 +9,9 @@ import './LoginPage.css';
 export function ResetPasswordPage() {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -28,6 +30,12 @@ export function ResetPasswordPage() {
     const valResult = validatePassword(password);
     if (!valResult.isValid) {
       setError(valResult.error || 'Contraseña inválida.');
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.');
       setLoading(false);
       return;
     }
@@ -105,6 +113,28 @@ export function ResetPasswordPage() {
                       aria-label="Mostrar/ocultar contraseña"
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  
+                  <label htmlFor="confirmPassword" style={{ marginTop: '1rem', display: 'block' }}>Confirmar contraseña</label>
+                  <div className="password-wrapper">
+                    <input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Repite la nueva contraseña"
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      required
+                      minLength={8}
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowConfirmPassword(v => !v)}
+                      aria-label="Mostrar/ocultar confirmación de contraseña"
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                   <div className="password-requirements">
