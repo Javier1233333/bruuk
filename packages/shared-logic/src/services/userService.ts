@@ -38,5 +38,8 @@ export const userService = {
     }
     const { data, error } = await query;
     return { isAvailable: error ? false : (data?.length === 0), error };
+  },
+  deleteOwnAccount: async () => {
+    return await supabase.rpc('delete_own_user');
   }
 };

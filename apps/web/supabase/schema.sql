@@ -277,3 +277,31 @@ create policy "Manage bookings for self" on public.bookings
 
 create policy "Insert click logs publicly" on public.share_clicks 
     for insert with check (true);
+
+-- =========================================================================
+-- MÓDULO 5: SEGURIDAD DE LA CUENTA
+-- =========================================================================
+
+-- Función RPC para que un usuario pueda eliminar su propia cuenta de forma segura
+create or replace function public.delete_own_user()
+returns void
+language plpgsql
+security definer
+as $$
+begin
+  delete from auth.users where id = auth.uid();
+end;
+$$;
+
+-- Función RPC para verificar disponibilidad de correo (Case-Insensitive)
+create or replace function public.is_email_available(email_to_check text)
+returns boolean
+language plpgsql
+security definer -- permite consultar la tabla auth.users
+as $$
+begin
+  return not exists (
+    select 1 from auth.users where lower(email) = lower(email_to_check)
+  );
+end;
+$$;

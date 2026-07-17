@@ -39,5 +39,12 @@ export const authService = {
         emailRedirectTo: window.location.origin + '/setup'
       }
     });
+  },
+  updateEmail: async (newEmail: string) => {
+    return await supabase.auth.updateUser({ email: newEmail });
+  },
+  checkEmailAvailability: async (email: string) => {
+    const { data, error } = await supabase.rpc('is_email_available', { email_to_check: email });
+    return { isAvailable: error ? false : !!data, error };
   }
 };
