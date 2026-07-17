@@ -1,6 +1,6 @@
 export function BruukLogo({ width = 180, height = "auto", className = "" }: { width?: number | string, height?: number | string, className?: string }) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width={width} zoomAndPan="magnify" viewBox="0 110 375 120" height={height} preserveAspectRatio="xMidYMid meet" version="1.0" className={className}>
+        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width={width} zoomAndPan="magnify" viewBox="0 110 375 120" height={height === "auto" ? undefined : height} preserveAspectRatio="xMidYMid meet" version="1.0" className={className}>
             <defs>
                 <g />
                 <clipPath id="2b94b5f132"><rect x="0" width="369" y="0" height="154" /></clipPath>
