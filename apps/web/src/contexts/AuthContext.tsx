@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSessionStore } from '@bruuk/shared-logic/stores';
 
 interface AuthContextType {
@@ -25,9 +26,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshSession = useSessionStore((state) => state.refreshSession);
   const refreshProfile = useSessionStore((state) => state.refreshProfile);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     initialize();
-  }, [initialize]);
+
+    // Revisar el flag PASSWORD_RECOVERY que pone sessionStore cuando
+    // Supabase dispara el evento (esto es correcto: el SDK ya procesó los tokens)
+    const checkRecovery = setInterval(() => {
+      if ((window as any).__bruuk_password_recovery) {
+        (window as any).__bruuk_password_recovery = false;
+        clearInterval(checkRecovery);
+        navigate('/reset-password', { replace: true });
+      }
+    }, 100);
+
+    // Limpiar el intervalo si el componente se desmonta antes de 10s
+    const timeout = setTimeout(() => clearInterval(checkRecovery), 10000);
+
+    return () => {
+      clearInterval(checkRecovery);
+      clearTimeout(timeout);
+    };
+  }, [initialize, navigate]);
 
   return (
     <AuthContext.Provider value={{ session, user, profile, loading, signOut, refreshSession, refreshProfile }}>

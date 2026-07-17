@@ -42,8 +42,17 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }
     
     try {
-      authService.onAuthStateChange(async (_event, newSession) => {
+      authService.onAuthStateChange(async (event, newSession) => {
         set({ session: newSession, user: newSession?.user ?? null });
+
+        if (event === 'PASSWORD_RECOVERY') {
+          // Guardar flag para que AuthContext pueda redirigir a /reset-password
+          // sin correr de frente al token processing del SDK
+          (window as any).__bruuk_password_recovery = true;
+          set({ loading: false });
+          return;
+        }
+
         if (newSession?.user?.id) {
           const { data: profile } = await userService.getProfile(newSession.user.id);
           set({ profile });
