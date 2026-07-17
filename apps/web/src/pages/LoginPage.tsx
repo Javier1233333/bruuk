@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, X } from 'lucide-react';
 import { authService } from '@bruuk/shared-logic/services';
+import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import { validatePassword } from '../lib/authValidation';
 import './LoginPage.css';
@@ -11,9 +12,18 @@ type Mode = 'login' | 'signup';
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { session, loading: authLoading } = useAuth();
   const [mode, setMode] = useState<Mode>('login');
   
   const from = location.state?.from?.pathname || '/app';
+
+  // Si ya está logueado, redirigir directamente
+  useEffect(() => {
+    if (!authLoading && session) {
+      navigate(from, { replace: true });
+    }
+  }, [session, authLoading, navigate, from]);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +32,48 @@ export function LoginPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showResendBtn, setShowResendBtn] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
+
+  const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendSuccess, setResendSuccess] = useState(false);
+
+  useEffect(() => {
+    if (lockoutTimeLeft > 0) {
+      const timer = setTimeout(() => setLockoutTimeLeft(lockoutTimeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [lockoutTimeLeft]);
+
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
+
+  useEffect(() => {
+    if (mode !== 'signup' || !email || !email.includes('@')) {
+      setEmailAvailable(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setCheckingEmail(true);
+      try {
+        const { isAvailable } = await authService.checkEmailAvailability(email);
+        setEmailAvailable(isAvailable);
+      } catch {
+        setEmailAvailable(null);
+      } finally {
+        setCheckingEmail(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [email, mode]);
 
   const handleBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
@@ -32,10 +84,10 @@ export function LoginPage() {
   };
 
   const handleResendConfirmation = async () => {
-    if (!email) return;
+    if (!email || resendCooldown > 0) return;
     setResendLoading(true);
     setError(null);
-    setSuccessMsg(null);
+    setResendSuccess(false);
     try {
       const { error: resendErr } = await authService.resendConfirmationEmail(email);
       if (resendErr) {
@@ -45,8 +97,8 @@ export function LoginPage() {
           setError(resendErr.message || 'Error al reenviar el correo de confirmación.');
         }
       } else {
-        setSuccessMsg('Te hemos enviado un nuevo correo. Revisa tu bandeja de entrada y spam.');
-        setShowResendBtn(false);
+        setResendSuccess(true);
+        setResendCooldown(60);
       }
     } catch (err: any) {
       setError(err?.message || 'Error de conexión.');
@@ -69,6 +121,12 @@ export function LoginPage() {
           setError('Tu correo aún no ha sido verificado. Por favor confirma tu cuenta.');
           setShowResendBtn(true);
         } else {
+          const newAttempts = failedAttempts + 1;
+          setFailedAttempts(newAttempts);
+          if (newAttempts >= 5) {
+            setLockoutTimeLeft(30);
+            setFailedAttempts(0);
+          }
           setError(translateError(error.message));
         }
       } else {
@@ -79,6 +137,12 @@ export function LoginPage() {
       const valResult = validatePassword(password);
       if (!valResult.isValid) {
         setError(valResult.error || 'Contraseña inválida.');
+        setLoading(false);
+        return;
+      }
+
+      if (emailAvailable === false) {
+        setError('Este correo ya está registrado.');
         setLoading(false);
         return;
       }
@@ -137,9 +201,24 @@ export function LoginPage() {
                 Te hemos enviado un correo de confirmación a <strong>{email}</strong>.<br /><br />
                 Por favor, abre el enlace en ese correo para verificar tu cuenta e iniciar el setup de tu perfil.
               </p>
+              {resendSuccess && (
+                <p style={{ color: '#10b981', fontSize: '0.85rem', marginBottom: '1rem', fontWeight: 600 }}>
+                  ¡Correo de confirmación reenviado con éxito!
+                </p>
+              )}
+              {error && <p className="login-error" style={{ marginBottom: '1rem' }}>{error}</p>}
+              <button
+                type="button"
+                onClick={handleResendConfirmation}
+                disabled={resendLoading || resendCooldown > 0}
+                className="btn btn-secondary w-full"
+                style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                {resendLoading ? 'Reenviando...' : resendCooldown > 0 ? `Reenviar en ${resendCooldown}s` : 'Reenviar correo de confirmación'}
+              </button>
               <button 
                 type="button"
-                onClick={() => { setSuccessMsg(null); setMode('login'); setShowResendBtn(false); }} 
+                onClick={() => { setSuccessMsg(null); setMode('login'); setShowResendBtn(false); setResendSuccess(false); setError(null); }} 
                 className="btn btn-primary w-full"
               >
                 Volver a Iniciar Sesión
@@ -183,6 +262,13 @@ export function LoginPage() {
                     required
                     autoComplete="email"
                   />
+                  {mode === 'signup' && email && email.includes('@') && (
+                    <div style={{ fontSize: '0.75rem', marginTop: '4px' }}>
+                      {checkingEmail && <span style={{ color: 'var(--text-secondary)' }}>Verificando disponibilidad...</span>}
+                      {emailAvailable === false && <span style={{ color: '#ff4d4f' }}>Este correo ya está registrado.</span>}
+                      {emailAvailable === true && <span style={{ color: '#10b981' }}>Correo disponible.</span>}
+                    </div>
+                  )}
                 </div>
 
                 <div className="login-field">
@@ -238,18 +324,25 @@ export function LoginPage() {
                 {error && <p className="login-error">{error}</p>}
 
                 {showResendBtn && (
-                  <button
-                    type="button"
-                    onClick={handleResendConfirmation}
-                    disabled={resendLoading}
-                    className="btn btn-secondary w-full"
-                    style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-                  >
-                    {resendLoading ? 'Reenviando...' : 'Reenviar correo de confirmación'}
-                  </button>
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    {resendSuccess && (
+                      <p style={{ color: '#10b981', fontSize: '0.85rem', marginBottom: '0.5rem', textAlign: 'center', fontWeight: 600 }}>
+                        ¡Correo de confirmación reenviado con éxito!
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleResendConfirmation}
+                      disabled={resendLoading || resendCooldown > 0}
+                      className="btn btn-secondary w-full"
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    >
+                      {resendLoading ? 'Reenviando...' : resendCooldown > 0 ? `Reenviar en ${resendCooldown}s` : 'Reenviar correo de confirmación'}
+                    </button>
+                  </div>
                 )}
 
-                <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                <button type="submit" className="btn btn-primary w-full" disabled={loading || lockoutTimeLeft > 0}>
                   {loading ? 'Procesando...' : (
                     <>
                       {mode === 'login' ? 'Entrar' : 'Crear cuenta'}
@@ -257,6 +350,11 @@ export function LoginPage() {
                     </>
                   )}
                 </button>
+                {lockoutTimeLeft > 0 && (
+                  <p style={{ textAlign: 'center', color: '#ff4d4f', fontSize: '0.8rem', marginTop: '0.5rem' }}>
+                    Demasiados intentos. Espera {lockoutTimeLeft}s.
+                  </p>
+                )}
               </form>
 
               <div className="login-divider"><span>o continúa con</span></div>
