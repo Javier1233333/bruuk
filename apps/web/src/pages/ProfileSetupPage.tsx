@@ -52,7 +52,8 @@ export function ProfileSetupPage() {
 
   const [step, setStep] = useState(0);
   const [avatarId, setAvatarId] = useState<string>('avatar1');
-  const [instagram, setInstagram] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [city, setCity] = useState('');
   const [interests, setInterests] = useState<Set<string>>(() => {
     try {
@@ -76,7 +77,7 @@ export function ProfileSetupPage() {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const val = instagram.trim();
+    const val = username.trim();
     if (val.length < 3) {
       setUsernameAvailable(null);
       setUsernameError(val.length > 0 ? 'Mínimo 3 caracteres' : null);
@@ -110,7 +111,7 @@ export function ProfileSetupPage() {
     }, 400); // 400ms debounce
 
     return () => clearTimeout(timer);
-  }, [instagram, user?.id]);
+  }, [username, user?.id]);
 
   const toggleInterest = (id: string) => {
     setInterests(prev => {
@@ -132,8 +133,9 @@ export function ProfileSetupPage() {
 
     try {
       const { error: updateErr } = await userService.updateProfile(user.id, {
-        username: instagram, // el hook instagram guarda el username del input "Usuario"
-        instagram: instagram, // por compatibilidad legacy
+        full_name: fullName.trim(),
+        username: username.trim(),
+        instagram: username.trim(), // por compatibilidad legacy
         avatar_id: avatarId,
         city,
         interests: Array.from(interests),
@@ -151,7 +153,9 @@ export function ProfileSetupPage() {
       // Guardar también en localStorage por compatibilidad legacy
       localStorage.setItem('bruuk_profile_done', 'true');
       localStorage.setItem('bruuk_avatar_id', avatarId);
-      localStorage.setItem('bruuk_instagram', instagram);
+      localStorage.setItem('bruuk_full_name', fullName.trim());
+      localStorage.setItem('bruuk_username', username.trim());
+      localStorage.setItem('bruuk_instagram', username.trim());
       localStorage.setItem('bruuk_city', city);
       localStorage.setItem('bruuk_interests', JSON.stringify(Array.from(interests)));
       localStorage.setItem('bruuk_favorite', finalFavorite);
@@ -175,7 +179,7 @@ export function ProfileSetupPage() {
     }
   };
 
-  const canNext0 = instagram.trim().length >= 3 && city !== '' && !checkingUsername && usernameAvailable === true && !usernameError;
+  const canNext0 = fullName.trim().length >= 2 && username.trim().length >= 3 && city !== '' && !checkingUsername && usernameAvailable === true && !usernameError;
   const canNext1 = interests.size >= 3;
   const canFinish = favorite !== '' || customFavorite.trim().length > 0;
 
@@ -215,14 +219,26 @@ export function ProfileSetupPage() {
             </div>
 
             <div className="setup-field">
+              <label>Nombre y Apellido</label>
+              <input
+                type="text"
+                placeholder="Ej. Juan Pérez"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                autoComplete="name"
+                style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', outline: 'none' }}
+              />
+            </div>
+
+            <div className="setup-field">
               <label>Usuario</label>
               <div className="instagram-input">
                 <span className="at-sign">@</span>
                 <input
                   type="text"
                   placeholder="tuusuario"
-                  value={instagram}
-                  onChange={e => setInstagram(e.target.value.replace(/[^a-zA-Z0-9._]/g, ''))}
+                  value={username}
+                  onChange={e => setUsername(e.target.value.replace(/[^a-zA-Z0-9._]/g, ''))}
                   autoComplete="off"
                 />
               </div>

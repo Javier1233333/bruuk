@@ -45,6 +45,7 @@ export function ResetPasswordPage() {
       if (resetErr) {
         setError(resetErr.message || 'Ocurrió un error al actualizar la contraseña.');
       } else {
+        await authService.signOut();
         setSuccessMsg('¡Contraseña actualizada con éxito! Ya puedes iniciar sesión con tu nueva contraseña.');
       }
     } catch (err: any) {

@@ -74,6 +74,7 @@ $$;
 -- Tabla de Perfiles
 create table if not exists public.profiles (
     id uuid references auth.users on delete cascade primary key,
+    full_name text,
     username text unique,
     instagram text,
     avatar_id text default 'avatar1',

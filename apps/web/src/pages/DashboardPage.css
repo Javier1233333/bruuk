@@ -10,37 +10,46 @@
 
 /* ─── HEADER ────────────────────────────────────────────────── */
 .dashboard-header {
-  padding: 1.5rem 0;
-  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.25rem 0.75rem;
   background-color: var(--bg-primary);
-  position: sticky;
-  top: 0;
-  width: 100%;
-  z-index: 100;
 }
 
-.dashboard-header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
+.dashboard-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #8b7cf6;
+  font-family: 'Outfit', sans-serif;
 }
 
-.header-logo { display: flex; align-items: center; flex-shrink: 0; }
+.dashboard-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  margin-top: 4px;
+}
 
-/* Tabs en el centro */
-.header-tabs {
+.dashboard-sub {
+  font-size: 0.78rem;
+  color: #9e9cb4;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+/* ─── TABS ──────────────────────────────────────────────────── */
+.dashboard-tabs-container {
   display: flex;
+  margin: 0 1.25rem 1.25rem;
   border: 2px solid var(--border-color);
-  width: fit-content;
   box-shadow: 4px 4px 0px var(--accent-light);
 }
 
-.header-tab {
-  padding: 0.5rem 1.75rem;
+.dashboard-tab {
+  flex: 1;
+  padding: 0.6rem 0.5rem;
   background: transparent;
   border: none;
   color: var(--text-secondary);
@@ -52,60 +61,23 @@
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
+  text-align: center;
 }
-.header-tab + .header-tab { border-left: 2px solid var(--border-color); }
-.header-tab.active { background: var(--accent-light); color: #fff; }
-.header-tab:not(.active):hover { color: var(--text-primary); background: var(--bg-secondary); }
-
-/* User area */
-.header-user {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-.header-handle {
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--accent-light);
-  border: 2px solid var(--accent-light);
-  padding: 0.25rem 0.65rem;
-}
-
-.btn-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: transparent;
-  border: 2px solid var(--border-color);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.btn-icon:hover {
-  border-color: var(--accent-light);
-  color: var(--accent-light);
-  transform: translate(-2px,-2px);
-  box-shadow: 3px 3px 0px var(--accent-light);
-}
+.dashboard-tab + .dashboard-tab { border-left: 2px solid var(--border-color); }
+.dashboard-tab.active { background: var(--accent-light); color: #fff; }
+.dashboard-tab:not(.active):hover { color: var(--text-primary); background: var(--bg-secondary); }
 
 /* ─── MAIN ──────────────────────────────────────────────────── */
 .dashboard-main {
   flex: 1;
-  padding: 2.5rem 2rem 5rem;
-  max-width: 900px;
-  margin: 0 auto;
+  padding: 0 1.25rem 5rem;
   width: 100%;
 }
 
 .events-list {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 }
 
 /* ─── EVENT BLOCK ───────────────────────────────────────────── */
@@ -184,12 +156,12 @@
 }
 
 .event-title {
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-size: 1.35rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.5px;
   line-height: 1;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
   text-shadow: 3px 3px 0px var(--accent-light);
 }
 
@@ -202,7 +174,7 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: rgba(255,255,255,0.75);
   text-transform: uppercase;
@@ -247,14 +219,14 @@
   gap: 0.5rem;
   text-decoration: none;
   flex-shrink: 0;
-  width: 90px;
+  width: 75px;
   transition: transform 0.12s;
 }
 .attendee-tile:hover { transform: translateY(-4px); }
 
 .attendee-tile-img-wrap {
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   border: 2px solid var(--border-color);
   overflow: hidden;
   position: relative;
@@ -271,7 +243,7 @@
 }
 
 .attendee-tile-handle {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: lowercase;
   letter-spacing: 0.02em;
@@ -284,16 +256,7 @@
 }
 
 .attendee-tile-fav {
-  font-size: 0.65rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-align: center;
-  font-style: italic;
-  line-height: 1.2;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: none;
 }
 
 /* ─── BADGES ROW ────────────────────────────────────────────── */
@@ -445,58 +408,12 @@
   margin-bottom: 0.15rem;
 }
 .locked-sub {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
-/* ─── RESPONSIVE ────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .dashboard-header { padding: 1rem 0; }
-  .dashboard-header-inner {
-    flex-wrap: wrap;
-    padding: 0 1rem;
-    gap: 0.75rem;
-  }
-  .header-logo { flex: 1; }
-  .header-user { flex-shrink: 0; }
-  .header-handle { display: none; }
-  .header-tabs {
-    width: 100%;
-    order: 3;
-    box-shadow: 3px 3px 0px var(--accent-light);
-  }
-  .header-tab { flex: 1; padding: 0.55rem 0.5rem; font-size: 0.72rem; }
-
-  .dashboard-main { padding: 1.25rem 1rem 5rem; }
-
-  .events-list { gap: 2rem; }
-
-  .event-cover { height: 200px; }
-  .event-cover-content { padding: 1rem 1.25rem; }
-  .event-title { font-size: 1.35rem; margin-bottom: 0.5rem; }
-  .event-meta { gap: 0.6rem; }
-  .event-meta span { font-size: 0.72rem; }
-
-  .attendees-section { padding: 1.1rem 1rem 1.25rem; }
-  .attendees-label { margin-bottom: 1rem; }
-  .attendees-strip { gap: 0.75rem; }
-
-  .attendee-tile { width: 75px; }
-  .attendee-tile-img-wrap { width: 60px; height: 60px; }
-  .attendee-tile-handle { font-size: 0.65rem; }
-  .attendee-tile-fav { display: none; }
-
-  .attendees-locked { padding: 1rem; gap: 0.75rem; }
-  .locked-title { font-size: 0.75rem; }
-  .locked-sub { font-size: 0.68rem; }
-
-  .event-info-item { padding: 0.6rem 0.85rem; font-size: 0.72rem; }
-  .event-info-toggle { padding: 0.6rem 0.85rem; font-size: 0.72rem; }
-  .event-description { padding: 1rem; }
-  .event-confirm-bar { padding: 1rem; }
-  .btn-confirm { font-size: 0.82rem; padding: 0.8rem; }
-}
+/* No @media needed since styles are mobile-first */
 
 /* ── SAVED SPOTS ── */
 .saved-spot-block {

@@ -182,8 +182,8 @@ export function DashboardPage() {
         const formatted = (evts || []).map((e: any) => {
           const attendees = (e.bookings || []).map((b: any) => ({
             id: b.id,
-            name: b.profiles?.username || 'Usuario',
-            instagram: b.profiles?.instagram || '',
+            name: b.profiles?.full_name || b.profiles?.username || 'Usuario',
+            instagram: b.profiles?.username || b.profiles?.instagram || '',
             avatar: PRESET_AVATARS.find(a => a.id === b.profiles?.avatar_id)?.colors || PRESET_AVATARS[0].colors,
             avatarId: b.profiles?.avatar_id || 'avatar1',
             favorite: b.profiles?.favorite_plan || '',
@@ -259,20 +259,15 @@ export function DashboardPage() {
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <div className="dashboard-header-inner">
-          <div className="header-logo"><BruukLogo /></div>
-          <div className="header-tabs">
-            <button className={`header-tab ${tab === 'confirmed' ? 'active' : ''}`} onClick={() => setTab('confirmed')}>Registrado</button>
-            <button className={`header-tab ${tab === 'saved' ? 'active' : ''}`} onClick={() => setTab('saved')}>Mis Guardados</button>
-          </div>
-          <div className="header-user">
-            <span className="header-handle">@{instagram}</span>
-            <button className="btn-icon" onClick={async () => { await signOut(); navigate('/'); }}>
-              <LogOut size={16} />
-            </button>
-          </div>
-        </div>
+        <span className="dashboard-tag">/ mis eventos</span>
+        <h1 className="dashboard-title brand-gradient-text">Mis Eventos</h1>
+        <p className="dashboard-sub">Tus reservas y spots guardados en un solo lugar.</p>
       </header>
+
+      <div className="dashboard-tabs-container">
+        <button className={`dashboard-tab ${tab === 'confirmed' ? 'active' : ''}`} onClick={() => setTab('confirmed')}>Registrado</button>
+        <button className={`dashboard-tab ${tab === 'saved' ? 'active' : ''}`} onClick={() => setTab('saved')}>Mis Guardados</button>
+      </div>
 
       <main className="dashboard-main" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div className="events-list">

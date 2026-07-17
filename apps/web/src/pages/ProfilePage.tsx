@@ -69,6 +69,7 @@ export function ProfilePage() {
   // States for own profile edit mode
   const [isOwnProfile, setIsOwnProfile] = useState(!username);
   const [name, setName] = useState('');
+  const [usernameField, setUsernameField] = useState('');
   const [instagram, setInstagram] = useState('');
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
@@ -110,8 +111,9 @@ export function ProfilePage() {
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
-        setName(data.username || user?.email?.split('@')[0] || 'Mi Nombre');
-        setInstagram(data.instagram || 'tusuario');
+        setName(data.full_name || data.username || user?.email?.split('@')[0] || 'Mi Nombre');
+        setUsernameField(data.username || '');
+        setInstagram(data.instagram || '');
         setCity(data.city || 'Guadalajara');
         setBio(data.favorite_plan || 'Explorando la ciudad con Bruuk.');
         setAvatarId(data.avatar_id || 'avatar1');
@@ -162,7 +164,8 @@ export function ProfilePage() {
     if (!user) return;
     try {
       await userService.updateProfile(user.id, {
-        username: name,
+        full_name: name,
+        username: usernameField,
         instagram,
         city,
         favorite_plan: bio,
@@ -362,7 +365,7 @@ export function ProfilePage() {
         <div className="profile-header-top">
           <div className="profile-header-titles">
             <span className="profile-tag">/ perfil</span>
-            <h1 className="profile-title brand-gradient-text">Mi Espacio</h1>
+            <h1 className="profile-title brand-gradient-text">Mi Perfil</h1>
           </div>
           {isEditing ? (
             <button className="profile-edit-action-btn save" onClick={saveOwnProfile}>
@@ -393,7 +396,7 @@ export function ProfilePage() {
               className="profile-avatar-circle"
               style={{ background: currentAvatar.colors }}
             >
-              {instagram ? instagram.slice(0, 1).toUpperCase() : <User size={20} />}
+              {name ? name.slice(0, 1).toUpperCase() : <User size={20} />}
             </div>
             
             <p className="avatar-hint-text">Elige tu degradado de neón:</p>
@@ -406,7 +409,7 @@ export function ProfilePage() {
                   onClick={() => handleAvatarSelect(avatar.id)}
                   title="Cambiar avatar"
                 >
-                  {instagram ? instagram.slice(0, 1).toUpperCase() : <User size={12} />}
+                  {name ? name.slice(0, 1).toUpperCase() : <User size={12} />}
                   {avatarId === avatar.id && <Check size={12} className="avatar-check-icon" />}
                 </button>
               ))}
@@ -429,16 +432,26 @@ export function ProfilePage() {
               </div>
 
               <div className="input-group">
-                <label>Usuario (@)</label>
+                <label>Nombre de Usuario (@)</label>
                 <input 
                   type="text" 
-                  value={instagram} 
+                  value={usernameField} 
                   readOnly 
                   placeholder="usuario" 
                   disabled
                   className="input-disabled"
                 />
                 <span className="input-hint">El nombre de usuario es inmodificable.</span>
+              </div>
+
+              <div className="input-group">
+                <label>Usuario de Instagram (Opcional)</label>
+                <input 
+                  type="text" 
+                  value={instagram} 
+                  onChange={e => setInstagram(e.target.value)} 
+                  placeholder="tu_instagram" 
+                />
               </div>
 
               <div className="input-group">
@@ -491,7 +504,7 @@ export function ProfilePage() {
             <div className="view-fields-list">
               <div className="profile-identity-display">
                 <h1 className="profile-display-name brand-gradient-text">{name}</h1>
-                <span className="profile-username-tag">@{instagram}</span>
+                <span className="profile-username-tag">@{usernameField}</span>
                 <span className="profile-city-tag"><MapPin size={12} /> {city}</span>
                 <span className="profile-city-tag" style={{ marginLeft: 8, color: '#ff7a45' }}>• Rol: {role.toUpperCase()}</span>
               </div>
