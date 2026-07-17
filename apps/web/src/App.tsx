@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Compass, MapPinned, Sparkles, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { RegistrationModal } from './components/RegistrationModal';
@@ -44,6 +44,24 @@ export default function App() {
   const touchStartX = useRef<number | null>(null);
   const slide = carouselSlides[activeSlide];
 
+  const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const search = window.location.search;
+    if (
+      hash.includes('email_change') || 
+      hash.includes('confirm') || 
+      search.includes('email_change') || 
+      hash.toLowerCase().includes('message=confirmaci') || 
+      hash.toLowerCase().includes('email+change+confirmed')
+    ) {
+      setNotification('¡Tu correo electrónico ha sido actualizado con éxito! Ya puedes usar tu nuevo correo para iniciar sesión.');
+      // Limpiar hash
+      window.location.hash = '';
+    }
+  }, []);
+
   const showPreviousSlide = () => {
     setActiveSlide(current => (current - 1 + carouselSlides.length) % carouselSlides.length);
   };
@@ -54,6 +72,12 @@ export default function App() {
 
   return (
     <div className="explore-landing">
+      {notification && (
+        <div style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, background: '#0e0d1a', border: '2px solid #10b981', color: '#10b981', padding: '1rem', boxShadow: '4px 4px 0px rgba(16, 185, 129, 0.45)', display: 'flex', alignItems: 'center', gap: '15px', fontFamily: 'Outfit, sans-serif', fontSize: '0.85rem', fontWeight: 700 }}>
+          <span>{notification}</span>
+          <button onClick={() => setNotification(null)} style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}>X</button>
+        </div>
+      )}
       <main>
         <section className="explore-hero" aria-labelledby="explore-hero-title">
           <div className="explore-hero__glow" aria-hidden="true" />
