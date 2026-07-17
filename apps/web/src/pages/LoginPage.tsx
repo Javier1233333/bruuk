@@ -229,13 +229,13 @@ export function LoginPage() {
               <div className="login-tabs">
                 <button
                   className={`login-tab ${mode === 'login' ? 'active' : ''}`}
-                  onClick={() => { setMode('login'); setError(null); setSuccessMsg(null); setShowResendBtn(false); }}
+                  onClick={() => { setMode('login'); setError(null); setSuccessMsg(null); setShowResendBtn(false); setEmail(''); setPassword(''); }}
                 >
                   Entrar
                 </button>
                 <button
                   className={`login-tab ${mode === 'signup' ? 'active' : ''}`}
-                  onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); setShowResendBtn(false); }}
+                  onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); setShowResendBtn(false); setEmail(''); setPassword(''); }}
                 >
                   Crear cuenta
                 </button>
