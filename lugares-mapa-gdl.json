@@ -1,0 +1,1144 @@
+{
+  "map": {
+    "title": "La ruta concept stores de GDL <3",
+    "description": "Una ruta curada por Rack para salir a buscar algo distinto. Vintage, café, cultura, vinilos y hallazgos de calle en GDL. Puro lugar que merece la vuelta.",
+    "source_url": "https://www.google.com/maps/d/u/0/viewer?mid=1PxiEQGEMx1CtVuJRElC4sJsjydmZnrE"
+  },
+  "place_count": 93,
+  "places": [
+    {
+      "name": "Bad people Gdl Vintage Store",
+      "category": "Rack recomienda",
+      "description": "Vintage para hombre, nostalgia y piezas que no aparecen dos veces.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.673116,
+        "longitude": -103.3625324
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.673116,-103.3625324"
+    },
+    {
+      "name": "Undisclosed Vintage",
+      "category": "Rack recomienda",
+      "description": "Playeras de bandas, chamarras y archivo masculino. Aquí cada pieza tiene historia.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6728076,
+        "longitude": -103.3620801
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6728076,-103.3620801"
+    },
+    {
+      "name": "Erica Street Vintage",
+      "category": "Rack recomienda",
+      "description": "Vintage femenino con firmas de lujo. Ven por las bolsas, quédate por los zapatos.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6725864,
+        "longitude": -103.3620796
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6725864,-103.3620796"
+    },
+    {
+      "name": "Bravo Vintage 2",
+      "category": "Rack recomienda",
+      "description": "Más archivo que tienda. Ropa antigua para mirar, aprender y llevar a otra vida.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6728075,
+        "longitude": -103.3626267
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6728075,-103.3626267"
+    },
+    {
+      "name": "Lavanda Vintage",
+      "category": "Rack recomienda",
+      "description": "Vintage clásico entre plantas y café. El plan se arma solo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6738922,
+        "longitude": -103.3609668
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6738922,-103.3609668"
+    },
+    {
+      "name": "Dislocal market",
+      "category": "Rack recomienda",
+      "description": "Streetwear, diseñador y ediciones difíciles de ver. Para buscar con calma.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.673885,
+        "longitude": -103.360896
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.673885,-103.360896"
+    },
+    {
+      "name": "Jardín Americana",
+      "category": "Rack recomienda",
+      "description": "Mercados, proyectos locales y algo para comer. Revisa la agenda antes de caer.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6744521,
+        "longitude": -103.365396
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6744521,-103.365396"
+    },
+    {
+      "name": "Segunda Piel",
+      "category": "Rack recomienda",
+      "description": "Segunda mano femenina, precios amables y accesorios que cierran el look.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6739783,
+        "longitude": -103.3569732
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6739783,-103.3569732"
+    },
+    {
+      "name": "D O S T A concept store",
+      "category": "Rack recomienda",
+      "description": "Muchas marcas bajo un techo. Segunda mano, cultura geek y hallazgos inesperados.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6739475,
+        "longitude": -103.3566305
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6739475,-103.3566305"
+    },
+    {
+      "name": "Archivo GDL",
+      "category": "Rack recomienda",
+      "description": "Moda alternativa, segunda mano y upcycling. Joven, accesible y sin uniforme.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6740166,
+        "longitude": -103.3570084
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6740166,-103.3570084"
+    },
+    {
+      "name": "El sótano",
+      "category": "Rack recomienda",
+      "description": "Indie, gótico y mucho calzado. Baja si tu clóset pide algo más oscuro.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6752734,
+        "longitude": -103.3565248
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6752734,-103.3565248"
+    },
+    {
+      "name": "El baúl",
+      "category": "Rack recomienda",
+      "description": "Una casa llena de marcas. Vintage arriba, gótico abajo y sorpresas entre cuartos.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6754605,
+        "longitude": -103.3565197
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6754605,-103.3565197"
+    },
+    {
+      "name": "Con B de vintage",
+      "category": "Rack recomienda",
+      "description": "Los sesenta, setenta y ochenta bien elegidos. Pocas piezas, mucha personalidad.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.678754,
+        "longitude": -103.36163
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.678754,-103.36163"
+    },
+    {
+      "name": "Comunidad Colibrí",
+      "category": "Rack recomienda",
+      "description": "Segunda mano para todos, algunos tesoros vintage y precios para volver.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6754162,
+        "longitude": -103.3536703
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6754162,-103.3536703"
+    },
+    {
+      "name": "Maple Showroom",
+      "category": "Rack recomienda",
+      "description": "Moda juvenil y ventas relámpago. Síguelos: las mejores piezas duran poco.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.67578,
+        "longitude": -103.3703729
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.67578,-103.3703729"
+    },
+    {
+      "name": "Proyecto Mexa",
+      "category": "Rack recomienda",
+      "description": "Diseño local, accesorios y objetos hechos con intención. Buen lugar para descubrir marcas.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6738356,
+        "longitude": -103.3734775
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6738356,-103.3734775"
+    },
+    {
+      "name": "Bazar Moda Diseño",
+      "category": "Rack recomienda",
+      "description": "Historia de la moda jalisciense en percheros. Pregunta, escucha y busca la pieza rara.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6747226,
+        "longitude": -103.3708393
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6747226,-103.3708393"
+    },
+    {
+      "name": "VÍA LIBERTAD",
+      "category": "Rack recomienda",
+      "description": "Comida, diseño y bazares que cambian. Siempre hay una razón nueva para entrar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.672773,
+        "longitude": -103.365779
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.672773,-103.365779"
+    },
+    {
+      "name": "Casa del Prado",
+      "category": "Rack recomienda",
+      "description": "Ochentas, noventas y Y2K sin precios imposibles. Mucha ropa y cero prisa.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6739097,
+        "longitude": -103.3603632
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6739097,-103.3603632"
+    },
+    {
+      "name": "Casa Sabina Hostal Boutique",
+      "category": "Rack recomienda",
+      "description": "Vintage colorido escondido dentro de un hostal. Los ochenta siguen vivos aquí.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6732202,
+        "longitude": -103.371474
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6732202,-103.371474"
+    },
+    {
+      "name": "Almondcoco Boutique",
+      "category": "Rack recomienda",
+      "description": "Diseño local, talleres y marcas emergentes. Una tienda que también hace comunidad.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6768899,
+        "longitude": -103.36314
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6768899,-103.36314"
+    },
+    {
+      "name": "Exuvia Showroom",
+      "category": "Rack recomienda",
+      "description": "Joyería, diseño independiente y vintage bien curado. Difícil salir con las manos vacías.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6770199,
+        "longitude": -103.3552768
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6770199,-103.3552768"
+    },
+    {
+      "name": "Ohmm Store",
+      "category": "Rack recomienda",
+      "description": "Diseño mexicano emergente en un espacio que pide foto.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6709492,
+        "longitude": -103.3724798
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6709492,-103.3724798"
+    },
+    {
+      "name": "Mondo Shop",
+      "category": "Rack recomienda",
+      "description": "Vintage y segunda mano con energía emo. Para vestir fuera del algoritmo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6744314,
+        "longitude": -103.3519152
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6744314,-103.3519152"
+    },
+    {
+      "name": "VACR",
+      "category": "Rack recomienda",
+      "description": "Calzado mexicano con diseño propio. Hecho aquí, pensado para durar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6754576,
+        "longitude": -103.361039
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6754576,-103.361039"
+    },
+    {
+      "name": "DIVINE 222",
+      "category": "Rack recomienda",
+      "description": "Y2K y segunda mano. Brillos, nostalgia y piezas para volver a jugar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6737423,
+        "longitude": -103.3617446
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6737423,-103.3617446"
+    },
+    {
+      "name": "Apartamento 102",
+      "category": "Rack recomienda",
+      "description": "Showroom y tatuajes en la misma dirección. Un plan completo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6740786,
+        "longitude": -103.3555467
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6740786,-103.3555467"
+    },
+    {
+      "name": "Witch mx",
+      "category": "Rack recomienda",
+      "description": "Ropa y accesorios girly para cuando el detalle hace todo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6741708,
+        "longitude": -103.3567173
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6741708,-103.3567173"
+    },
+    {
+      "name": "Endémico Vivero - Café",
+      "category": "Cafés y comida",
+      "description": "Café entre plantas. La pausa que la ruta necesitaba.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.673857,
+        "longitude": -103.3610014
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.673857,-103.3610014"
+    },
+    {
+      "name": "Leonela bistro",
+      "category": "Cafés y comida",
+      "description": "Una mesa tranquila para bajar el ritmo y comer bien.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6729253,
+        "longitude": -103.3623063
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6729253,-103.3623063"
+    },
+    {
+      "name": "Peko Peko",
+      "category": "Cafés y comida",
+      "description": "Japón en GDL, sin hacer escala.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6760286,
+        "longitude": -103.3614261
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6760286,-103.3614261"
+    },
+    {
+      "name": "RinTinTin Café",
+      "category": "Cafés y comida",
+      "description": "Café de barrio para conversaciones que se alargan.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6761884,
+        "longitude": -103.3630906
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6761884,-103.3630906"
+    },
+    {
+      "name": "Ideal café",
+      "category": "Cafés y comida",
+      "description": "Simple, tranquilo y bien servido. Como debe ser.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.678365,
+        "longitude": -103.369153
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.678365,-103.369153"
+    },
+    {
+      "name": "Espacio Abierto",
+      "category": "Cafés y comida",
+      "description": "Un respiro dentro de la ciudad. Café incluido.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6701322,
+        "longitude": -103.3726655
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6701322,-103.3726655"
+    },
+    {
+      "name": "La Tetería",
+      "category": "Cafés y comida",
+      "description": "Té, sobremesa y tiempo sin reloj.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6716988,
+        "longitude": -103.3625746
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6716988,-103.3625746"
+    },
+    {
+      "name": "Peligro al Fondo",
+      "category": "Cafés y comida",
+      "description": "El nombre avisa. Entra y deja que el plan cambie.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6715705,
+        "longitude": -103.3720119
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6715705,-103.3720119"
+    },
+    {
+      "name": "La Cafetería (Casa fuera de casa)",
+      "category": "Cafés y comida",
+      "description": "Café con sensación de sala propia. Fácil quedarse.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6722482,
+        "longitude": -103.362587
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6722482,-103.362587"
+    },
+    {
+      "name": "Casa Tarot y Café",
+      "category": "Cafés y comida",
+      "description": "Café, cartas y un poco de misterio en la mesa.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6700562,
+        "longitude": -103.3649331
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6700562,-103.3649331"
+    },
+    {
+      "name": "Vulcanos Chicago Style Pizza (Americana)",
+      "category": "Cafés y comida",
+      "description": "Pizza estilo Chicago: gruesa, intensa y sin medias tintas.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6770844,
+        "longitude": -103.3652156
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6770844,-103.3652156"
+    },
+    {
+      "name": "La Ciabatta Buffet Italiano",
+      "category": "Cafés y comida",
+      "description": "Comida italiana para llegar con hambre y salir sin pendientes.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.672323,
+        "longitude": -103.3568935
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.672323,-103.3568935"
+    },
+    {
+      "name": "El Terrible Juan Café",
+      "category": "Cafés y comida",
+      "description": "Café con carácter. De esos que cambian la mañana.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.669495,
+        "longitude": -103.3661607
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.669495,-103.3661607"
+    },
+    {
+      "name": "Ohlala Panadería Bistró Libertad",
+      "category": "Cafés y comida",
+      "description": "Pan recién hecho y café. No hace falta complicarlo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6723421,
+        "longitude": -103.3628518
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6723421,-103.3628518"
+    },
+    {
+      "name": "Gabinete",
+      "category": "Cafés y comida",
+      "description": "Un rincón para comer, tomar algo y dejar correr la tarde.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6722096,
+        "longitude": -103.3624967
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6722096,-103.3624967"
+    },
+    {
+      "name": "Mis Negras Intenciones",
+      "category": "Cafés y comida",
+      "description": "Nombre oscuro, plan ligero. Una parada con personalidad.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6731303,
+        "longitude": -103.362267
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6731303,-103.362267"
+    },
+    {
+      "name": "Falafel Suc. Marsella",
+      "category": "Cafés y comida",
+      "description": "Falafel directo al punto. Rápido, sabroso y cumplidor.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6732194,
+        "longitude": -103.3707679
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6732194,-103.3707679"
+    },
+    {
+      "name": "El Habanero Negro",
+      "category": "Cafés y comida",
+      "description": "Sabor yucateco con carácter. El chejuino también cuenta.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6740157,
+        "longitude": -103.3637309
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6740157,-103.3637309"
+    },
+    {
+      "name": "Balva Bistró cocina cannábica",
+      "category": "Cafés y comida",
+      "description": "Cocina cannábica para probar algo fuera de lo habitual.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6745132,
+        "longitude": -103.3627608
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6745132,-103.3627608"
+    },
+    {
+      "name": "Momotabi Mochi Market",
+      "category": "Cafés y comida",
+      "description": "Mochis y antojos japoneses. Pequeños, bonitos y peligrosamente fáciles de repetir.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.674991,
+        "longitude": -103.36107
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.674991,-103.36107"
+    },
+    {
+      "name": "Café Diamante",
+      "category": "Cafés y comida",
+      "description": "Una taza sin ruido. El nombre promete y el café responde.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6706781,
+        "longitude": -103.355775
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6706781,-103.355775"
+    },
+    {
+      "name": "MUFE",
+      "category": "Cultura",
+      "description": "Moda, archivo y cultura en el mismo recorrido.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6732656,
+        "longitude": -103.3628984
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6732656,-103.3628984"
+    },
+    {
+      "name": "Cafetal 97",
+      "category": "Cultura",
+      "description": "Café, galería y música. De día funciona; de noche cambia.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6699983,
+        "longitude": -103.3642527
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6699983,-103.3642527"
+    },
+    {
+      "name": "Red Rum",
+      "category": "Cultura",
+      "description": "Cine de arte, bebidas y snacks. La cartelera menos obvia.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6766188,
+        "longitude": -103.3595094
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6766188,-103.3595094"
+    },
+    {
+      "name": "Casa ITESO Clavigero",
+      "category": "Cultura",
+      "description": "Arquitectura que se recorre despacio. Lleva cámara.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.670145,
+        "longitude": -103.3700561
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.670145,-103.3700561"
+    },
+    {
+      "name": "MUSA Museo de las Artes Universidad de Guadalajara",
+      "category": "Cultura",
+      "description": "Arte dentro de uno de los edificios que definen la ciudad.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6744117,
+        "longitude": -103.3590248
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6744117,-103.3590248"
+    },
+    {
+      "name": "Ex Convento Del Carmen",
+      "category": "Cultura",
+      "description": "Historia, exposiciones y un patio que baja el volumen de GDL.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6751285,
+        "longitude": -103.3532051
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6751285,-103.3532051"
+    },
+    {
+      "name": "Museo Cabañas",
+      "category": "Cultura",
+      "description": "Murales, arquitectura y escala monumental. Un clásico que sí merece repetirse.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6765575,
+        "longitude": -103.3382462
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6765575,-103.3382462"
+    },
+    {
+      "name": "Museo Regional de Guadalajara",
+      "category": "Cultura",
+      "description": "La historia de Jalisco contada entre objetos, salas y tiempo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6775709,
+        "longitude": -103.3465435
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6775709,-103.3465435"
+    },
+    {
+      "name": "Museo De Sitio Del Palacio De Gobierno",
+      "category": "Cultura",
+      "description": "Historia política y patrimonio en pleno centro.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6761923,
+        "longitude": -103.3464803
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6761923,-103.3464803"
+    },
+    {
+      "name": "Casa Museo López Portillo",
+      "category": "Cultura",
+      "description": "Una casa antigua que todavía sabe contar historias.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6793467,
+        "longitude": -103.346822
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6793467,-103.346822"
+    },
+    {
+      "name": "Pin heart Closet",
+      "category": "Tianguis",
+      "description": "Y2K para mujer a buen precio. Sábados en Parque Rojo; @Pin.heart_closet.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6742821,
+        "longitude": -103.3563121
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6742821,-103.3563121"
+    },
+    {
+      "name": "Stray Groovey",
+      "category": "Tianguis",
+      "description": "Pantalones ochenteros al inicio del pasillo derecho. Busca @stay.groovy.clothes.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6742714,
+        "longitude": -103.3562953
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6742714,-103.3562953"
+    },
+    {
+      "name": "Ropa de hombre",
+      "category": "Tianguis",
+      "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6741654,
+        "longitude": -103.3563859
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6741654,-103.3563859"
+    },
+    {
+      "name": "Ropa de segunda mano de mujer",
+      "category": "Tianguis",
+      "description": "Y2K, upcycling y ofertas en un mismo tramo del pasillo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6744967,
+        "longitude": -103.3563168
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6744967,-103.3563168"
+    },
+    {
+      "name": "Ropa de hombre",
+      "category": "Tianguis",
+      "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6742403,
+        "longitude": -103.3560935
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6742403,-103.3560935"
+    },
+    {
+      "name": "Meztisa Modisteria",
+      "category": "Tianguis",
+      "description": "Vintage e intervenciones con mano propia. Encuéntralos como @meztizamodisteria.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6743756,
+        "longitude": -103.356166
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6743756,-103.356166"
+    },
+    {
+      "name": "Libritos",
+      "category": "Tianguis",
+      "description": "Libros nuevos y usados en la esquina correcta del parque.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6748014,
+        "longitude": -103.3554047
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6748014,-103.3554047"
+    },
+    {
+      "name": "Tianguis Feminista (Mercadita)",
+      "category": "Tianguis",
+      "description": "Ropa a precios bajos y proyectos de mujeres. Un espacio hecho por y para ellas.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6753085,
+        "longitude": -103.3563214
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6753085,-103.3563214"
+    },
+    {
+      "name": "Tianguis del parque rojo",
+      "category": "Tianguis",
+      "description": "El sábado empieza aquí. Llega desde las 9:00 y busca sin prisa.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          {
+            "latitude": 20.6756517,
+            "longitude": -103.354904
+          },
+          {
+            "latitude": 20.6756417,
+            "longitude": -103.3564275
+          },
+          {
+            "latitude": 20.6741259,
+            "longitude": -103.3564436
+          },
+          {
+            "latitude": 20.6741912,
+            "longitude": -103.3549147
+          },
+          {
+            "latitude": 20.6756517,
+            "longitude": -103.354904
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ropa de hombre",
+      "category": "Tianguis",
+      "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6743208,
+        "longitude": -103.3554488
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6743208,-103.3554488"
+    },
+    {
+      "name": "Bazar de Muebles y Antiguedades en Guadalajara - Bazar El Viejo del Costal",
+      "category": "Vinilos y antigüedades",
+      "description": "Muebles, objetos y piezas con otra vida. Ven listo para escarbar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6723629,
+        "longitude": -103.3535118
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6723629,-103.3535118"
+    },
+    {
+      "name": "Bazar, muebles y antiguedades",
+      "category": "Vinilos y antigüedades",
+      "description": "Antigüedades sin catálogo fijo. Lo bueno aparece cuando menos lo esperas.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6810892,
+        "longitude": -103.3651224
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6810892,-103.3651224"
+    },
+    {
+      "name": "Roxy n roll",
+      "category": "Vinilos y antigüedades",
+      "description": "Rock, objetos y nostalgia. Una parada con volumen propio.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6786164,
+        "longitude": -103.3531845
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6786164,-103.3531845"
+    },
+    {
+      "name": "Joselino Records",
+      "category": "Vinilos y antigüedades",
+      "description": "Vinilos para revisar uno por uno. Así se encuentran los buenos.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6818428,
+        "longitude": -103.3555984
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6818428,-103.3555984"
+    },
+    {
+      "name": "La Musique Records Guadalajara",
+      "category": "Vinilos y antigüedades",
+      "description": "Discos para escuchar, coleccionar y volver a empezar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6747227,
+        "longitude": -103.3519829
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6747227,-103.3519829"
+    },
+    {
+      "name": "La Perla Records & Books",
+      "category": "Vinilos y antigüedades",
+      "description": "Vinilos y libros en el mismo lugar. Dos buenas razones para perder la tarde.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6756485,
+        "longitude": -103.3691191
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6756485,-103.3691191"
+    },
+    {
+      "name": "Bazar La Fortuna",
+      "category": "Vinilos y antigüedades",
+      "description": "Objetos con historia y hallazgos que dependen de la suerte.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6797289,
+        "longitude": -103.3536203
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6797289,-103.3536203"
+    },
+    {
+      "name": "Alto Voltaje",
+      "category": "Vinilos y antigüedades",
+      "description": "Música para buscar con el volumen arriba.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6779785,
+        "longitude": -103.3527677
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6779785,-103.3527677"
+    },
+    {
+      "name": "LOPA",
+      "category": "Vinilos y antigüedades",
+      "description": "Piezas singulares y objetos que no entran en una sola categoría.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6703409,
+        "longitude": -103.3643891
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6703409,-103.3643891"
+    },
+    {
+      "name": "LIBRERIA DE USADO Y ANTIGUO EL DESVAN DE DON QUIJOTE",
+      "category": "Vinilos y antigüedades",
+      "description": "Libros usados y antiguos para quien disfruta buscar más que encontrar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6739557,
+        "longitude": -103.3571311
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6739557,-103.3571311"
+    },
+    {
+      "name": "Librero en andanzas",
+      "category": "Vinilos y antigüedades",
+      "description": "Libros que viajan y títulos que aparecen sin aviso.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6739352,
+        "longitude": -103.356935
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6739352,-103.356935"
+    },
+    {
+      "name": "Tea Recs",
+      "category": "Vinilos y antigüedades",
+      "description": "Vinilos y música para escuchar sin saltar pistas.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6793791,
+        "longitude": -103.3714014
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6793791,-103.3714014"
+    },
+    {
+      "name": "Cosmik Records",
+      "category": "Vinilos y antigüedades",
+      "description": "Discos para salir de la órbita habitual.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6775301,
+        "longitude": -103.3680423
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6775301,-103.3680423"
+    },
+    {
+      "name": "Jamaica Records",
+      "category": "Vinilos y antigüedades",
+      "description": "Vinilos, reggae y una selección con ritmo propio.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6727358,
+        "longitude": -103.3798362
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6727358,-103.3798362"
+    },
+    {
+      "name": "Velvet Records Gdl",
+      "category": "Vinilos y antigüedades",
+      "description": "Una dirección para seguir ampliando la colección.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.675887,
+        "longitude": -103.3679924
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.675887,-103.3679924"
+    },
+    {
+      "name": "Tianguis del Sol",
+      "category": "Tianguis",
+      "description": "Miércoles, viernes y domingo, de 7:00 a 15:00. Llega temprano.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          {
+            "latitude": 20.6530026,
+            "longitude": -103.4337353
+          },
+          {
+            "latitude": 20.6513863,
+            "longitude": -103.4338158
+          },
+          {
+            "latitude": 20.6513461,
+            "longitude": -103.4326195
+          },
+          {
+            "latitude": 20.6529474,
+            "longitude": -103.4325391
+          },
+          {
+            "latitude": 20.6530026,
+            "longitude": -103.4337353
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tianguis de Mezquitan",
+      "category": "Tianguis",
+      "description": "Los martes desde las 8:00. Para buscar hasta que la tarde diga basta.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          {
+            "latitude": 20.6898058,
+            "longitude": -103.3533403
+          },
+          {
+            "latitude": 20.6914839,
+            "longitude": -103.353461
+          },
+          {
+            "latitude": 20.6931619,
+            "longitude": -103.3531955
+          },
+          {
+            "latitude": 20.6931619,
+            "longitude": -103.3538178
+          },
+          {
+            "latitude": 20.6897958,
+            "longitude": -103.3537132
+          },
+          {
+            "latitude": 20.6898058,
+            "longitude": -103.3533403
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tianguis San Juan Bosco",
+      "category": "Tianguis",
+      "description": "Un tianguis de barrio donde el hallazgo depende de caminar.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 21.1373456,
+        "longitude": -101.7043208
+      },
+      "google_maps_url": "https://www.google.com/maps?q=21.1373456,-101.7043208"
+    },
+    {
+      "name": "Tianguis de Medrano Calle 66",
+      "category": "Tianguis",
+      "description": "Calle, puestos y segunda mano. La 66 tiene su propio ritmo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6617629,
+        "longitude": -103.3122617
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6617629,-103.3122617"
+    },
+    {
+      "name": "Baratillo",
+      "category": "Tianguis",
+      "description": "Grande, caótico y lleno de posibilidades. Ve con tiempo.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.680911,
+        "longitude": -103.3199355
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.680911,-103.3199355"
+    },
+    {
+      "name": "Tianguis Cultural",
+      "category": "Tianguis",
+      "description": "Sábados desde las 9:00. Cultura, ropa y tribus de la ciudad.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          {
+            "latitude": 20.6598439,
+            "longitude": -103.3507373
+          },
+          {
+            "latitude": 20.6579767,
+            "longitude": -103.3515419
+          },
+          {
+            "latitude": 20.6578161,
+            "longitude": -103.3510377
+          },
+          {
+            "latitude": 20.6596833,
+            "longitude": -103.3502545
+          },
+          {
+            "latitude": 20.6598439,
+            "longitude": -103.3507373
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tianguis de Santa Tere",
+      "category": "Tianguis",
+      "description": "Barrio, comida y puestos que cambian cada visita.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6842013,
+        "longitude": -103.3681435
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6842013,-103.3681435"
+    },
+    {
+      "name": "Tianguis del trocadero",
+      "category": "Tianguis",
+      "description": "Domingos de 8:00 a 16:00. Una mañana completa de búsqueda.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          {
+            "latitude": 20.6792511,
+            "longitude": -103.3699786
+          },
+          {
+            "latitude": 20.6792238,
+            "longitude": -103.3710012
+          },
+          {
+            "latitude": 20.6791965,
+            "longitude": -103.3714445
+          },
+          {
+            "latitude": 20.6791589,
+            "longitude": -103.3714954
+          },
+          {
+            "latitude": 20.6790808,
+            "longitude": -103.3707209
+          },
+          {
+            "latitude": 20.6790127,
+            "longitude": -103.369925
+          },
+          {
+            "latitude": 20.679142,
+            "longitude": -103.3698606
+          },
+          {
+            "latitude": 20.6792511,
+            "longitude": -103.3699786
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tianguis Francisco Villa / La 74 (Jueves)",
+      "category": "Tianguis",
+      "description": "Los jueves, la 74 se vuelve ruta de hallazgos.",
+      "geometry": {
+        "type": "Point",
+        "latitude": 20.6722939,
+        "longitude": -103.3047025
+      },
+      "google_maps_url": "https://www.google.com/maps?q=20.6722939,-103.3047025"
+    }
+  ]
+}
