@@ -8,7 +8,7 @@ interface ComingSoonModalProps {
     onJoin: () => void;
     onOpenPrivacy: () => void;
 }
-
+//hola
 export function ComingSoonModal({ isOpen, onClose, onJoin, onOpenPrivacy }: ComingSoonModalProps) {
     if (!isOpen) return null;
 
