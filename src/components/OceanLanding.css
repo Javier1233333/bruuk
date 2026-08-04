@@ -151,6 +151,26 @@
   color: #fff;
 }
 
+.filter-btn-rack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: #a78bfa;
+  border-left: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.filter-btn-rack:hover,
+.filter-btn-rack:focus-visible {
+  color: #ffffff;
+  background: rgba(167, 139, 250, 0.18);
+}
+
+.filter-btn-floating:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -3px;
+}
+
 /* ============================================================
    VERTICAL SNAP SCROLL CONTAINER (TIKTOK STYLE)
    ============================================================ */
@@ -239,6 +259,99 @@
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.5);
   gap: 6px;
+}
+
+.explora-rack-bridge {
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.24);
+  text-align: left;
+}
+
+.explora-rack-bridge > div:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.explora-rack-bridge span {
+  color: #a78bfa;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.explora-rack-bridge strong {
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.2;
+}
+
+.explora-rack-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+}
+
+.explora-rack-links button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.explora-rack-links button:hover,
+.explora-rack-links button:focus-visible {
+  background: rgba(139, 124, 246, 0.28);
+  border-color: #a78bfa;
+}
+
+.explora-rack-links button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.end-rack-btn {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.55rem 1.4rem;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid #a78bfa;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease;
+}
+
+.end-rack-btn:hover,
+.end-rack-btn:focus-visible {
+  color: #080614;
+  background: #a78bfa;
+}
+
+.end-rack-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
 
 /* Card slide centering */
@@ -356,11 +469,32 @@
     padding: 6px 8px;
     font-size: 0.65rem;
   }
+  .filter-btn-rack svg {
+    display: none;
+  }
   .intro-card-overlay {
-    padding: 1.8rem 1.25rem;
+    padding: 1.45rem 1rem;
+  }
+  .explora-rack-bridge {
+    margin-top: 1rem;
+  }
+  .explora-rack-links {
+    gap: 0.25rem;
+  }
+  .explora-rack-links button {
+    padding-inline: 0.25rem;
+    font-size: 0.52rem;
   }
   .end-slide-card {
     padding: 2.2rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-btn-floating,
+  .explora-rack-links button,
+  .end-rack-btn {
+    transition: none;
   }
 }
 

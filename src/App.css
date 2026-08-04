@@ -568,3 +568,229 @@
 @media (max-width: 420px) {
   .bruuko-intro h2 { letter-spacing: -1.6px; }
 }
+/* ============================================================
+   RACK PLACES PORTAL
+   Bloque aislado dentro del landing actual.
+   ============================================================ */
+
+.rack-portal-section {
+  position: relative;
+  overflow: hidden;
+  padding: 8rem 0;
+  color: #ffffff;
+  background:
+    linear-gradient(rgba(99, 102, 241, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.11) 1px, transparent 1px),
+    #09090d;
+  background-size: 34px 34px;
+  border-top: 3px solid #000000;
+  border-bottom: 3px solid #000000;
+}
+
+.rack-portal-section::after {
+  content: 'RACK.';
+  position: absolute;
+  right: -0.05em;
+  bottom: -0.28em;
+  color: transparent;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(8rem, 24vw, 22rem);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.rack-portal-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: end;
+}
+
+.rack-portal-eyebrow {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #a7a7ba;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+}
+
+.rack-portal-copy h2 {
+  max-width: 780px;
+  margin: 0 0 1.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(3rem, 7vw, 6.7rem);
+  font-weight: 900;
+  line-height: 0.84;
+  letter-spacing: -0.065em;
+}
+
+.rack-portal-copy p {
+  max-width: 590px;
+  margin: 0 0 2.5rem;
+  color: #b8b8c7;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.rack-portal-cta {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1rem 1.7rem;
+  color: #09090d;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 0;
+  box-shadow: 6px 6px 0 #6366f1;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.rack-portal-cta:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 #6366f1;
+}
+
+.rack-portal-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 #6366f1;
+}
+
+.rack-portal-board {
+  display: flex;
+  min-height: 430px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.7rem;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    #101018;
+  background-size: 26px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 11px 11px 0 rgba(99, 102, 241, 0.48);
+}
+
+.rack-portal-board-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #b8b8c7;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.rack-portal-board > strong {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(6rem, 13vw, 10rem);
+  font-weight: 900;
+  line-height: 0.72;
+  letter-spacing: -0.08em;
+}
+
+.rack-portal-board-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+}
+
+.rack-portal-categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.rack-portal-categories button {
+  display: flex;
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem;
+  color: #64d23c;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.rack-portal-categories button:hover,
+.rack-portal-categories button:focus-visible {
+  color: #ffffff;
+  transform: translateX(5px);
+}
+
+.rack-portal-categories button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -5px;
+}
+
+.rack-portal-categories button + button {
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.rack-portal-categories button:nth-child(2) {
+  color: #e8a145;
+}
+
+.rack-portal-categories button:nth-child(3) {
+  color: #a78bfa;
+}
+
+@media (max-width: 800px) {
+  .rack-portal-section {
+    padding: 6rem 0;
+  }
+
+  .rack-portal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-portal-board {
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rack-portal-cta {
+    width: 100%;
+  }
+
+  .rack-portal-categories {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-portal-categories button + button {
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rack-portal-cta,
+  .rack-portal-categories button {
+    transition: none;
+  }
+}

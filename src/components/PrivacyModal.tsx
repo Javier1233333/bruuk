@@ -61,7 +61,8 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
               3. Seguridad y almacenamiento
             </h3>
             <p>
-              Utilizamos servicios de infraestructura modernos y seguros (como Supabase) para el resguardo de las credenciales de ingreso y los registros correspondientes.
+              Protegemos los registros enviados desde nuestros formularios mediante
+              servicios de infraestructura con controles de acceso y seguridad.
             </p>
 
             <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.2rem', marginTop: '2rem', marginBottom: '0.8rem', color: '#ffffff', borderBottom: '2px solid #ffffff', paddingBottom: '0.3rem' }}>

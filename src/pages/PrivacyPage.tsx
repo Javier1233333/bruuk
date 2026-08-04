@@ -69,7 +69,8 @@ export function PrivacyPage() {
             3. Seguridad y almacenamiento
           </h2>
           <p>
-            Utilizamos servicios de infraestructura modernos y seguros (como Supabase) para el resguardo de las credenciales de ingreso y los registros correspondientes.
+            Protegemos los registros enviados desde nuestros formularios mediante
+            servicios de infraestructura con controles de acceso y seguridad.
           </p>
 
           <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.3rem', marginTop: '2rem', marginBottom: '1rem', borderBottom: '2px solid #000', paddingBottom: '0.3rem' }}>

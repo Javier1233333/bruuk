@@ -1,7 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronDown } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  ChevronDown,
+  Disc3,
+  ShoppingBag,
+  Store,
+} from 'lucide-react';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
 import spotsData from '../data/spots.json';
@@ -37,13 +44,18 @@ export function OceanLanding() {
   const activeCity = urlCity === 'hermosillo' ? 'hermosillo' : 'guadalajara';
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
-  const [spots, setSpots] = useState<Spot[]>(() => 
-    shuffleArray((spotsData as Spot[]).filter(s => s.city === activeCity))
+  const spots = useMemo(
+    () =>
+      shuffleArray(
+        (spotsData as Spot[]).filter(
+          (spot) => spot.city === activeCity,
+        ),
+      ),
+    [activeCity],
   );
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setSpots(shuffleArray((spotsData as Spot[]).filter(s => s.city === activeCity)));
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
@@ -165,6 +177,15 @@ export function OceanLanding() {
           >
             Bares
           </button>
+          {activeCity === 'guadalajara' && (
+            <button
+              className="filter-btn-floating filter-btn-rack"
+              onClick={() => navigate('/rack/lugares')}
+              aria-label="Abrir la colección especializada Rack"
+            >
+              Rack <ArrowUpRight size={14} aria-hidden="true" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -181,6 +202,34 @@ export function OceanLanding() {
             <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>
               Una selección honesta de rincones donde vale la pena aparecer. Sin algoritmos, sin filtros falsos.
             </p>
+            {activeCity === 'guadalajara' && (
+              <aside className="explora-rack-bridge" aria-labelledby="explora-rack-title">
+                <div>
+                  <span>/ COLECCIÓN ESPECIALIZADA</span>
+                  <strong id="explora-rack-title">¿BUSCAS PIEZAS CON HISTORIA?</strong>
+                </div>
+                <div className="explora-rack-links">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/rack/lugares?filter=tiendas')}
+                  >
+                    <Store size={16} aria-hidden="true" /> TIENDAS
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/rack/lugares?filter=antiguedades')}
+                  >
+                    <Disc3 size={16} aria-hidden="true" /> ANTIGÜEDADES
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/rack/lugares?filter=tianguis')}
+                  >
+                    <ShoppingBag size={16} aria-hidden="true" /> TIANGUIS
+                  </button>
+                </div>
+              </aside>
+            )}
             <div className="scroll-indicator">
               <span>Desliza para explorar spots</span>
               <motion.div
@@ -224,6 +273,11 @@ export function OceanLanding() {
               <a href="/privacidad" className="end-privacy-btn">
                 Aviso de Privacidad
               </a>
+              {activeCity === 'guadalajara' && (
+                <a href="/rack/lugares" className="end-rack-btn">
+                  Explorar Rack
+                </a>
+              )}
             </div>
             <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '2.5rem' }}>
               &copy; {new Date().getFullYear()} bruuk. No sigas las reglas.

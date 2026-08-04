@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight, Compass, Check, Mail, MapPin } from 'lucide-react';
+import { Sparkles, Map, Globe, ArrowRight, Compass, Check, Mail, MapPin, Store, Disc3, ShoppingBag } from 'lucide-react';
 import * as validator from 'email-validator';
 import { ManifestoModal } from './components/ManifestoModal';
 import { ComingSoonModal } from './components/ComingSoonModal';
@@ -163,6 +163,57 @@ function App() {
                 <span>MÁS CIUDADES</span>
                 <span style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.6 }}>PRÓXIMAMENTE</span>
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Rack Places — nueva sección que convive con el landing actual */}
+        <section className="rack-portal-section" aria-labelledby="rack-portal-title">
+          <div className="container rack-portal-grid">
+            <div className="rack-portal-copy">
+              <span className="rack-portal-eyebrow">/ RACK EN LA CALLE · GDL</span>
+              <h2 id="rack-portal-title">
+                BUSCA ALGO<br />QUE NO ESTÁ<br />EN EL FEED.
+              </h2>
+              <p>
+                Tiendas, archivo, vinilos, antigüedades y tianguis. Una ruta curada
+                para encontrar piezas con historia y lugares a los que sí vale la pena ir.
+              </p>
+              <button
+                className="rack-portal-cta"
+                onClick={() => navigate('/rack/lugares')}
+              >
+                EXPLORAR RACK <ArrowRight size={20} strokeWidth={3} />
+              </button>
+            </div>
+
+            <div className="rack-portal-board" aria-label="46 lugares seleccionados">
+              <div className="rack-portal-board-top">
+                <span>RACK.</span>
+                <span>GDL / 2026</span>
+              </div>
+              <strong>46</strong>
+              <span className="rack-portal-board-label">LUGARES SELECCIONADOS</span>
+              <div className="rack-portal-categories" aria-label="Abrir Rack por categoría">
+                <button
+                  type="button"
+                  onClick={() => navigate('/rack/lugares?filter=tiendas')}
+                >
+                  <Store size={18} aria-hidden="true" /> 24 TIENDAS
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/rack/lugares?filter=antiguedades')}
+                >
+                  <Disc3 size={18} aria-hidden="true" /> 13 ANTIGÜEDADES
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/rack/lugares?filter=tianguis')}
+                >
+                  <ShoppingBag size={18} aria-hidden="true" /> 9 TIANGUIS
+                </button>
+              </div>
             </div>
           </div>
         </section>

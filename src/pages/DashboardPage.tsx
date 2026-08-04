@@ -5,7 +5,6 @@ import {
   Utensils, Users, Clock, ExternalLink, X, Sparkles,
   Map, Star, ChevronRight
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import './DashboardPage.css';
 
@@ -219,7 +218,6 @@ function SpotPhotoImg({ foto, nombre }: { foto: string | null; nombre: string })
 }
 
 export function DashboardPage() {
-  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('planes');
   const [showWelcome, setShowWelcome] = useState(true);
@@ -233,8 +231,7 @@ export function DashboardPage() {
     });
   }, []);
 
-  const handleSignOut = async () => {
-    await signOut();
+  const handleExit = () => {
     navigate('/');
   };
 
@@ -247,8 +244,7 @@ export function DashboardPage() {
             <BruukLogo />
           </div>
           <div className="dashboard-user">
-            {user?.email && <span className="dashboard-email">{user.email}</span>}
-            <button className="btn-icon" onClick={handleSignOut} title="Cerrar sesión">
+            <button className="btn-icon" onClick={handleExit} title="Volver al inicio">
               <LogOut size={18} />
             </button>
           </div>
