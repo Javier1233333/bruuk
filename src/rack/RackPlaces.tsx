@@ -10,7 +10,6 @@ import {
   ArrowLeft,
   ArrowUpRight,
   BookOpen,
-  Compass,
   Disc3,
   Grid3X3,
   List,
@@ -226,17 +225,19 @@ const RACK_PLACES = ALL_RACK_PLACES.filter(
 const modulo = (value: number, divisor: number) =>
   ((value % divisor) + divisor) % divisor;
 
+const VIRTUAL_FEED_OFFSETS = [-2, -1, 0, 1, 2] as const;
+
 export function RackPlaces() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialFilter = filterFromSearchParams(searchParams);
   const feedRef = useRef<HTMLDivElement | null>(null);
-  const scrollFrameRef = useRef<number | null>(null);
+  const scrollSettleRef = useRef<number | null>(null);
+  const isRecenteringRef = useRef(false);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapDialogRef = useRef<HTMLDivElement | null>(null);
   const mapCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
-  const pendingPlaceNameRef = useRef<string | null>(null);
   const [activeFilter, setActiveFilter] =
     useState<PlaceFilter>(initialFilter);
   const [mapFilter, setMapFilter] =
@@ -272,44 +273,71 @@ export function RackPlaces() {
     return RACK_PLACES.filter((place) => kindForPlace(place) === activeFilter);
   }, [activeFilter]);
 
-  const loopPlaces = useMemo(
-    () => [...filteredPlaces, ...filteredPlaces, ...filteredPlaces],
-    [filteredPlaces],
+  const virtualFeedPlaces = useMemo(
+    () =>
+      VIRTUAL_FEED_OFFSETS.map((offset) => {
+        const index = modulo(activeIndex + offset, filteredPlaces.length);
+        return {
+          index,
+          offset,
+          place: filteredPlaces[index],
+        };
+      }),
+    [activeIndex, filteredPlaces],
   );
 
   useLayoutEffect(() => {
     if (viewMode !== 'feed' || !feedRef.current) return;
 
     const feed = feedRef.current;
-    const pendingPlaceName = pendingPlaceNameRef.current;
-    const requestedIndex = pendingPlaceName
-      ? filteredPlaces.findIndex((place) => place.name === pendingPlaceName)
-      : 0;
-    const targetIndex = requestedIndex >= 0 ? requestedIndex : 0;
+    isRecenteringRef.current = true;
+    feed.scrollTop = feed.clientHeight * 2;
 
-    feed.scrollTop =
-      feed.clientHeight * (filteredPlaces.length + targetIndex);
-    pendingPlaceNameRef.current = null;
-  }, [filteredPlaces, viewMode]);
+    const releaseFrame = window.requestAnimationFrame(() => {
+      isRecenteringRef.current = false;
+    });
+    return () => window.cancelAnimationFrame(releaseFrame);
+  }, [activeIndex, filteredPlaces, viewMode]);
+
+  useEffect(() => {
+    const nextPlace = filteredPlaces[
+      modulo(activeIndex + 1, filteredPlaces.length)
+    ];
+    const nextImage = nextPlace ? SPOT_IMAGES[nextPlace.name] : undefined;
+    if (!nextImage) return;
+
+    const preload = new Image();
+    preload.decoding = 'async';
+    preload.src = nextImage;
+  }, [activeIndex, filteredPlaces]);
+
+  useEffect(
+    () => () => {
+      if (scrollSettleRef.current !== null) {
+        window.clearTimeout(scrollSettleRef.current);
+      }
+    },
+    [],
+  );
 
   const handleFeedScroll = () => {
     const feed = feedRef.current;
     const count = filteredPlaces.length;
-    if (!feed || count === 0 || scrollFrameRef.current !== null) return;
+    if (!feed || count === 0 || isRecenteringRef.current) return;
 
-    scrollFrameRef.current = window.requestAnimationFrame(() => {
+    if (scrollSettleRef.current !== null) {
+      window.clearTimeout(scrollSettleRef.current);
+    }
+
+    scrollSettleRef.current = window.setTimeout(() => {
       const slideHeight = feed.clientHeight;
-      const rawIndex = Math.round(feed.scrollTop / slideHeight);
-
-      if (rawIndex < count / 2) {
-        feed.scrollTop += count * slideHeight;
-      } else if (rawIndex >= count * 2.5) {
-        feed.scrollTop -= count * slideHeight;
+      const virtualIndex = Math.round(feed.scrollTop / slideHeight);
+      const offset = Math.max(-2, Math.min(2, virtualIndex - 2));
+      if (offset !== 0) {
+        setActiveIndex((current) => modulo(current + offset, count));
       }
-
-      setActiveIndex(modulo(rawIndex, count));
-      scrollFrameRef.current = null;
-    });
+      scrollSettleRef.current = null;
+    }, 90);
   };
 
   const changeFilter = (filter: PlaceFilter) => {
@@ -348,7 +376,6 @@ export function RackPlaces() {
       (candidate) => candidate.name === place.name,
     );
 
-    pendingPlaceNameRef.current = place.name;
     setActiveFilter(targetFilter);
     setViewMode('feed');
     setActiveIndex(Math.max(targetIndex, 0));
@@ -417,6 +444,10 @@ export function RackPlaces() {
       zoom: 13,
       zoomControl: true,
       attributionControl: true,
+      zoomAnimation: false,
+      fadeAnimation: false,
+      markerZoomAnimation: false,
+      inertia: false,
     });
 
     L.tileLayer(
@@ -547,6 +578,7 @@ export function RackPlaces() {
       map.fitBounds(bounds, {
         padding: [44, 44],
         maxZoom: 14,
+        animate: false,
       });
     }
 
@@ -588,17 +620,27 @@ export function RackPlaces() {
           />
         </button>
 
-        <button
-          type="button"
-          className="rack-places-explora"
-          onClick={() => navigate('/descubrir/guadalajara')}
-        >
-          <Compass size={18} aria-hidden="true" />
-          TODA LA CIUDAD
-        </button>
+        <span className="rack-places-header-spacer" aria-hidden="true" />
       </header>
 
       <section className="rack-places-controls" aria-label="Controles del directorio">
+        <label className="rack-places-filter-select">
+          <span>CATEGORÍA</span>
+          <select
+            value={activeFilter}
+            onChange={(event) =>
+              changeFilter(event.target.value as PlaceFilter)
+            }
+          >
+            {(Object.keys(FILTER_LABELS) as PlaceFilter[]).map(
+              (filter) => (
+                <option key={filter} value={filter}>
+                  {FILTER_LABELS[filter]}
+                </option>
+              ),
+            )}
+          </select>
+        </label>
         <div className="rack-places-filters" role="group" aria-label="Filtrar lugares">
           {(Object.keys(FILTER_LABELS) as PlaceFilter[]).map((filter) => (
             <button
@@ -634,7 +676,7 @@ export function RackPlaces() {
             onClick={() => changeView('grid')}
           >
             <Grid3X3 size={17} aria-hidden="true" />
-            VER TODO
+            GRID
           </button>
           <button
             type="button"
@@ -669,15 +711,15 @@ export function RackPlaces() {
           onScroll={handleFeedScroll}
           aria-label="Feed infinito de lugares"
         >
-          {loopPlaces.map((place, index) => {
-            const placeIndex = modulo(index, filteredPlaces.length);
+          {virtualFeedPlaces.map(({ place, index, offset }) => {
             return (
               <PlaceFeedCard
-                key={`${place.name}-${index}`}
+                key={offset}
                 place={place}
-                index={placeIndex}
+                index={index}
                 total={filteredPlaces.length}
-                isClone={Math.floor(index / filteredPlaces.length) !== 1}
+                isClone={offset !== 0}
+                isActive={offset === 0}
               />
             );
           })}
@@ -928,11 +970,13 @@ function PlaceFeedCard({
   index,
   total,
   isClone,
+  isActive,
 }: {
   place: RackPlace;
   index: number;
   total: number;
   isClone: boolean;
+  isActive: boolean;
 }) {
   const kind = kindForPlace(place);
   const imageUrl = SPOT_IMAGES[place.name];
@@ -965,7 +1009,8 @@ function PlaceFeedCard({
               alt={`Vista de ${place.name}`}
               width="640"
               height="640"
-              loading="lazy"
+              loading={isActive ? 'eager' : 'lazy'}
+              fetchPriority={isActive ? 'high' : 'low'}
               decoding="async"
             />
             <figcaption>FOTO / {String(index + 1).padStart(2, '0')}</figcaption>
