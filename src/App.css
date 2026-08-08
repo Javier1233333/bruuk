@@ -47,6 +47,18 @@
   box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4) !important;
 }
 
+.hero-main-dark .btn-plans {
+  background: #8c7cff;
+  border-color: #8c7cff;
+  color: #0b0913;
+  box-shadow: 4px 4px 0 rgba(140, 124, 255, 0.38) !important;
+}
+
+.hero-main-dark .btn-plans:hover {
+  transform: translate(-3px, -3px) !important;
+  box-shadow: 7px 7px 0 rgba(140, 124, 255, 0.38) !important;
+}
+
 .hero-subtitle-p {
   font-size: clamp(1.15rem, 2.5vw, 1.45rem);
   color: var(--text-primary);
@@ -87,6 +99,17 @@
   }
   .hero-subtitle-p {
     padding-left: 1.2rem;
+  }
+  .hero-main-dark .hero-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .hero-main-dark .hero-actions .btn-mega {
+    width: 100%;
+    justify-content: center;
+    padding-inline: 1rem !important;
   }
 }
 

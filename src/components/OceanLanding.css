@@ -4,6 +4,8 @@
 
 .tiktok-feed-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -102,7 +104,7 @@
 
 .category-filters-floating {
   position: fixed;
-  top: 4.8rem;
+  top: 5.7rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
@@ -177,7 +179,9 @@
 
 .tiktok-scroll-container {
   width: 100%;
-  height: 100vh;
+  height: auto;
+  flex: 1;
+  min-height: 0;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
@@ -193,7 +197,7 @@
 
 .tiktok-slide {
   width: 100%;
-  height: 100vh;
+  height: calc(100svh - 80px);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   display: flex;
@@ -463,11 +467,14 @@
     padding: 1rem;
   }
   .category-filters-floating {
-    top: 4.2rem;
+    top: 8.55rem;
   }
   .filter-btn-floating {
     padding: 6px 8px;
     font-size: 0.65rem;
+  }
+  .tiktok-slide {
+    height: calc(100svh - 126px);
   }
   .filter-btn-rack svg {
     display: none;

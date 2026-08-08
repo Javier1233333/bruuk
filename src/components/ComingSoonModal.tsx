@@ -20,7 +20,7 @@ export function ComingSoonModal({ isOpen, onClose, onJoin, onOpenPrivacy }: Comi
                 </button>
                 <BruukLogo width={140} />
                 <h2 className="cs-title">Entra al Radar de Bruuk</h2>
-                <p className="cs-sub">Regístrate para recibir notificaciones sobre nuevos spots locales curados en Guadalajara, aperturas especiales e invitaciones a nuestros eventos exclusivos.</p>
+                <p className="cs-sub">Regístrate para recibir recomendaciones de nuevos spots locales, tiendas, antigüedades y hallazgos en Guadalajara.</p>
                 <button className="cs-btn" onClick={onJoin}>
                     Unirse
                 </button>

@@ -1,0 +1,6 @@
+.city-home { overflow-x: hidden; }
+.city-home-hero > * { min-width: 0; }
+
+@media (max-width: 600px) {
+  .city-home-hero h1 { font-size: clamp(2.35rem, 11.25vw, 3.35rem); }
+}

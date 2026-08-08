@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft,
-  ArrowUpRight,
   ChevronDown,
-  Disc3,
-  ShoppingBag,
-  Store,
 } from 'lucide-react';
 import { BruukLogo } from './BruukLogo';
+import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import spotsData from '../data/spots.json';
 import './OceanLanding.css';
@@ -39,7 +35,6 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares';
 
 export function OceanLanding() {
-  const navigate = useNavigate();
   const { city: urlCity } = useParams();
   const activeCity = urlCity === 'hermosillo' ? 'hermosillo' : 'guadalajara';
 
@@ -86,8 +81,11 @@ export function OceanLanding() {
     }
   }, [activeCategory]);
 
+  if (urlCity && urlCity !== 'guadalajara') return <Navigate to="/guadalajara/spots" replace />;
+
   return (
     <div className="tiktok-feed-wrapper">
+      <CityNav active="spots" />
       {/* Immersive background video with overlay, visible behind all slides */}
       <div className="spots-bg">
         <video
@@ -97,58 +95,6 @@ export function OceanLanding() {
         />
         <div className="spots-bg-overlay" />
       </div>
-
-      {/* Floating Header */}
-      <header className="spots-header-floating" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '90%', maxWidth: '800px', gap: '1rem' }}>
-        <button className="spots-back-btn" onClick={() => navigate('/')} style={{ flexShrink: 0 }}>
-          <ArrowLeft size={16} strokeWidth={2.5} />
-          Inicio
-        </button>
-
-        {/* City Toggle switcher */}
-        <div className="city-toggle-wrapper" style={{ display: 'flex', gap: '0.4rem', border: '2px solid rgba(255,255,255,0.15)', borderRadius: '30px', padding: '2px', background: 'rgba(0,0,0,0.6)', flexShrink: 0, pointerEvents: 'auto' }}>
-          <button
-            style={{
-              border: 'none',
-              background: activeCity === 'guadalajara' ? '#fff' : 'transparent',
-              color: activeCity === 'guadalajara' ? '#000' : '#fff',
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease'
-            }}
-            onClick={() => {
-              navigate('/descubrir/guadalajara', { replace: true });
-            }}
-          >
-            GDL
-          </button>
-          {/* <button
-            style={{
-              border: 'none',
-              background: activeCity === 'hermosillo' ? '#fff' : 'transparent',
-              color: activeCity === 'hermosillo' ? '#000' : '#fff',
-              fontSize: '0.75rem',
-              fontWeight: 'bold',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease'
-            }}
-            onClick={() => {
-              navigate('/descubrir/hermosillo', { replace: true });
-            }}
-          >
-            HMO
-          </button> */}
-        </div>
-
-        <div className="spots-header-logo" style={{ margin: 0, flexShrink: 0 }}>
-          <BruukLogo width={85} />
-        </div>
-      </header>
 
       {/* Floating Category Filters */}
       <div className="category-filters-floating">
@@ -177,15 +123,6 @@ export function OceanLanding() {
           >
             Bares
           </button>
-          {activeCity === 'guadalajara' && (
-            <button
-              className="filter-btn-floating filter-btn-rack"
-              onClick={() => navigate('/rack/lugares')}
-              aria-label="Abrir la colección especializada Rack"
-            >
-              Rack <ArrowUpRight size={14} aria-hidden="true" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -202,34 +139,6 @@ export function OceanLanding() {
             <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>
               Una selección honesta de rincones donde vale la pena aparecer. Sin algoritmos, sin filtros falsos.
             </p>
-            {activeCity === 'guadalajara' && (
-              <aside className="explora-rack-bridge" aria-labelledby="explora-rack-title">
-                <div>
-                  <span>/ COLECCIÓN ESPECIALIZADA</span>
-                  <strong id="explora-rack-title">¿BUSCAS PIEZAS CON HISTORIA?</strong>
-                </div>
-                <div className="explora-rack-links">
-                  <button
-                    type="button"
-                    onClick={() => navigate('/rack/lugares?filter=tiendas')}
-                  >
-                    <Store size={16} aria-hidden="true" /> TIENDAS
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/rack/lugares?filter=antiguedades')}
-                  >
-                    <Disc3 size={16} aria-hidden="true" /> ANTIGÜEDADES
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/rack/lugares?filter=tianguis')}
-                  >
-                    <ShoppingBag size={16} aria-hidden="true" /> TIANGUIS
-                  </button>
-                </div>
-              </aside>
-            )}
             <div className="scroll-indicator">
               <span>Desliza para explorar spots</span>
               <motion.div
@@ -273,11 +182,6 @@ export function OceanLanding() {
               <a href="/privacidad" className="end-privacy-btn">
                 Aviso de Privacidad
               </a>
-              {activeCity === 'guadalajara' && (
-                <a href="/rack/lugares" className="end-rack-btn">
-                  Explorar Rack
-                </a>
-              )}
             </div>
             <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '2.5rem' }}>
               &copy; {new Date().getFullYear()} bruuk. No sigas las reglas.

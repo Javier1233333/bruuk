@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 import {
-  ArrowLeft,
   ArrowUpRight,
   BookOpen,
   Disc3,
@@ -19,13 +18,14 @@ import {
   Store,
   X,
 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import placesData from '../../lugares-mapa-gdl.json';
 import { SPOT_IMAGES } from './spotImages';
 import { SPOT_MAP_LINKS } from './spotMapLinks';
 import './RackPlaces.css';
+import { CityNav } from '../components/CityNav';
 
 type SourceCategory = 'Rack recomienda' | 'Vinilos y antigüedades' | 'Tianguis';
 type PlaceKind = 'tiendas' | 'antiguedades' | 'tianguis';
@@ -228,7 +228,7 @@ const modulo = (value: number, divisor: number) =>
 const VIRTUAL_FEED_OFFSETS = [-2, -1, 0, 1, 2] as const;
 
 export function RackPlaces() {
-  const navigate = useNavigate();
+  const { city } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialFilter = filterFromSearchParams(searchParams);
   const feedRef = useRef<HTMLDivElement | null>(null);
@@ -593,36 +593,11 @@ export function RackPlaces() {
     };
   }, [isMapOpen, mapFilter, showPlaceInFeed]);
 
+  if (city && city !== 'guadalajara') return <Navigate to="/guadalajara/rack" replace />;
+
   return (
     <div className="rack-places-page">
-      <header className="rack-places-header">
-        <button
-          type="button"
-          className="rack-places-back"
-          onClick={() => navigate('/descubrir/guadalajara')}
-          aria-label="Volver a Explora Guadalajara"
-        >
-          <ArrowLeft size={19} aria-hidden="true" />
-          <span>EXPLORA</span>
-        </button>
-
-        <button
-          type="button"
-          className="rack-places-brand"
-          onClick={() => navigate('/')}
-          aria-label="Ir al inicio de Bruuk"
-        >
-          <img
-            src="/img/rack-logo.png"
-            alt="Bruuk Rack"
-            width="334"
-            height="113"
-          />
-        </button>
-
-        <span className="rack-places-header-spacer" aria-hidden="true" />
-      </header>
-
+      <CityNav active="rack" />
       <section className="rack-places-controls" aria-label="Controles del directorio">
         <label className="rack-places-filter-select">
           <span>CATEGORÍA</span>

@@ -130,9 +130,9 @@ function App() {
               Navega la ciudad. Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos, sin filtros patrocinados, recomendado por personas reales.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
-              <button className="btn btn-primary btn-mega" onClick={() => navigate('/descubrir')}>
+              <button className="btn btn-primary btn-mega" onClick={() => navigate('/guadalajara')}>
                 <Compass size={22} strokeWidth={2.5} />
-                DESCUBRIR SPOTS <ArrowRight size={20} strokeWidth={3} />
+                ABRIR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
               </button>
             </div>
           </div>
@@ -155,7 +155,7 @@ function App() {
                 <span>HERMOSILLO</span>
                 <ArrowRight size={22} strokeWidth={3} />
               </button> */}
-              <button className="city-map-btn btn-guadalajara" onClick={() => navigate('/descubrir/guadalajara')}>
+              <button className="city-map-btn btn-guadalajara" onClick={() => navigate('/guadalajara')}>
                 <span>GUADALAJARA</span>
                 <ArrowRight size={22} strokeWidth={3} />
               </button>
@@ -181,7 +181,7 @@ function App() {
               </p>
               <button
                 className="rack-portal-cta"
-                onClick={() => navigate('/rack/lugares')}
+                onClick={() => navigate('/guadalajara/rack')}
               >
                 EXPLORAR RACK <ArrowRight size={20} strokeWidth={3} />
               </button>
@@ -197,19 +197,19 @@ function App() {
               <div className="rack-portal-categories" aria-label="Abrir Rack por categoría">
                 <button
                   type="button"
-                  onClick={() => navigate('/rack/lugares?filter=tiendas')}
+                  onClick={() => navigate('/guadalajara/rack?filter=tiendas')}
                 >
                   <Store size={18} aria-hidden="true" /> 24 TIENDAS
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate('/rack/lugares?filter=antiguedades')}
+                  onClick={() => navigate('/guadalajara/rack?filter=antiguedades')}
                 >
                   <Disc3 size={18} aria-hidden="true" /> 13 ANTIGÜEDADES
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate('/rack/lugares?filter=tianguis')}
+                  onClick={() => navigate('/guadalajara/rack?filter=tianguis')}
                 >
                   <ShoppingBag size={18} aria-hidden="true" /> 9 TIANGUIS
                 </button>
@@ -376,10 +376,10 @@ function App() {
             <div className="newsletter-wrapper">
               <div className="newsletter-content">
                 <h2 className="glitch-hover">EXPLORA LA CIUDAD</h2>
-                <p>Descubre la lista curada de locales y eventos en tiempo real. Sal a la calle hoy.</p>
+                <p>Descubre una selección curada de spots, tiendas, antigüedades y tianguis. Sal a la calle hoy.</p>
                 <div className="newsletter-form" style={{ justifyContent: 'center', gap: '1.2rem', flexWrap: 'wrap' }}>
-                  <button className="btn btn-primary" onClick={() => navigate('/descubrir')}>
-                    EXPLORAR SPOTS <ArrowRight size={20} strokeWidth={3} />
+                  <button className="btn btn-primary" onClick={() => navigate('/guadalajara')}>
+                    EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
                   </button>
                   <button className="btn btn-secondary" onClick={handleJoin} style={{ fontSize: '0.9rem', padding: '0.65rem 1.6rem' }}>
                     Registrarse gratis
