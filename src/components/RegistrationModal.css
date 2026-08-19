@@ -24,6 +24,22 @@
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
+.modal-enter {
+    animation: modalEnter 180ms ease-out both;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .modal-header-actions {
     position: absolute;
     top: 1.5rem;
@@ -69,6 +85,67 @@
     text-align: center;
 }
 
+.radar-modal-intro {
+    text-align: left;
+}
+
+.radar-modal-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--accent-light);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+}
+
+.radar-modal-intro h2 {
+    margin-bottom: 1.25rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 7vw, 3rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+}
+
+.radar-modal-intro > p {
+    max-width: 42ch;
+    margin-bottom: 1.5rem;
+    font-size: 0.98rem;
+}
+
+.radar-modal-signals {
+    margin-bottom: 1.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.radar-modal-signals > div {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.radar-modal-signals strong {
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.11em;
+}
+
+.radar-modal-signals span {
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.radar-modal-start {
+    justify-content: space-between;
+}
+
 .step-indicator {
     font-size: 0.85rem;
     color: var(--text-secondary);
@@ -96,6 +173,17 @@
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr;
+}
+
+.modal-continue {
+    margin-top: 1.25rem;
+}
+
+.modal-continue:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .option-btn {
@@ -245,8 +333,21 @@
     line-height: 1.5;
 }
 
+.radar-honeypot {
+    position: absolute !important;
+    left: -10000px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
 @media (max-width: 600px) {
     .modal-content {
         padding: 3rem 1.5rem;
+    }
+
+    .radar-modal-signals > div {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 0.7rem;
     }
 }

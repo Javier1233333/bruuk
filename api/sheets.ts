@@ -5,16 +5,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, preferences } = req.body;
+  const { email, preferences, website } = req.body ?? {};
+
+  if (typeof website === 'string' && website.trim()) {
+    return res.status(200).json({ success: true });
+  }
 
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
   const SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL;
+  const SHEETS_SECRET = process.env.SHEETS_SECRET;
 
-  if (!SCRIPT_URL) {
-    return res.status(500).json({ error: 'Google Script URL not configured' });
+  if (!SCRIPT_URL || !SHEETS_SECRET) {
+    return res.status(500).json({ error: 'Google Sheets credentials not configured' });
   }
 
   try {
@@ -22,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        secret: process.env.SHEETS_SECRET,
+        secret: SHEETS_SECRET,
         email,
         preferences: preferences ?? {},
         timestamp: new Date().toISOString(),

@@ -1,0 +1,91 @@
+.maz-route-entry { --entry-purple: #ff9b59; --entry-accent: #ff9b59; --entry-acid: #8b7cf6; min-height: 100vh; height: auto; overflow-x: clip; overflow-y: visible; scroll-behavior: smooth; }
+.maz-route-entry .cabanas-entry-hero-copy > span,
+.maz-route-entry .cabanas-entry-lead > span,
+.maz-route-entry .cabanas-entry-chapter-copy > span { color: #8b7cf6; }
+.maz-route-entry .cabanas-entry-lead,
+.maz-route-entry .cabanas-entry-quote { align-content: center; }
+.maz-route-scroll-guide { position: fixed; z-index: 90; right: 18px; bottom: 22px; display: grid; grid-template-columns: auto 110px auto; align-items: center; gap: 10px; padding: 10px 12px; color: #fff; background: rgba(10, 9, 17, .9); border: 1px solid rgba(255, 255, 255, .22); backdrop-filter: blur(12px); pointer-events: none; }
+.maz-route-scroll-label-mobile { display: none; }
+.maz-route-scroll-guide span, .maz-route-scroll-guide small { font: 900 .54rem 'Outfit', sans-serif; letter-spacing: .12em; }
+.maz-route-scroll-guide small { color: #ff9b59; }
+.maz-route-scroll-track { position: relative; width: 110px; height: 3px; overflow: hidden; background: rgba(255, 255, 255, .2); }
+.maz-route-scroll-track i { position: absolute; inset: 0; display: block; background: var(--entry-acid); transform-origin: left center; transition: transform 80ms linear; }
+.maz-route-hero > img { object-position: center 48%; }
+.maz-route-hero .cabanas-entry-hero-copy { width: min(1050px, 86%); }
+.maz-route-hero h1 { font-size: clamp(3.8rem, 7.55vw, 7.75rem); }
+.maz-route-hero h1 em { color: #ff9b59; }
+.maz-route-stop figure img { object-position: center; }
+.maz-route-lead p { max-width: 1120px; }
+.maz-route-text-stop { grid-template-columns: 64px minmax(0, 1fr); }
+.maz-route-text-stop .cabanas-entry-chapter-copy { max-width: 920px; }
+.maz-route-inline-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.maz-route-inline-links a { display: inline-flex; align-items: center; gap: .55rem; padding-bottom: 5px; border-bottom: 1px solid var(--entry-purple); color: #fff; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .11em; }
+.maz-route-museum {
+  width: min(1240px, calc(100% - 56px));
+  margin: 0 auto;
+  padding: clamp(90px, 11vw, 150px) 0;
+  border-bottom: 1px solid var(--entry-line);
+}
+.maz-route-museum > div:first-child { max-width: 1000px; }
+.maz-route-museum > div:first-child > span { color: #8b7cf6; font: 900 .68rem 'Outfit', sans-serif; letter-spacing: .17em; }
+.maz-route-museum h2 { margin: 18px 0 58px; font: 900 clamp(3.1rem, 6vw, 6rem)/.84 'Outfit', sans-serif; letter-spacing: -.062em; }
+.maz-route-museum-grid { display: grid; grid-template-columns: minmax(280px, .78fr) minmax(360px, 1.22fr); gap: clamp(44px, 9vw, 130px); align-items: start; }
+.maz-route-museum-copy { display: grid; gap: 18px; }
+.maz-route-museum-copy p { margin: 0; color: #cfccd7; font-size: 1.1rem; line-height: 1.7; }
+.maz-route-museum-grid .cabanas-entry-facts { margin: 0; }
+.maz-route-museum-grid .cabanas-entry-facts a { display: inline-flex; align-items: center; gap: .55rem; width: max-content; margin-top: 9px; color: #fff; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .11em; }
+.maz-route-quote > span { color: #ff9b59; }
+.maz-route-exhibit { width: 100%; padding-inline: max(28px, calc((100vw - 1240px) / 2)); background: linear-gradient(135deg, rgba(255, 155, 89, .12), transparent 58%); }
+.maz-route-station { border-bottom: 0; }
+.maz-route-plan-note { max-width: 760px; margin: 34px 0 0; font-size: 1.08rem; font-weight: 700; line-height: 1.6; }
+
+@media (max-width: 900px) {
+  .maz-route-museum-grid { grid-template-columns: 1fr; }
+  .maz-route-text-stop { grid-template-columns: 48px minmax(0, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .maz-route-entry { height: 100svh; overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 70px; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; }
+  .maz-route-entry::-webkit-scrollbar { display: none; }
+  .maz-route-entry .maz-route-snap-card { min-height: calc(100svh - 70px); scroll-margin-top: 70px; scroll-snap-align: start; scroll-snap-stop: always; }
+  .maz-route-scroll-guide { right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); grid-template-columns: auto 72px auto; max-width: calc(100vw - 20px); padding: 9px 10px; }
+  .maz-route-scroll-label-desktop { display: none; }
+  .maz-route-scroll-label-mobile { display: block; }
+  .maz-route-scroll-guide span { max-width: 92px; line-height: 1.25; }
+  .maz-route-scroll-track { width: 72px; }
+  .maz-route-hero .cabanas-entry-hero-copy { width: 100%; }
+  .maz-route-hero h1 { font-size: clamp(2.55rem, 11.8vw, 3.7rem); }
+  .maz-route-hero > img { object-position: 66% center; }
+  .maz-route-lead { padding-block: 42px; }
+  .maz-route-lead p { font-size: clamp(1.8rem, 8.7vw, 2.65rem); }
+  .maz-route-entry .cabanas-entry-chapter { gap: 14px; padding-block: 32px; }
+  .maz-route-entry .cabanas-entry-chapter-copy h2 { margin: 10px 0 16px; font-size: clamp(2.1rem, 9.8vw, 3.15rem); }
+  .maz-route-entry .cabanas-entry-chapter-copy > p { margin-bottom: 10px; font-size: .88rem; line-height: 1.48; }
+  .maz-route-entry .cabanas-entry-facts { gap: 7px; margin: 14px 0 6px; padding-block: 10px; }
+  .maz-route-entry .cabanas-entry-facts span { font-size: .67rem; }
+  .maz-route-entry .cabanas-entry-chapter figure img,
+  .maz-route-entry .cabanas-entry-coffee figure img { height: 23svh; min-height: 170px; max-height: 230px; }
+  .maz-route-entry .cabanas-entry-chapter figure figcaption { display: none; }
+  .maz-route-museum { width: calc(100% - 36px); padding-block: 38px; }
+  .maz-route-exhibit { width: 100%; padding-inline: 18px; }
+  .maz-route-museum h2 { margin: 10px 0 24px; font-size: clamp(2.15rem, 10vw, 3.25rem); }
+  .maz-route-museum-copy { gap: 10px; }
+  .maz-route-museum-copy p { font-size: .9rem; line-height: 1.5; }
+  .maz-route-museum-grid { gap: 18px; }
+  .maz-route-museum-grid .cabanas-entry-facts a { width: 100%; justify-content: space-between; }
+  .maz-route-text-stop { grid-template-columns: 1fr; }
+  .maz-route-inline-links { display: grid; gap: 8px; margin-top: 12px; }
+  .maz-route-inline-links a { justify-content: space-between; font-size: .58rem; }
+  .maz-route-entry .cabanas-entry-quote { padding-block: 54px; }
+  .maz-route-entry .cabanas-entry-quote p { font-size: clamp(2.05rem, 9.8vw, 3rem); }
+  .maz-route-entry .cabanas-entry-plan { padding-block: 42px; }
+  .maz-route-entry .cabanas-entry-plan h2 { font-size: clamp(2.3rem, 10.5vw, 3.4rem); }
+  .maz-route-entry .cabanas-entry-plan > div { margin-top: 22px; }
+  .maz-route-entry .cabanas-entry-plan > div span { min-height: 62px; }
+  .maz-route-plan-note { margin-top: 20px; font-size: .9rem; }
+  .maz-route-entry .cabanas-entry-outro { gap: 24px; padding-block: 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maz-route-entry { scroll-behavior: auto; scroll-snap-type: y proximity; }
+}

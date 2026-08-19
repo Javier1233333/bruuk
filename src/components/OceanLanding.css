@@ -4,40 +4,23 @@
 
 .tiktok-feed-wrapper {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background-color: #080614;
+  background: #0a0911;
 }
 
-/* Background overlay with immersive video */
-.spots-bg {
+.tiktok-feed-wrapper::before {
+  content: '';
   position: fixed;
+  z-index: 0;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
   pointer-events: none;
-}
-
-.spots-bg-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.45;
-}
-
-.spots-bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(14, 13, 26, 0.82) 0%,
-    rgba(14, 13, 26, 0.88) 50%,
-    rgba(8, 6, 20, 0.94) 100-percent
-  );
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .16) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 /* ============================================================
@@ -214,12 +197,13 @@
 }
 
 .intro-card-overlay {
-  text-align: center;
+  width: auto;
   max-width: 500px;
   padding: 2.5rem;
-  background: rgba(14, 13, 26, 0.75);
+  text-align: center;
+  background: rgba(14, 13, 26, 0.82);
   border: 2px solid #fff;
-  box-shadow: 8px 8px 0px #8b7cf6;
+  box-shadow: 8px 8px 0 #8b7cf6;
   font-family: 'DM Sans', sans-serif;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -242,7 +226,7 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -1.5px;
-  line-height: 0.95;
+  line-height: .95;
   margin: 0;
   color: #fff;
 }
@@ -361,6 +345,7 @@
 /* Card slide centering */
 .card-slide {
   padding-top: 6rem; /* Make sure card doesn't hit header logo */
+  border-top: 1px solid rgba(255, 255, 255, .04);
 }
 
 .card-wrapper-centered {

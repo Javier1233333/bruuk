@@ -19,10 +19,10 @@ export function ComingSoonModal({ isOpen, onClose, onJoin, onOpenPrivacy }: Comi
                     <X size={20} />
                 </button>
                 <BruukLogo width={140} />
-                <h2 className="cs-title">Entra al Radar de Bruuk</h2>
-                <p className="cs-sub">Regístrate para recibir recomendaciones de nuevos spots locales, tiendas, antigüedades y hallazgos en Guadalajara.</p>
+                <h2 className="cs-title">Únete al Radar de Bruuk</h2>
+                <p className="cs-sub">Radar es la comunidad que recibe nuevos spots, planes y actualizaciones de Guadalajara antes que nadie.</p>
                 <button className="cs-btn" onClick={onJoin}>
-                    Unirse
+                    Unirme al Radar
                 </button>
                 <p className="cs-privacy" style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '1.2rem', textAlign: 'center', fontFamily: "'DM Sans', sans-serif" }}>
                     Al registrarte, aceptas nuestro <a href="#" onClick={(e) => { e.preventDefault(); onOpenPrivacy(); }} style={{ color: 'rgba(255, 255, 255, 0.85)', textDecoration: 'underline' }}>Aviso de Privacidad</a>.

@@ -1,0 +1,90 @@
+{
+  "siteUrl": "https://bruuk.space",
+  "siteName": "Bruuk",
+  "locale": "es_MX",
+  "default": {
+    "title": "Bruuk — Spots, rutas y cultura local en Guadalajara",
+    "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
+    "image": "/ocean-frame.jpg",
+    "imageAlt": "Bruuk, guía editorial para explorar Guadalajara",
+    "type": "website"
+  },
+  "routes": {
+    "/": {
+      "title": "Bruuk — Spots, rutas y cultura local en Guadalajara",
+      "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Bruuk, guía editorial para explorar Guadalajara",
+      "type": "website"
+    },
+    "/guadalajara": {
+      "title": "Guadalajara — Spots y lugares seleccionados | Bruuk",
+      "description": "Explora Guadalajara a través de spots, tiendas vintage, tianguis y rutas seleccionadas por personas locales.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Guía Bruuk de Guadalajara",
+      "type": "website"
+    },
+    "/guadalajara/spots": {
+      "title": "Spots curados en Guadalajara | Bruuk",
+      "description": "Cafés, comida, bares y rincones de Guadalajara elegidos para ayudarte a salir del feed y recorrer la ciudad.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Spots curados por Bruuk en Guadalajara",
+      "type": "website"
+    },
+    "/guadalajara/rack": {
+      "title": "Vintage, antigüedades y tianguis en Guadalajara | Bruuk",
+      "description": "Encuentra tiendas vintage, vinilos, antigüedades, archivo y tianguis con identidad propia en Guadalajara.",
+      "image": "/img/bruukcarrusel2.JPG",
+      "imageAlt": "Rack de Bruuk: vintage y hallazgos en Guadalajara",
+      "type": "website"
+    },
+    "/radar": {
+      "title": "Radar Bruuk — Rutas, cultura y señales de Guadalajara",
+      "description": "Crónicas, rutas, aperturas y cultura local para descubrir lo que pasa en Guadalajara antes de que se vuelva obvio.",
+      "image": "/radar/cabanas/fachada.jpg",
+      "imageAlt": "Radar Bruuk, archivo editorial de Guadalajara",
+      "type": "website"
+    },
+    "/radar/museo-cabanas-cafe-redescubrimiento": {
+      "title": "Museo Cabañas, café y volver a mirar | Radar Bruuk",
+      "description": "Un martes de entrada libre para volver al Museo Cabañas, mirar los murales de Orozco y terminar en un café local del Centro.",
+      "image": "/radar/cabanas/fachada.jpg",
+      "imageAlt": "Vista hacia el Museo Cabañas desde Paseo Hospicio",
+      "type": "article",
+      "section": "Cultura y ciudad",
+      "author": "Javier Fregoso"
+    },
+    "/radar/maz-desayuno-cafe-zapopan": {
+      "title": "El MAZ y una vuelta sin prisa por Zapopan Centro | Radar Bruuk",
+      "description": "La ruta personal de Javier Fregoso para desayunar, recorrer el MAZ, caminar el Centro de Zapopan y escuchar vinilos con café.",
+      "image": "/radar/maz-route/maz.jpg",
+      "imageAlt": "Entrada del Museo de Arte de Zapopan",
+      "type": "article",
+      "section": "Rutas",
+      "author": "Javier Fregoso"
+    },
+    "/guadalajara/ruta-museos": {
+      "title": "Museos de Guadalajara según lo que quieres ver | Bruuk",
+      "description": "Elige entre diez museos y espacios culturales reales de Guadalajara y Zapopan: murales, arte contemporáneo, historia, fósiles, periodismo y experiencias inmersivas.",
+      "image": "/radar/cabanas/fachada.jpg",
+      "imageAlt": "Selección de museos de Guadalajara y Zapopan",
+      "type": "article",
+      "section": "Museos"
+    },
+    "/lleva-bruuk": {
+      "title": "Recomienda un spot o lleva Bruuk a tu ciudad",
+      "description": "Propón un lugar, recomienda un spot o participa en la expansión de la guía urbana de Bruuk.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Participa en Bruuk",
+      "type": "website"
+    },
+    "/privacidad": {
+      "title": "Aviso de privacidad | Bruuk",
+      "description": "Consulta cómo Bruuk recopila, utiliza y protege tus datos personales.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Bruuk",
+      "type": "website",
+      "noindex": true
+    }
+  }
+}

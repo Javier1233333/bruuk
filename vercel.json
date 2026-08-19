@@ -7,6 +7,42 @@
       "destination": "/api/$1"
     },
     {
+      "source": "/guadalajara",
+      "destination": "/guadalajara/index.html"
+    },
+    {
+      "source": "/guadalajara/spots",
+      "destination": "/guadalajara/spots/index.html"
+    },
+    {
+      "source": "/guadalajara/rack",
+      "destination": "/guadalajara/rack/index.html"
+    },
+    {
+      "source": "/guadalajara/ruta-museos",
+      "destination": "/guadalajara/ruta-museos/index.html"
+    },
+    {
+      "source": "/radar",
+      "destination": "/radar/index.html"
+    },
+    {
+      "source": "/radar/museo-cabanas-cafe-redescubrimiento",
+      "destination": "/radar/museo-cabanas-cafe-redescubrimiento/index.html"
+    },
+    {
+      "source": "/radar/maz-desayuno-cafe-zapopan",
+      "destination": "/radar/maz-desayuno-cafe-zapopan/index.html"
+    },
+    {
+      "source": "/lleva-bruuk",
+      "destination": "/lleva-bruuk/index.html"
+    },
+    {
+      "source": "/privacidad",
+      "destination": "/privacidad/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

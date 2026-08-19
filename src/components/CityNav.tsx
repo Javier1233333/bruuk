@@ -21,7 +21,13 @@ export function CityNav({ active, trailing }: { active?: CitySection; trailing?:
       </label>
       <nav className="city-nav-sections" aria-label="Secciones de Guadalajara">
         <NavLink to="/guadalajara/spots" className={active === 'spots' ? 'active' : ''}><small>01</small><span>SPOTS</span></NavLink>
-        <NavLink to="/guadalajara/rack" className={active === 'rack' ? 'active' : ''}><small>02</small><span>RACK</span></NavLink>
+        <NavLink
+          to="/guadalajara/rack"
+          className={active === 'rack' ? 'active' : ''}
+          aria-label="Explorar Rack: vintage, segunda mano, antigüedades y tianguis"
+        >
+          <small>02</small><span>VINTAGE</span>
+        </NavLink>
       </nav>
       <div className="city-nav-trailing">{trailing}</div>
     </header>

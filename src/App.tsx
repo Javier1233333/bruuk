@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight, Compass, Check, Mail, MapPin, Store, Disc3, ShoppingBag } from 'lucide-react';
+import { Sparkles, Map, Globe, ArrowRight, Compass, Check, Mail, MapPin, Radio, RefreshCw } from 'lucide-react';
 import * as validator from 'email-validator';
 import { ManifestoModal } from './components/ManifestoModal';
-import { ComingSoonModal } from './components/ComingSoonModal';
-import { RegistrationModal } from './components/RegistrationModal';
 import { PrivacyModal } from './components/PrivacyModal';
 import { UsagePolicyModal } from './components/UsagePolicyModal';
 import { BruukLogo } from './components/BruukLogo';
@@ -32,8 +30,6 @@ const CITY_SUGGESTIONS = [
 ];
 
 function App() {
-  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
-  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isUsagePolicyOpen, setIsUsagePolicyOpen] = useState(false);
@@ -44,11 +40,6 @@ function App() {
   const [bruukoStatus, setBruukoStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [bruukoError, setBruukoError] = useState('');
   const navigate = useNavigate();
-
-  const handleJoin = () => {
-    setIsComingSoonOpen(false);
-    setIsRegistrationOpen(true);
-  };
 
   const nextPhoto = () => setCarouselIdx((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
   const prevPhoto = () => setCarouselIdx((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length);
@@ -113,8 +104,12 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
-          <button className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.5rem 1.5rem' }} onClick={() => setIsComingSoonOpen(true)}>
-            Registrarme
+          <button
+            className="header-secondary-link"
+            type="button"
+            onClick={() => navigate('/guadalajara/spots')}
+          >
+            EXPLORAR SPOTS <ArrowRight size={15} strokeWidth={2.5} />
           </button>
         </div>
       </header>
@@ -127,12 +122,12 @@ function App() {
               Menos pantalla.<br />Más mundo.
             </h1>
             <p className="hero-subtitle-p animate-fade-in delay-1">
-              Navega la ciudad. Cafés, bares y rincones donde vale la pena aparecer. Sin algoritmos, sin filtros patrocinados, recomendado por personas reales.
+              Spots, Rack y rincones donde vale la pena aparecer. Navega Guadalajara sin algoritmos, sin filtros patrocinados y con recomendaciones de personas reales.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
               <button className="btn btn-primary btn-mega" onClick={() => navigate('/guadalajara')}>
                 <Compass size={22} strokeWidth={2.5} />
-                ABRIR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
+                EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
               </button>
             </div>
           </div>
@@ -167,51 +162,47 @@ function App() {
           </div>
         </section>
 
-        {/* Rack Places — nueva sección que convive con el landing actual */}
-        <section className="rack-portal-section" aria-labelledby="rack-portal-title">
-          <div className="container rack-portal-grid">
-            <div className="rack-portal-copy">
-              <span className="rack-portal-eyebrow">/ RACK EN LA CALLE · GDL</span>
-              <h2 id="rack-portal-title">
-                BUSCA ALGO<br />QUE NO ESTÁ<br />EN EL FEED.
+        <section className="bruuk-explainer-section" aria-labelledby="bruuk-explainer-title">
+          <div className="container bruuk-explainer-grid">
+            <div className="bruuk-explainer-copy">
+              <span className="bruuk-explainer-eyebrow">/ QUÉ ES BRUUK</span>
+              <h2 id="bruuk-explainer-title">
+                UNA GUÍA VIVA<br />DE LA CIUDAD.
               </h2>
               <p>
-                Tiendas, archivo, vinilos, antigüedades y tianguis. Una ruta curada
-                para encontrar piezas con historia y lugares a los que sí vale la pena ir.
+                Bruuk reúne spots, tiendas y planes que vale la pena vivir en persona.
+                Seleccionamos lo esencial para que pases menos tiempo buscando y más tiempo en la ciudad.
               </p>
-              <button
-                className="rack-portal-cta"
-                onClick={() => navigate('/guadalajara/rack')}
-              >
-                EXPLORAR RACK <ArrowRight size={20} strokeWidth={3} />
-              </button>
             </div>
 
-            <div className="rack-portal-board" aria-label="46 lugares seleccionados">
-              <div className="rack-portal-board-top">
-                <span>RACK.</span>
-                <span>GDL / 2026</span>
+            <div className="bruuk-explainer-board" aria-label="Cómo funciona Bruuk">
+              <div className="bruuk-explainer-points">
+                <article>
+                  <span>01</span>
+                  <div><strong><Compass size={19} aria-hidden="true" /> SELECCIÓN</strong><p>Recomendaciones claras para encontrar un lugar y salir.</p></div>
+                </article>
+                <article>
+                  <span>02</span>
+                  <div><strong><RefreshCw size={19} aria-hidden="true" /> SIEMPRE CAMBIA</strong><p>Revisamos, agregamos y actualizamos el contenido conforme cambia la ciudad.</p></div>
+                </article>
+                <article>
+                  <span>03</span>
+                  <div><strong><Radio size={19} aria-hidden="true" /> RADAR BRUUK</strong><p>La comunidad que recibe nuevos spots, planes y actualizaciones antes que nadie.</p></div>
+                </article>
               </div>
-              <strong>46</strong>
-              <span className="rack-portal-board-label">LUGARES SELECCIONADOS</span>
-              <div className="rack-portal-categories" aria-label="Abrir Rack por categoría">
-                <button
-                  type="button"
-                  onClick={() => navigate('/guadalajara/rack?filter=tiendas')}
-                >
-                  <Store size={18} aria-hidden="true" /> 24 TIENDAS
+            </div>
+
+            <div className="bruuk-explainer-footer">
+              <span>GUADALAJARA / EDICIÓN 001</span>
+              <div className="bruuk-explainer-actions">
+                <button type="button" className="bruuk-explainer-radar-link" onClick={() => navigate('/radar')}>
+                  ABRIR RADAR <Radio size={18} />
                 </button>
                 <button
-                  type="button"
-                  onClick={() => navigate('/guadalajara/rack?filter=antiguedades')}
+                  className="bruuk-explainer-cta"
+                  onClick={() => navigate('/guadalajara')}
                 >
-                  <Disc3 size={18} aria-hidden="true" /> 13 ANTIGÜEDADES
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/guadalajara/rack?filter=tianguis')}
-                >
-                  <ShoppingBag size={18} aria-hidden="true" /> 9 TIANGUIS
+                  EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
                 </button>
               </div>
             </div>
@@ -295,16 +286,15 @@ function App() {
           </div>
         </section>
 
-        <section className="bruuko-callout" aria-labelledby="bruuko-title">
+        {false && <section id="lleva-bruuk" className="bruuko-callout" aria-labelledby="bruuko-title">
           <div className="container">
             <div className="bruuko-grid">
               <div className="bruuko-intro">
                 <span className="bruuko-eyebrow"><MapPin size={16} /> / Expande Bruuk</span>
-                <h2 id="bruuko-title">TU CIUDAD NECESITA BRUUK.</h2>
-                <p>Conviértete en un Bruuko: una persona local con ganas de compartir sus rincones favoritos, descubrir nuevas historias y acercar a la gente a lo mejor de su ciudad.</p>
-                <p className="bruuko-note">Juntos construimos una guía viva, hecha por quienes sí salen, conocen el barrio y quieren que más personas vivan la ciudad de verdad.</p>
+                <h2 id="bruuko-title">LLEVA BRUUK A TU CIUDAD.</h2>
+                <p>Bruuk crece con gente que conoce su ciudad y quiere compartirla. Si te mueven los lugares con historia, las comunidades reales y los planes fuera del feed, ayúdanos a abrir el siguiente punto del mapa.</p>
+                <p className="bruuko-note">No necesitas ser influencer ni experto: buscamos ojos locales, curiosidad y ganas de activar experiencias para la gente de tu ciudad.</p>
               </div>
-
               <div className="bruuko-form-card">
                 {bruukoStatus === 'success' ? (
                   <div className="bruuko-success" role="status">
@@ -316,19 +306,7 @@ function App() {
                 ) : (
                   <form onSubmit={handleBruukoSubmit} noValidate>
                     <label className="bruuko-label" htmlFor="bruuko-email"><Mail size={16} /> Tu correo</label>
-                    <input
-                      id="bruuko-email"
-                      className="bruuko-email-input"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      placeholder="tu@correo.com"
-                      value={bruukoEmail}
-                      onChange={(event) => setBruukoEmail(event.target.value)}
-                      disabled={bruukoStatus === 'loading'}
-                      required
-                    />
-
+                    <input id="bruuko-email" className="bruuko-email-input" type="email" inputMode="email" autoComplete="email" placeholder="tu@correo.com" value={bruukoEmail} onChange={(event) => setBruukoEmail(event.target.value)} disabled={bruukoStatus === 'loading'} required />
                     <fieldset className="bruuko-cities" disabled={bruukoStatus === 'loading'}>
                       <legend>¿En qué ciudad estás?</legend>
                       <div className="bruuko-city-options">
@@ -341,34 +319,21 @@ function App() {
                         <label className={`bruuko-city-option bruuko-city-search ${bruukoCity === 'other' ? 'is-selected' : ''}`}>
                           <input type="radio" name="bruuko-city" value="other" checked={bruukoCity === 'other'} onChange={() => setBruukoCity('other')} />
                           <span>¿No ves tu ciudad?</span>
-                          <input
-                            className="bruuko-city-input"
-                            type="search"
-                            list="bruuko-city-suggestions"
-                            placeholder="Escribe o busca tu ciudad"
-                            value={otherBruukoCity}
-                            onFocus={() => setBruukoCity('other')}
-                            onChange={(event) => { setOtherBruukoCity(event.target.value); setBruukoCity('other'); }}
-                            aria-label="Busca tu ciudad"
-                          />
-                          <datalist id="bruuko-city-suggestions">
-                            {CITY_SUGGESTIONS.map((city) => <option key={city} value={city} />)}
-                          </datalist>
+                          <input className="bruuko-city-input" type="search" list="bruuko-city-suggestions" placeholder="Escribe o busca tu ciudad" value={otherBruukoCity} onFocus={() => setBruukoCity('other')} onChange={(event) => { setOtherBruukoCity(event.target.value); setBruukoCity('other'); }} aria-label="Busca tu ciudad" />
+                          <datalist id="bruuko-city-suggestions">{CITY_SUGGESTIONS.map((city) => <option key={city} value={city} />)}</datalist>
                         </label>
                       </div>
                     </fieldset>
-
                     {bruukoStatus === 'error' && <p className="bruuko-error" role="alert">{bruukoError}</p>}
-
                     <button className="btn btn-primary bruuko-submit" type="submit" disabled={bruukoStatus === 'loading'}>
-                      {bruukoStatus === 'loading' ? 'ENVIANDO...' : <>QUIERO SER BRUUKO <ArrowRight size={19} strokeWidth={3} /></>}
+                      {bruukoStatus === 'loading' ? 'ENVIANDO...' : <>PROPONER MI CIUDAD <ArrowRight size={19} strokeWidth={3} /></>}
                     </button>
                   </form>
                 )}
               </div>
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* Newsletter Section */}
         <section className="newsletter">
@@ -381,9 +346,6 @@ function App() {
                   <button className="btn btn-primary" onClick={() => navigate('/guadalajara')}>
                     EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
                   </button>
-                  <button className="btn btn-secondary" onClick={handleJoin} style={{ fontSize: '0.9rem', padding: '0.65rem 1.6rem' }}>
-                    Registrarse gratis
-                  </button>
                 </div>
               </div>
             </div>
@@ -391,32 +353,46 @@ function App() {
         </section>
       </main>
 
-      <footer>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div className="footer-logo-wrap" style={{ display: 'flex', alignItems: 'center' }}>
-              <BruukLogo width={80} />
-            </div>
-            <a href="#" onClick={(e) => { e.preventDefault(); setIsPrivacyOpen(true); }} style={{ color: 'rgba(255, 255, 255, 0.95)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.15s' }} onMouseOver={e => e.currentTarget.style.color = '#000'} onMouseOut={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)'}>Aviso de Privacidad</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); setIsUsagePolicyOpen(true); }} style={{ color: 'rgba(255, 255, 255, 0.95)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.15s' }} onMouseOver={e => e.currentTarget.style.color = '#000'} onMouseOut={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)'}>Políticas de uso</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); setIsManifestoOpen(true); }} style={{ color: 'rgba(255, 255, 255, 0.95)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.15s' }} onMouseOver={e => e.currentTarget.style.color = '#000'} onMouseOut={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)'}>Manifiesto</a>
-            <a href="mailto:contacto@bruuk.space" style={{ color: 'rgba(255, 255, 255, 0.95)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.15s' }} onMouseOver={e => e.currentTarget.style.color = '#000'} onMouseOut={e => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.95)'}>contacto@bruuk.space</a>
+      <footer className="site-footer">
+        <div className="container">
+          <div className="site-footer-topline">
+            <BruukLogo width={112} />
           </div>
-          <p style={{ margin: 0 }}>&copy; {new Date().getFullYear()} bruuk. No sigas las reglas.</p>
+
+          <div className="site-footer-main">
+            <div className="site-footer-statement">
+              <span>UNA GUÍA HECHA POR PERSONAS</span>
+              <strong>MENOS PANTALLA.<br />MÁS MUNDO.</strong>
+              <p>Spots, hallazgos y rutas para volver a mirar la ciudad.</p>
+            </div>
+
+            <nav className="site-footer-nav" aria-label="Navegación del pie de página">
+              <div>
+                <span>EXPLORAR</span>
+                <a href="/guadalajara/spots">Spots</a>
+                <a href="/guadalajara/rack">Vintage y tianguis</a>
+                <a href="/radar">Radar editorial</a>
+              </div>
+              <div>
+                <span>PARTICIPAR</span>
+                <a href="/lleva-bruuk">Expande Bruuk</a>
+                <a href="mailto:contacto@bruuk.space">Contacto</a>
+              </div>
+            </nav>
+
+          </div>
+
+          <div className="site-footer-bottom">
+            <p>&copy; {new Date().getFullYear()} BRUUK.</p>
+            <div className="site-footer-legal">
+              <button type="button" onClick={() => setIsPrivacyOpen(true)}>Privacidad</button>
+              <button type="button" onClick={() => setIsUsagePolicyOpen(true)}>Políticas de uso</button>
+              <button type="button" onClick={() => setIsManifestoOpen(true)}>Manifiesto</button>
+            </div>
+            <p>NO SIGAS LAS REGLAS. SIGUE LA SEÑAL.</p>
+          </div>
         </div>
       </footer>
-
-      <ComingSoonModal
-        isOpen={isComingSoonOpen}
-        onClose={() => setIsComingSoonOpen(false)}
-        onJoin={handleJoin}
-        onOpenPrivacy={() => setIsPrivacyOpen(true)}
-      />
-
-      <RegistrationModal
-        isOpen={isRegistrationOpen}
-        onClose={() => setIsRegistrationOpen(false)}
-      />
 
       <ManifestoModal
         isOpen={isManifestoOpen}

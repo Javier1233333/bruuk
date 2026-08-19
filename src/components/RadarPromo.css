@@ -1,0 +1,255 @@
+.radar-promo {
+  display: flex;
+  width: min(90vw, 390px);
+  min-height: 340px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  color: #09090d;
+  background: #a78bfa;
+  border: 3px solid #ffffff;
+  box-shadow: 9px 9px 0 #09090d;
+}
+
+.radar-promo__eyebrow,
+.radar-promo__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.radar-promo h2 {
+  margin: 1.1rem 0 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+}
+
+.radar-promo p {
+  margin: 0 0 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.radar-promo button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  background: #09090d;
+  border: 2px solid #09090d;
+  box-shadow: 4px 4px 0 #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: box-shadow 140ms ease, transform 140ms ease;
+}
+
+.radar-promo button:hover,
+.radar-promo button:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #ffffff; }
+.radar-promo button:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #ffffff; }
+
+.radar-promo__hint {
+  margin-top: 1.4rem;
+  opacity: 0.64;
+  font-size: 0.54rem;
+}
+
+.radar-promo-rack {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr);
+  color: #ffffff;
+  background: #09090d;
+}
+
+.radar-promo-rack__visual {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 5vw, 72px);
+  overflow: hidden;
+  color: #09090d;
+  background:
+    linear-gradient(rgba(9,9,13,.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(9,9,13,.15) 1px, transparent 1px),
+    #a78bfa;
+  background-size: 40px 40px;
+}
+
+.radar-promo-rack__visual::after {
+  content: '';
+  position: absolute;
+  right: -18%;
+  bottom: -32%;
+  width: min(38vw, 470px);
+  aspect-ratio: 1;
+  border: clamp(32px, 5vw, 70px) solid rgba(9,9,13,.12);
+  border-radius: 50%;
+}
+
+.radar-promo-rack__visual-top,
+.radar-promo-rack__signal {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font: 800 .64rem 'Outfit', sans-serif;
+  letter-spacing: .16em;
+}
+
+.radar-promo-rack__visual > strong {
+  position: relative;
+  z-index: 1;
+  font: 900 clamp(9rem, 23vw, 20rem)/.68 'Outfit', sans-serif;
+  letter-spacing: -.1em;
+}
+
+.radar-promo-rack__visual > svg {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 12%;
+  width: clamp(48px, 7vw, 82px);
+  height: auto;
+  transform: translateY(-50%);
+}
+
+.radar-promo-rack__signal { align-self: flex-end; }
+
+.radar-promo-rack__copy {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 6vw, 90px);
+  background:
+    linear-gradient(rgba(99,102,241,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,.08) 1px, transparent 1px),
+    #09090d;
+  background-size: 34px 34px;
+}
+
+.radar-promo-rack__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  color: #aaaaba;
+  font: 800 .62rem 'Outfit', sans-serif;
+  letter-spacing: .15em;
+}
+
+.radar-promo-rack__meta span:first-child { display: inline-flex; align-items: center; gap: .5rem; color: #a78bfa; }
+
+.radar-promo-rack__copy h2 {
+  max-width: 720px;
+  margin: 0 0 1.5rem;
+  font: 900 clamp(2.6rem, 5.5vw, 6.3rem)/.88 'Outfit', sans-serif;
+  letter-spacing: -.065em;
+}
+
+.radar-promo-rack__copy p {
+  max-width: 580px;
+  margin: 0 0 2rem;
+  color: #aaaaba;
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  line-height: 1.62;
+}
+
+.radar-promo-rack__copy button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  gap: .65rem;
+  padding: 0 1.2rem;
+  color: #09090d;
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  box-shadow: 5px 5px 0 #6366f1;
+  font: 900 .7rem 'Outfit', sans-serif;
+  letter-spacing: .12em;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.radar-promo-rack__copy button:hover,
+.radar-promo-rack__copy button:focus-visible { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #6366f1; }
+
+.radar-promo-rack__hint {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  color: #777583;
+  font: 800 .55rem 'Outfit', sans-serif;
+  letter-spacing: .14em;
+}
+
+@media (min-width: 701px) and (max-height: 820px) {
+  .radar-promo-rack__copy {
+    justify-content: center;
+    padding: clamp(24px, 4vh, 36px) clamp(32px, 4vw, 64px);
+  }
+
+  .radar-promo-rack__meta {
+    margin-bottom: 1rem;
+  }
+
+  .radar-promo-rack__copy h2 {
+    margin-bottom: .9rem;
+    font-size: clamp(2.8rem, 8vh, 4.5rem);
+    line-height: .86;
+  }
+
+  .radar-promo-rack__copy p {
+    margin-bottom: 1.1rem;
+    font-size: .98rem;
+    line-height: 1.45;
+  }
+
+  .radar-promo-rack__copy button {
+    min-height: 46px;
+  }
+
+  .radar-promo-rack__hint {
+    bottom: 12px;
+  }
+}
+
+@media (max-width: 700px) {
+  .radar-promo-rack { grid-template-columns: 1fr; grid-template-rows: minmax(160px,.65fr) minmax(0,1.35fr); }
+  .radar-promo-rack__visual { padding: 20px; }
+  .radar-promo-rack__visual > strong { font-size: clamp(6rem,30vw,10rem); }
+  .radar-promo-rack__visual > svg { width: 40px; }
+  .radar-promo-rack__copy { justify-content: flex-start; padding: 28px 22px 56px; }
+  .radar-promo-rack__meta { margin-bottom: 1rem; }
+  .radar-promo-rack__copy h2 { margin-bottom: .9rem; font-size: clamp(2.05rem,10.5vw,3.8rem); }
+  .radar-promo-rack__copy p { margin-bottom: 1.25rem; font-size: .92rem; line-height: 1.48; }
+  .radar-promo-rack__hint { right: 18px; bottom: 14px; }
+}
+
+@media (max-height: 720px) and (max-width: 700px) {
+  .radar-promo-rack__visual > strong { font-size: clamp(5rem,24vw,7rem); }
+  .radar-promo-rack__copy h2 { font-size: clamp(1.8rem,9vw,3rem); }
+  .radar-promo-rack__copy p { font-size: .84rem; }
+}

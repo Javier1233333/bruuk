@@ -7,6 +7,8 @@ import {
 import { BruukLogo } from './BruukLogo';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
+import { RadarPromo } from './RadarPromo';
+import { RegistrationModal } from './RegistrationModal';
 import spotsData from '../data/spots.json';
 import './OceanLanding.css';
 
@@ -39,6 +41,7 @@ export function OceanLanding() {
   const activeCity = urlCity === 'hermosillo' ? 'hermosillo' : 'guadalajara';
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
+  const [isRadarOpen, setIsRadarOpen] = useState(false);
   const spots = useMemo(
     () =>
       shuffleArray(
@@ -74,6 +77,11 @@ export function OceanLanding() {
     return true;
   });
 
+  const feedSlides = filteredSpots.flatMap((spot, index) => {
+    const isRadarMoment = (index + 1) % 6 === 0 && index < 18;
+    return isRadarMoment ? [spot, { id: `radar-${index}`, radar: true }] : [spot];
+  });
+
   // Reset scroll to top when category changes
   useEffect(() => {
     if (containerRef.current) {
@@ -86,15 +94,6 @@ export function OceanLanding() {
   return (
     <div className="tiktok-feed-wrapper">
       <CityNav active="spots" />
-      {/* Immersive background video with overlay, visible behind all slides */}
-      <div className="spots-bg">
-        <video
-          className="spots-bg-video"
-          src="/ocean.mp4"
-          autoPlay loop muted playsInline
-        />
-        <div className="spots-bg-overlay" />
-      </div>
 
       {/* Floating Category Filters */}
       <div className="category-filters-floating">
@@ -154,12 +153,18 @@ export function OceanLanding() {
 
         {/* Slides 1 to N: The Spot Cards */}
         <AnimatePresence mode="wait">
-          {filteredSpots.map((spot) => (
-            <section className="tiktok-slide card-slide" key={`${spot.id}-${activeCategory}`}>
-              <div className="card-wrapper-centered">
-                <SpotCard spot={spot} />
-              </div>
-            </section>
+          {feedSlides.map((slide) => (
+            'radar' in slide ? (
+              <section className="tiktok-slide radar-slide" key={`${slide.id}-${activeCategory}`}>
+                <RadarPromo onJoin={() => setIsRadarOpen(true)} />
+              </section>
+            ) : (
+              <section className="tiktok-slide card-slide" key={`${slide.id}-${activeCategory}`}>
+                <div className="card-wrapper-centered">
+                  <SpotCard spot={slide} />
+                </div>
+              </section>
+            )
           ))}
         </AnimatePresence>
 
@@ -190,6 +195,7 @@ export function OceanLanding() {
         </section>
 
       </div>
+      <RegistrationModal isOpen={isRadarOpen} onClose={() => setIsRadarOpen(false)} />
     </div>
   );
 }

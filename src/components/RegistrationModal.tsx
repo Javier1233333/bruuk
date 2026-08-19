@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { X, ArrowRight, ArrowLeft, Check, Headphones, Utensils, Coffee, Palette, Guitar, Paintbrush, Zap, Tent, Map, Users, PartyPopper, Network } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { X, ArrowRight, ArrowLeft, Check, Headphones, Utensils, Coffee, Palette, Guitar, Paintbrush, Zap, Tent, Map, Users, PartyPopper, Network, Radio } from 'lucide-react';
 import * as validator from 'email-validator';
 import './RegistrationModal.css';
 
@@ -48,7 +49,7 @@ const QUESTIONS = [
 ];
 
 export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(-1);
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [email, setEmail] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -56,26 +57,54 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+    useEffect(() => {
+        if (!isOpen) {
+            setStep(-1);
+            setAnswers({});
+            setEmail('');
+            setErrorMsg(null);
+            setIsSubmitted(false);
+            setIsAlreadyRegistered(false);
+            setIsSubmitting(false);
+            return;
+        }
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleOptionSelect = (questionId: string, optionId: string) => {
         setAnswers(prev => ({ ...prev, [questionId]: optionId }));
-        setTimeout(() => {
+    };
+
+    const handleContinue = () => {
+        const currentQuestion = QUESTIONS[step];
+
+        if (currentQuestion && answers[currentQuestion.id]) {
             setStep(prev => prev + 1);
-        }, 300); // Pequeño delay para mostrar la selección
+            setErrorMsg(null);
+        }
     };
 
     const handleBack = () => {
-        if (step > 0) {
+        if (step >= 0) {
             setStep(prev => prev - 1);
             setErrorMsg(null);
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (isSubmitting) return;
+        const formData = new FormData(e.currentTarget);
+        const website = String(formData.get('website') ?? '').trim();
         setIsSubmitting(true);
         setErrorMsg(null);
 
@@ -96,7 +125,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 const joinRes = await fetch(window.location.origin + '/api/join', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: cleanEmail, tags: ['VIP Access', ...userTags] }),
+                    body: JSON.stringify({ email: cleanEmail, website, tags: ['VIP Access', 'Radar Bruuk', ...userTags] }),
                 });
                 if (joinRes.ok) {
                     const joinData = await joinRes.json();
@@ -112,7 +141,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 setTimeout(() => {
                     onClose();
                     setTimeout(() => {
-                        setStep(0);
+                        setStep(-1);
                         setAnswers({});
                         setEmail('');
                         setErrorMsg(null);
@@ -129,12 +158,12 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                 fetch(window.location.origin + '/api/sheets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: cleanEmail, preferences: answers }),
+                    body: JSON.stringify({ email: cleanEmail, preferences: answers, website }),
                 }),
                 fetch(window.location.origin + '/api/welcome', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: cleanEmail }),
+                    body: JSON.stringify({ email: cleanEmail, website }),
                 }),
             ]);
 
@@ -143,7 +172,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
             setTimeout(() => {
                 onClose();
                 setTimeout(() => {
-                    setStep(0);
+                    setStep(-1);
                     setAnswers({});
                     setEmail('');
                     setErrorMsg(null);
@@ -160,11 +189,11 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
         }
     };
 
-    return (
+    return createPortal(
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="modal-content modal-enter" onClick={e => e.stopPropagation()}>
                 <div className="modal-header-actions">
-                    {step > 0 && !isSubmitted && (
+                    {step >= 0 && !isSubmitted && (
                         <button className="modal-back" onClick={handleBack} aria-label="Retroceder">
                             <ArrowLeft size={24} />
                         </button>
@@ -176,7 +205,29 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
 
                 {!isSubmitted ? (
                     <>
-                        {step < QUESTIONS.length ? (
+                        {step === -1 ? (
+                            <div className="modal-step radar-modal-intro">
+                                <div className="radar-modal-eyebrow">
+                                    <Radio size={17} aria-hidden="true" /> / RADAR BRUUK
+                                </div>
+                                <h2>LO QUE PASA EN LA CIUDAD, ANTES DE QUE SE VUELVA OBVIO.</h2>
+                                <p>
+                                    Radar es la comunidad editorial de Bruuk. Curamos lo nuevo de Guadalajara y te enviamos las señales que sí vale la pena seguir.
+                                </p>
+                                <div className="radar-modal-signals" aria-label="Lo que recibirás en Radar">
+                                    <div><strong>SEÑALES</strong><span>Nuevos spots, aperturas y hallazgos.</span></div>
+                                    <div><strong>RUTAS</strong><span>Planes, reseñas y cultura local.</span></div>
+                                    <div><strong>SIN RUIDO</strong><span>Actualizaciones constantes, correo solo cuando hay algo valioso.</span></div>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary w-full radar-modal-start"
+                                    onClick={() => setStep(0)}
+                                >
+                                    Quiero recibir señales <ArrowRight size={18} />
+                                </button>
+                            </div>
+                        ) : step < QUESTIONS.length ? (
                             <div className="modal-step">
                                 <div className="step-indicator">
                                     Paso {step + 1} de {QUESTIONS.length}
@@ -194,13 +245,25 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                         </button>
                                     ))}
                                 </div>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary w-full modal-continue"
+                                    onClick={handleContinue}
+                                    disabled={!answers[QUESTIONS[step].id]}
+                                >
+                                    Continuar <ArrowRight size={18} />
+                                </button>
                             </div>
                         ) : (
                             <div className="modal-step">
                                 <div className="step-indicator">Paso Final</div>
-                                <h2>¿A dónde enviamos el acceso?</h2>
-                                <p>Cero spam, cero distracciones. Solo tu boleto de salida.</p>
+                                <h2>¿A dónde enviamos las señales?</h2>
+                                <p>Nuevos spots, planes y actualizaciones antes que nadie. Cero spam.</p>
                                 <form onSubmit={handleSubmit} className="email-form">
+                                    <label className="radar-honeypot" aria-hidden="true">
+                                        Sitio web
+                                        <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+                                    </label>
                                     <input
                                         type="email"
                                         placeholder="tu@correo.com"
@@ -219,7 +282,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                         disabled={isSubmitting}
                                     >
                                         {isSubmitting ? 'Procesando...' : (
-                                            <>Entrar a BRUUK <ArrowRight size={18} /></>
+                                            <>Unirme al Radar <ArrowRight size={18} /></>
                                         )}
                                     </button>
                                 </form>
@@ -231,19 +294,20 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2>Ya estás en la lista.</h2>
-                        <p>Este correo ya fue registrado antes. Revisa tu bandeja de entrada — y también <strong>spam</strong>, <strong>promociones</strong> y <strong>otras</strong>. El correo ya está ahí.</p>
+                        <h2>Ya eres parte del Radar.</h2>
+                        <p>Este correo ya estaba registrado. Revisa tu bandeja de entrada — y también <strong>spam</strong>, <strong>promociones</strong> y <strong>otras</strong>. Tu señal ya está ahí.</p>
                     </div>
                 ) : (
                     <div className="modal-success animate-fade-in">
                         <div className="success-icon-wrapper">
                             <Check size={40} className="success-icon" />
                         </div>
-                        <h2>Ya estás dentro.</h2>
-                        <p>Hemos guardado tu perfil. Prepárate para dejar la pantalla y salir al mundo real.</p>
+                        <h2>Ya estás en el Radar.</h2>
+                        <p>Guardamos tu perfil. Recibirás nuevos spots, planes y actualizaciones antes que nadie.</p>
                     </div>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body,
     );
 }

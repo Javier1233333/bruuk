@@ -26,6 +26,8 @@ import { SPOT_IMAGES } from './spotImages';
 import { SPOT_MAP_LINKS } from './spotMapLinks';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
+import { RadarPromo } from '../components/RadarPromo';
+import { RegistrationModal } from '../components/RegistrationModal';
 
 type SourceCategory = 'Rack recomienda' | 'Vinilos y antigüedades' | 'Tianguis';
 type PlaceKind = 'tiendas' | 'antiguedades' | 'tianguis';
@@ -238,6 +240,7 @@ export function RackPlaces() {
   const mapDialogRef = useRef<HTMLDivElement | null>(null);
   const mapCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const radarBoundariesRef = useRef<Set<number>>(new Set());
   const [activeFilter, setActiveFilter] =
     useState<PlaceFilter>(initialFilter);
   const [mapFilter, setMapFilter] =
@@ -249,6 +252,9 @@ export function RackPlaces() {
   const [isMapOpen, setIsMapOpen] = useState(
     () => searchParams.get('view') === 'map',
   );
+  const [radarSeen, setRadarSeen] = useState(0);
+  const [isRadarSlide, setIsRadarSlide] = useState(false);
+  const [isRadarOpen, setIsRadarOpen] = useState(false);
 
   const updateRackUrl = useCallback(
     (
@@ -297,7 +303,7 @@ export function RackPlaces() {
       isRecenteringRef.current = false;
     });
     return () => window.cancelAnimationFrame(releaseFrame);
-  }, [activeIndex, filteredPlaces, viewMode]);
+  }, [activeIndex, filteredPlaces, isRadarSlide, viewMode]);
 
   useEffect(() => {
     const nextPlace = filteredPlaces[
@@ -334,7 +340,28 @@ export function RackPlaces() {
       const virtualIndex = Math.round(feed.scrollTop / slideHeight);
       const offset = Math.max(-2, Math.min(2, virtualIndex - 2));
       if (offset !== 0) {
-        setActiveIndex((current) => modulo(current + offset, count));
+        if (isRadarSlide) {
+          setIsRadarSlide(false);
+          if (offset < 0) setActiveIndex(modulo(activeIndex - 1, count));
+        } else {
+          const nextIndex = modulo(activeIndex + offset, count);
+          const returningToRadar = offset < 0 && radarBoundariesRef.current.has(activeIndex);
+          const knownRadarBoundary = radarBoundariesRef.current.has(nextIndex);
+          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % 6 === 0;
+
+          if (returningToRadar) {
+            setIsRadarSlide(true);
+          } else if (reachesRadarBoundary && (knownRadarBoundary || radarSeen < 3)) {
+            if (!knownRadarBoundary) {
+              radarBoundariesRef.current.add(nextIndex);
+              setRadarSeen((seen) => seen + 1);
+            }
+            setIsRadarSlide(true);
+            setActiveIndex(nextIndex);
+          } else {
+            setActiveIndex(nextIndex);
+          }
+        }
       }
       scrollSettleRef.current = null;
     }, 90);
@@ -347,6 +374,9 @@ export function RackPlaces() {
         : viewMode;
     setActiveFilter(filter);
     setActiveIndex(0);
+    setIsRadarSlide(false);
+    setRadarSeen(0);
+    radarBoundariesRef.current.clear();
     setViewMode(nextView);
     updateRackUrl(filter, nextView);
   };
@@ -687,7 +717,11 @@ export function RackPlaces() {
           aria-label="Feed infinito de lugares"
         >
           {virtualFeedPlaces.map(({ place, index, offset }) => {
-            return (
+            return offset === 0 && isRadarSlide ? (
+              <section className="rack-place-slide rack-radar-slide" key={offset}>
+                <RadarPromo variant="rack" onJoin={() => setIsRadarOpen(true)} />
+              </section>
+            ) : (
               <PlaceFeedCard
                 key={offset}
                 place={place}
@@ -699,7 +733,7 @@ export function RackPlaces() {
             );
           })}
           <div className="rack-places-feed-status" aria-live="polite">
-            {String(activeIndex + 1).padStart(2, '0')} / {String(filteredPlaces.length).padStart(2, '0')}
+            {isRadarSlide ? 'RADAR / BRUUK' : <>{String(activeIndex + 1).padStart(2, '0')} / {String(filteredPlaces.length).padStart(2, '0')}</>}
           </div>
         </main>
       ) : (
@@ -792,6 +826,7 @@ export function RackPlaces() {
           </section>
         </div>
       )}
+      <RegistrationModal isOpen={isRadarOpen} onClose={() => setIsRadarOpen(false)} />
     </div>
   );
 }

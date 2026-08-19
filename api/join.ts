@@ -8,7 +8,11 @@ export default async function handler(
     return response.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, tags } = request.body;
+  const { email, website } = request.body ?? {};
+
+  if (typeof website === 'string' && website.trim()) {
+    return response.status(200).json({ success: true, alreadyRegistered: false });
+  }
 
   if (!email) {
     return response.status(400).json({ error: 'Email is required' });

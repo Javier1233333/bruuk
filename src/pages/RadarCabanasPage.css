@@ -1,0 +1,255 @@
+.cabanas-entry {
+  --entry-bg: #0a0911;
+  --entry-text: #fffdf8;
+  --entry-muted: #aaa7b5;
+  --entry-line: rgba(255, 255, 255, .17);
+  --entry-purple: #8b7cf6;
+  --entry-accent: #ff9b59;
+  --entry-acid: #ff9b59;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--entry-text);
+  background: var(--entry-bg);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.cabanas-entry *, .cabanas-entry *::before, .cabanas-entry *::after { box-sizing: border-box; }
+.cabanas-entry a { color: inherit; text-decoration: none; }
+
+.cabanas-entry-nav {
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  height: 76px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 0 24px;
+  background: rgba(10, 9, 17, .94);
+  border-bottom: 1px solid var(--entry-line);
+  backdrop-filter: blur(14px);
+}
+
+.cabanas-entry-nav > a:first-child { line-height: 0; }
+.cabanas-entry-nav > div { display: grid; gap: 2px; padding-left: 16px; border-left: 2px solid var(--entry-accent); }
+.cabanas-entry-nav > div span, .cabanas-entry-nav > div strong, .cabanas-entry-nav > a:last-child { font: 900 .62rem 'Outfit', sans-serif; letter-spacing: .14em; }
+.cabanas-entry-nav > div span { color: var(--entry-muted); font-size: .56rem; }
+.cabanas-entry-nav > a:last-child { display: inline-flex; min-height: 42px; align-items: center; gap: .5rem; padding: 0 .9rem; border: 1px solid var(--entry-line); }
+
+.cabanas-entry-hero {
+  position: relative;
+  min-height: calc(100svh - 76px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: clamp(92px, 12vw, 150px) max(28px, calc((100vw - 1240px) / 2)) clamp(56px, 7vw, 92px);
+  border-bottom: 1px solid var(--entry-line);
+}
+
+.cabanas-entry-hero > img, .cabanas-entry-hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cabanas-entry-hero > img { object-fit: cover; object-position: center 58%; filter: saturate(.72) contrast(1.08); }
+.cabanas-entry-hero-shade { background: linear-gradient(90deg, rgba(10,9,17,.97) 0%, rgba(10,9,17,.76) 48%, rgba(10,9,17,.2) 100%), linear-gradient(0deg, rgba(10,9,17,.64), transparent 58%); }
+.cabanas-entry-hero-copy { position: relative; z-index: 1; width: min(910px, 79%); }
+.cabanas-entry-hero-copy > span, .cabanas-entry-lead > span, .cabanas-entry-chapter-copy > span, .cabanas-entry-rediscover header > span, .cabanas-entry-plan > span, .cabanas-entry-outro span { color: var(--entry-accent); font: 900 .68rem 'Outfit', sans-serif; letter-spacing: .17em; }
+.cabanas-entry-hero h1 { margin: 20px 0 28px; font: 900 clamp(4rem, 8.4vw, 8.6rem)/.79 'Outfit', sans-serif; letter-spacing: -.07em; }
+.cabanas-entry-hero h1 em { display: block; color: var(--entry-accent); font-style: normal; }
+.cabanas-entry-hero-copy > p { max-width: 660px; margin: 0 0 28px; font-size: clamp(1.02rem, 1.7vw, 1.3rem); line-height: 1.55; }
+.cabanas-entry-hero-copy > div { display: flex; flex-wrap: wrap; gap: .7rem 1.6rem; color: #d0cdd8; font: 800 .6rem 'Outfit', sans-serif; letter-spacing: .13em; }
+.cabanas-entry-hero-copy > a { display: inline-flex; min-height: 48px; align-items: center; gap: .6rem; margin-top: 30px; padding: 0 1rem; color: #0a0911; background: var(--entry-acid); border: 2px solid #0a0911; box-shadow: 4px 4px 0 #fff; font: 900 .67rem 'Outfit', sans-serif; letter-spacing: .12em; transition: box-shadow 140ms ease, transform 140ms ease; }
+.cabanas-entry-hero-copy > a:hover, .cabanas-entry-hero-copy > a:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #fff; }
+.cabanas-entry-hero-copy > a:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #fff; }
+.cabanas-entry-hero-mark { position: absolute; z-index: 1; right: max(28px, calc((100vw - 1240px) / 2)); bottom: clamp(56px, 7vw, 92px); display: grid; justify-items: end; gap: 8px; color: var(--entry-acid); }
+.cabanas-entry-hero-mark svg { width: 42px; height: 42px; }
+.cabanas-entry-hero-mark strong { font: 900 1.4rem 'Outfit', sans-serif; letter-spacing: .05em; }
+
+.cabanas-entry-lead {
+  width: min(990px, calc(100% - 56px));
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 40px;
+  margin: 0 auto;
+  padding: clamp(90px, 11vw, 150px) 0;
+  border-bottom: 1px solid var(--entry-line);
+}
+
+.cabanas-entry-lead p { margin: 0; font: 700 clamp(2rem, 4.3vw, 4rem)/1.05 'Outfit', sans-serif; letter-spacing: -.045em; }
+
+.cabanas-entry-chapter {
+  width: min(1240px, calc(100% - 56px));
+  display: grid;
+  grid-template-columns: 64px minmax(300px, .78fr) minmax(330px, 1.02fr);
+  gap: clamp(28px, 5vw, 76px);
+  align-items: center;
+  margin: 0 auto;
+  padding: clamp(90px, 11vw, 150px) 0;
+  border-bottom: 1px solid var(--entry-line);
+}
+
+.cabanas-entry-chapter-number { align-self: start; color: var(--entry-muted); font: 900 .7rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.cabanas-entry-chapter-copy h2, .cabanas-entry-rediscover h2, .cabanas-entry-plan h2, .cabanas-entry-outro h2 { margin: 18px 0 26px; font: 900 clamp(3.1rem, 6vw, 6rem)/.84 'Outfit', sans-serif; letter-spacing: -.062em; }
+.cabanas-entry-chapter-copy > p { max-width: 600px; margin: 0 0 18px; color: #cfccd7; font-size: 1.03rem; line-height: 1.68; }
+.cabanas-entry-chapter-copy > p em { color: #fff; font-style: normal; font-weight: 750; }
+.cabanas-entry-chapter-copy > a { display: inline-flex; align-items: center; gap: .55rem; margin-top: 15px; padding-bottom: 5px; border-bottom: 1px solid var(--entry-accent); font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .11em; }
+.cabanas-entry-chapter figure { margin: 0; }
+.cabanas-entry-chapter figure img { width: 100%; height: clamp(480px, 62vw, 760px); display: block; object-fit: cover; }
+.cabanas-entry-chapter figure figcaption { margin-top: 10px; color: var(--entry-muted); font: 700 .54rem/1.5 'Outfit', sans-serif; letter-spacing: .1em; }
+.cabanas-entry-facts { display: grid; gap: 10px; margin: 30px 0 8px; padding-block: 18px; border-block: 1px solid var(--entry-line); }
+.cabanas-entry-facts span { display: flex; align-items: center; gap: 9px; color: var(--entry-muted); font-size: .78rem; }
+.cabanas-entry-facts b { color: #fff; font-family: 'Outfit', sans-serif; letter-spacing: .08em; }
+.cabanas-entry-source-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px; }
+.cabanas-entry-source-links a { display: inline-flex; align-items: center; gap: .55rem; padding-bottom: 5px; border-bottom: 1px solid var(--entry-accent); font: 900 .62rem 'Outfit', sans-serif; letter-spacing: .1em; }
+.cabanas-entry-cafe-options { display: grid; gap: 12px; margin-top: 28px; }
+.cabanas-entry-cafe-options article { padding: 18px; border: 1px solid var(--entry-line); background: rgba(255,255,255,.035); }
+.cabanas-entry-cafe-options strong { color: var(--entry-accent); font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .1em; }
+.cabanas-entry-cafe-options p { margin: 10px 0 14px; color: #cfccd7; font-size: .9rem; line-height: 1.55; }
+.cabanas-entry-cafe-options a { display: inline-flex; align-items: center; gap: .45rem; padding-bottom: 4px; border-bottom: 1px solid var(--entry-accent); color: #fff; font: 900 .58rem 'Outfit', sans-serif; letter-spacing: .1em; }
+
+.cabanas-entry-quote { position: relative; width: min(1120px, calc(100% - 56px)); margin: 0 auto; padding: clamp(96px, 12vw, 170px) 0; border-bottom: 1px solid var(--entry-line); }
+.cabanas-entry-quote > span { position: absolute; top: 45px; left: -10px; color: var(--entry-accent); font: 900 clamp(7rem, 15vw, 15rem)/1 'Outfit', sans-serif; opacity: .48; }
+.cabanas-entry-quote p { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; font: 900 clamp(3rem, 6.5vw, 6.6rem)/.86 'Outfit', sans-serif; letter-spacing: -.06em; }
+
+.cabanas-entry-coffee { grid-template-columns: 64px minmax(330px, .92fr) minmax(300px, .88fr); }
+.cabanas-entry-coffee figure img { height: clamp(520px, 70vw, 820px); }
+
+.cabanas-entry-rediscover { width: min(1240px, calc(100% - 56px)); margin: 0 auto; padding: clamp(90px, 11vw, 150px) 0; border-bottom: 1px solid var(--entry-line); }
+.cabanas-entry-rediscover header { max-width: 940px; }
+.cabanas-entry-rediscover-grid { display: grid; grid-template-columns: minmax(280px, .72fr) minmax(390px, 1.28fr); gap: clamp(50px, 9vw, 130px); align-items: start; margin-top: 58px; }
+.cabanas-entry-rediscover-grid > p { margin: 0; color: #cfccd7; font-size: 1.1rem; line-height: 1.7; }
+.cabanas-entry-rediscover ol { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--entry-line); }
+.cabanas-entry-rediscover li { display: grid; grid-template-columns: 48px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--entry-line); }
+.cabanas-entry-rediscover li > span { color: var(--entry-accent); font: 900 .65rem 'Outfit', sans-serif; }
+.cabanas-entry-rediscover li div { display: grid; gap: 6px; }
+.cabanas-entry-rediscover li strong { font: 900 1.3rem 'Outfit', sans-serif; letter-spacing: -.025em; }
+.cabanas-entry-rediscover li small { color: var(--entry-muted); font: 750 .57rem 'Outfit', sans-serif; letter-spacing: .12em; }
+
+.cabanas-entry-plan { padding: clamp(90px, 11vw, 150px) max(28px, calc((100vw - 1240px) / 2)); color: #0a0911; background: var(--entry-acid); }
+.cabanas-entry-plan > span { color: #0a0911; }
+.cabanas-entry-plan > div { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 46px; border-block: 1px solid rgba(10,9,17,.28); }
+.cabanas-entry-plan > div span { display: flex; min-height: 120px; align-items: center; gap: 13px; padding: 18px; color: rgba(10,9,17,.72); font-size: .72rem; }
+.cabanas-entry-plan > div span + span { border-left: 1px solid rgba(10,9,17,.28); }
+.cabanas-entry-plan > div svg { width: 24px; height: 24px; color: #0a0911; }
+.cabanas-entry-plan > div b { color: #0a0911; font: 900 .78rem 'Outfit', sans-serif; letter-spacing: .08em; }
+.cabanas-entry-plan nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.cabanas-entry-plan nav a { display: inline-flex; min-height: 48px; align-items: center; gap: .55rem; padding: 0 1rem; color: #fff; background: #0a0911; border: 2px solid #0a0911; box-shadow: 4px 4px 0 #fff; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .11em; transition: box-shadow 140ms ease, transform 140ms ease; }
+
+.cabanas-entry-outro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr); align-items: end; gap: clamp(40px, 8vw, 120px); padding: clamp(90px, 11vw, 150px) max(28px, calc((100vw - 1240px) / 2)); background: var(--entry-purple); color: #0a0911; }
+.cabanas-entry-outro span { color: #0a0911; }
+.cabanas-entry-outro h2 { margin-bottom: 0; }
+.cabanas-entry-outro p { max-width: 470px; margin: 0 0 24px; font-size: 1.08rem; font-weight: 650; line-height: 1.6; }
+.cabanas-entry-outro a { display: inline-flex; min-height: 48px; align-items: center; gap: .55rem; padding: 0 1rem; color: #fff; background: #0a0911; border: 2px solid #0a0911; box-shadow: 4px 4px 0 #fff; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .11em; transition: box-shadow 140ms ease, transform 140ms ease; }
+.cabanas-entry-plan nav a:hover, .cabanas-entry-plan nav a:focus-visible, .cabanas-entry-outro a:hover, .cabanas-entry-outro a:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #fff; }
+.cabanas-entry-plan nav a:active, .cabanas-entry-outro a:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #fff; }
+
+.cabanas-entry-footer { min-height: 94px; display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 22px max(28px, calc((100vw - 1240px) / 2)); color: var(--entry-muted); font: 750 .54rem/1.5 'Outfit', sans-serif; letter-spacing: .1em; }
+.cabanas-entry-footer a { display: inline-flex; align-items: center; gap: .5rem; color: #fff; }
+.cabanas-entry-footer p { max-width: 720px; margin: 0; text-align: right; }
+.cabanas-entry :focus-visible { outline: 3px solid var(--entry-accent); outline-offset: 4px; }
+
+.cabanas-entry-progress {
+  position: fixed;
+  z-index: 90;
+  right: 18px;
+  bottom: 22px;
+  display: grid;
+  grid-template-columns: auto 110px auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  background: rgba(10, 9, 17, .92);
+  border: 1px solid rgba(255, 255, 255, .22);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+.cabanas-entry-progress span,
+.cabanas-entry-progress small { font: 900 .54rem 'Outfit', sans-serif; letter-spacing: .12em; }
+.cabanas-entry-progress small { color: var(--entry-accent); }
+.cabanas-entry-progress-track { position: relative; width: 110px; height: 3px; overflow: hidden; background: rgba(255, 255, 255, .2); }
+.cabanas-entry-progress-track i { position: absolute; inset: 0; display: block; background: var(--entry-accent); transform-origin: left center; transition: transform 80ms linear; }
+
+@media (max-width: 900px) {
+  .cabanas-entry-chapter, .cabanas-entry-coffee { grid-template-columns: 42px 1fr; }
+  .cabanas-entry-chapter-copy { grid-column: 2; }
+  .cabanas-entry-chapter figure { grid-column: 2; }
+  .cabanas-entry-coffee figure { grid-row: 2; }
+  .cabanas-entry-coffee .cabanas-entry-chapter-copy { grid-row: 3; }
+  .cabanas-entry-rediscover-grid, .cabanas-entry-outro { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .cabanas-entry {
+    height: 100svh;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    touch-action: pan-y;
+  }
+  .cabanas-entry::-webkit-scrollbar { display: none; }
+  .cabanas-entry-hero,
+  .cabanas-entry-lead,
+  .cabanas-entry-chapter,
+  .cabanas-entry-quote,
+  .cabanas-entry-rediscover,
+  .cabanas-entry-plan,
+  .cabanas-entry-outro {
+    min-height: calc(100svh - 70px);
+    scroll-margin-top: 70px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .cabanas-entry-progress { right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); grid-template-columns: auto 72px auto; max-width: calc(100vw - 20px); padding: 9px 10px; }
+  .cabanas-entry-progress-track { width: 72px; }
+  .cabanas-entry-nav { height: 70px; gap: 11px; padding-inline: 14px; }
+  .cabanas-entry-nav svg { max-width: 82px; }
+  .cabanas-entry-nav > div span { display: none; }
+  .cabanas-entry-nav > a:last-child { min-height: 38px; padding-inline: .65rem; font-size: .54rem; }
+  .cabanas-entry-hero { min-height: calc(100svh - 70px); padding: 80px 18px max(42px, env(safe-area-inset-bottom)); }
+  .cabanas-entry-hero > img { object-position: 53% center; }
+  .cabanas-entry-hero-shade { background: linear-gradient(0deg, rgba(10,9,17,.98) 0%, rgba(10,9,17,.65) 68%, rgba(10,9,17,.25) 100%); }
+  .cabanas-entry-hero-copy { width: 100%; }
+  .cabanas-entry-hero h1 { font-size: clamp(3.15rem, 14.5vw, 4.5rem); line-height: .82; }
+  .cabanas-entry-hero-copy > p { max-width: 92%; font-size: .98rem; }
+  .cabanas-entry-hero-copy > div { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: .55rem 1rem; }
+  .cabanas-entry-hero-copy > a { width: 100%; justify-content: space-between; }
+  .cabanas-entry-hero-mark { display: none; }
+  .cabanas-entry-lead { width: calc(100% - 36px); grid-template-columns: 1fr; gap: 24px; padding-block: 72px; }
+  .cabanas-entry-lead p { font-size: clamp(2.05rem, 10vw, 3rem); }
+  .cabanas-entry-chapter, .cabanas-entry-coffee { width: calc(100% - 36px); grid-template-columns: 1fr; gap: 26px; padding-block: 76px; }
+  .cabanas-entry-chapter-number, .cabanas-entry-chapter-copy, .cabanas-entry-chapter figure { grid-column: 1; }
+  .cabanas-entry-chapter-copy h2, .cabanas-entry-rediscover h2, .cabanas-entry-plan h2, .cabanas-entry-outro h2 { font-size: clamp(2.8rem, 12.5vw, 4rem); }
+  .cabanas-entry-chapter-copy > p { font-size: .98rem; }
+  .cabanas-entry-source-links { display: grid; }
+  .cabanas-entry-source-links a, .cabanas-entry-cafe-options a { justify-content: space-between; }
+  .cabanas-entry-chapter figure img, .cabanas-entry-coffee figure img { height: 56svh; min-height: 360px; }
+  .cabanas-entry-quote { width: calc(100% - 36px); padding-block: 92px; }
+  .cabanas-entry-quote p { font-size: clamp(2.5rem, 11.5vw, 3.6rem); }
+  .cabanas-entry-rediscover { width: calc(100% - 36px); padding-block: 76px; }
+  .cabanas-entry-rediscover-grid { grid-template-columns: 1fr; gap: 42px; margin-top: 40px; }
+  .cabanas-entry-plan { padding: 76px 18px; }
+  .cabanas-entry-plan > div { grid-template-columns: 1fr; }
+  .cabanas-entry-plan > div span { min-height: 86px; padding-inline: 0; }
+  .cabanas-entry-plan > div span + span { border-top: 1px solid rgba(10,9,17,.28); border-left: 0; }
+  .cabanas-entry-plan nav { display: grid; }
+  .cabanas-entry-plan nav a { justify-content: space-between; }
+  .cabanas-entry-outro { padding: 76px 18px; }
+  .cabanas-entry-outro a { width: 100%; justify-content: space-between; }
+  .cabanas-entry-footer { align-items: flex-start; flex-direction: column; padding: 26px 18px; }
+  .cabanas-entry-footer p { text-align: left; }
+}
+
+@media (max-width: 390px) {
+  .cabanas-entry-nav > div { display: none; }
+  .cabanas-entry-nav { grid-template-columns: auto 1fr; }
+  .cabanas-entry-nav > a:last-child { justify-self: end; }
+  .cabanas-entry-hero h1 { font-size: clamp(2.9rem, 14vw, 3.6rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cabanas-entry { scroll-behavior: auto; scroll-snap-type: y proximity; }
+}
