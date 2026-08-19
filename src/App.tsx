@@ -146,10 +146,6 @@ function App() {
               </p>
             </div>
             <div className="cities-buttons">
-              {/* <button className="city-map-btn btn-hermosillo" onClick={() => navigate('/descubrir/hermosillo')}>
-                <span>HERMOSILLO</span>
-                <ArrowRight size={22} strokeWidth={3} />
-              </button> */}
               <button className="city-map-btn btn-guadalajara" onClick={() => navigate('/guadalajara')}>
                 <span>GUADALAJARA</span>
                 <ArrowRight size={22} strokeWidth={3} />

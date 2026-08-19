@@ -38,7 +38,7 @@ type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares';
 
 export function OceanLanding() {
   const { city: urlCity } = useParams();
-  const activeCity = urlCity === 'hermosillo' ? 'hermosillo' : 'guadalajara';
+  const activeCity = 'guadalajara';
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
   const [isRadarOpen, setIsRadarOpen] = useState(false);
@@ -132,7 +132,7 @@ export function OceanLanding() {
         <section className="tiktok-slide intro-slide">
           <div className="intro-card-overlay">
             <span className="spots-eyebrow" style={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
-              {activeCity === 'hermosillo' ? 'Hermosillo' : 'Guadalajara'}
+              Guadalajara
             </span>
             <h1 className="spots-title brand-gradient-text">SPOTS CURADOS</h1>
             <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>

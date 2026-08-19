@@ -339,20 +339,6 @@
   transform: translateX(5px);
 }
 
-.btn-hermosillo {
-  box-shadow: 6px 6px 0px #ff6b3f;
-}
-
-.btn-hermosillo:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0px #ff6b3f;
-}
-
-.btn-hermosillo:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px #ff6b3f;
-}
-
 .btn-guadalajara {
   box-shadow: 6px 6px 0px #6d4cf6;
 }
