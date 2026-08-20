@@ -902,7 +902,7 @@
   {
     "id": "spot_120",
     "name": "Jerry Bar and Snacks",
-    "type": "Restaurante",
+    "type": "Bar",
     "description": "Bar nocturno de mariscos, ostiones y coctelería con porciones pequeñas. El ambiente pesa tanto como la comida y el gasto cambia mucho según los tragos.",
     "imageUrl": "/img/spots-real/spot_120.svg",
     "colorAccent": "#b5451b",
@@ -1034,7 +1034,7 @@
   {
     "id": "spot_131",
     "name": "Bar americas",
-    "type": "Club nocturno",
+    "type": "Discoteca",
     "description": "Referente local de techno y house con noches largas y pista intensa. Ve por la música, revisa el line-up y espera mucha gente en fechas fuertes.",
     "imageUrl": "/img/spots-real/spot_131.jpg",
     "colorAccent": "#7c3d8f",

@@ -10,22 +10,24 @@ type CitySection = 'spots' | 'rack' | 'planes';
 export function CityNav({ active, trailing }: { active?: CitySection; trailing?: ReactNode }) {
   const transitionTo = useRecommendationTransition();
   return (
-    <header className="city-nav">
+    <header className={`city-nav ${active ? 'is-feed-nav' : 'is-home-nav'}`}>
       <Link className="city-nav-logo" to="/" aria-label="Volver al landing de Bruuk"><BruukLogo width={104} /></Link>
-      <div className="city-nav-selector">
-        <span>/ CIUDAD</span>
-        <BruukSelect
-          ariaLabel="Cambiar ciudad"
-          value="guadalajara"
-          onChange={(city) => transitionTo(`/${city}`)}
-          options={[
-            { value: 'guadalajara', label: 'GUADALAJARA' },
-            { value: 'cdmx', label: 'CDMX · PRÓXIMAMENTE', disabled: true },
-            { value: 'monterrey', label: 'MONTERREY · PRÓXIMAMENTE', disabled: true },
-            { value: 'madrid', label: 'MADRID · PRÓXIMAMENTE', disabled: true },
-          ]}
-        />
-      </div>
+      {!active && (
+        <div className="city-nav-selector">
+          <span>/ CIUDAD</span>
+          <BruukSelect
+            ariaLabel="Cambiar ciudad"
+            value="guadalajara"
+            onChange={(city) => transitionTo(`/${city}`)}
+            options={[
+              { value: 'guadalajara', label: 'GUADALAJARA' },
+              { value: 'cdmx', label: 'CDMX · PRÓXIMAMENTE', disabled: true },
+              { value: 'monterrey', label: 'MONTERREY · PRÓXIMAMENTE', disabled: true },
+              { value: 'madrid', label: 'MADRID · PRÓXIMAMENTE', disabled: true },
+            ]}
+          />
+        </div>
+      )}
       <div className="city-nav-sections">
         {active ? (
           <div className="city-nav-category">

@@ -460,21 +460,17 @@
    RESPONSIVE OVERRIDES
    ============================================================ */
 
-/* Keep this breakpoint aligned with CityNav's two-row mobile layout. */
+/* El feed usa la versión compacta de CityNav; la selección de ciudad vive en /guadalajara. */
 @media (max-width: 760px) {
   .spots-header-floating {
     padding: 1rem;
   }
-  .category-filters-floating {
-    top: 8.55rem;
-  }
+  .category-filters-floating { top: 4.8rem; }
   .filter-btn-floating {
     padding: 6px 8px;
     font-size: 0.65rem;
   }
-  .tiktok-slide {
-    height: calc(100dvh - 126px);
-  }
+  .tiktok-slide { height: calc(100dvh - 70px); }
   .filter-btn-rack svg {
     display: none;
   }
@@ -505,9 +501,7 @@
     padding-top: 4rem;
   }
 
-  .card-wrapper-centered .spot-card {
-    max-height: calc(100dvh - 230px);
-  }
+  .card-wrapper-centered .spot-card { max-height: calc(100dvh - 174px); }
 }
 
 @media (min-width: 481px) and (max-width: 760px) {
@@ -550,12 +544,83 @@
   overflow: hidden;
 }
 
+.spot-card__img-wrap.has-category-photo {
+  isolation: isolate;
+  background:
+    linear-gradient(rgba(0, 0, 0, .09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, .09) 1px, transparent 1px),
+    var(--spot-accent, #8b7cf6);
+  background-size: 24px 24px;
+}
+
 .spot-card__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   filter: saturate(0.85);
+}
+
+.spot-card__category-mark {
+  position: absolute;
+  z-index: 0;
+  top: 19px;
+  left: 22px;
+  width: 70px;
+  height: 70px;
+  color: rgba(9, 9, 13, .72);
+}
+
+.spot-card__photo-inset {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 15px;
+  width: 126px;
+  height: 108px;
+  margin: 0;
+  padding: 6px 6px 22px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 6px 6px 0 rgba(9, 9, 13, .3);
+  transform: rotate(2deg);
+}
+
+.spot-card__photo-inset img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.78) contrast(1.04);
+}
+
+.spot-card__photo-inset figcaption {
+  position: absolute;
+  right: 6px;
+  bottom: 7px;
+  left: 6px;
+  overflow: hidden;
+  color: #09090d;
+  font: 800 .45rem 'Outfit', sans-serif;
+  letter-spacing: .1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spot-card__photo-inset.is-error { display: none; }
+
+.spot-card__category-logo {
+  position: absolute;
+  z-index: 3;
+  bottom: 8px;
+  left: 9px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: #09090d;
+  border: 1px solid rgba(255, 255, 255, .8);
 }
 
 .spot-card__close {

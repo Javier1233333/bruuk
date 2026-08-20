@@ -51,6 +51,12 @@
   --bruuk-select-purple: var(--nav-accent);
 }
 
+.city-nav.is-feed-nav {
+  grid-template-columns: auto minmax(190px, 1fr) auto;
+}
+
+.city-nav.is-feed-nav .city-nav-sections { justify-self: end; }
+
 .city-nav-selector .bruuk-select-trigger {
   min-height: 36px;
   font-size: .68rem;
@@ -160,6 +166,24 @@
   .city-nav-current-home { min-width: 0; align-items: center; margin: auto; }
   .city-nav-change { min-height: 40px; padding-inline: 11px; font-size: .57rem; }
   .city-nav-trailing { display: none; }
+
+  .city-nav.is-feed-nav {
+    height: 70px;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 70px;
+  }
+
+  .city-nav.is-feed-nav .city-nav-sections {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, 245px);
+    justify-self: end;
+    border-top: 0;
+  }
+
+  .city-nav.is-feed-nav .city-nav-category {
+    grid-template-columns: auto minmax(135px, 190px);
+  }
 }
 
 @media (max-width: 360px) {
@@ -169,6 +193,8 @@
   .city-nav-selector .bruuk-select-trigger { font-size: .57rem; letter-spacing: .04em; }
   .city-nav-category { grid-template-columns: auto minmax(135px, 174px); gap: 8px; }
   .city-nav-category .bruuk-select-trigger { font-size: .57rem; }
+  .city-nav.is-feed-nav .city-nav-category { grid-template-columns: minmax(135px, 174px); justify-content: end; }
+  .city-nav.is-feed-nav .city-nav-category > span { display: none; }
   .city-nav-change { gap: 6px; padding-inline: 8px; font-size: .52rem; }
 }
 
