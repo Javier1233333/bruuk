@@ -35,78 +35,104 @@
   border-left: 2px solid var(--nav-accent);
 }
 
-.city-nav-selector::after {
-  content: '⌄';
-  position: absolute;
-  right: 2px;
-  bottom: 8px;
-  color: var(--nav-muted);
-  font-size: .8rem;
-  line-height: 1;
-  pointer-events: none;
-}
-
 .city-nav-selector > span {
   color: var(--nav-muted);
   font: 700 .6rem 'DM Sans', sans-serif;
   letter-spacing: .16em;
 }
 
-.city-nav-selector select {
+.city-nav-selector .bruuk-select {
   width: 190px;
   min-width: 0;
-  padding: 0 24px 0 0;
-  border: 0;
-  outline: 0;
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  color: var(--nav-text);
-  font: 800 .76rem 'Outfit', sans-serif;
-  letter-spacing: .08em;
-  cursor: pointer;
+  --bruuk-select-bg: var(--nav-surface);
+  --bruuk-select-panel: #100e1d;
+  --bruuk-select-ink: var(--nav-text);
+  --bruuk-select-muted: var(--nav-muted);
+  --bruuk-select-purple: var(--nav-accent);
+}
+
+.city-nav-selector .bruuk-select-trigger {
+  min-height: 36px;
+  font-size: .68rem;
 }
 
 .city-nav-sections {
   height: 100%;
   display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.city-nav-sections a {
-  min-width: 112px;
-  min-height: 44px;
+.city-nav-category {
   position: relative;
+  min-width: 190px;
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  padding-left: 16px;
+  border-left: 2px solid var(--nav-accent);
+}
+
+.city-nav-category > span {
+  color: var(--nav-muted);
+  font: 700 .6rem 'DM Sans', sans-serif;
+  letter-spacing: .16em;
+}
+
+.city-nav-category .bruuk-select {
+  width: 190px;
+  --bruuk-select-bg: var(--nav-surface);
+  --bruuk-select-panel: #100e1d;
+  --bruuk-select-ink: var(--nav-text);
+  --bruuk-select-muted: var(--nav-muted);
+  --bruuk-select-purple: var(--nav-accent);
+}
+
+.city-nav-category .bruuk-select-trigger {
+  min-height: 36px;
+  font-size: .68rem;
+}
+
+.city-nav-current {
+  min-width: 100px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0 18px;
-  border-bottom: 3px solid transparent;
-  color: var(--nav-muted);
-  font-size: .76rem;
-  font-weight: 800;
-  letter-spacing: .12em;
-  transition: color .12s ease, border-color .12s ease, background-color .12s ease;
+  gap: 3px;
+  color: #fff;
+  text-align: center;
 }
 
-.city-nav-sections small {
+.city-nav-current small {
   color: var(--nav-muted);
   font: 600 .55rem 'DM Sans', sans-serif;
-  letter-spacing: .04em;
+  letter-spacing: .13em;
 }
 
-.city-nav-sections a:hover {
-  color: var(--nav-text);
+.city-nav-current strong {
+  font-size: .75rem;
+  letter-spacing: .13em;
+}
+
+.city-nav-current-home { min-width: 250px; }
+.city-nav-change {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid var(--nav-line);
   background: var(--nav-surface);
+  color: #fff;
+  font-size: .63rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  transition: background-color .12s ease, border-color .12s ease;
 }
 
-.city-nav-sections a.active {
-  border-bottom-color: var(--nav-accent);
-  background: var(--nav-surface);
-  color: #ffffff;
-}
-
-.city-nav-sections a.active small { color: #c9c3ff; }
+.city-nav-change:hover { border-color: var(--nav-accent); background: #211b3d; }
 .city-nav-trailing { justify-self: end; display: flex; align-items: center; }
 .city-nav-trailing:empty::after { content: 'EDICIÓN 001'; color: var(--nav-muted); font-size: .62rem; font-weight: 700; letter-spacing: .14em; }
 .city-nav :focus-visible { outline: 2px solid #b8affe; outline-offset: 3px; }
@@ -121,12 +147,18 @@
   }
   .city-nav-logo { min-width: 0; }
   .city-nav-logo svg { width: 88px; max-width: 100%; }
-  .city-nav-selector { width: min(100%, 190px); justify-self: end; min-height: 44px; padding-left: 12px; overflow: hidden; }
+  .city-nav-selector { width: min(100%, 190px); justify-self: end; min-height: 44px; padding-left: 12px; }
   .city-nav-selector > span { font-size: .54rem; }
-  .city-nav-selector select { width: 100%; font-size: .66rem; text-overflow: ellipsis; }
-  .city-nav-sections { grid-column: 1 / -1; grid-row: 2; width: 100%; border-top: 1px solid var(--nav-line); }
-  .city-nav-sections a { flex: 1; min-width: 0; padding: 0 6px; font-size: .7rem; }
-  .city-nav-sections small { font-size: .52rem; }
+  .city-nav-selector .bruuk-select { width: 100%; }
+  .city-nav-selector .bruuk-select-trigger { min-height: 36px; font-size: .61rem; }
+  .city-nav-sections { grid-column: 1 / -1; grid-row: 2; width: 100%; justify-content: space-between; border-top: 1px solid var(--nav-line); }
+  .city-nav-category { width: 100%; min-width: 0; display: grid; grid-template-columns: auto minmax(150px, 190px); align-items: center; gap: 12px; padding-left: 0; border-left: 0; }
+  .city-nav-category .bruuk-select { width: 100%; justify-self: end; }
+  .city-nav-category > span { font-size: .54rem; }
+  .city-nav-category .bruuk-select-trigger { min-height: 40px; font-size: .61rem; }
+  .city-nav-current { min-width: 74px; align-items: flex-start; }
+  .city-nav-current-home { min-width: 0; align-items: center; margin: auto; }
+  .city-nav-change { min-height: 40px; padding-inline: 11px; font-size: .57rem; }
   .city-nav-trailing { display: none; }
 }
 
@@ -134,11 +166,12 @@
   .city-nav { gap: 0 8px; padding-inline: 12px; }
   .city-nav-logo svg { width: 80px; }
   .city-nav-selector { width: min(100%, 174px); padding-left: 9px; }
-  .city-nav-selector select { font-size: .61rem; letter-spacing: .06em; }
-  .city-nav-sections a { gap: 5px; padding-inline: 3px; font-size: .65rem; }
-  .city-nav-sections small { font-size: .47rem; }
+  .city-nav-selector .bruuk-select-trigger { font-size: .57rem; letter-spacing: .04em; }
+  .city-nav-category { grid-template-columns: auto minmax(135px, 174px); gap: 8px; }
+  .city-nav-category .bruuk-select-trigger { font-size: .57rem; }
+  .city-nav-change { gap: 6px; padding-inline: 8px; font-size: .52rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .city-nav-sections a { transition: none; }
+  .city-nav-change { transition: none; }
 }

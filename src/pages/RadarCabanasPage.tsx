@@ -69,13 +69,13 @@ export function RadarCabanasPage() {
       <header className="cabanas-entry-nav">
         <Link to="/" aria-label="Volver al inicio de Bruuk"><BruukLogo width={96} /></Link>
         <div><span>/ RADAR BRUUK</span><strong>SEÑAL 002</strong></div>
-        <Link to="/radar"><ArrowLeft size={16} /> VOLVER A RADAR</Link>
+        <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
       </header>
 
       <main>
         <article>
           <header className="cabanas-entry-hero">
-            <img src="/radar/cabanas/fachada.jpg" alt="Vista del Paseo Hospicio hacia el Museo Cabañas en Guadalajara" />
+            <img src="/radar/cabanas/fachada-optimized.webp" alt="Vista del Paseo Hospicio hacia el Museo Cabañas en Guadalajara" decoding="async" />
             <div className="cabanas-entry-hero-shade" />
             <div className="cabanas-entry-hero-copy">
               <span>/ SEÑAL 002 · REDESCUBRIMIENTO</span>
@@ -183,7 +183,7 @@ export function RadarCabanasPage() {
         </section>
 
         <footer className="cabanas-entry-footer">
-          <Link to="/radar"><ArrowLeft size={16} /> RADAR BRUUK</Link>
+          <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
           <p>CRÉDITOS: ELPATTMEDINA Y SERGIOYALU / WIKIMEDIA COMMONS · SUMMER TIME / UNSPLASH</p>
         </footer>
       </main>

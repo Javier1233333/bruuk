@@ -1,0 +1,461 @@
+{
+  "spot_003": {
+    "name": "El Terrible Juan Café",
+    "kind": "scraped-photo",
+    "sourcePage": "https://www.haninsinmun.com/single-post/%EC%84%B8%EA%B3%84-%EC%B5%9C%EA%B3%A0-%EC%BB%A4%ED%94%BC%EC%88%8D%EC%97%90-%EC%9D%B4%EB%A6%84-%EC%98%AC%EB%A6%B0-%EB%A9%95%EC%8B%9C%EC%BD%94-%EC%B9%B4%ED%8E%98-3%EA%B3%B3%EC%9D%80-%EC%96%B4%EB%94%94",
+    "sourceImage": "https://static.wixstatic.com/media/92f6be_ef4b6d705bcd4124adcf92b6efa1f075~mv2.jpg/v1/fill/w_980%2Ch_980%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/92f6be_ef4b6d705bcd4124adcf92b6efa1f075~mv2.jpg",
+    "localFile": "/img/spots-real/spot_003.jpg",
+    "reviewed": true
+  },
+  "spot_004": {
+    "name": "Café Tenango",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_004.svg",
+    "reviewed": true
+  },
+  "spot_005": {
+    "name": "Elefante Sabio Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_005.svg",
+    "reviewed": true
+  },
+  "spot_006": {
+    "name": "NOT COLLECTIVE",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_006.svg",
+    "reviewed": true
+  },
+  "spot_007": {
+    "name": "Frank Bakery",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_007.svg",
+    "reviewed": true
+  },
+  "spot_008": {
+    "name": "Dorla",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_008.svg",
+    "reviewed": true
+  },
+  "spot_009": {
+    "name": "Espacio Abierto",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_009.svg",
+    "reviewed": true
+  },
+  "spot_010": {
+    "name": "KAFEI",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_010.svg",
+    "reviewed": true
+  },
+  "spot_011": {
+    "name": "Kalido Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_011.svg",
+    "reviewed": true
+  },
+  "spot_012": {
+    "name": "Ventura Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_012.svg",
+    "reviewed": true
+  },
+  "spot_013": {
+    "name": "Neretta Café & Gelato",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_013.svg",
+    "reviewed": true
+  },
+  "spot_014": {
+    "name": "Roto Café & Vino",
+    "kind": "scraped-photo",
+    "sourcePage": "https://www.opentable.com.mx/r/roto-cafe-and-vino-guadalajara",
+    "sourceImage": "https://resizer.otstatic.com/v2/photos/xlarge/1/92062418.jpg",
+    "localFile": "/img/spots-real/spot_014.jpg",
+    "reviewed": true
+  },
+  "spot_015": {
+    "name": "Cafetal 97",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_015.svg",
+    "reviewed": true
+  },
+  "spot_016": {
+    "name": "BANETTO",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_016.svg",
+    "reviewed": true
+  },
+  "spot_018": {
+    "name": "Karmele",
+    "kind": "scraped-photo",
+    "sourcePage": "https://mexicorutamagica.mx/2024/01/29/donde-comer-croissants-en-guadalajara-panaderias-jalisco-mexico/",
+    "sourceImage": "https://mexicorutamagica.mx/wp-content/uploads/2024/01/croissants-en-guadalajara-karmele-fachada-768x960.jpg",
+    "localFile": "/img/spots-real/spot_018.jpg",
+    "reviewed": true
+  },
+  "spot_019": {
+    "name": "Colacorta",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_019.svg",
+    "reviewed": true
+  },
+  "spot_020": {
+    "name": "Casa Emergente",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_020.svg",
+    "reviewed": true
+  },
+  "spot_021": {
+    "name": "Guru-Rim Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_021.svg",
+    "reviewed": true
+  },
+  "spot_024": {
+    "name": "RUFUS.rest",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_024.svg",
+    "reviewed": true
+  },
+  "spot_025": {
+    "name": "Baham Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_025.svg",
+    "reviewed": true
+  },
+  "spot_026": {
+    "name": "Barrio Toyo",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_026.svg",
+    "reviewed": true
+  },
+  "spot_027": {
+    "name": "Neretta Chapalita",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_027.svg",
+    "reviewed": true
+  },
+  "spot_028": {
+    "name": "Binaural Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_028.svg",
+    "reviewed": true
+  },
+  "spot_029": {
+    "name": "Zarco Cafetería",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_029.svg",
+    "reviewed": true
+  },
+  "spot_031": {
+    "name": "Gufo Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_031.svg",
+    "reviewed": true
+  },
+  "spot_032": {
+    "name": "Panopia café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_032.svg",
+    "reviewed": true
+  },
+  "spot_033": {
+    "name": "Metódico Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_033.svg",
+    "reviewed": true
+  },
+  "spot_034": {
+    "name": "Zuno Cafe",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_034.svg",
+    "reviewed": true
+  },
+  "spot_035": {
+    "name": "OBRERO.",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_035.svg",
+    "reviewed": true
+  },
+  "spot_036": {
+    "name": "Sinónimo",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_036.svg",
+    "reviewed": true
+  },
+  "spot_037": {
+    "name": "Paralelo Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_037.svg",
+    "reviewed": true
+  },
+  "spot_039": {
+    "name": "Café Casa Independencia",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_039.svg",
+    "reviewed": true
+  },
+  "spot_040": {
+    "name": "Membrillo Cocina",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_040.svg",
+    "reviewed": true
+  },
+  "spot_041": {
+    "name": "Endémico Vivero",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_041.svg",
+    "reviewed": true
+  },
+  "spot_042": {
+    "name": "Lince Café Bar",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_042.svg",
+    "reviewed": true
+  },
+  "spot_043": {
+    "name": "Palomanegra Café Bar",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_043.svg",
+    "reviewed": true
+  },
+  "spot_044": {
+    "name": "Bigol Bagel",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_044.svg",
+    "reviewed": true
+  },
+  "spot_045": {
+    "name": "ÂNDRA",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_045.svg",
+    "reviewed": true
+  },
+  "spot_046": {
+    "name": "Rayo Café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_046.svg",
+    "reviewed": true
+  },
+  "spot_047": {
+    "name": "KONA",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_047.svg",
+    "reviewed": true
+  },
+  "spot_049": {
+    "name": "Plantada café",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_049.svg",
+    "reviewed": true
+  },
+  "spot_050": {
+    "name": "Biolento_",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_050.svg",
+    "reviewed": true
+  },
+  "spot_101": {
+    "name": "La Rechingada",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_101.svg",
+    "reviewed": true
+  },
+  "spot_102": {
+    "name": "Paolo Italodisco",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_102.svg",
+    "reviewed": true
+  },
+  "spot_103": {
+    "name": "ANIDA",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_103.svg",
+    "reviewed": true
+  },
+  "spot_104": {
+    "name": "El Zarandeao",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_104.svg",
+    "reviewed": true
+  },
+  "spot_105": {
+    "name": "palReal",
+    "kind": "scraped-photo",
+    "sourcePage": "https://www.minube.com/rincon/restaurante-palreal-a3626630",
+    "sourceImage": "https://images.mnstatic.com/c1/e6/c1e637d1f32ad0e69792bf4ca0015b3d.jpg",
+    "localFile": "/img/spots-real/spot_105.jpg",
+    "reviewed": true
+  },
+  "spot_106": {
+    "name": "Jamaica Records",
+    "kind": "existing-local-photo",
+    "sourcePage": "https://www.google.com/maps/search/?api=1&query=Jamaica%20Records%2C%20Guadalajara%2C%20Jalisco",
+    "localFile": "/img/spots/42-jamaica-records.jpg",
+    "reviewed": true
+  },
+  "spot_107": {
+    "name": "Helados Monóculo",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_107.svg",
+    "reviewed": true
+  },
+  "spot_108": {
+    "name": "El Habanero Negro",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_108.svg",
+    "reviewed": true
+  },
+  "spot_109": {
+    "name": "Louie Burger Americana",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_109.svg",
+    "reviewed": true
+  },
+  "spot_110": {
+    "name": "Pizzería de Barrio",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_110.svg",
+    "reviewed": true
+  },
+  "spot_111": {
+    "name": "Archipiélago Pizza",
+    "kind": "scraped-photo",
+    "sourcePage": "https://www.happycow.net/reviews/archipielago-pizza-guadalajara-305905",
+    "sourceImage": "https://images.happycow.net/venues/1024/30/59/hcmp305905_2254708.jpeg",
+    "localFile": "/img/spots-real/spot_111.jpg",
+    "reviewed": true
+  },
+  "spot_112": {
+    "name": "Shao Asian Street Food",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_112.svg",
+    "reviewed": true
+  },
+  "spot_113": {
+    "name": "Morocco Kebab",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_113.svg",
+    "reviewed": true
+  },
+  "spot_114": {
+    "name": "O Brasileiro Maluco",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_114.svg",
+    "reviewed": true
+  },
+  "spot_115": {
+    "name": "ZAMGÜIS",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_115.svg",
+    "reviewed": true
+  },
+  "spot_116": {
+    "name": "Momotabi Ramen House",
+    "kind": "scraped-photo",
+    "sourcePage": "https://www.radioformula.com.mx/estilodevida/El-restaurante-en-Guadalajara-que-te-hara-sentir-en-Japon-20230927-0073.html",
+    "sourceImage": "https://www.radioformula.com.mx/img/2023/01/01/20250726_050118283_El_restaurante_en_Guadalajara_que_te_harx_sentir_en_Japxn.jpg?__scale=c%3Atransparent%2Cw%3A600%2Ch%3A737%2Ct%3A3",
+    "localFile": "/img/spots-real/spot_116.jpg",
+    "reviewed": true
+  },
+  "spot_117": {
+    "name": "Mononoke Ramen",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_117.svg",
+    "reviewed": true
+  },
+  "spot_118": {
+    "name": "Pollitos Kiki",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_118.svg",
+    "reviewed": true
+  },
+  "spot_119": {
+    "name": "Arez Libanés",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_119.svg",
+    "reviewed": true
+  },
+  "spot_120": {
+    "name": "Jerry Bar and Snacks",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_120.svg",
+    "reviewed": true
+  },
+  "spot_121": {
+    "name": "THE NORMAL GDL",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_121.svg",
+    "reviewed": true
+  },
+  "spot_122": {
+    "name": "lady lee - rooftop",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_122.svg",
+    "reviewed": true
+  },
+  "spot_123": {
+    "name": "Pardo Club",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_123.svg",
+    "reviewed": true
+  },
+  "spot_124": {
+    "name": "Tito Club",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_124.svg",
+    "reviewed": true
+  },
+  "spot_125": {
+    "name": "Sauna Disco",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_125.svg",
+    "reviewed": true
+  },
+  "spot_126": {
+    "name": "Casa Mudra Restaurant & Jazz Club",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_126.svg",
+    "reviewed": true
+  },
+  "spot_127": {
+    "name": "SkyGamers Sport Bar",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_127.svg",
+    "reviewed": true
+  },
+  "spot_128": {
+    "name": "Gallo y Toro",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_128.svg",
+    "reviewed": true
+  },
+  "spot_129": {
+    "name": "Casa Colimita",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_129.svg",
+    "reviewed": true
+  },
+  "spot_130": {
+    "name": "Espuma Bar",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_130.svg",
+    "reviewed": true
+  },
+  "spot_131": {
+    "name": "Bar americas",
+    "kind": "scraped-photo",
+    "sourcePage": "https://mixmaglatam.com/read/bar-americas-gdl",
+    "sourceImage": "https://mixmaglatinamerica.com/assets/uploads/images/_twoThirds/BA2.jpeg",
+    "localFile": "/img/spots-real/spot_131.jpg",
+    "reviewed": true
+  },
+  "spot_133": {
+    "name": "Casa Cobra",
+    "kind": "rack-illustration",
+    "localFile": "/img/spots-real/spot_133.svg",
+    "reviewed": true
+  }
+}

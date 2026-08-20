@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, CalendarDays, Check, Mail, MapPin, Store, Heart,
 import { Link } from 'react-router-dom';
 import * as validator from 'email-validator';
 import { BruukLogo } from '../components/BruukLogo';
+import { BruukCombobox } from '../components/BruukSelect';
 import '../App.css';
 
 const CITIES = ['Ciudad de México', 'Monterrey', 'Madrid', 'Buenos Aires', 'Bogotá', 'Barcelona'];
@@ -24,13 +25,12 @@ export function BruukoPage() {
     if (!selectedCity) { setStatus('error'); setError('Elige o busca la ciudad desde la que quieres activar Bruuk.'); return; }
     setStatus('loading'); setError('');
     try {
-      const join = await fetch('/api/join', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: cleanEmail, tags: ['Bruuko', selectedCity] }) });
-      if (!join.ok) throw new Error();
-      const [sheetsResponse] = await Promise.all([
-        fetch('/api/sheets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: cleanEmail, preferences: { type: 'bruuko', city: selectedCity } }) }),
-        fetch('/api/welcome', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: cleanEmail }) }),
-      ]);
-      if (!sheetsResponse.ok) throw new Error('No se pudo guardar la propuesta.');
+      const proposalResponse = await fetch('/api/city-proposal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, city: selectedCity, website: '' }),
+      });
+      if (!proposalResponse.ok) throw new Error('No se pudo guardar la propuesta.');
       setStatus('success'); setEmail(''); setCity(''); setOtherCity('');
     } catch { setStatus('error'); setError('No pudimos enviar tu registro. Inténtalo de nuevo en un momento.'); }
   };
@@ -56,7 +56,7 @@ export function BruukoPage() {
       <div className="bruuko-intro"><span className="bruuko-eyebrow"><MapPin size={16} /> / ACTIVA TU CIUDAD</span><h2 id="bruuko-activation-title">PROPÓN EL SIGUIENTE PUNTO DEL MAPA.</h2><p>Conoces los lugares, el ritmo y los planes que hacen única a tu ciudad. Cuéntanos desde dónde quieres empezar.</p><div className="bruuko-route" aria-label="Cómo se activa una ciudad"><span><b>01</b> PROPÓN</span><i aria-hidden="true">→</i><span><b>02</b> EVALUAMOS</span><i aria-hidden="true">→</i><span><b>03</b> ACTIVAMOS</span></div><p className="bruuko-note">No necesitas seguidores ni experiencia. Sólo mirada local y ganas de crear comunidad.</p></div>
       <div className="bruuko-form-card"><div className="bruuko-form-heading"><span>/ REGISTRO DE CIUDAD</span><strong>EMPIEZA AQUÍ</strong></div>{status === 'success' ? <div className="bruuko-success" role="status"><span className="bruuko-success-icon"><Check size={30} strokeWidth={3} /></span><h2>YA ERES PARTE DEL MAPA.</h2><p>Te escribiremos cuando sea momento de llevar Bruuk a tu ciudad.</p><button className="bruuko-reset" type="button" onClick={() => setStatus('idle')}>Registrar otra ciudad</button></div> : <form onSubmit={submit} noValidate>
         <label className="bruuko-label" htmlFor="bruuko-email"><Mail size={16} /> Tu correo</label><input id="bruuko-email" className="bruuko-email-input" type="email" inputMode="email" autoComplete="email" placeholder="tu@correo.com" value={email} onChange={(event) => setEmail(event.target.value)} disabled={status === 'loading'} required />
-        <fieldset className="bruuko-cities" disabled={status === 'loading'}><legend>¿En qué ciudad estás?</legend><div className="bruuko-city-options">{CITIES.map((option) => <label className={`bruuko-city-option ${city === option ? 'is-selected' : ''}`} key={option}><input type="radio" name="bruuko-city" value={option} checked={city === option} onChange={() => { setCity(option); setOtherCity(''); }} /><span>{option}</span></label>)}<label className={`bruuko-city-option bruuko-city-search ${city === 'other' ? 'is-selected' : ''}`}><input type="radio" name="bruuko-city" value="other" checked={city === 'other'} onChange={() => setCity('other')} /><span>¿No ves tu ciudad?</span><input className="bruuko-city-input" type="search" list="bruuko-city-suggestions" placeholder="Escribe o busca tu ciudad" value={otherCity} onFocus={() => setCity('other')} onChange={(event) => { setOtherCity(event.target.value); setCity('other'); }} aria-label="Busca tu ciudad" /><datalist id="bruuko-city-suggestions">{SUGGESTIONS.map((option) => <option key={option} value={option} />)}</datalist></label></div></fieldset>
+        <fieldset className="bruuko-cities" disabled={status === 'loading'}><legend>¿En qué ciudad estás?</legend><div className="bruuko-city-options">{CITIES.map((option) => <label className={`bruuko-city-option ${city === option ? 'is-selected' : ''}`} key={option}><input type="radio" name="bruuko-city" value={option} checked={city === option} onChange={() => { setCity(option); setOtherCity(''); }} /><span>{option}</span></label>)}<label className={`bruuko-city-option bruuko-city-search ${city === 'other' ? 'is-selected' : ''}`}><input type="radio" name="bruuko-city" value="other" checked={city === 'other'} onChange={() => setCity('other')} /><BruukCombobox id="bruuko-page-city-search" className="is-light" inputClassName="bruuko-city-input" floatingLabel="¿NO VES TU CIUDAD?" value={otherCity} suggestions={SUGGESTIONS} placeholder="Escribe o busca tu ciudad" ariaLabel="Busca tu ciudad" disabled={status === 'loading'} onFocus={() => setCity('other')} onChange={(value) => { setOtherCity(value); setCity('other'); }} /></label></div></fieldset>
         {status === 'error' && <p className="bruuko-error" role="alert">{error}</p>}<button className="btn btn-primary bruuko-submit" type="submit" disabled={status === 'loading'}>{status === 'loading' ? 'ENVIANDO...' : <>PROPONER MI CIUDAD <ArrowRight size={19} strokeWidth={3} /></>}</button>
       </form>}</div>
     </div></div></section>
@@ -96,12 +96,17 @@ function ProposalModal({ type, onClose }: { type: 'venue' | 'spot'; onClose: () 
     if (!details.trim()) { setStatus('error'); return; }
     setStatus('loading');
     try {
-      const tag = type === 'venue' ? 'Venue proposal' : 'Spot recommendation';
-      const [, sheetsResponse] = await Promise.all([
-        fetch('/api/join', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim().toLowerCase(), tags: [tag] }) }).catch(() => null),
-        fetch('/api/sheets', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim().toLowerCase(), preferences: { type, details: details.trim() } }) }),
-      ]);
-      if (!sheetsResponse.ok) throw new Error('No se pudo guardar la propuesta.');
+      const proposalResponse = await fetch('/api/place-proposal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          proposalType: type,
+          details: details.trim(),
+          website: '',
+        }),
+      });
+      if (!proposalResponse.ok) throw new Error('No se pudo guardar la propuesta.');
       setStatus('success'); setEmail(''); setDetails('');
     } catch { setStatus('error'); }
   };

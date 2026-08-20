@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from
 import { ArrowLeft, ArrowUpRight, CalendarDays, Check, Copy, CreditCard, MapPin, MessageCircle, Share2, Users } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { CityNav } from '../components/CityNav';
+import { BruukSelect } from '../components/BruukSelect';
 import { getCommunityEvent, getPaypalDepositUrl } from '../data/communityEvents';
 import './Plans.css';
 
@@ -157,7 +158,7 @@ export default function PlanDetailPage() {
                   <label>CORREO<input name="email" type="email" autoComplete="email" required /></label>
                   <label>USUARIO DE INSTAGRAM<input name="instagram" type="text" inputMode="text" autoComplete="off" placeholder="@tuusuario" pattern="@?[A-Za-z0-9._]{1,30}" title="Usa únicamente letras, números, puntos o guion bajo" required /></label>
                   <label>WHATSAPP <span>(OPCIONAL)</span><input name="phone" type="tel" autoComplete="tel" inputMode="tel" /></label>
-                  <label>PERSONAS<select name="guests" defaultValue="1"><option value="1">1 persona</option><option value="2">2 personas</option><option value="3">3 personas</option><option value="4">4 personas</option></select></label>
+                  <div className="plan-select-field"><span>PERSONAS</span><BruukSelect name="guests" ariaLabel="Número de personas" defaultValue="1" options={[{ value: '1', label: '1 PERSONA' }, { value: '2', label: '2 PERSONAS' }, { value: '3', label: '3 PERSONAS' }, { value: '4', label: '4 PERSONAS' }]} /></div>
                   <label className="plan-honeypot" aria-hidden="true">Sitio web<input name="website" tabIndex={-1} autoComplete="off" /></label>
                   <label className="plan-consent"><input name="consent" type="checkbox" required /> <span>Acepto que Bruuk use estos datos para gestionar mi asistencia. Entiendo que el registro se confirma al completar el anticipo.</span></label>
                   <label className="plan-consent plan-display-consent"><input name="displayConsent" type="checkbox" /> <span><strong>AUTORIZACIÓN PÚBLICA</strong> Autorizo que Bruuk muestre mi nombre y usuario de Instagram en la lista de asistentes de este evento. Es opcional y puedo solicitar que se retire.</span></label>

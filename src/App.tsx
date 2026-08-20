@@ -5,7 +5,8 @@ import { ManifestoModal } from './components/ManifestoModal';
 import { PrivacyModal } from './components/PrivacyModal';
 import { UsagePolicyModal } from './components/UsagePolicyModal';
 import { BruukLogo } from './components/BruukLogo';
-import { useNavigate } from 'react-router-dom';
+import { BruukCombobox } from './components/BruukSelect';
+import { useRecommendationTransition } from './components/RecommendationTransition';
 import './App.css';
 
 const CAROUSEL_IMAGES = [
@@ -39,7 +40,7 @@ function App() {
   const [otherBruukoCity, setOtherBruukoCity] = useState('');
   const [bruukoStatus, setBruukoStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [bruukoError, setBruukoError] = useState('');
-  const navigate = useNavigate();
+  const transitionTo = useRecommendationTransition();
 
   const nextPhoto = () => setCarouselIdx((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
   const prevPhoto = () => setCarouselIdx((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length);
@@ -66,26 +67,13 @@ function App() {
     setBruukoError('');
 
     try {
-      const joinResponse = await fetch('/api/join', {
+      const proposalResponse = await fetch('/api/city-proposal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, tags: ['Bruuko', selectedCity] }),
+        body: JSON.stringify({ email, city: selectedCity, website: '' }),
       });
 
-      if (!joinResponse.ok) throw new Error('No se pudo registrar el correo.');
-
-      await Promise.allSettled([
-        fetch('/api/sheets', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, preferences: { type: 'bruuko', city: selectedCity } }),
-        }),
-        fetch('/api/welcome', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        }),
-      ]);
+      if (!proposalResponse.ok) throw new Error('No se pudo guardar la ciudad.');
 
       setBruukoStatus('success');
       setBruukoEmail('');
@@ -107,9 +95,9 @@ function App() {
           <button
             className="header-secondary-link"
             type="button"
-            onClick={() => navigate('/guadalajara/spots')}
+            onClick={() => transitionTo('/descubrir')}
           >
-            EXPLORAR SPOTS <ArrowRight size={15} strokeWidth={2.5} />
+            DESCUBRIR <ArrowRight size={15} strokeWidth={2.5} />
           </button>
         </div>
       </header>
@@ -125,7 +113,7 @@ function App() {
               Spots, Rack y rincones donde vale la pena aparecer. Navega Guadalajara sin algoritmos, sin filtros patrocinados y con recomendaciones de personas reales.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
-              <button className="btn btn-primary btn-mega" onClick={() => navigate('/guadalajara')}>
+              <button className="btn btn-primary btn-mega" onClick={() => transitionTo('/guadalajara')}>
                 <Compass size={22} strokeWidth={2.5} />
                 EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
               </button>
@@ -146,7 +134,7 @@ function App() {
               </p>
             </div>
             <div className="cities-buttons">
-              <button className="city-map-btn btn-guadalajara" onClick={() => navigate('/guadalajara')}>
+              <button className="city-map-btn btn-guadalajara" onClick={() => transitionTo('/guadalajara')}>
                 <span>GUADALAJARA</span>
                 <ArrowRight size={22} strokeWidth={3} />
               </button>
@@ -191,12 +179,12 @@ function App() {
             <div className="bruuk-explainer-footer">
               <span>GUADALAJARA / EDICIÓN 001</span>
               <div className="bruuk-explainer-actions">
-                <button type="button" className="bruuk-explainer-radar-link" onClick={() => navigate('/radar')}>
+                <button type="button" className="bruuk-explainer-radar-link" onClick={() => transitionTo('/radar')}>
                   ABRIR RADAR <Radio size={18} />
                 </button>
                 <button
                   className="bruuk-explainer-cta"
-                  onClick={() => navigate('/guadalajara')}
+                  onClick={() => transitionTo('/guadalajara')}
                 >
                   EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
                 </button>
@@ -314,9 +302,7 @@ function App() {
                         ))}
                         <label className={`bruuko-city-option bruuko-city-search ${bruukoCity === 'other' ? 'is-selected' : ''}`}>
                           <input type="radio" name="bruuko-city" value="other" checked={bruukoCity === 'other'} onChange={() => setBruukoCity('other')} />
-                          <span>¿No ves tu ciudad?</span>
-                          <input className="bruuko-city-input" type="search" list="bruuko-city-suggestions" placeholder="Escribe o busca tu ciudad" value={otherBruukoCity} onFocus={() => setBruukoCity('other')} onChange={(event) => { setOtherBruukoCity(event.target.value); setBruukoCity('other'); }} aria-label="Busca tu ciudad" />
-                          <datalist id="bruuko-city-suggestions">{CITY_SUGGESTIONS.map((city) => <option key={city} value={city} />)}</datalist>
+                          <BruukCombobox id="bruuko-city-search" className="is-light" inputClassName="bruuko-city-input" floatingLabel="¿NO VES TU CIUDAD?" value={otherBruukoCity} suggestions={CITY_SUGGESTIONS} placeholder="Escribe o busca tu ciudad" ariaLabel="Busca tu ciudad" onFocus={() => setBruukoCity('other')} onChange={(value) => { setOtherBruukoCity(value); setBruukoCity('other'); }} />
                         </label>
                       </div>
                     </fieldset>
@@ -339,7 +325,7 @@ function App() {
                 <h2 className="glitch-hover">EXPLORA LA CIUDAD</h2>
                 <p>Descubre una selección curada de spots, tiendas, antigüedades y tianguis. Sal a la calle hoy.</p>
                 <div className="newsletter-form" style={{ justifyContent: 'center', gap: '1.2rem', flexWrap: 'wrap' }}>
-                  <button className="btn btn-primary" onClick={() => navigate('/guadalajara')}>
+                  <button className="btn btn-primary" onClick={() => transitionTo('/guadalajara')}>
                     EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
                   </button>
                 </div>
@@ -367,7 +353,7 @@ function App() {
                 <span>EXPLORAR</span>
                 <a href="/guadalajara/spots">Spots</a>
                 <a href="/guadalajara/rack">Vintage y tianguis</a>
-                <a href="/radar">Radar editorial</a>
+                <a href="/radar">Radar y Señales</a>
               </div>
               <div>
                 <span>PARTICIPAR</span>

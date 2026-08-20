@@ -1,34 +1,50 @@
 import type { ReactNode } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
+import { BruukSelect } from './BruukSelect';
+import { useRecommendationTransition } from './RecommendationTransition';
 import './CityNav.css';
 
 type CitySection = 'spots' | 'rack' | 'planes';
 
 export function CityNav({ active, trailing }: { active?: CitySection; trailing?: ReactNode }) {
-  const navigate = useNavigate();
+  const transitionTo = useRecommendationTransition();
   return (
     <header className="city-nav">
       <Link className="city-nav-logo" to="/" aria-label="Volver al landing de Bruuk"><BruukLogo width={104} /></Link>
-      <label className="city-nav-selector">
+      <div className="city-nav-selector">
         <span>/ CIUDAD</span>
-        <select value="guadalajara" onChange={(event) => navigate(`/${event.target.value}`)} aria-label="Cambiar ciudad">
-          <option value="guadalajara">GUADALAJARA</option>
-          <option value="cdmx" disabled>CDMX · PRÓXIMAMENTE</option>
-          <option value="monterrey" disabled>MONTERREY · PRÓXIMAMENTE</option>
-          <option value="madrid" disabled>MADRID · PRÓXIMAMENTE</option>
-        </select>
-      </label>
-      <nav className="city-nav-sections" aria-label="Secciones de Guadalajara">
-        <NavLink to="/guadalajara/spots" className={active === 'spots' ? 'active' : ''}><small>01</small><span>SPOTS</span></NavLink>
-        <NavLink
-          to="/guadalajara/rack"
-          className={active === 'rack' ? 'active' : ''}
-          aria-label="Explorar Rack: vintage, segunda mano, antigüedades y tianguis"
-        >
-          <small>02</small><span>VINTAGE</span>
-        </NavLink>
-      </nav>
+        <BruukSelect
+          ariaLabel="Cambiar ciudad"
+          value="guadalajara"
+          onChange={(city) => transitionTo(`/${city}`)}
+          options={[
+            { value: 'guadalajara', label: 'GUADALAJARA' },
+            { value: 'cdmx', label: 'CDMX · PRÓXIMAMENTE', disabled: true },
+            { value: 'monterrey', label: 'MONTERREY · PRÓXIMAMENTE', disabled: true },
+            { value: 'madrid', label: 'MADRID · PRÓXIMAMENTE', disabled: true },
+          ]}
+        />
+      </div>
+      <div className="city-nav-sections">
+        {active ? (
+          <div className="city-nav-category">
+            <span>/ CATEGORÍA</span>
+            <BruukSelect
+              ariaLabel="Cambiar categoría"
+              value={active}
+              onChange={(category) => transitionTo(`/guadalajara/${category === 'planes' ? 'senales' : category}`)}
+              options={[
+                { value: 'spots', label: 'SPOTS' },
+                { value: 'rack', label: 'RACK' },
+                { value: 'planes', label: 'SEÑALES' },
+              ]}
+            />
+          </div>
+        ) : (
+          <span className="city-nav-current city-nav-current-home"><strong>¿QUÉ QUIERES DESCUBRIR HOY?</strong></span>
+        )}
+      </div>
       <div className="city-nav-trailing">{trailing}</div>
     </header>
   );

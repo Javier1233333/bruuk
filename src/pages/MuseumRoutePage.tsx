@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown,
   ArrowDownRight,
+  ArrowLeft,
   ArrowUpRight,
   Clock3,
   Landmark,
   MapPin,
   PanelsTopLeft,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import './MuseumRoutePage.css';
 
@@ -205,14 +206,14 @@ export function MuseumRoutePage() {
   return (
     <div className="museum-route-page">
       <header className="museum-route-nav">
-        <BruukLogo width={96} />
+        <Link className="museum-route-nav-logo" to="/guadalajara/senales" aria-label="Volver a Señales de Radar"><BruukLogo width={96} /></Link>
         <div className="museum-route-nav-title">
-          <span>/ MUSEOS GDL</span>
-          <strong>ELIGE UNO</strong>
+          <span>/ RADAR · SEÑAL 001</span>
+          <strong>MUSEOS PARA ELEGIR</strong>
         </div>
-        <a href="#opciones" aria-label={`Ir a las ${MUSEUMS.length} opciones de museos`}>
-          {OPTION_COUNT} OPCIONES <ArrowDown size={16} />
-        </a>
+        <Link to="/guadalajara/senales" aria-label="Volver al feed de Señales">
+          <ArrowLeft size={16} /> VOLVER A SEÑALES
+        </Link>
       </header>
 
       <aside className="museum-route-progress" aria-label="Progreso de opciones">
@@ -321,7 +322,7 @@ export function MuseumRoutePage() {
           <span>/ SIGUE EXPLORANDO</span>
           <h2 id="museum-route-outro-title">ELIGE UNO.<br />VE SIN PRISA.</h2>
           <p>No se trata de tachar una lista. Escoge el museo que se parezca al plan que quieres hoy y date tiempo para recorrerlo.</p>
-          <a href="/guadalajara/spots">VER MÁS LUGARES <ArrowUpRight size={19} /></a>
+          <Link to="/guadalajara/senales">VOLVER A SEÑALES <ArrowUpRight size={19} /></Link>
         </section>
       </main>
     </div>

@@ -9,7 +9,7 @@ Sitio público: [bruuk.space](https://bruuk.space)
 - Portada general y navegación por ciudad.
 - Directorio de spots de Guadalajara.
 - Rack de tiendas vintage, vinilos, antigüedades y tianguis.
-- Radar editorial con artículos y recorridos escritos desde una voz local.
+- Radar y sus Señales: una comunidad activa de planes, eventos, aperturas y cosas que pasarán en la ciudad.
 - Selección de diez museos y espacios culturales reales de Guadalajara y Zapopan.
 - Formularios de comunidad, recomendaciones y registros para eventos.
 - Integración con Beehiiv, Google Sheets mediante Apps Script y Resend.
@@ -53,6 +53,30 @@ npm run lint     # ejecuta ESLint
 
 El resultado de producción se genera en `dist/`.
 
+## Variables de entorno
+
+Las propuestas usan integraciones separadas para que no terminen en la hoja general:
+
+```bash
+# Hoja exclusiva para propuestas de ciudad
+CITY_PROPOSALS_SCRIPT_URL=
+CITY_PROPOSALS_SECRET=
+
+# Hoja exclusiva para lugares y spots recomendados
+PLACE_PROPOSALS_SCRIPT_URL=
+PLACE_PROPOSALS_SECRET=
+```
+
+### Preparar las dos hojas de Google
+
+1. Crea una hoja de cálculo para propuestas de ciudad.
+2. Abre **Extensiones → Apps Script** y pega `scripts/google-apps-script-proposals.gs`.
+3. En **Configuración del proyecto → Propiedades del script**, crea `PROPOSALS_SECRET` con el mismo valor que usarás en `CITY_PROPOSALS_SECRET`.
+4. Despliega como aplicación web, con acceso para cualquier usuario, y copia la URL en `CITY_PROPOSALS_SCRIPT_URL`.
+5. Repite el proceso en otra hoja para lugares. Usa otro secreto y coloca su URL y secreto en `PLACE_PROPOSALS_SCRIPT_URL` y `PLACE_PROPOSALS_SECRET`.
+
+Ambas hojas crearán automáticamente una pestaña llamada `Respuestas` con sus encabezados. Las URLs y secretos solo deben configurarse en Vercel; nunca deben usar el prefijo `VITE_` ni incluirse en el frontend.
+
 
 ## Rutas principales
 
@@ -75,8 +99,14 @@ Las rutas antiguas de planes, administración y descubrimiento redirigen a las s
 
 Las funciones dentro de `api/` se despliegan como Vercel Functions.
 
+| Endpoint | Destino |
+| --- | --- |
+| `POST /api/city-proposal` | Hoja exclusiva de propuestas de ciudad |
+| `POST /api/place-proposal` | Hoja exclusiva de lugares y spots |
+| `POST /api/sheets` | Perfiles generales de Radar |
 
-Los formularios públicos incluyen un campo trampa `website` y validación básica en servidor. El Apps Script debe comprobar `SHEETS_SECRET` antes de escribir en la hoja. El rate limiting por IP todavía no está implementado y debe añadirse antes de exponer campañas de alto tráfico.
+
+Los formularios públicos incluyen un campo trampa `website` y validación básica en servidor. Cada Apps Script comprueba su secreto antes de escribir en su hoja. El rate limiting por IP todavía no está implementado y debe añadirse antes de exponer campañas de alto tráfico.
 
 
 

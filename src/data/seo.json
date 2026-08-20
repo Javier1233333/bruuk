@@ -38,11 +38,18 @@
       "imageAlt": "Rack de Bruuk: vintage y hallazgos en Guadalajara",
       "type": "website"
     },
-    "/radar": {
-      "title": "Radar Bruuk — Rutas, cultura y señales de Guadalajara",
-      "description": "Crónicas, rutas, aperturas y cultura local para descubrir lo que pasa en Guadalajara antes de que se vuelva obvio.",
+    "/guadalajara/senales": {
+      "title": "Señales de Radar — Planes y eventos en Guadalajara | Bruuk",
+      "description": "Comunidad activa con planes, eventos, aperturas y cosas que están por pasar en Guadalajara.",
       "image": "/radar/cabanas/fachada.jpg",
-      "imageAlt": "Radar Bruuk, archivo editorial de Guadalajara",
+      "imageAlt": "Señales de Radar, comunidad activa de Bruuk",
+      "type": "website"
+    },
+    "/radar": {
+      "title": "Señales de Radar — Planes y eventos en Guadalajara | Bruuk",
+      "description": "Comunidad activa con planes, eventos, aperturas y cosas que están por pasar en Guadalajara.",
+      "image": "/radar/cabanas/fachada.jpg",
+      "imageAlt": "Señales de Radar, comunidad activa de Bruuk",
       "type": "website"
     },
     "/radar/museo-cabanas-cafe-redescubrimiento": {

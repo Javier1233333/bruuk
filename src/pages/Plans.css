@@ -151,10 +151,12 @@
 .plan-join-card > h2, .plan-join-success h2 { margin: 12px 0; font: 900 2rem/1 'Outfit'; letter-spacing: -.045em; }
 .plan-join-card > p, .plan-join-success > p { margin: 0 0 24px; color: var(--plans-muted); font-size: .88rem; line-height: 1.55; }
 .plan-join-card form { display: grid; gap: 15px; }
-.plan-join-card label { display: grid; gap: 7px; font-size: .65rem; font-weight: 800; letter-spacing: .09em; }
+.plan-join-card label, .plan-select-field { display: grid; gap: 7px; font-size: .65rem; font-weight: 800; letter-spacing: .09em; }
 .plan-join-card label > span { color: var(--plans-muted); font-weight: 500; }
-.plan-join-card input, .plan-join-card select { width: 100%; min-height: 46px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.32); border-radius: 0; outline: none; background: #09090d; color: var(--plans-ink); }
-.plan-join-card input:focus, .plan-join-card select:focus { border-color: var(--plan-accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--plan-accent) 24%, transparent); }
+.plan-select-field > span { color: var(--plans-ink); }
+.plan-join-card input { width: 100%; min-height: 46px; padding: 9px 12px; border: 1px solid rgba(255,255,255,.32); border-radius: 0; outline: none; background: #09090d; color: var(--plans-ink); }
+.plan-join-card input:focus { border-color: var(--plan-accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--plan-accent) 24%, transparent); }
+.plan-select-field .bruuk-select { --bruuk-select-bg:#09090d; --bruuk-select-panel:#12101c; --bruuk-select-ink:var(--plans-ink); --bruuk-select-purple:var(--plan-accent); }
 .plan-consent { display: flex !important; grid-template-columns: none; align-items: start; gap: 10px !important; font-weight: 500 !important; letter-spacing: 0 !important; line-height: 1.4; }
 .plan-consent input { flex: 0 0 auto; width: 18px; min-height: 18px; height: 18px; margin-top: 1px; accent-color: var(--plan-accent); }
 .plan-display-consent { padding:12px; border:1px solid var(--plans-line); background:rgba(255,255,255,.025); }

@@ -495,8 +495,8 @@ section {
   color: #fff;
 }
 
-/* Footer */
-footer {
+/* Footer de la página legal. Evitar estilos globales sobre todos los <footer>. */
+.spots-footer {
   padding: 3rem 0;
   border-top: 4px solid var(--accent-light);
   background: var(--accent-light);
@@ -505,6 +505,28 @@ footer {
   font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.spots-footer-inner {
+  width: min(calc(100% - 36px), 800px);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+@media (max-width: 600px) {
+  .spots-footer {
+    padding: 28px 0 max(28px, env(safe-area-inset-bottom));
+    text-align: left;
+  }
+
+  .spots-footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 /* Animations */

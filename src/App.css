@@ -745,8 +745,8 @@
 .bruuko-city-search {
   flex: 1 0 100%;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.8rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
   align-items: center;
 }
 
@@ -1439,6 +1439,39 @@
   align-items: center;
 }
 
+.bruuko-city-search .bruuk-combobox {
+  --bruuk-select-bg: #ffffff;
+  --bruuk-select-panel: #ffffff;
+  --bruuk-select-ink: #0e0d1a;
+  --bruuk-select-purple: #6d4cf6;
+  --bruuk-select-contrast: #fffdf8;
+}
+
+.bruuko-city-option.bruuko-city-search,
+.bruuko-city-option.bruuko-city-search.is-selected {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bruuko-city-search:has(.bruuko-city-input:focus-visible) { outline: 0; }
+
+.bruuko-city-search .bruuk-combobox > .bruuko-city-input,
+.bruuko-city-search.is-selected .bruuk-combobox > .bruuko-city-input {
+  border-color: #0e0d1a;
+  background: #ffffff;
+  color: #0e0d1a;
+  box-shadow: none;
+}
+
+.bruuko-city-search .bruuk-combobox > .bruuko-city-input:focus {
+  border-color: #6d4cf6;
+  box-shadow: 3px 3px 0 #6d4cf6;
+}
+
+.bruuko-city-search .bruuk-combobox > .bruuko-city-input::placeholder { color: #625f70; }
+
 .bruuk-explainer-eyebrow {
   display: inline-block;
   margin-bottom: 1.5rem;
@@ -1834,6 +1867,7 @@
 .site-footer::before { display: none; }
 
 .site-footer > .container { position: relative; z-index: 1; }
+.site-footer *, .site-footer *::before, .site-footer *::after { box-sizing: border-box; }
 
 .site-footer-topline {
   display: flex;
@@ -1916,12 +1950,18 @@
 }
 
 @media (max-width: 680px) {
+  .site-footer > .container { width: min(calc(100% - 36px), 1200px); }
   .site-footer-topline { min-height: 64px; }
   .site-footer-main { grid-template-columns: 1fr; gap: 28px; padding: 32px 0; }
   .site-footer-statement strong { font-size: 2rem; }
   .site-footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .site-footer-nav a { min-height: 44px; font-size: .84rem; }
-  .site-footer-bottom { align-items: flex-start; flex-direction: column-reverse; gap: .35rem; padding: 14px 0 18px; }
+  .site-footer-bottom { min-width: 0; align-items: flex-start; flex-direction: column-reverse; gap: .35rem; padding: 14px 0 max(18px, env(safe-area-inset-bottom)); }
   .site-footer-legal { width: 100%; flex-wrap: wrap; }
   .site-footer-legal button { padding: 0 .65rem 0 0; }
+}
+
+@media (max-width: 380px) {
+  .site-footer-nav { grid-template-columns: 1fr; gap: 24px; }
+  .site-footer-statement strong { font-size: 1.75rem; }
 }

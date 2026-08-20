@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title description">
+  <title id="title">Ilustración editorial de Neretta Café &amp; Gelato</title>
+  <description id="description">Visual geométrico tipo Rack creado por Bruuk porque no hay una fotografía verificada.</description>
+  <defs><pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse"><path d="M54 0H0V54" fill="none" stroke="#0a0911" stroke-opacity=".17" stroke-width="2"/></pattern></defs>
+  <rect width="900" height="1100" fill="#8b7cf6"/><rect width="900" height="1100" fill="url(#grid)"/>
+  <circle cx="760" cy="865" r="245" fill="none" stroke="#0a0911" stroke-opacity=".16" stroke-width="76"/>
+  <path d="M72 112h756M72 988h756" stroke="#0a0911" stroke-width="4"/>
+  <text x="72" y="82" fill="#0a0911" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="800" letter-spacing="5">/ BRUUK · ILUSTRACIÓN</text>
+  <text x="450" y="590" text-anchor="middle" fill="#0a0911" font-family="Arial Black,Arial,sans-serif" font-size="330" font-weight="900" letter-spacing="-28">NC</text>
+  <text x="72" y="930" fill="#0a0911" font-family="Arial,Helvetica,sans-serif" font-size="27" font-weight="800" letter-spacing="4">CAFETERÍA</text>
+  <text x="72" y="1036" fill="#0a0911" font-family="Arial Black,Arial,sans-serif" font-size="42" font-weight="900">NERETTA CAFÉ &amp; GELATO</text>
+  <text x="824" y="82" text-anchor="end" fill="#0a0911" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800">GDL / 2026</text>
+</svg>

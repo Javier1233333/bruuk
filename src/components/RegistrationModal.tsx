@@ -212,11 +212,11 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                 </div>
                                 <h2>LO QUE PASA EN LA CIUDAD, ANTES DE QUE SE VUELVA OBVIO.</h2>
                                 <p>
-                                    Radar es la comunidad editorial de Bruuk. Curamos lo nuevo de Guadalajara y te enviamos las señales que sí vale la pena seguir.
+                                    Radar es la comunidad activa de Bruuk. Reunimos planes, eventos, aperturas y cosas que están por pasar en Guadalajara.
                                 </p>
                                 <div className="radar-modal-signals" aria-label="Lo que recibirás en Radar">
-                                    <div><strong>SEÑALES</strong><span>Nuevos spots, aperturas y hallazgos.</span></div>
-                                    <div><strong>RUTAS</strong><span>Planes, reseñas y cultura local.</span></div>
+                                    <div><strong>SEÑALES</strong><span>Planes, eventos y cosas que están por pasar.</span></div>
+                                    <div><strong>CIUDAD</strong><span>Aperturas, encuentros y hallazgos compartidos por la comunidad.</span></div>
                                     <div><strong>SIN RUIDO</strong><span>Actualizaciones constantes, correo solo cuando hay algo valioso.</span></div>
                                 </div>
                                 <button

@@ -70,6 +70,13 @@
   letter-spacing: 0.12em;
 }
 
+.museum-route-nav-logo {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  line-height: 0;
+}
+
 .museum-route-hero {
   display: grid;
   width: 100%;
@@ -492,7 +499,7 @@
   }
 
   .museum-route-nav { height: 70px; gap: 12px; padding-inline: 14px; }
-  .museum-route-nav > svg { width: 82px; }
+  .museum-route-nav-logo svg { width: 82px; }
   .museum-route-nav-title { padding-left: 10px; }
   .museum-route-nav-title span { font-size: 0.47rem; }
   .museum-route-nav-title strong { font-size: 0.58rem; }
@@ -555,7 +562,7 @@
 }
 
 @media (max-width: 420px) {
-  .museum-route-nav > a { width: 40px; padding: 0; justify-content: center; font-size: 0; }
+  .museum-route-nav > a:not(.museum-route-nav-logo) { width: 40px; padding: 0; justify-content: center; font-size: 0; }
   .museum-route-facts span { flex-basis: 33.333%; padding-inline: 0.45rem; font-size: 0.52rem; }
   .museum-route-hero h1 { letter-spacing: -0.075em; }
 }

@@ -120,7 +120,7 @@ export function RadarMazRoutePage() {
       <header className="cabanas-entry-nav">
         <Link to="/" aria-label="Volver al inicio de Bruuk"><BruukLogo width={96} /></Link>
         <div><span>/ RADAR BRUUK</span><strong>SEÑAL 003</strong></div>
-        <Link to="/radar"><ArrowLeft size={16} /> VOLVER A RADAR</Link>
+        <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
       </header>
 
       <main>
@@ -281,7 +281,7 @@ export function RadarMazRoutePage() {
         </section>
 
         <footer className="cabanas-entry-footer">
-          <Link to="/radar"><ArrowLeft size={16} /> RADAR BRUUK</Link>
+          <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
           <p>RUTA Y TEXTO: JAVIER FREGOSO · MAZ: FOTO TANIA SOLÁ (WMMX) / WIKIMEDIA COMMONS · CC BY 4.0 · BINAURAL: FOTO VÍA CORNER / GOOGLE CONTRIBUTORS</p>
         </footer>
       </main>

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
+import { BruukSelect } from '../components/BruukSelect';
 import {
   COMMUNITY_EVENTS, getManagedEvents, resetManagedEvents, saveManagedEvents,
   type CommunityEvent,
@@ -170,7 +171,7 @@ export default function EventAdminPage() {
                   <label>COLONIA / CIUDAD<input required value={draft.neighborhood} onChange={(event) => update('neighborhood', event.target.value)} /></label>
                   <label className="wide">LINK DIRECTO DE MAPS<input type="url" required value={draft.mapsUrl} onChange={(event) => update('mapsUrl', event.target.value)} /></label>
                   <label>CUPO<input type="number" min="1" max="500" required value={draft.capacity} onChange={(event) => update('capacity', Number(event.target.value))} /></label>
-                  <label>ESTADO<select value={draft.status} onChange={(event) => update('status', event.target.value as CommunityEvent['status'])}><option value="open">Registro abierto</option><option value="limited">Cupo limitado</option><option value="sold-out">Cupo completo</option></select></label>
+                  <div className="event-admin-field"><span>ESTADO</span><BruukSelect ariaLabel="Estado del evento" value={draft.status} onChange={(status) => update('status', status as CommunityEvent['status'])} options={[{ value: 'open', label: 'REGISTRO ABIERTO' }, { value: 'limited', label: 'CUPO LIMITADO' }, { value: 'sold-out', label: 'CUPO COMPLETO' }]} /></div>
                   <label className="wide">PRECIO / CONDICIÓN<input value={draft.priceLabel} onChange={(event) => update('priceLabel', event.target.value)} /></label>
                 </fieldset>
 
@@ -182,7 +183,7 @@ export default function EventAdminPage() {
 
                 <fieldset><legend>ANTICIPO CON PAYPAL</legend>
                   <label>MONTO DEL ANTICIPO<input type="number" min="0" step="1" required value={draft.depositAmount ?? 0} onChange={(event) => update('depositAmount', Number(event.target.value))} /></label>
-                  <label>MONEDA<select value={draft.depositCurrency ?? 'MXN'} onChange={(event) => update('depositCurrency', event.target.value as 'MXN' | 'USD')}><option value="MXN">MXN — Peso mexicano</option><option value="USD">USD — Dólar</option></select></label>
+                  <div className="event-admin-field"><span>MONEDA</span><BruukSelect ariaLabel="Moneda del anticipo" value={draft.depositCurrency ?? 'MXN'} onChange={(currency) => update('depositCurrency', currency as 'MXN' | 'USD')} options={[{ value: 'MXN', label: 'MXN — PESO MEXICANO' }, { value: 'USD', label: 'USD — DÓLAR' }]} /></div>
                   <label className="wide">LINK DE PAYPAL <span>Usa tu PayPal.Me base o un Payment Link completo</span><input type="url" placeholder="https://paypal.me/TuComercio" value={draft.paypalUrl ?? ''} onChange={(event) => update('paypalUrl', event.target.value)} /></label>
                   <div className="event-admin-payment-note wide">Bruuk agregará el monto al enlace PayPal.Me. Si pegas un Payment Link de PayPal, se abrirá exactamente ese enlace.</div>
                 </fieldset>

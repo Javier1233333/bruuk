@@ -2,10 +2,11 @@ import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type Poi
 import { ArrowRight, ArrowUpRight, Coffee, Crosshair, Radio, Route, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
+import { AsciiRadarBackground } from '../components/AsciiRadarBackground';
 import { RegistrationModal } from '../components/RegistrationModal';
 import './RadarPage.css';
 
-const CELL_POSITIONS = [-1, 0, 1, 2];
+const DESKTOP_CELL_POSITIONS = [-1, 0, 1];
 
 type CanvasMetrics = {
   width: number;
@@ -28,9 +29,11 @@ export function RadarPage() {
   const [isJoinOpen, setIsJoinOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [metrics, setMetrics] = useState<CanvasMetrics>(() => getCanvasMetrics());
-  const [view, setView] = useState(() => getCanvasMetrics().initial);
   const drag = useRef({ pointerId: -1, x: 0, y: 0, moved: false });
+  const worldRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef(getCanvasMetrics().initial);
   const isMobileLayout = metrics.width === 900;
+  const cellPositions = isMobileLayout ? [0] : DESKTOP_CELL_POSITIONS;
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -38,7 +41,7 @@ export function RadarPage() {
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = 'Radar Bruuk · Archivo infinito de Guadalajara';
+    document.title = 'Señales de Radar · Planes y eventos en Guadalajara | Bruuk';
     return () => { document.title = previousTitle; };
   }, []);
 
@@ -47,7 +50,10 @@ export function RadarPage() {
       const next = getCanvasMetrics();
       setMetrics((current) => {
         if (current.width === next.width && current.height === next.height) return current;
-        setView(next.initial);
+        viewRef.current = next.initial;
+        window.requestAnimationFrame(() => {
+          if (worldRef.current) worldRef.current.style.transform = `translate3d(${next.initial.x}px, ${next.initial.y}px, 0)`;
+        });
         return next;
       });
     };
@@ -56,10 +62,18 @@ export function RadarPage() {
   }, []);
 
   const moveView = (deltaX: number, deltaY: number) => {
-    setView((current) => ({
+    const current = viewRef.current;
+    const next = {
       x: wrapAxis(current.x + deltaX, metrics.width),
       y: wrapAxis(current.y + deltaY, metrics.height),
-    }));
+    };
+    viewRef.current = next;
+    if (worldRef.current) worldRef.current.style.transform = `translate3d(${next.x}px, ${next.y}px, 0)`;
+  };
+
+  const resetView = () => {
+    viewRef.current = metrics.initial;
+    if (worldRef.current) worldRef.current.style.transform = `translate3d(${metrics.initial.x}px, ${metrics.initial.y}px, 0)`;
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -113,15 +127,16 @@ export function RadarPage() {
   return (
     <div className="radar-page">
       <header className="radar-page-nav">
-        <Link to="/" aria-label="Volver al landing de Bruuk"><BruukLogo width={96} /></Link>
-        <div className="radar-page-nav-title"><span>/ ARCHIVO INFINITO</span><strong>RADAR BRUUK</strong></div>
-        <button type="button" onClick={() => setIsJoinOpen(true)}>UNIRME <Radio size={15} /></button>
+        <Link to="/guadalajara" aria-label="Volver a las categorías de Guadalajara"><BruukLogo width={96} /></Link>
+        <div className="radar-page-nav-title"><span>/ RADAR BRUUK</span><strong>SEÑALES</strong></div>
+        <Link className="radar-nav-category" to="/guadalajara">CATEGORÍAS <ArrowRight size={15} /></Link>
       </header>
 
       <main className="radar-infinity-shell">
+        <AsciiRadarBackground paused={isDragging} />
         <div className="radar-infinity-topline">
-          <span>RADAR / GUADALAJARA</span>
-          <span>03 SEÑALES · ARCHIVO EN CRECIMIENTO</span>
+          <span>RADAR / SEÑALES</span>
+          <span>03 SEÑALES · COMUNIDAD EN MOVIMIENTO</span>
         </div>
 
         <div
@@ -136,8 +151,8 @@ export function RadarPage() {
           onWheel={handleWheel}
           onClickCapture={blockClickAfterDrag}
         >
-          <div className="radar-infinity-world" style={{ transform: `translate3d(${view.x}px, ${view.y}px, 0)` }}>
-            {CELL_POSITIONS.flatMap((row) => CELL_POSITIONS.map((column) => {
+          <div ref={worldRef} className="radar-infinity-world" style={{ transform: `translate3d(${viewRef.current.x}px, ${viewRef.current.y}px, 0)` }}>
+            {cellPositions.flatMap((row) => cellPositions.map((column) => {
               const isPrimary = row === 0 && column === 0;
               const tabIndex = isPrimary ? undefined : -1;
               return (
@@ -148,11 +163,19 @@ export function RadarPage() {
                   key={`${row}-${column}`}
                 >
                   <div className="radar-infinity-wordmark" aria-hidden="true">
-                    <span>SEÑALES DE</span><strong>RADAR.</strong>
+                    <span>RADAR</span><strong>SEÑALES.</strong>
                   </div>
 
+                  <button className="radar-canvas-card radar-canvas-community" type="button" onClick={() => setIsJoinOpen(true)} tabIndex={tabIndex}>
+                    <Radio />
+                    <span>/ COMUNIDAD RADAR</span>
+                    <h2>RECIBE NUEVAS<br />ENTRADAS ANTES<br />QUE NADIE.</h2>
+                    <p>Actualizaciones, planes y cosas que pasarán en la ciudad.</p>
+                    <strong>UNIRME A RADAR <ArrowRight /></strong>
+                  </button>
+
                   <Link className="radar-canvas-card radar-canvas-cabanas" to="/radar/museo-cabanas-cafe-redescubrimiento" tabIndex={tabIndex}>
-                    <img src="/radar/cabanas/fachada.jpg" alt={isPrimary ? 'Vista hacia el Museo Cabañas desde Paseo Hospicio' : ''} draggable="false" />
+                    <img src="/radar/cabanas/fachada-optimized.webp" alt={isPrimary ? 'Vista hacia el Museo Cabañas desde Paseo Hospicio' : ''} loading={isPrimary ? 'eager' : 'lazy'} decoding="async" draggable="false" />
                     <div className="radar-canvas-photo-shade" />
                     <span>SEÑAL 002 · CRÓNICA</span>
                     <h2>CABAÑAS,<br />CAFÉ Y VOLVER<br />A MIRAR.</h2>
@@ -166,15 +189,8 @@ export function RadarPage() {
                     <strong>VER OPCIONES <ArrowUpRight /></strong>
                   </Link>
 
-                  <button className="radar-canvas-card radar-canvas-community" type="button" onClick={() => setIsJoinOpen(true)} tabIndex={tabIndex}>
-                    <Radio />
-                    <span>/ COMUNIDAD RADAR</span>
-                    <h2>RECÍBELO<br />ANTES QUE NADIE.</h2>
-                    <strong>UNIRME <ArrowRight /></strong>
-                  </button>
-
                   <Link className="radar-canvas-card radar-canvas-upcoming radar-canvas-maz" to="/radar/maz-desayuno-cafe-zapopan" tabIndex={tabIndex}>
-                    <img src="/radar/maz-route/maz.jpg" alt={isPrimary ? 'Entrada del Museo de Arte de Zapopan' : ''} draggable="false" />
+                    <img src="/radar/maz-route/maz.jpg" alt={isPrimary ? 'Entrada del Museo de Arte de Zapopan' : ''} loading={isPrimary ? 'eager' : 'lazy'} decoding="async" draggable="false" />
                     <div className="radar-canvas-photo-shade" />
                     <div><span>SEÑAL 003</span><Sparkles /></div>
                     <small>RUTA / ZAPOPAN CENTRO</small>
@@ -184,7 +200,7 @@ export function RadarPage() {
 
                   <div className="radar-canvas-note" aria-hidden="true">
                     <Coffee />
-                    <span>RESEÑAS · RUTAS<br />APERTURAS · CULTURA LOCAL</span>
+                    <span>PLANES · EVENTOS<br />APERTURAS · LO QUE VIENE</span>
                   </div>
                 </section>
               );
@@ -193,7 +209,7 @@ export function RadarPage() {
         </div>
 
         <div className="radar-infinity-help" aria-hidden="true"><span>ARRASTRA PARA EXPLORAR</span><span>RUEDA / TRACKPAD / TOUCH</span></div>
-        <button className="radar-infinity-reset" type="button" onClick={() => setView(metrics.initial)}><Crosshair size={17} /> CENTRAR</button>
+        <button className="radar-infinity-reset" type="button" onClick={resetView}><Crosshair size={17} /> CENTRAR</button>
       </main>
 
       <RegistrationModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} />

@@ -28,6 +28,7 @@ import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
 import { RegistrationModal } from '../components/RegistrationModal';
+import { BruukSelect } from '../components/BruukSelect';
 
 type SourceCategory = 'Rack recomienda' | 'Vinilos y antigüedades' | 'Tianguis';
 type PlaceKind = 'tiendas' | 'antiguedades' | 'tianguis';
@@ -629,23 +630,18 @@ export function RackPlaces() {
     <div className="rack-places-page">
       <CityNav active="rack" />
       <section className="rack-places-controls" aria-label="Controles del directorio">
-        <label className="rack-places-filter-select">
+        <div className="rack-places-filter-select">
           <span>CATEGORÍA</span>
-          <select
+          <BruukSelect
+            ariaLabel="Filtrar lugares por categoría"
             value={activeFilter}
-            onChange={(event) =>
-              changeFilter(event.target.value as PlaceFilter)
-            }
-          >
-            {(Object.keys(FILTER_LABELS) as PlaceFilter[]).map(
-              (filter) => (
-                <option key={filter} value={filter}>
-                  {FILTER_LABELS[filter]}
-                </option>
-              ),
-            )}
-          </select>
-        </label>
+            onChange={(filter) => changeFilter(filter as PlaceFilter)}
+            options={(Object.keys(FILTER_LABELS) as PlaceFilter[]).map((filter) => ({
+              value: filter,
+              label: FILTER_LABELS[filter],
+            }))}
+          />
+        </div>
         <div className="rack-places-filters" role="group" aria-label="Filtrar lugares">
           {(Object.keys(FILTER_LABELS) as PlaceFilter[]).map((filter) => (
             <button

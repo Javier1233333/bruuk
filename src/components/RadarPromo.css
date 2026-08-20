@@ -38,6 +38,7 @@
   line-height: 1.45;
 }
 
+.radar-promo > a,
 .radar-promo button {
   display: inline-flex;
   align-items: center;
@@ -57,9 +58,12 @@
   transition: box-shadow 140ms ease, transform 140ms ease;
 }
 
+.radar-promo > a:hover,
+.radar-promo > a:focus-visible,
 .radar-promo button:hover,
 .radar-promo button:focus-visible { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #ffffff; }
 .radar-promo button:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #ffffff; }
+.radar-promo .radar-promo__secondary { min-height: 38px; margin-top: 12px; color: #09090d; background: transparent; border: 1px solid #09090d; box-shadow: none; }
 
 .radar-promo__hint {
   margin-top: 1.4rem;
@@ -175,6 +179,8 @@
   line-height: 1.62;
 }
 
+.radar-promo-rack__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.radar-promo-rack__actions a,
 .radar-promo-rack__copy button {
   display: inline-flex;
   min-height: 48px;
@@ -193,8 +199,11 @@
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
+.radar-promo-rack__actions a:hover,
+.radar-promo-rack__actions a:focus-visible,
 .radar-promo-rack__copy button:hover,
 .radar-promo-rack__copy button:focus-visible { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #6366f1; }
+.radar-promo-rack__actions button { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); box-shadow: none; }
 
 .radar-promo-rack__hint {
   position: absolute;

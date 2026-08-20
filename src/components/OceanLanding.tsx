@@ -5,6 +5,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { BruukLogo } from './BruukLogo';
+import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import { RadarPromo } from './RadarPromo';
@@ -93,6 +94,7 @@ export function OceanLanding() {
 
   return (
     <div className="tiktok-feed-wrapper">
+      <AsciiSpotsBackground />
       <CityNav active="spots" />
 
       {/* Floating Category Filters */}
