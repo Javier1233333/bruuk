@@ -30,6 +30,7 @@ export function RadarPage() {
   const [metrics, setMetrics] = useState<CanvasMetrics>(() => getCanvasMetrics());
   const [view, setView] = useState(() => getCanvasMetrics().initial);
   const drag = useRef({ pointerId: -1, x: 0, y: 0, moved: false });
+  const isMobileLayout = metrics.width === 900;
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -62,6 +63,7 @@ export function RadarPage() {
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (isMobileLayout) return;
     if (event.button !== 0) return;
     if ((event.target as Element).closest('a, button')) {
       drag.current.moved = false;
@@ -73,6 +75,7 @@ export function RadarPage() {
   };
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (isMobileLayout) return;
     if (drag.current.pointerId !== event.pointerId) return;
     const deltaX = event.clientX - drag.current.x;
     const deltaY = event.clientY - drag.current.y;
@@ -89,6 +92,7 @@ export function RadarPage() {
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (isMobileLayout) return;
     event.preventDefault();
     const horizontal = event.deltaX || (event.shiftKey ? event.deltaY : 0);
     const vertical = event.shiftKey ? 0 : event.deltaY;
@@ -96,6 +100,10 @@ export function RadarPage() {
   };
 
   const blockClickAfterDrag = (event: MouseEvent<HTMLDivElement>) => {
+    if (isMobileLayout) {
+      drag.current.moved = false;
+      return;
+    }
     if (!drag.current.moved) return;
     event.preventDefault();
     event.stopPropagation();
@@ -118,7 +126,9 @@ export function RadarPage() {
 
         <div
           className={`radar-infinity-viewport ${isDragging ? 'is-dragging' : ''}`}
-          aria-label="Archivo infinito de señales de Radar. Arrastra para explorar en cualquier dirección."
+          aria-label={isMobileLayout
+            ? 'Señales de Radar. Desliza hacia abajo para explorar.'
+            : 'Archivo infinito de señales de Radar. Arrastra para explorar en cualquier dirección.'}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={finishDrag}
