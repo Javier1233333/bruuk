@@ -63,9 +63,11 @@ export function OceanLanding() {
   // Categorize spots for filtering
   const getCategoryGroup = (type: string): CategoryFilter => {
     const t = type.toLowerCase();
-    if (t.includes('café') || t.includes('cafe') || t.includes('panader')) return 'cafes';
-    if (t.includes('bar') || t.includes('club') || t.includes('antro') || t.includes('disco') || t.includes('deportivo') || t.includes('jazz')) return 'bares';
-    if (t.includes('restaurante') || t.includes('comida') || t.includes('pizz') || t.includes('japon') || t.includes('asiat') || t.includes('marisco') || t.includes('vegetar') || t.includes('brunch') || t.includes('hamburgues') || t.includes('ramen')) return 'restaurantes';
+    if (t.startsWith('café') || t.startsWith('cafe') || t.startsWith('cafetería') || t.startsWith('panader')) return 'cafes';
+    if (t.startsWith('restaurante') || t.startsWith('maris') || t.startsWith('pizz') || t.startsWith('bagel') || t.startsWith('sandwich') || t.startsWith('pollería') || t.startsWith('hamburgues')) return 'restaurantes';
+    if (t.startsWith('bar') || t.startsWith('rooftop bar') || t.startsWith('club') || t.startsWith('disco') || t.startsWith('coctel') || t.startsWith('cervec')) return 'bares';
+    if (t.includes('bar') || t.includes('club') || t.includes('antro') || t.includes('disco') || t.includes('deportivo') || t.includes('jazz') || t.includes('coctel') || t.includes('cervec')) return 'bares';
+    if (t.includes('restaurante') || t.includes('comida') || t.includes('pizz') || t.includes('japon') || t.includes('asiat') || t.includes('maris') || t.includes('vegan') || t.includes('vegetar') || t.includes('brunch') || t.includes('hamburgues') || t.includes('ramen') || t.includes('bagel') || t.includes('sandwich') || t.includes('pollería')) return 'restaurantes';
     return 'todos'; // fallback
   };
 
@@ -138,7 +140,7 @@ export function OceanLanding() {
             </span>
             <h1 className="spots-title brand-gradient-text">SPOTS CURADOS</h1>
             <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>
-              Una selección honesta de rincones donde vale la pena aparecer. Sin algoritmos, sin filtros falsos.
+              Una selección honesta de rincones a los que vale la pena ir. Sin rankings pagados ni recomendaciones automáticas.
             </p>
             <div className="scroll-indicator">
               <span>Desliza para explorar spots</span>

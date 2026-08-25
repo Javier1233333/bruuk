@@ -52,6 +52,10 @@ export function RecommendationTransitionProvider({ children }: { children: React
 
       const url = new URL(anchor.href, window.location.href);
       if (url.origin !== window.location.origin || !RECOMMENDATION_ROUTE.test(url.pathname)) return;
+      const isSamePageAnchor = url.pathname === location.pathname
+        && url.search === location.search
+        && Boolean(url.hash);
+      if (isSamePageAnchor) return;
 
       event.preventDefault();
       transitionTo(`${url.pathname}${url.search}${url.hash}`);
@@ -59,7 +63,7 @@ export function RecommendationTransitionProvider({ children }: { children: React
 
     document.addEventListener('click', interceptRecommendationLink, true);
     return () => document.removeEventListener('click', interceptRecommendationLink, true);
-  }, [transitionTo]);
+  }, [location.pathname, location.search, transitionTo]);
 
   useEffect(() => () => {
     window.clearTimeout(navigationTimer.current);

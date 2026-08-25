@@ -110,7 +110,7 @@ function App() {
               Menos pantalla.<br />Más mundo.
             </h1>
             <p className="hero-subtitle-p animate-fade-in delay-1">
-              Spots, Rack y rincones donde vale la pena aparecer. Navega Guadalajara sin algoritmos, sin filtros patrocinados y con recomendaciones de personas reales.
+              Spots, Rack y rincones a los que vale la pena ir. Navega Guadalajara sin rankings pagados y con recomendaciones de personas reales.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
               <button className="btn btn-primary btn-mega" onClick={() => transitionTo('/guadalajara')}>
@@ -209,7 +209,7 @@ function App() {
                   <Sparkles size={28} color="#fff" />
                 </div>
                 <h3>Spots Curados</h3>
-                <p>Una selección honesta de locales en Guadalajara. Cafés, bares y rincones auténticos donde de verdad vale la pena aparecer.</p>
+                <p>Una selección honesta de locales en Guadalajara. Cafés, bares y rincones auténticos a los que de verdad vale la pena ir.</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">

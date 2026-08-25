@@ -48,11 +48,10 @@
   .maz-route-entry { height: 100svh; overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 70px; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; }
   .maz-route-entry::-webkit-scrollbar { display: none; }
   .maz-route-entry .maz-route-snap-card { min-height: calc(100svh - 70px); scroll-margin-top: 70px; scroll-snap-align: start; scroll-snap-stop: always; }
-  .maz-route-scroll-guide { right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); grid-template-columns: auto 72px auto; max-width: calc(100vw - 20px); padding: 9px 10px; }
-  .maz-route-scroll-label-desktop { display: none; }
-  .maz-route-scroll-label-mobile { display: block; }
-  .maz-route-scroll-guide span { max-width: 92px; line-height: 1.25; }
-  .maz-route-scroll-track { width: 72px; }
+  .maz-route-scroll-guide { top: 70px; right: 0; bottom: auto; left: 0; min-height: 4px; display: block; max-width: none; padding: 0; border: 0; background: rgba(10, 9, 17, .72); backdrop-filter: none; }
+  .maz-route-scroll-guide > span,
+  .maz-route-scroll-guide > small { display: none; }
+  .maz-route-scroll-track { width: 100%; height: 4px; }
   .maz-route-hero .cabanas-entry-hero-copy { width: 100%; }
   .maz-route-hero h1 { font-size: clamp(2.55rem, 11.8vw, 3.7rem); }
   .maz-route-hero > img { object-position: 66% center; }

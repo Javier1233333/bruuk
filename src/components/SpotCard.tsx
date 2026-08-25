@@ -70,9 +70,11 @@ function getSpotVisual(type: string): SpotVisual {
   const value = type.toLocaleLowerCase('es');
   if (value.includes('panader')) return CATEGORY_VISUALS.bakery;
   if (value.includes('helad') || value.includes('postre')) return CATEGORY_VISUALS.dessert;
+  if (value.startsWith('café') || value.startsWith('cafe') || value.startsWith('cafetería')) return CATEGORY_VISUALS.cafe;
+  if (value.startsWith('restaurante') || value.startsWith('maris') || value.startsWith('pizz') || value.startsWith('bagel') || value.startsWith('sandwich') || value.startsWith('pollería') || value.startsWith('hamburgues')) return CATEGORY_VISUALS.food;
   if (value.includes('club') || value.includes('disco') || value.includes('antro') || value.includes('jazz')) return CATEGORY_VISUALS.night;
-  if (value.includes('bar')) return CATEGORY_VISUALS.bar;
-  if (value.includes('boutique') || value.includes('tienda')) return CATEGORY_VISUALS.shop;
+  if (value.includes('bar') || value.includes('coctel') || value.includes('cervec')) return CATEGORY_VISUALS.bar;
+  if (value.includes('boutique') || value.includes('tienda') || value.includes('concept store')) return CATEGORY_VISUALS.shop;
   if (value.includes('café') || value.includes('cafe') || value.includes('brunch')) return CATEGORY_VISUALS.cafe;
   return CATEGORY_VISUALS.food;
 }

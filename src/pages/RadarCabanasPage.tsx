@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { ArrowDownRight, ArrowLeft, ArrowUpRight, Clock3, Coffee, Footprints, MapPin, Radio } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
@@ -11,12 +11,10 @@ const MADOKA_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Caf%C3%A
 const RIVEROLL_MAP_URL = 'https://www.google.com/maps/search/?api=1&query=Finca+Riveroll+Centro+Guadalajara';
 
 export function RadarCabanasPage() {
-  const entryRef = useRef<HTMLDivElement | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    entryRef.current?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, []);
 
   useEffect(() => {
@@ -26,32 +24,30 @@ export function RadarCabanasPage() {
   }, []);
 
   useEffect(() => {
-    const entry = entryRef.current;
-    if (!entry) return;
+    let frame = 0;
 
     const updateProgress = () => {
-      const isMobile = window.matchMedia('(max-width: 600px)').matches;
-      const scrollableDistance = isMobile
-        ? entry.scrollHeight - entry.clientHeight
-        : document.documentElement.scrollHeight - window.innerHeight;
-      const currentScroll = isMobile ? entry.scrollTop : window.scrollY;
-      const progress = scrollableDistance > 0 ? currentScroll / scrollableDistance : 0;
-      setScrollProgress(Math.min(1, Math.max(0, progress)));
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollableDistance > 0 ? window.scrollY / scrollableDistance : 0;
+        setScrollProgress(Math.min(1, Math.max(0, progress)));
+        frame = 0;
+      });
     };
 
     updateProgress();
-    entry.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
     return () => {
-      entry.removeEventListener('scroll', updateProgress);
       window.removeEventListener('scroll', updateProgress);
       window.removeEventListener('resize', updateProgress);
+      if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
 
   return (
-    <div ref={entryRef} className="cabanas-entry">
+    <div className="cabanas-entry">
       <aside className="cabanas-entry-progress" aria-label="Progreso del artículo">
         <span>PROGRESO</span>
         <div

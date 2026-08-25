@@ -168,6 +168,17 @@
   }
 }
 
+@media (max-width: 360px) {
+  .header .container,
+  .app-wrapper > main .container { padding-inline: 1rem; }
+  .header .container { gap: .5rem; }
+  .header .logo svg { width: 142px; }
+  .header-secondary-link { padding-inline: .6rem; font-size: .56rem; }
+  .hero-main-dark h1 { font-size: clamp(2.8rem, 14vw, 3.35rem); letter-spacing: -.055em; }
+  .hero-subtitle-p { padding-left: 1rem; font-size: 1rem; }
+  .city-map-btn { padding-inline: 1rem; font-size: 1.05rem; }
+}
+
 /* ============================================================
    NOSOTROS CAROUSEL
    ============================================================ */
@@ -1002,7 +1013,10 @@
   grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
   gap: 26px 70px;
   align-items: end;
+  padding-inline: 0;
 }
+
+.expand-opportunities > .container > * { min-width: 0; }
 
 .expand-opportunities > .container > span { grid-column: 1 / -1; }
 
@@ -1154,13 +1168,14 @@
   .bruuko-city-option { width: 100%; }
   .bruuko-city-search { grid-column: 1 / -1; }
 
-  .expand-opportunities h2 { font-size: clamp(3rem, 14vw, 4.4rem); }
+  .expand-opportunities h2 { max-width: 100%; font-size: clamp(2.35rem, 10vw, 4.4rem); overflow-wrap: normal; }
   .expand-organizers { grid-template-columns: 1fr; padding-inline: 0; }
   .expand-organizers > p,
   .expand-organizers-flow { grid-column: 1; }
 
   .expand-opportunity-grid { margin-top: 38px; }
   .expand-opportunity-grid article {
+    min-width: 0;
     min-height: 390px;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto 1fr auto auto;
@@ -1168,7 +1183,7 @@
     padding: 28px 4px 26px;
   }
   .expand-opportunity-grid article > svg { grid-column: 2; grid-row: 1; align-self: start; width: 46px; height: 46px; }
-  .expand-opportunity-grid h3 { grid-column: 1 / -1; grid-row: 2; align-self: center; font-size: clamp(3.15rem, 15vw, 4.8rem); }
+  .expand-opportunity-grid h3 { min-width: 0; grid-column: 1 / -1; grid-row: 2; align-self: center; font-size: clamp(2.8rem, 13vw, 4.8rem); overflow-wrap: anywhere; }
   .expand-opportunity-grid p { grid-column: 1 / -1; grid-row: 3; align-self: auto; font-size: .94rem; }
   .expand-opportunity-cta { grid-column: 1 / -1; grid-row: 4; width: 100%; min-height: 48px; justify-content: space-between; padding-inline: 0; }
 }

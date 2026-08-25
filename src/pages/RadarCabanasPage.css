@@ -149,23 +149,25 @@
 .cabanas-entry-progress {
   position: fixed;
   z-index: 90;
-  right: 18px;
-  bottom: 22px;
+  top: 76px;
+  right: 0;
+  left: 0;
   display: grid;
-  grid-template-columns: auto 110px auto;
+  grid-template-columns: auto minmax(80px, 1fr) auto;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  min-height: 28px;
+  padding: 6px max(24px, calc((100vw - 1240px) / 2));
   color: #fff;
-  background: rgba(10, 9, 17, .92);
-  border: 1px solid rgba(255, 255, 255, .22);
+  background: rgba(10, 9, 17, .94);
+  border-bottom: 1px solid rgba(255, 255, 255, .16);
   backdrop-filter: blur(12px);
   pointer-events: none;
 }
 .cabanas-entry-progress span,
 .cabanas-entry-progress small { font: 900 .54rem 'Outfit', sans-serif; letter-spacing: .12em; }
 .cabanas-entry-progress small { color: var(--entry-accent); }
-.cabanas-entry-progress-track { position: relative; width: 110px; height: 3px; overflow: hidden; background: rgba(255, 255, 255, .2); }
+.cabanas-entry-progress-track { position: relative; width: 100%; height: 3px; overflow: hidden; background: rgba(255, 255, 255, .2); }
 .cabanas-entry-progress-track i { position: absolute; inset: 0; display: block; background: var(--entry-accent); transform-origin: left center; transition: transform 80ms linear; }
 
 @media (max-width: 900px) {
@@ -179,18 +181,13 @@
 
 @media (max-width: 600px) {
   .cabanas-entry {
-    height: 100svh;
-    min-height: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    scroll-behavior: smooth;
-    scroll-padding-top: 70px;
-    scroll-snap-type: y mandatory;
-    scrollbar-width: none;
+    min-height: 100vh;
+    overflow-x: clip;
+    overflow-y: visible;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
     touch-action: pan-y;
   }
-  .cabanas-entry::-webkit-scrollbar { display: none; }
   .cabanas-entry-hero,
   .cabanas-entry-lead,
   .cabanas-entry-chapter,
@@ -198,13 +195,21 @@
   .cabanas-entry-rediscover,
   .cabanas-entry-plan,
   .cabanas-entry-outro {
-    min-height: calc(100svh - 70px);
-    scroll-margin-top: 70px;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    min-height: 0;
+    scroll-margin-top: 78px;
   }
-  .cabanas-entry-progress { right: 10px; bottom: max(10px, env(safe-area-inset-bottom)); grid-template-columns: auto 72px auto; max-width: calc(100vw - 20px); padding: 9px 10px; }
-  .cabanas-entry-progress-track { width: 72px; }
+  .cabanas-entry-progress {
+    top: 70px;
+    min-height: 4px;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgba(10, 9, 17, .72);
+    backdrop-filter: none;
+  }
+  .cabanas-entry-progress > span,
+  .cabanas-entry-progress > small { display: none; }
+  .cabanas-entry-progress-track { width: 100%; height: 4px; }
   .cabanas-entry-nav { height: 70px; gap: 11px; padding-inline: 14px; }
   .cabanas-entry-nav svg { max-width: 82px; }
   .cabanas-entry-nav > div span { display: none; }
@@ -239,7 +244,7 @@
   .cabanas-entry-plan nav a { justify-content: space-between; }
   .cabanas-entry-outro { padding: 76px 18px; }
   .cabanas-entry-outro a { width: 100%; justify-content: space-between; }
-  .cabanas-entry-footer { min-height: 190px; align-items: flex-start; justify-content: center; flex-direction: column; gap: 14px; padding: 30px 18px max(82px, calc(28px + env(safe-area-inset-bottom))); scroll-snap-align: end; scroll-snap-stop: always; }
+  .cabanas-entry-footer { min-height: 160px; align-items: flex-start; justify-content: center; flex-direction: column; gap: 14px; padding: 30px 18px max(28px, env(safe-area-inset-bottom)); }
   .cabanas-entry-footer p { text-align: left; }
 }
 
@@ -251,5 +256,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cabanas-entry { scroll-behavior: auto; scroll-snap-type: y proximity; }
+  .cabanas-entry { scroll-behavior: auto; scroll-snap-type: none; }
 }

@@ -34,7 +34,7 @@
   {
     "id": "spot_005",
     "name": "Elefante Sabio Café",
-    "type": "Restaurante",
+    "type": "Cafetería / Desayunos",
     "description": "Desayunos tranquilos con chilaquiles, picaditas y chocolate caliente. El espacio es sencillo y el personal suele orientar bien sobre el menú.",
     "imageUrl": "/img/spots-real/spot_005.svg",
     "colorAccent": "#b5451b",
@@ -162,7 +162,7 @@
   {
     "id": "spot_013",
     "name": "Neretta Café & Gelato",
-    "type": "Cafetería",
+    "type": "Cafetería / Gelatería",
     "description": "Café, gelato y desayunos en un espacio con patio. El pan francés y el café con helado son pedidos frecuentes; en horas llenas el servicio puede tardar.",
     "imageUrl": "/img/spots-real/spot_013.svg",
     "colorAccent": "#7a5230",
@@ -178,7 +178,7 @@
   {
     "id": "spot_014",
     "name": "Roto Café & Vino",
-    "type": "Restaurante",
+    "type": "Café-bar / Bar de vinos",
     "description": "Café durante el día y vino cuando cae la tarde, con terraza y platos para compartir. Conviene más para cambiar de ritmo que para ir con prisa.",
     "imageUrl": "/img/spots-real/spot_014.jpg",
     "colorAccent": "#b5451b",
@@ -194,7 +194,7 @@
   {
     "id": "spot_015",
     "name": "Cafetal 97",
-    "type": "Bar con música",
+    "type": "Foro cultural / Bar",
     "description": "Galería, jardín y música en vivo. Revisa la cartelera y el cover antes de ir: la visita tiene más sentido por el show y los tragos que sólo por la comida.",
     "imageUrl": "/img/spots-real/spot_015.svg",
     "colorAccent": "#3a5f8f",
@@ -226,7 +226,7 @@
   {
     "id": "spot_018",
     "name": "Karmele",
-    "type": "Cafetería",
+    "type": "Panadería / Cafetería",
     "description": "Panadería muy concurrida por los karmelitos, roles y croissants. Suele haber fila y estacionarse no es fácil, así que conviene llegar temprano.",
     "imageUrl": "/img/spots-real/spot_018.jpg",
     "colorAccent": "#7a5230",
@@ -242,7 +242,7 @@
   {
     "id": "spot_019",
     "name": "Colacorta",
-    "type": "Restaurante",
+    "type": "Cafetería",
     "description": "Barra pequeña y enfocada; el cappuccino es de lo que más mencionan quienes regresan. Mejor para café que para sentarse frente a una carta larga.",
     "imageUrl": "/img/spots-real/spot_019.svg",
     "colorAccent": "#b5451b",
@@ -258,7 +258,7 @@
   {
     "id": "spot_020",
     "name": "Casa Emergente",
-    "type": "Boutique",
+    "type": "Concept store",
     "description": "Casa híbrida con diseño y proyectos locales. Entra a recorrerla y revisar qué propuesta está activa; no funciona como un restaurante convencional.",
     "imageUrl": "/img/spots-real/spot_020.svg",
     "colorAccent": "#2a7f7f",
@@ -322,7 +322,7 @@
   {
     "id": "spot_026",
     "name": "Barrio Toyo",
-    "type": "Japonesa",
+    "type": "Restaurante japonés",
     "description": "Comida japonesa casual de porciones accesibles. Es una opción para ramen, curry o donburi sin el protocolo de un restaurante japonés formal.",
     "imageUrl": "/img/spots-real/spot_026.svg",
     "colorAccent": "#c23b22",
@@ -418,7 +418,7 @@
   {
     "id": "spot_034",
     "name": "Zuno Cafe",
-    "type": "Restaurante",
+    "type": "Restaurante de desayunos",
     "description": "Patio con plantas y desayunos como grilled cheese, sándwich de huevo y pan francés. Cómodo para ponerse al día con alguien sin salir de la Americana.",
     "imageUrl": "/img/spots-real/spot_034.svg",
     "colorAccent": "#b5451b",
@@ -530,7 +530,7 @@
   {
     "id": "spot_042",
     "name": "Lince Café Bar",
-    "type": "Cafetería",
+    "type": "Café-bar",
     "description": "Café-bar que cambia de ritmo durante el día. Sirve para empezar con café y alargar la tarde con una copa sin moverse de mesa.",
     "imageUrl": "/img/spots-real/spot_042.svg",
     "colorAccent": "#7a5230",
@@ -546,7 +546,7 @@
   {
     "id": "spot_043",
     "name": "Palomanegra Café Bar",
-    "type": "Cafetería",
+    "type": "Café-bar",
     "description": "Barra de café con ambiente de colonia y servicio casual. Es buena parada para una bebida rápida antes de seguir caminando por la Americana.",
     "imageUrl": "/img/spots-real/spot_043.svg",
     "colorAccent": "#7a5230",
@@ -562,7 +562,7 @@
   {
     "id": "spot_044",
     "name": "Bigol Bagel",
-    "type": "Restaurante",
+    "type": "Bagelería",
     "description": "Bagels de desayuno, hash browns y pollo con combinaciones más de fusión que tradicionales. Tienen para llevar y los precios se mantienen accesibles.",
     "imageUrl": "/img/spots-real/spot_044.svg",
     "colorAccent": "#b5451b",
@@ -626,7 +626,7 @@
   {
     "id": "spot_049",
     "name": "Plantada café",
-    "type": "Restaurante",
+    "type": "Cafetería / Restaurante",
     "description": "Café y cocina rodeados de plantas en Zapopan. Es un plan de desayuno pausado; confirma horarios porque la operación puede cambiar entre semana.",
     "imageUrl": "/img/spots-real/spot_049.svg",
     "colorAccent": "#4a7f4a",
@@ -642,7 +642,7 @@
   {
     "id": "spot_050",
     "name": "Biolento_",
-    "type": "Restaurante",
+    "type": "Restaurante de brunch",
     "description": "Cocina de brunch con platos abundantes y una carta que mezcla desayuno y antojos. Suele llenarse, así que la experiencia mejora fuera de la hora fuerte.",
     "imageUrl": "/img/spots-real/spot_050.svg",
     "colorAccent": "#b5451b",
@@ -658,7 +658,7 @@
   {
     "id": "spot_101",
     "name": "La Rechingada",
-    "type": "Brunch",
+    "type": "Restaurante de brunch",
     "description": "Brunch desenfadado en Zapopan, con desayunos mexicanos y bebidas dulces. La calificación es más irregular que la de otros cafés de la lista.",
     "imageUrl": "/img/spots-real/spot_101.svg",
     "colorAccent": "#d4845a",
@@ -674,7 +674,7 @@
   {
     "id": "spot_102",
     "name": "Paolo Italodisco",
-    "type": "Bar / Antro",
+    "type": "Discoteca",
     "description": "Club enfocado en italo disco y electrónica. Revisa el DJ de la noche: aquí la música define mucho más el plan que la barra.",
     "imageUrl": "/img/spots-real/spot_102.svg",
     "colorAccent": "#7c3d8f",
@@ -706,7 +706,7 @@
   {
     "id": "spot_104",
     "name": "El Zarandeao",
-    "type": "Mariscos",
+    "type": "Marisquería",
     "description": "Mariscos de estilo nayarita, con pescado zarandeado como pedido central. Conviene ir en grupo para compartir y considerar que las porciones suben la cuenta.",
     "imageUrl": "/img/spots-real/spot_104.svg",
     "colorAccent": "#2a7f6f",
@@ -722,7 +722,7 @@
   {
     "id": "spot_105",
     "name": "palReal",
-    "type": "Brunch",
+    "type": "Restaurante / Café",
     "description": "Café de cocina mexicana contemporánea: el lonche de pancita, las encacahuatadas y el café de especialidad explican su fama. En fin de semana puede llenarse.",
     "imageUrl": "/img/spots-real/spot_105.jpg",
     "colorAccent": "#d4845a",
@@ -734,7 +734,7 @@
   {
     "id": "spot_106",
     "name": "Jamaica Records",
-    "type": "Vegetariana",
+    "type": "Restaurante vegano / Foro cultural",
     "description": "Cocina vegana mexicana con reggae de fondo y un ambiente sin formalidades. Buena opción si el grupo quiere tacos y antojitos sin productos animales.",
     "imageUrl": "/img/spots/42-jamaica-records.jpg",
     "colorAccent": "#4a7f4a",
@@ -758,7 +758,7 @@
   {
     "id": "spot_108",
     "name": "El Habanero Negro",
-    "type": "Bar / Cocina Yucateca",
+    "type": "Restaurante-bar yucateco",
     "description": "Tacos y antojitos yucatecos con giros propios. Prueba las flautas de plátano macho o el taco de cochinita y acompaña con un chejuino.",
     "imageUrl": "/img/spots-real/spot_108.svg",
     "colorAccent": "#3a5f8f",
@@ -782,7 +782,7 @@
   {
     "id": "spot_110",
     "name": "Pizzería de Barrio",
-    "type": "Pizza estilo Detroit",
+    "type": "Pizzería estilo Detroit",
     "description": "Pizza estilo Detroit: masa gruesa, bordes dorados y porciones que llenan. Tiene más sentido compartir para probar más de una combinación.",
     "imageUrl": "/img/spots-real/spot_110.svg",
     "colorAccent": "#b5451b",
@@ -806,7 +806,7 @@
   {
     "id": "spot_112",
     "name": "Shao Asian Street Food",
-    "type": "Cocina Asiática",
+    "type": "Restaurante asiático",
     "description": "Carta asiática informal con baos, dumplings, ramen y pollo. Los baos de pato y panceta son de lo más repetido; las porciones funcionan bien para compartir.",
     "imageUrl": "/img/spots-real/spot_112.svg",
     "colorAccent": "#c23b22",
@@ -818,7 +818,7 @@
   {
     "id": "spot_113",
     "name": "Morocco Kebab",
-    "type": "Mediterráneo / Halal",
+    "type": "Restaurante marroquí / Halal",
     "description": "Cocina marroquí y mediterránea con kebab, hummus, falafel y baba ganoush. Hay opciones vegetarianas y halal; estacionarse en la zona puede ser difícil.",
     "imageUrl": "/img/spots-real/spot_113.svg",
     "colorAccent": "#c49a2a",
@@ -830,7 +830,7 @@
   {
     "id": "spot_114",
     "name": "O Brasileiro Maluco",
-    "type": "Bar / Cocina Brasileña",
+    "type": "Bar brasileño",
     "description": "Bar brasileño con feijoada, caipiriñas y música en vivo. El ambiente sube los fines de semana; revisa la programación antes de ir.",
     "imageUrl": "/img/spots-real/spot_114.svg",
     "colorAccent": "#4a7f4a",
@@ -842,7 +842,7 @@
   {
     "id": "spot_115",
     "name": "ZAMGÜIS",
-    "type": "Brunch / Café",
+    "type": "Sandwichería",
     "description": "Local casual de sándwiches con algunas sopas y platos de temporada. Es una parada rápida y de precio contenido, no un brunch de sobremesa larga.",
     "imageUrl": "/img/spots-real/spot_115.svg",
     "colorAccent": "#7a5230",
@@ -854,7 +854,7 @@
   {
     "id": "spot_116",
     "name": "Momotabi Ramen House",
-    "type": "Japonés",
+    "type": "Restaurante de ramen",
     "description": "Ramen miso y tonkotsu, cerveza artesanal y matcha dentro de Vía Libertad. Las reseñas recientes son mixtas sobre el caldo, aunque las porciones llenan.",
     "imageUrl": "/img/spots-real/spot_116.jpg",
     "colorAccent": "#c23b22",
@@ -866,7 +866,7 @@
   {
     "id": "spot_117",
     "name": "Mononoke Ramen",
-    "type": "Ramen",
+    "type": "Restaurante de ramen",
     "description": "Ramen en un local de unas pocas mesas, con opciones vegetarianas y karaoke los jueves. Pregunta por lugar si van más de tres personas.",
     "imageUrl": "/img/spots-real/spot_117.svg",
     "colorAccent": "#c23b22",
@@ -878,7 +878,7 @@
   {
     "id": "spot_118",
     "name": "Pollitos Kiki",
-    "type": "Restaurante de Pollo",
+    "type": "Pollería",
     "description": "Pollo asado, guacamole y acompañamientos para compartir. Es comida directa y práctica para llevar; confirma la sucursal antes de salir.",
     "imageUrl": "/img/spots-real/spot_118.svg",
     "colorAccent": "#d4845a",
@@ -926,7 +926,7 @@
   {
     "id": "spot_122",
     "name": "lady lee - rooftop",
-    "type": "Bar",
+    "type": "Rooftop bar",
     "description": "Rooftop sobre Chapultepec donde la vista es el principal atractivo. Las opiniones sobre servicio y bebidas son divididas y algunas cuentas incluyen servicio.",
     "imageUrl": "/img/spots-real/spot_122.svg",
     "colorAccent": "#3a5f8f",
@@ -938,7 +938,7 @@
   {
     "id": "spot_123",
     "name": "Pardo Club",
-    "type": "Club nocturno",
+    "type": "Discoteca",
     "description": "Club de música electrónica en Morelos con pista compacta. Revisa el cartel de la noche; hay buenas opiniones del ambiente y otras más flojas del servicio.",
     "imageUrl": "/img/spots-real/spot_123.svg",
     "colorAccent": "#7c3d8f",
@@ -950,7 +950,7 @@
   {
     "id": "spot_124",
     "name": "Tito Club",
-    "type": "Club",
+    "type": "Club nocturno",
     "description": "Club pequeño con DJs y noches que cambian según la programación. Confirma evento y acceso en redes antes de llegar.",
     "imageUrl": "/img/spots-real/spot_124.svg",
     "colorAccent": "#7c3d8f",
@@ -974,7 +974,7 @@
   {
     "id": "spot_126",
     "name": "Casa Mudra Restaurant & Jazz Club",
-    "type": "Jazz Club",
+    "type": "Restaurante / Club de jazz",
     "description": "Jazz en vivo con cocina y coctelería; las smash burgers reciben buenas menciones. Reserva y revisa el horario del show para no llegar entre sets.",
     "imageUrl": "/img/spots-real/spot_126.svg",
     "colorAccent": "#3a5f8f",
@@ -998,7 +998,7 @@
   {
     "id": "spot_128",
     "name": "Gallo y Toro",
-    "type": "Restaurante",
+    "type": "Fonda-bar",
     "description": "Fonda-bar con flautas, cochinita, birria y cheve con tejuino. La carta mezcla antojitos conocidos con combinaciones menos obvias.",
     "imageUrl": "/img/spots-real/spot_128.svg",
     "colorAccent": "#b5451b",
@@ -1010,7 +1010,7 @@
   {
     "id": "spot_129",
     "name": "Casa Colimita",
-    "type": "Restaurante",
+    "type": "Cervecería / Restaurante",
     "description": "Casa de Cervecería de Colima con cerveza de barril, aguachile y tacos. Buen lugar para probar varias etiquetas; estacionarse cerca puede tomar tiempo.",
     "imageUrl": "/img/spots-real/spot_129.svg",
     "colorAccent": "#b5451b",
@@ -1022,7 +1022,7 @@
   {
     "id": "spot_130",
     "name": "Espuma Bar",
-    "type": "Bar",
+    "type": "Coctelería",
     "description": "Bar pequeño centrado en coctelería. La ficha todavía tiene pocas reseñas, así que conviene revisar horario y carta antes de convertirlo en el plan principal.",
     "imageUrl": "/img/spots-real/spot_130.svg",
     "colorAccent": "#3a5f8f",
@@ -1033,7 +1033,7 @@
   },
   {
     "id": "spot_131",
-    "name": "Bar americas",
+    "name": "Bar Américas",
     "type": "Discoteca",
     "description": "Referente local de techno y house con noches largas y pista intensa. Ve por la música, revisa el line-up y espera mucha gente en fechas fuertes.",
     "imageUrl": "/img/spots-real/spot_131.jpg",
@@ -1046,7 +1046,7 @@
   {
     "id": "spot_133",
     "name": "Casa Cobra",
-    "type": "Bar",
+    "type": "Club de electrónica",
     "description": "Club de dos pisos con electrónica, luces y cerveza a precio accesible. No ofrece comida y el género puede cambiar; revisa la noche antes de ir.",
     "imageUrl": "/img/spots-real/spot_133.svg",
     "colorAccent": "#3a5f8f",

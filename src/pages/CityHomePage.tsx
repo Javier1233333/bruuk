@@ -20,7 +20,7 @@ export default function CityHomePage() {
           <header className="city-index-heading">
             <span>/ ELIGE UNA CATEGORÍA</span>
             <h2 id="city-index-title">¿QUÉ QUIERES DESCUBRIR HOY?</h2>
-            <p>Elige una categoría. Sólo toma un toque.</p>
+            <p>Elige una categoría con un toque.</p>
           </header>
 
           <nav className="city-gateways" aria-label="Categorías para descubrir">
