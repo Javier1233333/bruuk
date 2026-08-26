@@ -15,42 +15,49 @@
       "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
       "image": "/ocean-frame.jpg",
       "imageAlt": "Bruuk, guía editorial para explorar Guadalajara",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/guadalajara": {
       "title": "Guadalajara — Spots y lugares seleccionados | Bruuk",
       "description": "Explora Guadalajara a través de spots, tiendas vintage, tianguis y rutas seleccionadas por personas locales.",
       "image": "/ocean-frame.jpg",
       "imageAlt": "Guía Bruuk de Guadalajara",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/guadalajara/spots": {
       "title": "Spots curados en Guadalajara | Bruuk",
       "description": "Cafés, comida, bares y rincones de Guadalajara elegidos para ayudarte a salir del feed y recorrer la ciudad.",
       "image": "/ocean-frame.jpg",
       "imageAlt": "Spots curados por Bruuk en Guadalajara",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/guadalajara/rack": {
       "title": "Vintage, antigüedades y tianguis en Guadalajara | Bruuk",
       "description": "Encuentra tiendas vintage, vinilos, antigüedades, archivo y tianguis con identidad propia en Guadalajara.",
       "image": "/img/bruukcarrusel2.JPG",
       "imageAlt": "Rack de Bruuk: vintage y hallazgos en Guadalajara",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/guadalajara/senales": {
       "title": "Señales de Radar — Planes y eventos en Guadalajara | Bruuk",
       "description": "Comunidad activa con planes, eventos, aperturas y cosas que están por pasar en Guadalajara.",
       "image": "/radar/cabanas/fachada.jpg",
       "imageAlt": "Señales de Radar, comunidad activa de Bruuk",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/radar": {
       "title": "Señales de Radar — Planes y eventos en Guadalajara | Bruuk",
       "description": "Comunidad activa con planes, eventos, aperturas y cosas que están por pasar en Guadalajara.",
       "image": "/radar/cabanas/fachada.jpg",
       "imageAlt": "Señales de Radar, comunidad activa de Bruuk",
-      "type": "website"
+      "type": "website",
+      "canonical": "/guadalajara/senales",
+      "noindex": true
     },
     "/radar/museo-cabanas-cafe-redescubrimiento": {
       "title": "Museo Cabañas, café y volver a mirar | Radar Bruuk",
@@ -59,7 +66,8 @@
       "imageAlt": "Vista hacia el Museo Cabañas desde Paseo Hospicio",
       "type": "article",
       "section": "Cultura y ciudad",
-      "author": "Javier Fregoso"
+      "author": "Javier Fregoso",
+      "lastmod": "2026-08-26"
     },
     "/radar/maz-desayuno-cafe-zapopan": {
       "title": "El MAZ y una vuelta sin prisa por Zapopan Centro | Radar Bruuk",
@@ -68,7 +76,8 @@
       "imageAlt": "Entrada del Museo de Arte de Zapopan",
       "type": "article",
       "section": "Rutas",
-      "author": "Javier Fregoso"
+      "author": "Javier Fregoso",
+      "lastmod": "2026-08-26"
     },
     "/guadalajara/ruta-museos": {
       "title": "Museos de Guadalajara según lo que quieres ver | Bruuk",
@@ -76,14 +85,16 @@
       "image": "/radar/cabanas/fachada.jpg",
       "imageAlt": "Selección de museos de Guadalajara y Zapopan",
       "type": "article",
-      "section": "Museos"
+      "section": "Museos",
+      "lastmod": "2026-08-26"
     },
     "/lleva-bruuk": {
       "title": "Recomienda un spot o lleva Bruuk a tu ciudad",
       "description": "Propón un lugar, recomienda un spot o participa en la expansión de la guía urbana de Bruuk.",
       "image": "/ocean-frame.jpg",
       "imageAlt": "Participa en Bruuk",
-      "type": "website"
+      "type": "website",
+      "lastmod": "2026-08-26"
     },
     "/privacidad": {
       "title": "Aviso de privacidad | Bruuk",

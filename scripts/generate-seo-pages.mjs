@@ -46,7 +46,7 @@ function structuredData(entry, canonical, image) {
 }
 
 function render(entry, route) {
-  const canonical = absoluteUrl(route);
+  const canonical = absoluteUrl(entry.canonical || route);
   const image = absoluteUrl(entry.image);
   let html = template.replace(/<html\s+lang=["'][^"']*["']>/i, '<html lang="es-MX">');
   html = html.replace(/<title>.*?<\/title>/is, `<title>${escapeHtml(entry.title)}</title>`);
@@ -74,9 +74,14 @@ for (const [route, entry] of Object.entries(config.routes)) {
 }
 
 const indexedRoutes = Object.entries(config.routes).filter(([, entry]) => !entry.noindex);
+const sitemapEntry = (route, entry) => {
+  const lines = [`    <loc>${absoluteUrl(entry.canonical || route)}</loc>`];
+  if (entry.lastmod) lines.push(`    <lastmod>${entry.lastmod}</lastmod>`);
+  return `  <url>\n${lines.join('\n')}\n  </url>`;
+};
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${indexedRoutes.map(([route]) => `  <url><loc>${absoluteUrl(route)}</loc></url>`).join('\n')}
+${indexedRoutes.map(([route, entry]) => sitemapEntry(route, entry)).join('\n')}
 </urlset>
 `;
 await writeFile(resolve(distRoot, 'sitemap.xml'), sitemap, 'utf8');
