@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { Sparkles, Map, Globe, ArrowRight, Compass, Check, Mail, MapPin, Radio, RefreshCw } from 'lucide-react';
-import * as validator from 'email-validator';
+import { Sparkles, Map, Globe, ArrowRight, Compass, Radio, RefreshCw } from 'lucide-react';
 import { ManifestoModal } from './components/ManifestoModal';
 import { PrivacyModal } from './components/PrivacyModal';
 import { UsagePolicyModal } from './components/UsagePolicyModal';
 import { BruukLogo } from './components/BruukLogo';
-import { BruukCombobox } from './components/BruukSelect';
 import { useRecommendationTransition } from './components/RecommendationTransition';
 import './App.css';
 
@@ -15,75 +13,15 @@ const CAROUSEL_IMAGES = [
   { src: '/img/bruukcarrusel3.JPG', alt: 'Comunidad Bruuk 3' },
 ];
 
-const BRUUKO_CITIES = [
-  'Ciudad de México',
-  'Monterrey',
-  'Madrid',
-  'Buenos Aires',
-  'Bogotá',
-  'Barcelona',
-];
-
-const CITY_SUGGESTIONS = [
-  'Barcelona', 'Bogotá', 'Buenos Aires', 'Ciudad de México', 'Guadalajara', 'Lima',
-  'Madrid', 'Medellín', 'Monterrey', 'Oaxaca', 'Quito', 'Santiago de Chile',
-  'San José', 'San Juan', 'Santo Domingo', 'Sevilla', 'Valencia', 'Zaragoza',
-];
-
 function App() {
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isUsagePolicyOpen, setIsUsagePolicyOpen] = useState(false);
   const [carouselIdx, setCarouselIdx] = useState(0);
-  const [bruukoEmail, setBruukoEmail] = useState('');
-  const [bruukoCity, setBruukoCity] = useState('');
-  const [otherBruukoCity, setOtherBruukoCity] = useState('');
-  const [bruukoStatus, setBruukoStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [bruukoError, setBruukoError] = useState('');
   const transitionTo = useRecommendationTransition();
 
   const nextPhoto = () => setCarouselIdx((prev) => (prev + 1) % CAROUSEL_IMAGES.length);
   const prevPhoto = () => setCarouselIdx((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length);
-
-  const handleBruukoSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const email = bruukoEmail.trim().toLowerCase();
-
-    if (!validator.validate(email)) {
-      setBruukoStatus('error');
-      setBruukoError('Escribe un correo válido para continuar.');
-      return;
-    }
-
-    const selectedCity = bruukoCity === 'other' ? otherBruukoCity.trim() : bruukoCity;
-
-    if (!selectedCity) {
-      setBruukoStatus('error');
-      setBruukoError('Elige o busca la ciudad desde la que quieres activar Bruuk.');
-      return;
-    }
-
-    setBruukoStatus('loading');
-    setBruukoError('');
-
-    try {
-      const proposalResponse = await fetch('/api/city-proposal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, city: selectedCity, website: '' }),
-      });
-
-      if (!proposalResponse.ok) throw new Error('No se pudo guardar la ciudad.');
-
-      setBruukoStatus('success');
-      setBruukoEmail('');
-      setBruukoCity('');
-      setOtherBruukoCity('');
-    } catch {
-      setBruukoStatus('error');
-      setBruukoError('No pudimos enviar tu registro. Inténtalo de nuevo en un momento.');
-    }
-  };
 
   return (
     <div className="app-wrapper">
@@ -270,7 +208,8 @@ function App() {
           </div>
         </section>
 
-        {false && <section id="lleva-bruuk" className="bruuko-callout" aria-labelledby="bruuko-title">
+        {/* Expande Bruuk desactivado hasta configurar sus keys.
+        <section id="lleva-bruuk" className="bruuko-callout" aria-labelledby="bruuko-title">
           <div className="container">
             <div className="bruuko-grid">
               <div className="bruuko-intro">
@@ -315,7 +254,8 @@ function App() {
               </div>
             </div>
           </div>
-        </section>}
+        </section>
+        */}
 
         {/* Newsletter Section */}
         <section className="newsletter">
@@ -356,8 +296,7 @@ function App() {
                 <a href="/radar">Radar y Señales</a>
               </div>
               <div>
-                <span>PARTICIPAR</span>
-                <a href="/lleva-bruuk">Expande Bruuk</a>
+                <span>CONTACTO</span>
                 <a href="mailto:contacto@bruuk.space">Contacto</a>
               </div>
             </nav>

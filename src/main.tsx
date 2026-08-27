@@ -21,9 +21,7 @@ const RackPlaces = lazy(() =>
   })),
 )
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
-const BruukoPage = lazy(() =>
-  import('./pages/BruukoPage').then((module) => ({ default: module.BruukoPage })),
-)
+// Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
 )
@@ -55,7 +53,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
-          <Route path="/lleva-bruuk" element={<BruukoPage />} />
+          {/* Expande Bruuk desactivado temporalmente; conserva la URL sin exponer el formulario. */}
+          <Route path="/lleva-bruuk" element={<Navigate to="/" replace />} />
           <Route path="/radar" element={<Navigate to="/guadalajara/senales" replace />} />
           <Route path="/radar/museo-cabanas-cafe-redescubrimiento" element={<RadarCabanasPage />} />
           <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
