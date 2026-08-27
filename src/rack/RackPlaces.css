@@ -935,6 +935,11 @@
   font-family: 'DM Sans', sans-serif;
 }
 
+.rack-map-dialog .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.68) contrast(1.15)
+    saturate(0.55);
+}
+
 .rack-map-dialog .leaflet-control-zoom {
   overflow: hidden;
   border: 1px solid #ffffff;
