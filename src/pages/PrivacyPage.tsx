@@ -35,7 +35,7 @@ export function PrivacyPage() {
           lineHeight: '1.7',
           fontSize: '0.95rem'
         }}>
-          <p style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '1.5rem' }}>Última actualización: Julio 2026</p>
+          <p style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '1.5rem' }}>Última actualización: Septiembre 2026</p>
 
           <p>
             En <strong>BRUUK</strong> ("nosotros"), nos tomamos muy en serio tu privacidad. Este aviso describe cómo manejamos tu información cuando usas nuestra plataforma y participas en nuestros eventos y comunidad.
@@ -50,6 +50,7 @@ export function PrivacyPage() {
           <ul>
             <li><strong>Información de registro:</strong> Correo electrónico que utilizas para crear tu cuenta y confirmar invitaciones.</li>
             <li><strong>Perfil básico:</strong> Nombre o alias opcional para que otros asistentes te reconozcan en las listas de eventos.</li>
+            <li><strong>Spots de la comunidad:</strong> Nombre del lugar, ciudad, ubicación o enlace, motivo de la recomendación y correo de contacto.</li>
           </ul>
 
           <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.3rem', marginTop: '2rem', marginBottom: '1rem', borderBottom: '2px solid #000', paddingBottom: '0.3rem' }}>
@@ -62,6 +63,7 @@ export function PrivacyPage() {
             <li>Administrar y validar tus invitaciones Vip.</li>
             <li>Mostrarte quién asistirá a cada evento (desglose de asistentes).</li>
             <li>Enviarte alertas importantes relacionadas con cambios de última hora en los planes del día.</li>
+            <li>Revisar los spots compartidos por la comunidad y decidir si se integran a futuras guías de Bruuk.</li>
           </ul>
           <p><em>No vendemos, comercializamos, ni compartimos tu información personal con anunciantes ni terceros ajenos a BRUUK.</em></p>
 
@@ -70,7 +72,7 @@ export function PrivacyPage() {
           </h2>
           <p>
             Protegemos los registros enviados desde nuestros formularios mediante
-            servicios de infraestructura con controles de acceso y seguridad.
+            servicios de infraestructura con controles de acceso y seguridad. Las recomendaciones de spots se envían a un chat privado de Telegram del equipo de Bruuk y sus credenciales permanecen únicamente en el servidor.
           </p>
 
           <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: '1.3rem', marginTop: '2rem', marginBottom: '1rem', borderBottom: '2px solid #000', paddingBottom: '0.3rem' }}>

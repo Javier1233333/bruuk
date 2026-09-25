@@ -687,6 +687,27 @@
   line-height: 1.1;
 }
 
+.spot-card__why {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #222;
+}
+
+.spot-card__why span {
+  flex: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #6557d8;
+}
+
 .spot-card__stats {
   display: flex;
   align-items: center;

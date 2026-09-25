@@ -28,8 +28,8 @@ export default function CityHomePage() {
               <div className="city-gateway-number">01</div>
               <div className="city-gateway-icon"><Compass size={27} strokeWidth={1.8} /></div>
               <div className="city-gateway-copy">
-                <span>GUÍA GENERAL · PARA EMPEZAR</span>
-                <h3>SPOTS</h3>
+                <span>SPOTS · CAFÉS, COMIDA Y NOCHE</span>
+                <h3>COMER Y TOMAR</h3>
                 <p>Cafés, comida, bares y rincones elegidos para encontrar un plan sin perderte en el feed.</p>
               </div>
               <div className="city-gateway-action">
@@ -41,8 +41,8 @@ export default function CityHomePage() {
               <div className="city-gateway-number">02</div>
               <div className="city-gateway-icon"><Store size={27} strokeWidth={1.8} /></div>
               <div className="city-gateway-copy">
-                <span>COLECCIÓN ESPECIALIZADA · RACK</span>
-                <h3>RACK</h3>
+                <span>RACK · ROPA, OBJETOS Y MERCADOS</span>
+                <h3>VINTAGE Y TIANGUIS</h3>
                 <p>Moda, tianguis, antigüedades y objetos para encontrar piezas y lugares con historia propia.</p>
               </div>
               <div className="city-gateway-action">
@@ -54,12 +54,12 @@ export default function CityHomePage() {
               <div className="city-gateway-number">03</div>
               <div className="city-gateway-icon"><Radio size={27} strokeWidth={1.8} /></div>
               <div className="city-gateway-copy">
-                <span>COMUNIDAD ACTIVA · RADAR</span>
-                <h3>SEÑALES</h3>
+                <span>SEÑALES · LO QUE ESTÁ PASANDO</span>
+                <h3>PLANES Y RUTAS</h3>
                 <p>Planes, eventos, aperturas y cosas que están por pasar en la ciudad.</p>
               </div>
               <div className="city-gateway-action">
-                <span>3 SEÑALES</span>
+                <span>3 PLANES</span>
                 <strong>EXPLORAR <ArrowUpRight size={22} /></strong>
               </div>
             </Link>

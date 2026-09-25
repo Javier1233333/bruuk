@@ -212,7 +212,7 @@ export function MuseumRoutePage() {
           <strong>MUSEOS PARA ELEGIR</strong>
         </div>
         <Link to="/guadalajara/senales" aria-label="Volver al feed de Señales">
-          <ArrowLeft size={16} /> VOLVER A SEÑALES
+          <ArrowLeft size={16} /> VOLVER A PLANES
         </Link>
       </header>
 
@@ -322,7 +322,7 @@ export function MuseumRoutePage() {
           <span>/ SIGUE EXPLORANDO</span>
           <h2 id="museum-route-outro-title">ELIGE UNO.<br />VE SIN PRISA.</h2>
           <p>No se trata de tachar una lista. Escoge el museo que se parezca al plan que quieres hoy y date tiempo para recorrerlo.</p>
-          <Link to="/guadalajara/senales">VOLVER A SEÑALES <ArrowUpRight size={19} /></Link>
+          <Link to="/guadalajara/senales">VOLVER A PLANES <ArrowUpRight size={19} /></Link>
         </section>
       </main>
     </div>

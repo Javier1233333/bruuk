@@ -1,0 +1,81 @@
+{
+  "sunset": [
+    {
+      "id": "sunset_bugambilias",
+      "name": "Mirador Bugambilias",
+      "type": "Mirador",
+      "description": "De los puntos más recomendados para ver caer el sol sobre Guadalajara. La vista abierta a la ciudad se disfruta incluso sin bajarte del coche.",
+      "highlight": "La ciudad al atardecer, incluso desde el coche",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Mirador+Bugambilias+45237+Zapopan+Jalisco",
+      "city": "zapopan"
+    },
+    {
+      "id": "sunset_independencia",
+      "name": "Mirador Independencia",
+      "type": "Mirador / Barranca",
+      "description": "Aquí el atardecer no se ve sobre la ciudad, sino sobre la Barranca. Una opción diferente; conviene llegar temprano.",
+      "highlight": "La Barranca mientras cae el sol",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Mirador+Independencia+Calzada+Independencia+Norte+Huentitan+El+Bajo+Guadalajara",
+      "city": "guadalajara"
+    },
+    {
+      "id": "sunset_zapopan",
+      "name": "Mirador Zapopan",
+      "type": "Mirador",
+      "description": "Está arriba del Mercado Municipal Lázaro Cárdenas y mira hacia el Centro Histórico de Zapopan. Buen punto para fotos cuando baja la luz.",
+      "highlight": "Fotos del centro de Zapopan al atardecer",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Mirador+Zapopan+Av+Hidalgo+10+Zapopan",
+      "city": "zapopan"
+    },
+    {
+      "id": "sunset_cerro_tesoro",
+      "name": "Mirador Cerro del Tesoro",
+      "type": "Mirador",
+      "description": "En Tlaquepaque, con una vista que junta la ciudad y la montaña mientras atardece.",
+      "highlight": "Ciudad y montaña en la misma vista",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Mirador+Cerro+del+Tesoro+Paisajes+del+Tesoro+45608+Tlaquepaque",
+      "city": "tlaquepaque"
+    },
+    {
+      "id": "sunset_metropolitano",
+      "name": "Parque Metropolitano",
+      "type": "Parque",
+      "description": "Un clásico que no puede faltar. El plan es sencillo: acostarte en el pasto y ver cómo cambia el cielo sin prisa.",
+      "highlight": "Acostarte en el pasto a ver el cielo",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Parque+Metropolitano+Av+Ludwig+Van+Beethoven+La+Estancia+Zapopan",
+      "city": "zapopan"
+    },
+    {
+      "id": "sunset_bosque_tlaquepaque",
+      "name": "Bosque Urbano Tlaquepaque",
+      "type": "Parque / Bosque urbano",
+      "description": "Espacio abierto en el sur de la ciudad, con cielo amplio para ver las nubes mientras se oculta el sol.",
+      "highlight": "El atardecer si estás por el sur",
+      "imageUrl": "",
+      "colorAccent": "#d9485f",
+      "mapsLink": "https://maps.google.com/?q=Bosque+Urbano+Tlaquepaque+Calzada+Lazaro+Cardenas+Revolucion+45580+Tlaquepaque",
+      "city": "tlaquepaque"
+    },
+    {
+      "id": "sunset_riu_360",
+      "name": "360° RIU Rooftop Bar",
+      "type": "Rooftop bar",
+      "description": "Rooftop en Chapalita para cenar o tomar algo mientras atardece. De los mejores planes si es una cita.",
+      "highlight": "Una cita cenando con el atardecer",
+      "imageUrl": "",
+      "colorAccent": "#b5451b",
+      "mapsLink": "https://maps.google.com/?q=360+RIU+Rooftop+Bar+Av+Adolfo+Lopez+Mateos+Sur+830+Chapalita+Guadalajara",
+      "city": "guadalajara"
+    }
+  ]
+}

@@ -21,6 +21,8 @@ const RackPlaces = lazy(() =>
   })),
 )
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
+const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
+const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
@@ -53,12 +55,13 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
-          {/* Expande Bruuk desactivado temporalmente; conserva la URL sin exponer el formulario. */}
-          <Route path="/lleva-bruuk" element={<Navigate to="/" replace />} />
+          <Route path="/sube-un-spot" element={<SubmitSpotPage />} />
+          <Route path="/lleva-bruuk" element={<Navigate to="/sube-un-spot" replace />} />
           <Route path="/radar" element={<Navigate to="/guadalajara/senales" replace />} />
           <Route path="/radar/museo-cabanas-cafe-redescubrimiento" element={<RadarCabanasPage />} />
           <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
           <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
+          <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
           <Route path="/rack/lugares" element={<LegacyRackRedirect />} />
           <Route path="/planes" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/planes/:slug" element={<Navigate to="/guadalajara" replace />} />

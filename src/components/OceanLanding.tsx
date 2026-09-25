@@ -138,7 +138,7 @@ export function OceanLanding() {
             <span className="spots-eyebrow" style={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
               Guadalajara
             </span>
-            <h1 className="spots-title brand-gradient-text">SPOTS CURADOS</h1>
+            <h1 className="spots-title brand-gradient-text">COMER Y TOMAR</h1>
             <p className="spots-subtitle" style={{ fontSize: '1rem', marginTop: '10px' }}>
               Una selección honesta de rincones a los que vale la pena ir. Sin rankings pagados ni recomendaciones automáticas.
             </p>
@@ -185,6 +185,9 @@ export function OceanLanding() {
               Bruuk es primero una comunidad. Sal a la calle, redescubre tu ciudad y conecta en persona.
             </p>
             <div className="end-contact-links">
+              <a href="/sube-un-spot" className="end-email-btn">
+                SUBIR UN SPOT
+              </a>
               <a href="mailto:contacto@bruuk.space" className="end-email-btn">
                 contacto@bruuk.space
               </a>

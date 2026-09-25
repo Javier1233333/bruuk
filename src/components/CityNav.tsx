@@ -37,9 +37,9 @@ export function CityNav({ active, trailing }: { active?: CitySection; trailing?:
               value={active}
               onChange={(category) => transitionTo(`/guadalajara/${category === 'planes' ? 'senales' : category}`)}
               options={[
-                { value: 'spots', label: 'SPOTS' },
-                { value: 'rack', label: 'RACK' },
-                { value: 'planes', label: 'SEÑALES' },
+                { value: 'spots', label: 'COMER Y TOMAR' },
+                { value: 'rack', label: 'VINTAGE Y TIANGUIS' },
+                { value: 'planes', label: 'PLANES Y RUTAS' },
               ]}
             />
           </div>

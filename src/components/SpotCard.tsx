@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Coffee, Croissant, IceCreamBowl, Martini, Music2, ShoppingBag, Utensils, type LucideIcon } from 'lucide-react';
+import { Coffee, Croissant, IceCreamBowl, Martini, Music2, ShoppingBag, Sunset, Utensils, type LucideIcon } from 'lucide-react';
 
 interface Spot {
   id: string;
   name: string;
   type: string;
   description: string;
+  highlight?: string;
   imageUrl: string;
   colorAccent: string;
   mapsLink: string;
@@ -24,7 +25,7 @@ interface SpotCardProps {
 
 type SpotVisual = {
   label: string;
-  imageUrl: string;
+  imageUrl?: string;
   Icon: LucideIcon;
 };
 
@@ -59,6 +60,10 @@ const CATEGORY_VISUALS: Record<string, SpotVisual> = {
     imageUrl: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=480&q=74',
     Icon: IceCreamBowl,
   },
+  outdoors: {
+    label: 'ATARDECER',
+    Icon: Sunset,
+  },
   shop: {
     label: 'TIENDA',
     imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=480&q=74',
@@ -68,6 +73,7 @@ const CATEGORY_VISUALS: Record<string, SpotVisual> = {
 
 function getSpotVisual(type: string): SpotVisual {
   const value = type.toLocaleLowerCase('es');
+  if (value.includes('mirador') || value.includes('parque') || value.includes('bosque')) return CATEGORY_VISUALS.outdoors;
   if (value.includes('panader')) return CATEGORY_VISUALS.bakery;
   if (value.includes('helad') || value.includes('postre')) return CATEGORY_VISUALS.dessert;
   if (value.startsWith('café') || value.startsWith('cafe') || value.startsWith('cafetería')) return CATEGORY_VISUALS.cafe;
@@ -148,15 +154,17 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
         ) : (
           <>
             <SpotIcon className="spot-card__category-mark" strokeWidth={1.45} aria-hidden="true" />
-            <figure className="spot-card__photo-inset">
-              <img
-                src={visual.imageUrl}
-                alt={`Referencia visual de ${visual.label.toLocaleLowerCase('es')}`}
-                loading="lazy"
-                onError={(event) => event.currentTarget.closest('figure')?.classList.add('is-error')}
-              />
-              <figcaption>REFERENCIA / {visual.label}</figcaption>
-            </figure>
+            {visual.imageUrl && (
+              <figure className="spot-card__photo-inset">
+                <img
+                  src={visual.imageUrl}
+                  alt={`Referencia visual de ${visual.label.toLocaleLowerCase('es')}`}
+                  loading="lazy"
+                  onError={(event) => event.currentTarget.closest('figure')?.classList.add('is-error')}
+                />
+                <figcaption>REFERENCIA / {visual.label}</figcaption>
+              </figure>
+            )}
           </>
         )}
         <span className="spot-card__category-logo" aria-label={`Tipo: ${visual.label}`}><SpotIcon size={16} strokeWidth={2.4} /></span>
@@ -177,6 +185,9 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           <span className="spot-card__label" style={{ textTransform: 'capitalize' }}>{spot.city || 'Guadalajara'}</span>
         </div>
         <h3 className="spot-card__name">{spot.name}</h3>
+        {spot.highlight && (
+          <p className="spot-card__why"><span>VE POR</span>{spot.highlight}</p>
+        )}
         {(spot.rating || spot.price) && (
           <div className="spot-card__stats">
             {spot.rating && (

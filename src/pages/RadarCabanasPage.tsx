@@ -65,7 +65,7 @@ export function RadarCabanasPage() {
       <header className="cabanas-entry-nav">
         <Link to="/" aria-label="Volver al inicio de Bruuk"><BruukLogo width={96} /></Link>
         <div><span>/ RADAR BRUUK</span><strong>SEÑAL 002</strong></div>
-        <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
+        <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A PLANES</Link>
       </header>
 
       <main>
@@ -179,7 +179,7 @@ export function RadarCabanasPage() {
         </section>
 
         <footer className="cabanas-entry-footer">
-          <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A SEÑALES</Link>
+          <Link to="/guadalajara/senales"><ArrowLeft size={16} /> VOLVER A PLANES</Link>
           <p>CRÉDITOS: ELPATTMEDINA Y SERGIOYALU / WIKIMEDIA COMMONS · SUMMER TIME / UNSPLASH</p>
         </footer>
       </main>

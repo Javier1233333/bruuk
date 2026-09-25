@@ -128,7 +128,7 @@ export function RadarPage() {
     <div className="radar-page">
       <header className="radar-page-nav">
         <Link to="/guadalajara" aria-label="Volver a las categorías de Guadalajara"><BruukLogo width={96} /></Link>
-        <div className="radar-page-nav-title"><span>/ RADAR BRUUK</span><strong>SEÑALES</strong></div>
+        <div className="radar-page-nav-title"><span>/ SEÑALES</span><strong>PLANES Y RUTAS</strong></div>
         <Link className="radar-nav-category" to="/guadalajara">CATEGORÍAS <ArrowRight size={15} /></Link>
       </header>
 

@@ -1,0 +1,74 @@
+/* Micrositio de atardeceres: reutiliza el feed de Spots con acento cálido */
+.sunset-feed {
+  --sunset-accent: #ff9a5c;
+  --sunset-deep: #d9485f;
+  background: #120a12;
+}
+
+.sunset-feed::before {
+  background:
+    radial-gradient(ellipse at 50% 110%, rgba(255, 154, 92, 0.32) 0%, rgba(217, 72, 95, 0.16) 38%, transparent 70%),
+    linear-gradient(180deg, rgba(18, 10, 18, 0.1), rgba(18, 10, 18, 0.4));
+}
+
+.sunset-nav {
+  position: relative;
+  z-index: 120;
+  height: 80px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 24px;
+  background: #0d080e;
+  border-bottom: 1px solid rgba(255, 154, 92, 0.32);
+  font-family: 'Outfit', sans-serif;
+}
+
+.sunset-nav a { line-height: 0; color: #fff; text-decoration: none; }
+
+.sunset-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1 !important;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.sunset-nav-link:hover,
+.sunset-nav-link:focus-visible {
+  background: var(--sunset-deep);
+  border-color: var(--sunset-deep);
+}
+
+.sunset-feed .intro-slide { background: radial-gradient(circle at center, rgba(255, 154, 92, 0.16) 0%, transparent 70%); }
+.sunset-feed .intro-card-overlay { box-shadow: 8px 8px 0 var(--sunset-deep); }
+.sunset-feed .spots-eyebrow { color: var(--sunset-accent); }
+.sunset-feed .spot-card__why span { color: var(--sunset-deep); }
+.sunset-feed .end-slide-card { box-shadow: 8px 8px 0 var(--sunset-deep); }
+.sunset-feed .end-privacy-btn:hover { color: var(--sunset-accent); }
+
+.sunset-end-title {
+  margin-bottom: 1rem;
+  font: 900 1.5rem/1.05 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.sunset-end-copy {
+  max-width: 380px;
+  margin: 0 auto 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .sunset-nav { padding: 0 16px; }
+  .sunset-nav-link { padding: 9px 10px; font-size: 0.64rem; }
+}

@@ -5,12 +5,34 @@ import { PrivacyModal } from './components/PrivacyModal';
 import { UsagePolicyModal } from './components/UsagePolicyModal';
 import { BruukLogo } from './components/BruukLogo';
 import { useRecommendationTransition } from './components/RecommendationTransition';
+import spotsData from './data/spots.json';
 import './App.css';
 
 const CAROUSEL_IMAGES = [
   { src: '/img/bruukcarrusel1.JPG', alt: 'Comunidad Bruuk 1' },
   { src: '/img/bruukcarrusel2.JPG', alt: 'Comunidad Bruuk 2' },
   { src: '/img/bruukcarrusel3.JPG', alt: 'Comunidad Bruuk 3' },
+];
+
+type FeaturedSpot = {
+  id: string;
+  name: string;
+  type: string;
+  highlight?: string;
+  imageUrl: string;
+  city: string;
+};
+
+const ALL_SPOTS = spotsData as FeaturedSpot[];
+const GDL_SPOT_COUNT = ALL_SPOTS.filter((spot) => spot.city === 'guadalajara').length;
+const FEATURED_SPOTS = ['spot_003', 'spot_018', 'spot_105', 'spot_131']
+  .map((id) => ALL_SPOTS.find((spot) => spot.id === id))
+  .filter((spot): spot is FeaturedSpot => Boolean(spot));
+
+const CATEGORY_LINKS = [
+  { to: '/guadalajara/spots', label: 'COMER Y TOMAR', hint: 'Cafés, comida y noche' },
+  { to: '/guadalajara/rack', label: 'VINTAGE Y TIANGUIS', hint: 'Ropa, objetos y mercados' },
+  { to: '/guadalajara/senales', label: 'PLANES Y RUTAS', hint: 'Museos, rutas y eventos' },
 ];
 
 function App() {
@@ -30,13 +52,22 @@ function App() {
           <div className="logo">
             <BruukLogo />
           </div>
-          <button
-            className="header-secondary-link"
-            type="button"
-            onClick={() => transitionTo('/descubrir')}
-          >
-            DESCUBRIR <ArrowRight size={15} strokeWidth={2.5} />
-          </button>
+          <nav className="header-main-nav" aria-label="Navegación principal">
+            <button
+              className="header-secondary-link header-submit-spot-link"
+              type="button"
+              onClick={() => transitionTo('/sube-un-spot')}
+            >
+              SUBE UN SPOT <span aria-hidden="true">＋</span>
+            </button>
+            <button
+              className="header-secondary-link"
+              type="button"
+              onClick={() => transitionTo('/descubrir')}
+            >
+              DESCUBRIR <ArrowRight size={15} strokeWidth={2.5} />
+            </button>
+          </nav>
         </div>
       </header>
 
@@ -48,7 +79,7 @@ function App() {
               Menos pantalla.<br />Más mundo.
             </h1>
             <p className="hero-subtitle-p animate-fade-in delay-1">
-              Spots, Rack y rincones a los que vale la pena ir. Navega Guadalajara sin rankings pagados y con recomendaciones de personas reales.
+              Dónde comer y tomar, vintage y tianguis, y planes para salir en Guadalajara. Elegidos por personas reales, sin rankings pagados.
             </p>
             <div className="hero-actions animate-fade-in delay-2">
               <button className="btn btn-primary btn-mega" onClick={() => transitionTo('/guadalajara')}>
@@ -56,6 +87,48 @@ function App() {
                 EXPLORAR GUADALAJARA <ArrowRight size={20} strokeWidth={3} />
               </button>
             </div>
+          </div>
+        </section>
+
+        <section className="landing-spots" aria-labelledby="landing-spots-title">
+          <div className="container">
+            <header className="landing-spots-head">
+              <span>/ ASÍ SE VE BRUUK</span>
+              <h2 id="landing-spots-title">LUGARES REALES.<br />RAZONES CONCRETAS.</h2>
+              <p>Cada lugar trae una razón para ir. Estos son cuatro de los {GDL_SPOT_COUNT} que ya están en la guía.</p>
+            </header>
+
+            <div className="landing-spots-grid">
+              {FEATURED_SPOTS.map((spot) => (
+                <a
+                  key={spot.id}
+                  className="landing-spot"
+                  href="/guadalajara/spots"
+                  onClick={(event) => { event.preventDefault(); transitionTo('/guadalajara/spots'); }}
+                >
+                  <img src={spot.imageUrl} alt={spot.name} loading="lazy" decoding="async" />
+                  <div className="landing-spot-body">
+                    <span>{spot.type}</span>
+                    <h3>{spot.name}</h3>
+                    {spot.highlight && <p><b>VE POR</b>{spot.highlight}</p>}
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <nav className="landing-categories" aria-label="Qué puedes encontrar en Bruuk">
+              {CATEGORY_LINKS.map((category) => (
+                <a
+                  key={category.to}
+                  href={category.to}
+                  onClick={(event) => { event.preventDefault(); transitionTo(category.to); }}
+                >
+                  <strong>{category.label}</strong>
+                  <span>{category.hint}</span>
+                  <ArrowRight size={20} strokeWidth={3} aria-hidden="true" />
+                </a>
+              ))}
+            </nav>
           </div>
         </section>
 
@@ -118,7 +191,7 @@ function App() {
               <span>GUADALAJARA / EDICIÓN 001</span>
               <div className="bruuk-explainer-actions">
                 <button type="button" className="bruuk-explainer-radar-link" onClick={() => transitionTo('/radar')}>
-                  ABRIR RADAR <Radio size={18} />
+                  VER PLANES Y RUTAS <Radio size={18} />
                 </button>
                 <button
                   className="bruuk-explainer-cta"
@@ -258,6 +331,16 @@ function App() {
         */}
 
         {/* Newsletter Section */}
+        <section className="community-spot-cta" aria-labelledby="community-spot-title">
+          <div className="container community-spot-cta-inner">
+            <span>/ EL MAPA TAMBIÉN ES DE USTEDES</span>
+            <h2 id="community-spot-title">¿TIENES UN SPOT<br />QUE TE GUSTA?</h2>
+            <p>Cada cierto tiempo subiré una guía humana con mis descubrimientos y, espero, también con los de ustedes. No tiene que estar en Guadalajara.</p>
+            <button type="button" onClick={() => transitionTo('/sube-un-spot')}>SUBIR UN SPOT <ArrowRight size={20} strokeWidth={3} /></button>
+          </div>
+        </section>
+
+        {/* Newsletter Section */}
         <section className="newsletter">
           <div className="container">
             <div className="newsletter-wrapper">
@@ -291,9 +374,10 @@ function App() {
             <nav className="site-footer-nav" aria-label="Navegación del pie de página">
               <div>
                 <span>EXPLORAR</span>
-                <a href="/guadalajara/spots">Spots</a>
+                <a href="/guadalajara/spots">Comer y tomar</a>
                 <a href="/guadalajara/rack">Vintage y tianguis</a>
-                <a href="/radar">Radar y Señales</a>
+                <a href="/guadalajara/senales">Planes y rutas</a>
+                <a href="/sube-un-spot">Sube un spot</a>
               </div>
               <div>
                 <span>CONTACTO</span>

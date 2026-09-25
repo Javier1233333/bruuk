@@ -1,0 +1,43 @@
+.submit-spot-page { min-height: 100vh; color: #f7f6ff; background: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.submit-spot-page *, .submit-spot-page *::before, .submit-spot-page *::after { box-sizing: border-box; }
+.submit-spot-nav { display: grid; grid-template-columns: 1fr auto 1fr; min-height: 76px; align-items: center; gap: 24px; padding: 0 clamp(20px, 4vw, 60px); border-bottom: 1px solid rgba(255,255,255,.16); }
+.submit-spot-nav > span { color: #b8affe; font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .16em; }
+.submit-spot-nav > a:last-child { display: inline-flex; justify-self: end; align-items: center; gap: 8px; color: #f7f6ff; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+.submit-spot-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(390px, 540px); gap: clamp(48px, 8vw, 120px); width: min(1240px, calc(100% - 56px)); margin-inline: auto; padding: clamp(70px, 9vw, 126px) 0; }
+.submit-spot-copy { min-width: 0; }
+.submit-spot-kicker { color: #b8affe; font: 800 .72rem 'Outfit', sans-serif; letter-spacing: .16em; }
+.submit-spot-copy h1 { margin: 24px 0 30px; font: 900 clamp(4rem, 7.5vw, 7.7rem)/.78 'Outfit', sans-serif; letter-spacing: -.07em; }
+.submit-spot-copy h1 em { color: #8b7cf6; font-style: normal; }
+.submit-spot-copy > p { max-width: 590px; margin: 0 0 18px; font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.5; }
+.submit-spot-copy .submit-spot-note { color: #aaa7ba; font-size: .98rem; }
+.submit-spot-flow { display: grid; gap: 0; max-width: 590px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,.16); }
+.submit-spot-flow span { display: flex; gap: 16px; padding: 15px 4px; border-bottom: 1px solid rgba(255,255,255,.16); font: 800 .7rem 'Outfit', sans-serif; letter-spacing: .11em; }
+.submit-spot-flow b { color: #8b7cf6; }
+.submit-spot-card { align-self: start; color: #0b0a12; background: #f7f6ff; box-shadow: 10px 10px 0 #8b7cf6; }
+.submit-spot-card form { display: grid; padding: 30px; }
+.submit-spot-form-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin: -30px -30px 28px; padding: 20px 30px; border-bottom: 2px solid #0b0a12; }
+.submit-spot-form-heading span, .submit-spot-card label { font: 850 .66rem 'Outfit', sans-serif; letter-spacing: .12em; }
+.submit-spot-form-heading strong { font: 900 1.25rem 'Outfit', sans-serif; }
+.submit-spot-card label { margin: 0 0 7px; }
+.submit-spot-card label:not(:first-of-type) { margin-top: 18px; }
+.submit-spot-card label small { color: #696675; font-size: .56rem; }
+.submit-spot-card input, .submit-spot-card textarea { width: 100%; min-height: 52px; padding: 13px 14px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; border-radius: 0; font: 650 .92rem 'DM Sans', sans-serif; outline: 0; }
+.submit-spot-card textarea { min-height: 126px; resize: vertical; line-height: 1.45; }
+.submit-spot-card input:focus, .submit-spot-card textarea:focus { box-shadow: 4px 4px 0 #8b7cf6; }
+.submit-spot-card input::placeholder, .submit-spot-card textarea::placeholder { color: #74717e; opacity: 1; }
+.submit-spot-icon-field { position: relative; }
+.submit-spot-icon-field svg { position: absolute; top: 17px; left: 14px; pointer-events: none; }
+.submit-spot-icon-field input { padding-left: 42px; }
+.submit-spot-trap { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.submit-spot-error { margin: 18px 0 0; padding: 10px 12px; color: #fff; background: #351626; font-size: .82rem; }
+.submit-spot-button, .submit-spot-success button { display: inline-flex; min-height: 54px; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; padding: 0 20px; color: #fff; background: #0b0a12; border: 1.5px solid #0b0a12; box-shadow: 5px 5px 0 #8b7cf6; font: 900 .78rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; }
+.submit-spot-button:hover, .submit-spot-button:focus-visible, .submit-spot-success button:hover, .submit-spot-success button:focus-visible { color: #0b0a12; background: #8b7cf6; outline: 2px solid #0b0a12; outline-offset: 3px; }
+.submit-spot-button:disabled { cursor: wait; opacity: .7; }
+.submit-spot-privacy { margin: 17px 0 0; color: #696675; font-size: .7rem; line-height: 1.45; }
+.submit-spot-success { display: grid; min-height: 590px; align-content: center; justify-items: start; padding: 46px; }
+.submit-spot-success > svg { margin-bottom: 24px; padding: 7px; color: #0b0a12; background: #b8affe; border: 1.5px solid #0b0a12; box-shadow: 4px 4px 0 #0b0a12; }
+.submit-spot-success > span { color: #6557d8; font: 850 .68rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.submit-spot-success h2 { margin: 14px 0 20px; font: 900 clamp(2.7rem, 5vw, 4.4rem)/.85 'Outfit', sans-serif; letter-spacing: -.06em; }
+.submit-spot-success p { max-width: 380px; margin: 0; color: #575463; line-height: 1.55; }
+@media (max-width: 900px) { .submit-spot-main { grid-template-columns: 1fr; } .submit-spot-copy h1 { font-size: clamp(4rem, 14vw, 7rem); } }
+@media (max-width: 600px) { .submit-spot-nav { grid-template-columns: 1fr auto; min-height: 68px; padding-inline: 18px; } .submit-spot-nav > span { display: none; } .submit-spot-main { width: min(calc(100% - 32px), 540px); padding: 54px 0 80px; gap: 38px; } .submit-spot-copy h1 { margin-top: 20px; font-size: clamp(3.45rem, 16vw, 5.1rem); } .submit-spot-card { box-shadow: 6px 6px 0 #8b7cf6; } .submit-spot-card form { padding: 22px; } .submit-spot-form-heading { align-items: flex-start; flex-direction: column; margin: -22px -22px 24px; padding: 18px 22px; } .submit-spot-success { min-height: 520px; padding: 30px; } }

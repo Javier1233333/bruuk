@@ -10,6 +10,14 @@
     "type": "website"
   },
   "routes": {
+    "/guadalajara/atardeceres": {
+      "title": "Dónde ver el atardecer en Guadalajara | Bruuk",
+      "description": "Miradores, parques y un rooftop para ver el atardecer en Guadalajara, Zapopan y Tlaquepaque. Selección de Bruuk.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Atardeceres en Guadalajara, por Bruuk",
+      "type": "website",
+      "lastmod": "2026-09-25"
+    },
     "/": {
       "title": "Bruuk — Spots, rutas y cultura local en Guadalajara",
       "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
@@ -95,6 +103,14 @@
       "imageAlt": "Bruuk",
       "type": "website",
       "noindex": true
+    },
+    "/sube-un-spot": {
+      "title": "Sube un spot a Bruuk — Recomienda un lugar de tu ciudad",
+      "description": "Comparte un café, tienda, museo, bar o rincón que te gusta. Puede estar en Guadalajara o en cualquier otra ciudad; Bruuk revisa cada recomendación antes de publicarla.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Sube un spot a Bruuk",
+      "type": "website",
+      "lastmod": "2026-09-25"
     }
   }
 }

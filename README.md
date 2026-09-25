@@ -62,20 +62,29 @@ Las propuestas usan integraciones separadas para que no terminen en la hoja gene
 CITY_PROPOSALS_SCRIPT_URL=
 CITY_PROPOSALS_SECRET=
 
-# Hoja exclusiva para lugares y spots recomendados
-PLACE_PROPOSALS_SCRIPT_URL=
-PLACE_PROPOSALS_SECRET=
+# Bot de Telegram que recibe los spots recomendados
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_SPOTS_CHAT_ID=
 ```
 
-### Preparar las dos hojas de Google
+### Preparar la hoja de propuestas de ciudad
 
 1. Crea una hoja de cálculo para propuestas de ciudad.
 2. Abre **Extensiones → Apps Script** y pega `scripts/google-apps-script-proposals.gs`.
 3. En **Configuración del proyecto → Propiedades del script**, crea `PROPOSALS_SECRET` con el mismo valor que usarás en `CITY_PROPOSALS_SECRET`.
 4. Despliega como aplicación web, con acceso para cualquier usuario, y copia la URL en `CITY_PROPOSALS_SCRIPT_URL`.
-5. Repite el proceso en otra hoja para lugares. Usa otro secreto y coloca su URL y secreto en `PLACE_PROPOSALS_SCRIPT_URL` y `PLACE_PROPOSALS_SECRET`.
+5. Los spots de la comunidad no usan esta hoja: llegan como mensaje a un chat de Telegram.
 
-Ambas hojas crearán automáticamente una pestaña llamada `Respuestas` con sus encabezados. Las URLs y secretos solo deben configurarse en Vercel; nunca deben usar el prefijo `VITE_` ni incluirse en el frontend.
+### Recibir los spots en Telegram
+
+1. En Telegram abre **@BotFather**, envía `/newbot` y sigue los pasos. Copia el token que te da en `TELEGRAM_BOT_TOKEN`.
+2. Abre el chat con tu bot y envíale cualquier mensaje (por ejemplo `hola`). Si prefieres un grupo, agrega el bot al grupo y escribe un mensaje ahí.
+3. Visita `https://api.telegram.org/bot<TOKEN>/getUpdates` y copia el número de `"chat":{"id": ...}` en `TELEGRAM_SPOTS_CHAT_ID` (en grupos empieza con `-`).
+4. En Vercel agrega `TELEGRAM_BOT_TOKEN` y `TELEGRAM_SPOTS_CHAT_ID`, y vuelve a desplegar.
+
+Cada spot llega como un mensaje con nombre, ciudad, ubicación, el por qué, el correo de quien lo envía y la fecha.
+
+La hoja de ciudades creará automáticamente una pestaña llamada `Respuestas`. Las URLs, secretos y el token del bot sólo deben configurarse en Vercel; nunca deben usar el prefijo `VITE_` ni incluirse en el frontend.
 
 
 ## Rutas principales
@@ -90,7 +99,8 @@ Ambas hojas crearán automáticamente una pestaña llamada `Respuestas` con sus 
 | `/radar/museo-cabanas-cafe-redescubrimiento` | Artículo del Museo Cabañas |
 | `/radar/maz-desayuno-cafe-zapopan` | Recorrido del MAZ y Zapopan Centro |
 | `/guadalajara/ruta-museos` | Selector de museos y espacios culturales |
-| `/lleva-bruuk` | Recomendar un lugar o sumar una ciudad |
+| `/sube-un-spot` | Recomendar un spot de cualquier ciudad |
+| `/lleva-bruuk` | Redirección a `/sube-un-spot` |
 | `/privacidad` | Aviso de privacidad |
 
 Las rutas antiguas de planes, administración y descubrimiento redirigen a las secciones públicas vigentes.
@@ -102,7 +112,7 @@ Las funciones dentro de `api/` se despliegan como Vercel Functions.
 | Endpoint | Destino |
 | --- | --- |
 | `POST /api/city-proposal` | Hoja exclusiva de propuestas de ciudad |
-| `POST /api/place-proposal` | Hoja exclusiva de lugares y spots |
+| `POST /api/place-proposal` | Envía los spots de la comunidad a un chat de Telegram |
 | `POST /api/sheets` | Perfiles generales de Radar |
 
 

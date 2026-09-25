@@ -19,6 +19,10 @@
       "destination": "/guadalajara/rack/index.html"
     },
     {
+      "source": "/guadalajara/atardeceres",
+      "destination": "/guadalajara/atardeceres/index.html"
+    },
+    {
       "source": "/guadalajara/ruta-museos",
       "destination": "/guadalajara/ruta-museos/index.html"
     },
@@ -37,6 +41,10 @@
     {
       "source": "/privacidad",
       "destination": "/privacidad/index.html"
+    },
+    {
+      "source": "/sube-un-spot",
+      "destination": "/sube-un-spot/index.html"
     },
     {
       "source": "/(.*)",

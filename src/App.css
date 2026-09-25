@@ -144,6 +144,26 @@
   transition: background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
+.header-main-nav {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.header-submit-spot-link {
+  color: #f7f6ff;
+  background: #17152a;
+  border-color: #8b7cf6;
+  box-shadow: none;
+}
+
+.header-submit-spot-link:hover,
+.header-submit-spot-link:focus-visible {
+  color: #09090d;
+  background: #8b7cf6;
+  box-shadow: 4px 4px 0 #ffffff;
+}
+
 .header-secondary-link:hover,
 .header-secondary-link:focus-visible {
   background: #f7f6ff;
@@ -158,22 +178,28 @@
 }
 
 @media (max-width: 520px) {
+  .header { padding-block: 1rem; }
+  .header .logo svg { width: 100px; }
+  .header-main-nav { gap: .4rem; }
   .header-secondary-link {
-    max-width: 11rem;
-    padding: 0.65rem 0.72rem;
-    font-size: 0.62rem;
+    max-width: none;
+    min-height: 40px;
+    padding: 0.55rem 0.58rem;
+    font-size: 0.56rem;
     line-height: 1.2;
-    letter-spacing: 0.08em;
-    text-align: left;
+    letter-spacing: 0.06em;
+    text-align: center;
   }
+  .header-submit-spot-link { box-shadow: none; }
 }
 
 @media (max-width: 360px) {
   .header .container,
   .app-wrapper > main .container { padding-inline: 1rem; }
   .header .container { gap: .5rem; }
-  .header .logo svg { width: 142px; }
-  .header-secondary-link { padding-inline: .6rem; font-size: .56rem; }
+  .header .logo svg { width: 86px; }
+  .header-secondary-link { padding-inline: .48rem; font-size: .51rem; }
+  .header-secondary-link svg { display: none; }
   .hero-main-dark h1 { font-size: clamp(2.8rem, 14vw, 3.35rem); letter-spacing: -.055em; }
   .hero-subtitle-p { padding-left: 1rem; font-size: 1rem; }
   .city-map-btn { padding-inline: 1rem; font-size: 1.05rem; }
@@ -1869,6 +1895,16 @@
 }
 
 /* Footer editorial del landing */
+.community-spot-cta { color: #0b0a12; background: #f7f6ff; border-top: 2px solid #0b0a12; }
+.community-spot-cta-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .7fr); gap: 22px clamp(32px, 7vw, 100px); align-items: end; padding-block: clamp(70px, 9vw, 120px); }
+.community-spot-cta-inner > span { grid-column: 1 / -1; color: #6557d8; font: 850 .68rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.community-spot-cta-inner h2 { margin: 0; font: 900 clamp(3.4rem, 7vw, 7rem)/.82 'Outfit', sans-serif; letter-spacing: -.065em; }
+.community-spot-cta-inner p { max-width: 440px; margin: 0; font-size: 1.05rem; line-height: 1.55; }
+.community-spot-cta-inner button { display: inline-flex; min-height: 56px; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; padding: 0 24px; color: #fff; background: #0b0a12; border: 2px solid #0b0a12; box-shadow: 6px 6px 0 #8b7cf6; font: 900 .78rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; }
+.community-spot-cta-inner button:hover, .community-spot-cta-inner button:focus-visible { color: #0b0a12; background: #8b7cf6; outline: 2px solid #0b0a12; outline-offset: 3px; }
+@media (max-width: 760px) { .community-spot-cta-inner { grid-template-columns: 1fr; } .community-spot-cta-inner > span { grid-column: 1; } .community-spot-cta-inner button { width: 100%; } }
+
+/* Footer editorial del landing */
 .site-footer {
   position: relative;
   padding: 0;
@@ -1979,4 +2015,38 @@
 @media (max-width: 380px) {
   .site-footer-nav { grid-template-columns: 1fr; gap: 24px; }
   .site-footer-statement strong { font-size: 1.75rem; }
+}
+
+/* Spots reales en la landing */
+.landing-spots { background: #f7f6ff; color: #0b0a12; border-top: 2px solid #0b0a12; padding-block: clamp(64px, 8vw, 110px); }
+.landing-spots-head { display: grid; gap: 14px; max-width: 720px; margin-bottom: clamp(32px, 4vw, 48px); }
+.landing-spots-head > span { color: #6557d8; font: 850 .68rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.landing-spots-head h2 { margin: 0; color: #0b0a12; font: 900 clamp(2.2rem, 5vw, 4rem)/.9 'Outfit', sans-serif; letter-spacing: -.05em; }
+.landing-spots-head p { margin: 0; color: #4a4760; font-size: 1.05rem; line-height: 1.55; }
+.landing-spots-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.landing-spot { display: flex; flex-direction: column; min-width: 0; background: #fff; border: 2px solid #0b0a12; color: inherit; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
+.landing-spot:hover, .landing-spot:focus-visible { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 #8b7cf6; }
+.landing-spot img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; border-bottom: 2px solid #0b0a12; }
+.landing-spot-body { display: grid; gap: 6px; padding: 14px 16px 18px; }
+.landing-spot-body > span { color: #6b6880; font: 700 .64rem 'Outfit', sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.landing-spot-body h3 { margin: 0; color: #0b0a12; font: 900 1.2rem/1.05 'Outfit', sans-serif; text-transform: uppercase; letter-spacing: -.02em; }
+.landing-spot-body p { margin: 4px 0 0; color: #222; font-size: .9rem; font-weight: 600; line-height: 1.4; }
+.landing-spot-body b { display: block; margin-bottom: 2px; color: #6557d8; font: 800 .6rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.landing-categories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.landing-categories a { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; padding: 18px 20px; background: #0b0a12; color: #f7f6ff; text-decoration: none; border: 2px solid #0b0a12; transition: background .15s ease; }
+.landing-categories a:hover, .landing-categories a:focus-visible { background: #6557d8; }
+.landing-categories strong { font: 900 1.05rem 'Outfit', sans-serif; letter-spacing: -.01em; }
+.landing-categories span { grid-row: 2; color: #bdb8e0; font-size: .85rem; }
+.landing-categories a:hover span, .landing-categories a:focus-visible span { color: #fff; }
+.landing-categories svg { grid-column: 2; grid-row: 1 / span 2; }
+
+@media (max-width: 900px) {
+  .landing-spots-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .landing-categories { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .landing-spots-grid { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; }
+  .landing-spot { flex: 0 0 78%; scroll-snap-align: start; }
+  .landing-categories { gap: 10px; }
 }
