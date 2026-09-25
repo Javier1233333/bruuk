@@ -190,7 +190,7 @@ export function RadarPage() {
                   </Link>
 
                   <Link className="radar-canvas-card radar-canvas-upcoming radar-canvas-maz" to="/radar/maz-desayuno-cafe-zapopan" tabIndex={tabIndex}>
-                    <img src="/radar/maz-route/maz.jpg" alt={isPrimary ? 'Entrada del Museo de Arte de Zapopan' : ''} loading={isPrimary ? 'eager' : 'lazy'} decoding="async" draggable="false" />
+                    <img src="/radar/maz-route/maz.webp" alt={isPrimary ? 'Entrada del Museo de Arte de Zapopan' : ''} loading={isPrimary ? 'eager' : 'lazy'} decoding="async" draggable="false" />
                     <div className="radar-canvas-photo-shade" />
                     <div><span>SEÑAL 003</span><Sparkles /></div>
                     <small>RUTA / ZAPOPAN CENTRO</small>

@@ -25,7 +25,7 @@ const blankEvent = (position: number): CommunityEvent => ({
   neighborhood: 'Colonia · Guadalajara',
   address: 'Guadalajara, Jalisco',
   mapsUrl: 'https://maps.google.com/',
-  image: '/img/spots/34-la-perla-records-books.jpg',
+  image: '/img/spots/34-la-perla-records-books.webp',
   imageAlt: 'Imagen del evento',
   capacity: 20,
   priceLabel: 'ENTRADA LIBRE · REGISTRO PREVIO',

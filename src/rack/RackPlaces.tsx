@@ -845,7 +845,7 @@ function TianguisHistory() {
 
         <figure className="rack-tianguis-history-lead">
           <img
-            src="/img/tianguis/baratillo.jpg"
+            src="/img/tianguis/baratillo.webp"
             alt="Pasillo concurrido entre los puestos de El Baratillo en Guadalajara"
             width="1200"
             height="832"
@@ -910,7 +910,7 @@ function TianguisHistory() {
       <section className="rack-tianguis-history-gallery" aria-label="Imágenes de la cultura de tianguis en Guadalajara">
         <figure>
           <img
-            src="/img/tianguis/cultural.jpg"
+            src="/img/tianguis/cultural.webp"
             alt="Visitantes y músicos en el Tianguis Cultural de Guadalajara"
             width="1200"
             height="678"
@@ -931,7 +931,7 @@ function TianguisHistory() {
 
         <figure>
           <img
-            src="/img/tianguis/francisco-villa.jpg"
+            src="/img/tianguis/francisco-villa.webp"
             alt="Puestos de frutas y verduras en un tianguis vecinal de Guadalajara"
             width="608"
             height="342"

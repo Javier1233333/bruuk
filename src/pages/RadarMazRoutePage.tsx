@@ -126,7 +126,7 @@ export function RadarMazRoutePage() {
       <main>
         <article>
           <header className="cabanas-entry-hero maz-route-hero maz-route-snap-card">
-            <img src="/radar/maz-route/maz.jpg" alt="Entrada del Museo de Arte de Zapopan" />
+            <img src="/radar/maz-route/maz.webp" alt="Entrada del Museo de Arte de Zapopan" fetchPriority="high" decoding="async" />
             <div className="cabanas-entry-hero-shade" />
             <div className="cabanas-entry-hero-copy">
               <span>/ SEÑAL 003 · REDESCUBRIR ZAPOPAN</span>
@@ -206,7 +206,7 @@ export function RadarMazRoutePage() {
           <section className="cabanas-entry-chapter cabanas-entry-coffee maz-route-stop maz-route-snap-card" aria-labelledby="maz-binaural-title">
             <div className="cabanas-entry-chapter-number">03</div>
             <figure>
-              <img src="/radar/maz-route/binaural.jpg" alt="Barra e interior de Binaural Café en Zapopan" loading="lazy" />
+              <img src="/radar/maz-route/binaural.webp" alt="Barra e interior de Binaural Café en Zapopan" loading="lazy" />
               <figcaption>BINAURAL CAFÉ · FOTO VÍA CORNER / GOOGLE CONTRIBUTORS</figcaption>
             </figure>
             <div className="cabanas-entry-chapter-copy">

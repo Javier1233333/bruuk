@@ -82,7 +82,7 @@ const curatedSources = {
 
 const existingLocalPhotos = {
   spot_106: {
-    localFile: '/img/spots/42-jamaica-records.jpg',
+    localFile: '/img/spots/42-jamaica-records.webp',
     sourcePage: 'https://www.google.com/maps/search/?api=1&query=Jamaica%20Records%2C%20Guadalajara%2C%20Jalisco',
   },
 };

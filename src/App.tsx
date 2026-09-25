@@ -9,9 +9,9 @@ import spotsData from './data/spots.json';
 import './App.css';
 
 const CAROUSEL_IMAGES = [
-  { src: '/img/bruukcarrusel1.JPG', alt: 'Comunidad Bruuk 1' },
-  { src: '/img/bruukcarrusel2.JPG', alt: 'Comunidad Bruuk 2' },
-  { src: '/img/bruukcarrusel3.JPG', alt: 'Comunidad Bruuk 3' },
+  { src: '/img/bruukcarrusel1.webp', alt: 'Comunidad Bruuk 1' },
+  { src: '/img/bruukcarrusel2.webp', alt: 'Comunidad Bruuk 2' },
+  { src: '/img/bruukcarrusel3.webp', alt: 'Comunidad Bruuk 3' },
 ];
 
 type FeaturedSpot = {
@@ -257,7 +257,7 @@ function App() {
 
               <div className="nos-carousel">
                 <div className="carousel-view">
-                  <img src={CAROUSEL_IMAGES[carouselIdx].src} alt={CAROUSEL_IMAGES[carouselIdx].alt} key={carouselIdx} className="carousel-img animate-fade-in" />
+                  <img src={CAROUSEL_IMAGES[carouselIdx].src} alt={CAROUSEL_IMAGES[carouselIdx].alt} key={carouselIdx} className="carousel-img animate-fade-in" loading="lazy" decoding="async" />
                   <div className="carousel-counter">
                     {carouselIdx + 1} / {CAROUSEL_IMAGES.length}
                   </div>

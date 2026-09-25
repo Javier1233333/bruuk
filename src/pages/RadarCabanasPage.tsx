@@ -71,7 +71,7 @@ export function RadarCabanasPage() {
       <main>
         <article>
           <header className="cabanas-entry-hero">
-            <img src="/radar/cabanas/fachada-optimized.webp" alt="Vista del Paseo Hospicio hacia el Museo Cabañas en Guadalajara" decoding="async" />
+            <img src="/radar/cabanas/fachada-optimized.webp" alt="Vista del Paseo Hospicio hacia el Museo Cabañas en Guadalajara" fetchPriority="high" decoding="async" />
             <div className="cabanas-entry-hero-shade" />
             <div className="cabanas-entry-hero-copy">
               <span>/ SEÑAL 002 · REDESCUBRIMIENTO</span>
@@ -107,7 +107,7 @@ export function RadarCabanasPage() {
               </div>
             </div>
             <figure>
-              <img src="/radar/cabanas/cupula.jpg" alt="Detalle exterior de la cúpula del Museo Cabañas" loading="lazy" />
+              <img src="/radar/cabanas/cupula.webp" alt="Detalle exterior de la cúpula del Museo Cabañas" loading="lazy" />
               <figcaption>CÚPULA DEL MUSEO CABAÑAS · FOTO: SERGIOYALU / WIKIMEDIA COMMONS · CC BY-SA 4.0</figcaption>
             </figure>
           </section>
@@ -120,7 +120,7 @@ export function RadarCabanasPage() {
           <section className="cabanas-entry-chapter cabanas-entry-coffee" aria-labelledby="cabanas-coffee-title">
             <div className="cabanas-entry-chapter-number">02</div>
             <figure>
-              <img src="/radar/cabanas/cafe.jpg" alt="Taza de café fotografiada en Guadalajara" loading="lazy" />
+              <img src="/radar/cabanas/cafe.webp" alt="Taza de café fotografiada en Guadalajara" loading="lazy" />
               <figcaption>PAUSA DE CAFÉ EN GUADALAJARA · FOTO: SUMMER TIME / UNSPLASH</figcaption>
             </figure>
             <div className="cabanas-entry-chapter-copy">
