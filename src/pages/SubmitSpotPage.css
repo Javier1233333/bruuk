@@ -9,14 +9,14 @@
 
 .submit-spot-main { flex: 1; display: flex; flex-direction: column; gap: 18px; width: 100%; padding: 20px 16px calc(24px + env(safe-area-inset-bottom)); }
 
-.submit-spot-copy { min-width: 0; }
+.submit-spot-copy { min-width: 0; padding: 0; }
 .submit-spot-kicker { color: #b8affe; font: 800 .64rem 'Outfit', sans-serif; letter-spacing: .16em; }
 .submit-spot-copy h1 { margin: 8px 0 8px; font: 900 clamp(1.9rem, 9vw, 2.6rem)/.92 'Outfit', sans-serif; letter-spacing: -.05em; }
 .submit-spot-copy h1 em { color: #8b7cf6; font-style: normal; }
 .submit-spot-copy > p { margin: 0; color: #aaa7ba; font-size: .92rem; line-height: 1.45; }
 .submit-spot-flow { display: none; }
 
-.submit-spot-card { flex: 1; display: flex; flex-direction: column; color: #0b0a12; background: #f7f6ff; box-shadow: 6px 6px 0 #8b7cf6; }
+.submit-spot-card { flex: 1; display: flex; flex-direction: column; min-height: 0; padding: 0; color: #0b0a12; background: #f7f6ff; box-shadow: 6px 6px 0 #8b7cf6; }
 
 .spot-step-form { flex: 1; display: flex; flex-direction: column; padding: 18px 18px 20px; }
 .spot-step-top { display: grid; gap: 8px; margin-bottom: 22px; }
@@ -53,8 +53,8 @@
 .submit-spot-trap { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .submit-spot-error { margin: 16px 0 0; padding: 10px 12px; color: #fff; background: #351626; font-size: .85rem; line-height: 1.4; }
 
-/* Acciones pegadas abajo: siempre visibles para el pulgar */
-.spot-step-actions { position: sticky; bottom: 0; display: flex; gap: 10px; margin: auto -18px -20px; padding: 16px 18px calc(16px + env(safe-area-inset-bottom)); background: #f7f6ff; border-top: 1.5px solid rgba(11,10,18,.12); }
+/* La acción cae al final de la tarjeta: no tapa el campo cuando aparece el teclado. */
+.spot-step-actions { position: static; display: flex; gap: 10px; margin: auto -18px -20px; padding: 16px 18px calc(16px + env(safe-area-inset-bottom)); background: #f7f6ff; border-top: 1.5px solid rgba(11,10,18,.12); }
 .spot-step-back { flex: none; display: grid; width: 56px; min-height: 56px; place-items: center; color: #0b0a12; background: transparent; border: 1.5px solid #0b0a12; cursor: pointer; }
 .submit-spot-button, .submit-spot-success button { display: inline-flex; min-height: 56px; align-items: center; justify-content: center; gap: 10px; padding: 0 20px; color: #fff; background: #0b0a12; border: 1.5px solid #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; font: 900 .82rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
 .submit-spot-button { flex: 1; }
@@ -69,6 +69,12 @@
 .submit-spot-success p { max-width: 380px; margin: 0; color: #575463; line-height: 1.55; }
 .submit-spot-success button { width: 100%; margin-top: 26px; }
 .submit-spot-success-link { justify-self: center; margin-top: 16px; padding: 10px; color: #575463; font-size: .85rem; }
+
+@media (max-width: 899px) {
+  .submit-spot-page.is-in-progress .submit-spot-main { padding-top: 12px; }
+  .submit-spot-page.is-in-progress .submit-spot-copy { display: none; }
+  .submit-spot-page.is-in-progress .submit-spot-card { min-height: calc(100dvh - 88px - env(safe-area-inset-bottom)); }
+}
 
 /* Escritorio: dos columnas, el formulario conserva el mismo flujo por pasos */
 @media (min-width: 900px) {

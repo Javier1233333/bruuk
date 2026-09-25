@@ -59,7 +59,10 @@ export function SubmitSpotPage() {
 
   // Enfoca el campo al avanzar (no al cargar, para no abrir el teclado de golpe).
   useEffect(() => {
-    if (hasMovedRef.current) fieldRef.current?.focus({ preventScroll: true });
+    if (!hasMovedRef.current) return;
+    if (window.matchMedia('(max-width: 899px)').matches) window.scrollTo({ top: 0, behavior: 'auto' });
+    const focusFrame = window.requestAnimationFrame(() => fieldRef.current?.focus({ preventScroll: true }));
+    return () => window.cancelAnimationFrame(focusFrame);
   }, [stepIndex]);
 
   const validateStep = (id: StepId) => {
@@ -164,7 +167,7 @@ export function SubmitSpotPage() {
         : <>SIGUIENTE <ArrowRight size={18} aria-hidden="true" /></>;
 
   return (
-    <div className="submit-spot-page">
+    <div className={`submit-spot-page ${stepIndex > 0 || status === 'success' ? 'is-in-progress' : ''}`}>
       <header className="submit-spot-nav">
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
         <span>/ APORTA AL MAPA</span>
