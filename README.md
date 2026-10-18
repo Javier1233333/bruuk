@@ -65,7 +65,16 @@ CITY_PROPOSALS_SECRET=
 # Bot de Telegram que recibe los spots recomendados
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_SPOTS_CHAT_ID=
+
+# Generador de planes personalizados (/guadalajara/arma-tu-plan)
+DEEPSEEK_API_KEY=
+# Opcional, por defecto deepseek-chat
+DEEPSEEK_MODEL=
 ```
+
+### Arma tu plan
+
+`/guadalajara/arma-tu-plan` hace cinco preguntas (momento, compañía, intereses, ritmo y presupuesto) y envía las opciones a `api/custom-plan.ts`. La función manda a DeepSeek sólo los lugares del catálogo de Bruuk que encajan con los intereses (`src/data/planBuilder.ts`) y descarta cualquier parada que no exista en ese catálogo, así que el plan nunca incluye lugares inventados. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
 
 ### Preparar la hoja de propuestas de ciudad
 

@@ -43,6 +43,10 @@
       "destination": "/privacidad/index.html"
     },
     {
+      "source": "/guadalajara/arma-tu-plan",
+      "destination": "/guadalajara/arma-tu-plan/index.html"
+    },
+    {
       "source": "/sube-un-spot",
       "destination": "/sube-un-spot/index.html"
     },

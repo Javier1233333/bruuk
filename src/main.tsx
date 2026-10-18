@@ -23,6 +23,7 @@ const RackPlaces = lazy(() =>
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
 const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
+const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
@@ -62,6 +63,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
           <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
           <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
+          <Route path="/:city/arma-tu-plan" element={<PlanBuilderPage />} />
           <Route path="/rack/lugares" element={<LegacyRackRedirect />} />
           <Route path="/planes" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
