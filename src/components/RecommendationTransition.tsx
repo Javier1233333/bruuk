@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
+import { IS_APP_MODE } from '../lib/appMode';
 import './RecommendationTransition.css';
 
 type TransitionTo = (destination: string) => void;
@@ -31,6 +32,11 @@ export function RecommendationTransitionProvider({ children }: { children: React
   const transitionTo = useCallback<TransitionTo>((destination) => {
     const current = `${location.pathname}${location.search}${location.hash}`;
     if (destination === current || loading) return;
+    // En el modo app se cambia de pestaña al instante, sin pantalla de carga.
+    if (IS_APP_MODE) {
+      navigate(destination);
+      return;
+    }
 
     window.clearTimeout(navigationTimer.current);
     window.clearTimeout(releaseTimer.current);

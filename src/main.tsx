@@ -8,6 +8,7 @@ import { RouteSeo } from './components/RouteSeo'
 import { ScrollToTop } from './components/ScrollToTop'
 import { InstallAppPrompt } from './components/InstallAppPrompt'
 import { AppTabBar } from './components/AppTabBar'
+import { AppRouteFallback, FirstRouteLoaded } from './components/AppRouteFallback'
 import { IS_APP_MODE } from './lib/appMode'
 import { RecommendationLoadingScreen, RecommendationTransitionProvider } from './components/RecommendationTransition'
 
@@ -44,9 +45,7 @@ const RadarMazRoutePage = lazy(() =>
 
 const isMuseumMicrosite = window.location.hostname.toLowerCase() === 'museos.bruuk.space'
 
-const routeFallback = (
-  <RecommendationLoadingScreen />
-)
+const routeFallback = IS_APP_MODE ? <AppRouteFallback /> : <RecommendationLoadingScreen />
 
 // Necesario para que el navegador ofrezca "Agregar a inicio" y para abrir sin conexión.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
@@ -89,6 +88,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/:city/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/:city" element={<CityHomePage />} />
           </Routes>
+          {IS_APP_MODE && <FirstRouteLoaded />}
         </Suspense>
         <AppTabBar />
       </RecommendationTransitionProvider>
