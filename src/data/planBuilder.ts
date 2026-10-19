@@ -1,10 +1,10 @@
 // Catálogo y opciones compartidas entre la página "Arma tu plan" y /api/custom-plan.
 // El modelo sólo puede elegir lugares de este catálogo, nunca inventarlos.
-import spotsData from './spots.json';
-import sunsetData from './atardeceres.json';
-import rackData from '../../lugares-mapa-gdl.json';
-import { SPOT_IMAGES } from '../rack/spotImages';
-import { SPOT_MAP_LINKS } from '../rack/spotMapLinks';
+import spotsData from './spots.json' with { type: 'json' };
+import sunsetData from './atardeceres.json' with { type: 'json' };
+import rackData from '../../lugares-mapa-gdl.json' with { type: 'json' };
+import { SPOT_IMAGES } from '../rack/spotImages.js';
+import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
 
 export type PlanInterest = 'cafe' | 'comida' | 'noche' | 'vintage' | 'cultura' | 'atardecer';
 

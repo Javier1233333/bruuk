@@ -11,7 +11,7 @@ import {
   parsePlanChoices,
   type CustomPlan,
   type PlanChoices,
-} from '../src/data/planBuilder';
+} from '../src/data/planBuilder.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 const MAX_PLACES_PER_INTEREST = 30;
