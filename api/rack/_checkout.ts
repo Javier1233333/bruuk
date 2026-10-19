@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase.js';
-import { getStripe } from './stripe.js';
+import { supabaseAdmin } from './_supabase.js';
+import { getStripe } from './_stripe.js';
 
 /* ============================================================
    POST /api/rack/checkout

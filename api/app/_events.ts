@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase.js';
+import { supabaseAdmin } from './_supabase.js';
 
 /* ============================================================
    /api/app/events

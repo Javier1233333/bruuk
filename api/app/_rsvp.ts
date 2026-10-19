@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase.js';
-import { getUserFromToken } from './firebase.js';
+import { supabaseAdmin } from './_supabase.js';
+import { getUserFromToken } from './_firebase.js';
 
 /* ============================================================
    /api/app/rsvp

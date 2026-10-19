@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type Stripe from 'stripe';
-import { supabaseAdmin } from './supabase.js';
-import { getStripe } from '../rack/stripe.js';
+import { supabaseAdmin } from './_supabase.js';
+import { getStripe } from '../rack/_stripe.js';
 
 /* ============================================================
    POST /api/app/event-webhook — recibe eventos de Stripe

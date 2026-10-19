@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from './supabase.js';
+import { supabase } from './_supabase.js';
 
 /* GET /api/rack/events — próximos eventos Bruuk */
 
