@@ -13,7 +13,7 @@ const TABS = [
 // Menú inferior del modo app. El botón central es "Sube un spot"; Radar vive arriba, en CityNav.
 export function AppTabBar() {
   const { pathname } = useLocation();
-  if (!IS_APP_MODE) return null;
+  if (!IS_APP_MODE || pathname === '/login' || pathname === '/auth/action') return null;
 
   const [inicio, rack, plan, eventos] = TABS;
   const renderTab = ({ to, label, icon: Icon, match }: (typeof TABS)[number]) => (

@@ -1,9 +1,10 @@
-import { Radio } from 'lucide-react';
+import { LogOut, Radio } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { BruukSelect } from './BruukSelect';
 import { IS_APP_MODE } from '../lib/appMode';
+import { useAppSession } from '../lib/appSession';
 import { useRecommendationTransition } from './RecommendationTransition';
 import './CityNav.css';
 
@@ -11,12 +12,20 @@ type CitySection = 'spots' | 'rack' | 'planes';
 
 export function CityNav({ active, trailing }: { active?: CitySection; trailing?: ReactNode }) {
   const transitionTo = useRecommendationTransition();
+  const session = useAppSession();
   // En el modo app las categorías están en el menú inferior; arriba sólo queda Radar.
   if (IS_APP_MODE && active) {
     return (
       <header className="city-nav is-feed-nav is-app-nav">
         <Link className="city-nav-logo" to="/guadalajara/spots" aria-label="Inicio"><BruukLogo width={104} /></Link>
-        <Link className="city-nav-change city-nav-radar" to="/guadalajara/senales"><Radio size={16} strokeWidth={2.2} aria-hidden="true" /> RADAR</Link>
+        <div className="city-nav-app-actions">
+          <Link className="city-nav-change city-nav-radar" to="/guadalajara/senales"><Radio size={16} strokeWidth={2.2} aria-hidden="true" /> RADAR</Link>
+          {session && (
+            <button type="button" className="city-nav-change city-nav-signout" onClick={() => void session.signOut()} aria-label={`Cerrar sesión (${session.email ?? 'cuenta'})`}>
+              <LogOut size={16} strokeWidth={2.2} aria-hidden="true" />
+            </button>
+          )}
+        </div>
       </header>
     );
   }

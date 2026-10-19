@@ -15,6 +15,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // En el modo app AppAuthGate ya envuelve todo; AuthLayout no debe duplicarlo
+  const parent = useContext(AuthContext);
+  if (parent) return <>{children}</>;
+  return <AuthStateProvider>{children}</AuthStateProvider>;
+}
+
+function AuthStateProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);

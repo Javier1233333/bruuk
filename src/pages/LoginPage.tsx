@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff } from 'lucide-react';
 import {
   createUserWithEmailAndPassword,
@@ -11,12 +11,17 @@ import {
 import { auth, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
+import { IS_APP_MODE } from '../lib/appMode';
 import './LoginPage.css';
 
 type Mode = 'login' | 'signup';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  // Solo rutas internas: evita redirigir a otro sitio con ?next=//evil.com
+  const nextParam = params.get('next');
+  const next = nextParam?.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/guadalajara';
   const { user } = useAuth();
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
@@ -28,8 +33,8 @@ export function LoginPage() {
 
   // Con sesión iniciada no tiene caso quedarse en /login
   useEffect(() => {
-    if (user) navigate('/guadalajara', { replace: true });
-  }, [user, navigate]);
+    if (user) navigate(next, { replace: true });
+  }, [user, navigate, next]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,9 +195,11 @@ export function LoginPage() {
           </button>
         </div>
 
-        <p className="login-back">
-          <Link to="/">← Volver al inicio</Link>
-        </p>
+        {!IS_APP_MODE && (
+          <p className="login-back">
+            <Link to="/">← Volver al inicio</Link>
+          </p>
+        )}
       </div>
     </div>
   );

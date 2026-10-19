@@ -1,4 +1,4 @@
-import { lazy, StrictMode, Suspense } from 'react'
+import { lazy, StrictMode, Suspense, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
@@ -26,6 +26,7 @@ const RackPlaces = lazy(() =>
 )
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
 const AuthLayout = lazy(() => import('./components/AuthLayout'))
+const AppAuthGate = lazy(() => import('./components/AppAuthGate'))
 const LoginPage = lazy(() => import('./pages/LoginPage').then((module) => ({ default: module.LoginPage })))
 const AuthActionPage = lazy(() => import('./pages/AuthActionPage').then((module) => ({ default: module.AuthActionPage })))
 const SpotsAdminPage = lazy(() => import('./admin/SpotsAdminPage').then((module) => ({ default: module.SpotsAdminPage })))
@@ -58,6 +59,11 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
   })
 }
 
+// En el modo app todo pasa por el login; en el navegador no se carga Firebase Auth.
+function AppShellGate({ children }: { children: ReactNode }) {
+  return IS_APP_MODE ? <AppAuthGate>{children}</AppAuthGate> : <>{children}</>
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
@@ -66,6 +72,7 @@ createRoot(document.getElementById('root')!).render(
         <ScrollToTop />
         <InstallAppPrompt />
         <Suspense fallback={routeFallback}>
+          <AppShellGate>
           <Routes>
           <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : IS_APP_MODE ? <Navigate to="/guadalajara/spots" replace /> : <App />} />
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
@@ -98,8 +105,9 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/:city" element={<CityHomePage />} />
           </Routes>
           {IS_APP_MODE && <FirstRouteLoaded />}
+          <AppTabBar />
+          </AppShellGate>
         </Suspense>
-        <AppTabBar />
       </RecommendationTransitionProvider>
     </BrowserRouter>
     <Analytics />

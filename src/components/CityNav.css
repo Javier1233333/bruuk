@@ -208,3 +208,7 @@
 @media (prefers-reduced-motion: reduce) {
   .city-nav-change { transition: none; }
 }
+
+/* Modo app: Radar + cerrar sesión */
+.city-nav-app-actions { display: flex; align-items: center; gap: 8px; justify-self: end; }
+.city-nav-signout { cursor: pointer; font: inherit; padding-inline: 12px; }

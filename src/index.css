@@ -628,3 +628,27 @@ section {
   font-weight: 800;
   letter-spacing: 0.2em;
 }
+
+/* Modo app: solo vertical. Android respeta "orientation" del manifest;
+   iOS no lo bloquea, así que en horizontal se tapa la app con un aviso. */
+@media (orientation: landscape) and (max-height: 500px) {
+  html.is-app-mode body::after {
+    content: 'Gira tu teléfono para usar Bruuk';
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--bg-primary, #0b0a12);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  html.is-app-mode body { overflow: hidden; }
+}
