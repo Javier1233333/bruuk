@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -93,39 +93,48 @@ export function LoginPage() {
     }
   };
 
+  const isLogin = mode === 'login';
+  const switchMode = (value: Mode) => {
+    setMode(value);
+    setError(null);
+    setNotice(null);
+  };
+
   return (
     <div className="login-page">
-      <div className="login-bg-glow"></div>
+      <header className="login-top">
+        <Link to="/" className="login-logo" aria-label="Bruuk"><BruukLogo width={96} /></Link>
+        {!IS_APP_MODE && <Link to="/" className="login-top-back"><ArrowLeft size={16} aria-hidden="true" /> INICIO</Link>}
+      </header>
 
-      <div className="login-container animate-fade-in">
-        <Link to="/" className="login-logo">
-          <BruukLogo />
-        </Link>
+      <main className="login-main">
+        <section className="login-intro" aria-labelledby="login-headline">
+          <span className="login-kicker">/ BRUUK · GUADALAJARA</span>
+          <h1 id="login-headline" className="login-headline">
+            {isLogin ? 'ENTRA.' : 'ÚNETE.'}<br /><em>SAL.</em>
+          </h1>
+          <p className="login-lead">
+            {isLogin
+              ? 'Inicia sesión para seguir explorando spots, vintage y planes en Guadalajara.'
+              : 'Crea tu cuenta con tu correo o con Google. Toma menos de un minuto.'}
+          </p>
+        </section>
 
         <div className="login-card">
-          <div className="login-tabs">
-            <button
-              className={`login-tab ${mode === 'login' ? 'active' : ''}`}
-              onClick={() => { setMode('login'); setError(null); setNotice(null); }}
-            >
-              Entrar
-            </button>
-            <button
-              className={`login-tab ${mode === 'signup' ? 'active' : ''}`}
-              onClick={() => { setMode('signup'); setError(null); setNotice(null); }}
-            >
-              Crear cuenta
-            </button>
+          <div className="login-tabs" role="tablist" aria-label="Entrar o crear cuenta">
+            {(['login', 'signup'] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                role="tab"
+                aria-selected={mode === value}
+                className={`login-tab ${mode === value ? 'active' : ''}`}
+                onClick={() => switchMode(value)}
+              >
+                {value === 'login' ? 'Entrar' : 'Crear cuenta'}
+              </button>
+            ))}
           </div>
-
-          <h1 className="login-title brand-gradient-text">
-            {mode === 'login' ? 'Bienvenido de vuelta.' : 'Únete al movimiento.'}
-          </h1>
-          <p className="login-subtitle">
-            {mode === 'login'
-              ? 'Inicia sesión y sigue explorando.'
-              : 'Crea tu cuenta y sal a explorar.'}
-          </p>
 
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-field">
@@ -133,11 +142,15 @@ export function LoginPage() {
               <input
                 id="email"
                 type="email"
+                inputMode="email"
                 placeholder="tu@correo.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                enterKeyHint="next"
               />
             </div>
 
@@ -147,60 +160,59 @@ export function LoginPage() {
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder={mode === 'signup' ? 'Mínimo 6 caracteres' : '••••••••'}
+                  placeholder={isLogin ? '••••••••' : 'Mínimo 6 caracteres'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  enterKeyHint="go"
                 />
                 <button
                   type="button"
                   className="password-toggle"
                   onClick={() => setShowPassword(v => !v)}
-                  aria-label="Mostrar/ocultar contraseña"
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {mode === 'login' && (
+              {isLogin && (
                 <button type="button" className="login-forgot" onClick={handleForgotPassword}>
                   ¿Olvidaste tu contraseña?
                 </button>
               )}
             </div>
 
-            {error && <p className="login-error">{error}</p>}
-            {notice && <p className="login-success">{notice}</p>}
+            {error && <p className="login-error" role="alert">{error}</p>}
+            {notice && <p className="login-success" role="status">{notice}</p>}
 
-            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-              {loading ? 'Procesando...' : (
+            <button type="submit" className="login-submit" disabled={loading}>
+              {loading ? 'PROCESANDO…' : (
                 <>
-                  {mode === 'login' ? 'Entrar' : 'Crear cuenta'}
-                  <ArrowRight size={18} strokeWidth={3} />
+                  {isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
+                  <ArrowRight size={18} strokeWidth={3} aria-hidden="true" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="login-divider"><span>o continúa con</span></div>
+          <div className="login-divider"><span>o también</span></div>
           <button className="btn-google" onClick={handleGoogleLogin} type="button">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
               <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
               <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.96L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
             </svg>
-            Continuar con Google
+            CONTINUAR CON GOOGLE
           </button>
-        </div>
 
-        {!IS_APP_MODE && (
-          <p className="login-back">
-            <Link to="/">← Volver al inicio</Link>
-          </p>
-        )}
-      </div>
+          {!isLogin && (
+            <p className="login-legal">Al crear tu cuenta aceptas el <Link to="/privacidad">aviso de privacidad</Link>.</p>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
