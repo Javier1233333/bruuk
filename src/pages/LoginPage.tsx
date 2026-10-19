@@ -227,7 +227,12 @@ function translateError(err: unknown): string {
       return '';
     case 'auth/account-exists-with-different-credential':
       return 'Ya existe una cuenta con este correo. Entra con tu contraseña.';
+    case 'auth/invalid-api-key':
+    case 'auth/api-key-not-valid.-please-pass-a-valid-api-key.':
+      return 'Falta configurar Firebase en este deploy (API key inválida).';
+    case 'auth/operation-not-allowed':
+      return 'El registro con correo no está activado.';
     default:
-      return (err as Error)?.message ?? 'Algo salió mal.';
+      return code ? `Algo salió mal (${code}).` : ((err as Error)?.message ?? 'Algo salió mal.');
   }
 }

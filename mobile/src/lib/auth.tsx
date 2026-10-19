@@ -50,6 +50,7 @@ export function authErrorMessage(error: unknown): string {
     case 'auth/network-request-failed':
       return 'Sin conexión. Intenta de nuevo.';
     default:
-      return 'Algo salió mal. Inténtalo otra vez.';
+      // El código ayuda a saber qué pasó (p. ej. auth/invalid-api-key)
+      return code ? `Algo salió mal (${code}). Inténtalo otra vez.` : 'Algo salió mal. Inténtalo otra vez.';
   }
 }
