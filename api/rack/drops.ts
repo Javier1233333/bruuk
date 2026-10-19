@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from './supabase';
+import { supabase } from './supabase.js';
 
 /* GET /api/rack/drops — lista de próximos drops */
 

@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase';
-import { getUserFromToken } from './firebase';
+import { supabaseAdmin } from './supabase.js';
+import { getUserFromToken } from './firebase.js';
 
 /* ============================================================
    /api/app/plans

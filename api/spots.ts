@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import spotsData from '../src/data/spots.json';
-import { adminDb, firebaseConfigured } from './app/firebase';
+import spotsData from '../src/data/spots.json' with { type: 'json' };
+import { adminDb, firebaseConfigured } from './app/firebase.js';
 
 /* ============================================================
    GET /api/spots → spots activos desde Firestore (colección "spots").

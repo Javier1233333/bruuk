@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase';
-import { verifyAuthHeader } from './firebase';
+import { supabaseAdmin } from './supabase.js';
+import { verifyAuthHeader } from './firebase.js';
 
 /* ============================================================
    /api/app/me

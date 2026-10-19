@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from './supabase';
-import { getUserFromToken } from './firebase';
-import { getStripe } from '../rack/stripe';
+import { supabaseAdmin } from './supabase.js';
+import { getUserFromToken } from './firebase.js';
+import { getStripe } from '../rack/stripe.js';
 
 /* ============================================================
    POST /api/app/event-checkout
