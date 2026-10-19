@@ -67,9 +67,14 @@ export type PlanChoices = {
   vibe: (typeof VIBE_OPTIONS)[number]['value'];
   budget: (typeof BUDGET_OPTIONS)[number]['value'];
   stops: (typeof STOP_OPTIONS)[number];
+  note: string;
 };
 
-export type PlanStop = { placeId: string; time: string; why: string; tip: string };
+export const MAX_NOTE_LENGTH = 200;
+
+// El tip sólo existe si salió de una fuente web encontrada en la búsqueda.
+export type PlanSource = { url: string; title: string };
+export type PlanStop = { placeId: string; time: string; why: string; tip?: string; source?: PlanSource };
 export type CustomPlan = { title: string; intro: string; stops: PlanStop[]; closing: string };
 
 export const labelFor = <T extends string>(options: Option<T>[], value: T) =>
@@ -97,7 +102,8 @@ export const parsePlanChoices = (body: unknown): PlanChoices | null => {
   ) {
     return null;
   }
-  return { moment: input.moment, company: input.company, vibe: input.vibe, budget: input.budget, stops, interests };
+  const note = typeof input.note === 'string' ? input.note.replace(/\s+/g, ' ').trim().slice(0, MAX_NOTE_LENGTH) : '';
+  return { moment: input.moment, company: input.company, vibe: input.vibe, budget: input.budget, stops, interests, note };
 };
 
 type Spot = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string; mapsLink: string; city: string };

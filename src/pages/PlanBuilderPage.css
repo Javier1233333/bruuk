@@ -31,7 +31,12 @@
 
 .plan-step-question { margin: 0; font: 900 clamp(1.7rem, 8vw, 2.3rem)/.98 'Outfit', sans-serif; letter-spacing: -.04em; }
 .plan-step-helper { margin: 0 0 6px; color: #575463; font-size: .92rem; line-height: 1.45; }
-.plan-step-label { margin: 10px 0 0; color: #6557d8; font: 850 .64rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.plan-step-label { display: block; margin: 10px 0 0; color: #6557d8; font: 850 .64rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.plan-step-label span { color: #8a8794; }
+/* 16px evita que iOS haga zoom al enfocar */
+.plan-step-note { width: 100%; min-height: 64px; padding: 12px 14px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; border-radius: 0; font: 500 16px/1.4 'DM Sans', sans-serif; resize: none; outline: 0; -webkit-appearance: none; appearance: none; }
+.plan-step-note:focus { box-shadow: 4px 4px 0 #8b7cf6; }
+.plan-step-note::placeholder { color: #8a8794; opacity: 1; }
 
 .plan-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .plan-options.is-compact { grid-template-columns: repeat(3, 1fr); }
@@ -82,9 +87,19 @@
 .plan-stop-type { color: #6557d8; font: 850 .64rem 'Outfit', sans-serif; letter-spacing: .13em; text-transform: uppercase; }
 .plan-stop-body h3 { margin: 0; font: 900 1.3rem/1.05 'Outfit', sans-serif; letter-spacing: -.02em; }
 .plan-stop-body p { margin: 0; color: #36333f; font-size: .92rem; line-height: 1.5; }
-.plan-stop-body .plan-stop-tip { padding: 10px 12px; background: #e9e6ff; }
+.plan-stop-tip { display: grid; gap: 4px; padding: 10px 12px; background: #e9e6ff; }
 .plan-stop-tip b { margin-right: 8px; color: #6557d8; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .14em; }
-.plan-stop-body a { display: inline-flex; justify-self: start; align-items: center; gap: 6px; min-height: 40px; color: #0b0a12; font: 900 .7rem 'Outfit', sans-serif; letter-spacing: .12em; }
+.plan-stop-tip a { display: inline-flex; justify-self: start; align-items: center; gap: 4px; color: #575463; font-size: .74rem; overflow-wrap: anywhere; }
+.plan-stop-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; }
+.plan-stop-links a, .plan-stop-links button { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; color: #0b0a12; background: none; border: 0; font: 900 .7rem 'Outfit', sans-serif; letter-spacing: .12em; cursor: pointer; }
+.plan-stop-links button { color: #6557d8; }
+.plan-stop-links button:disabled { opacity: .5; cursor: wait; }
+.plan-stop.is-swapping .plan-stop-body > :not(.plan-stop-links) { opacity: .4; transition: opacity .2s; }
+.plan-result-adjust { display: grid; gap: 8px; margin-top: 18px; }
+.plan-result-adjust > span { display: inline-flex; align-items: center; gap: 6px; color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .15em; }
+.plan-result-adjust div { display: flex; flex-wrap: wrap; gap: 6px; }
+.plan-result-adjust button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 800 .7rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.plan-result-adjust button:hover, .plan-result-adjust button:focus-visible { background: #e9e6ff; }
 .plan-result-closing { margin: 0; padding: 16px 0 0; border-top: 1.5px solid #0b0a12; font: 800 1.05rem/1.35 'Outfit', sans-serif; }
 .plan-result-actions { display: grid; gap: 10px; margin-top: 22px; }
 .plan-builder-note { margin: 18px 0 0; color: #696675; font-size: .72rem; line-height: 1.45; text-align: center; }
