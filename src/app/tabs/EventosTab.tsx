@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useEvents } from '../hooks/useEvents';
 import { useRsvp } from '../hooks/useRsvp';
 import { EventCard } from '../components/EventCard';
-import { supabase } from '../../lib/supabase';
+import { getIdToken } from '../../lib/firebase';
 import './EventosTab.css';
 
 interface OrderConfirmation {
@@ -67,8 +67,7 @@ export function EventosTab() {
     setLoadingAction(eventId);
     setActionError(null);
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const token = sessionData.session?.access_token;
+    const token = await getIdToken();
     if (!token) {
       setActionError('No autenticado');
       setLoadingAction(null);

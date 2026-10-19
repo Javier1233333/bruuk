@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../../lib/supabase';
+import { getIdToken as getToken } from '../../lib/firebase';
 
 export interface PlanStop {
   spot_id: string;
@@ -25,15 +25,6 @@ interface UsePlansResult {
   savePlan: (plan: Omit<Plan, 'id' | 'created_at'>) => Promise<{ ok: boolean; error?: string }>;
   deletePlan: (id: string) => Promise<{ ok: boolean; error?: string }>;
   reload: () => void;
-}
-
-async function getToken(): Promise<string | null> {
-  try {
-    const { data } = await supabase.auth.getSession();
-    return data.session?.access_token ?? null;
-  } catch {
-    return null;
-  }
 }
 
 export function usePlans(): UsePlansResult {

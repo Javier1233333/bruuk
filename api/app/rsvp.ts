@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { supabaseAdmin } from './supabase';
+import { getUserFromToken } from './firebase';
 
 /* ============================================================
    /api/app/rsvp
@@ -10,19 +11,11 @@ import { supabaseAdmin } from './supabase';
    ENMIENDA E1: decremento atómico de capacity_remaining al insertar;
                 incremento al cancelar.
 
-   Auth: JWT en Authorization: Bearer <token>
+   Auth: ID token de Firebase en Authorization: Bearer <token>
    User ID se toma siempre del JWT, nunca del body.
    ============================================================ */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-async function getUserFromToken(authHeader: string | undefined): Promise<string | null> {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7);
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-  if (error || !user) return null;
-  return user.id;
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const userId = await getUserFromToken(req.headers['authorization'] as string | undefined);

@@ -1,12 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { supabaseAdmin } from './supabase';
+import { getUserFromToken } from './firebase';
 import { getStripe } from '../rack/stripe';
 
 /* ============================================================
    POST /api/app/event-checkout
 
    Comprar boleto para un evento de pago.
-   Auth: JWT en Authorization: Bearer <token>
+   Auth: ID token de Firebase en Authorization: Bearer <token>
 
    ENMIENDA E1: reserva atómica con capacity_remaining antes de
                 crear la sesión de Stripe. Si la sesión falla,
@@ -22,14 +23,6 @@ function siteUrl(req: VercelRequest): string {
   const host = req.headers.host ?? 'localhost:3000';
   const proto = host.startsWith('localhost') || host.startsWith('127.') ? 'http' : 'https';
   return `${proto}://${host}`;
-}
-
-async function getUserFromToken(authHeader: string | undefined): Promise<string | null> {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7);
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-  if (error || !user) return null;
-  return user.id;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

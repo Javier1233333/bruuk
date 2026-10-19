@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { supabaseAdmin } from './supabase';
+import { getUserFromToken } from './firebase';
 
 /* ============================================================
    /api/app/plans
@@ -7,20 +8,12 @@ import { supabaseAdmin } from './supabase';
    POST   body: { name, start_time, stops[] } → crear plan
    DELETE ?id=<uuid>                          → eliminar plan propio
 
-   Auth: JWT en Authorization: Bearer <token>
+   Auth: ID token de Firebase en Authorization: Bearer <token>
    User ID se toma del JWT, nunca del body.
    ============================================================ */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const TIME_RE = /^\d{2}:\d{2}$/;
-
-async function getUserFromToken(authHeader: string | undefined): Promise<string | null> {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7);
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-  if (error || !user) return null;
-  return user.id;
-}
 
 interface Stop {
   spot_id: string;

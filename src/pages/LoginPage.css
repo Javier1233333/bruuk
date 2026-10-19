@@ -83,27 +83,6 @@
   box-shadow: 2px 2px 0px #000;
 }
 
-/* Invite banner */
-.invite-banner {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(139, 124, 246, 0.1);
-  border: 2px solid var(--accent-light);
-  padding: 0.6rem 0.9rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 1.25rem;
-}
-
-.invite-banner a {
-  color: var(--accent-light);
-  text-decoration: underline;
-  font-weight: 700;
-}
-
-/* Titles */
 .login-title {
   font-size: 1.75rem;
   font-weight: 800;
@@ -275,4 +254,23 @@
   width: 100%;
   box-sizing: border-box;
   justify-content: center;
+}
+
+/* Forgot password */
+.login-forgot {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0.15rem;
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.login-forgot:hover {
+  color: var(--accent-light);
 }

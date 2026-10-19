@@ -1,20 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../../lib/supabase';
+import { getIdToken as getToken } from '../../lib/firebase';
 
 interface UseRsvpResult {
   rsvpedEventIds: Set<string>;
   loading: boolean;
   rsvp: (eventId: string) => Promise<{ ok: boolean; error?: string }>;
   cancelRsvp: (eventId: string) => Promise<{ ok: boolean; error?: string }>;
-}
-
-async function getToken(): Promise<string | null> {
-  try {
-    const { data } = await supabase.auth.getSession();
-    return data.session?.access_token ?? null;
-  } catch {
-    return null;
-  }
 }
 
 export function useRsvp(): UseRsvpResult {

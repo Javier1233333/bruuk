@@ -1,7 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff, Lock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
+import { auth, googleProvider } from '../lib/firebase';
+import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 
@@ -9,75 +17,76 @@ type Mode = 'login' | 'signup';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [inviteCode, setInviteCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Navegar cuando el AuthContext ya tiene al usuario, para que
+  // ProtectedRoute no lo mande de vuelta a /login.
+  useEffect(() => {
+    if (user) navigate('/app');
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccessMsg(null);
+    setNotice(null);
 
     if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setError(translateError(error.message));
-      } else {
-        navigate('/app');
+      try {
+        await signInWithEmailAndPassword(auth, email.trim(), password);
+      } catch (err) {
+        setError(translateError(err));
       }
-    } else {
-      // Validar código de invitación antes de crear cuenta
-      const code = inviteCode.trim().toUpperCase();
-
-      const { data: codeRow, error: codeErr } = await supabase
-        .from('invite_codes')
-        .select('id, used')
-        .eq('code', code)
-        .single();
-
-      if (codeErr || !codeRow) {
-        setError('Código de invitación inválido. Únete al newsletter para obtener el tuyo.');
-        setLoading(false);
-        return;
-      }
-
-      if (codeRow.used) {
-        setError('Este código ya fue utilizado.');
-        setLoading(false);
-        return;
-      }
-
-      // Crear cuenta
-      const { error: signUpErr } = await supabase.auth.signUp({ email, password });
-      if (signUpErr) {
-        setError(translateError(signUpErr.message));
-        setLoading(false);
-        return;
-      }
-
-      // Marcar código como usado
-      await supabase
-        .from('invite_codes')
-        .update({ used: true, used_by: email.toLowerCase().trim() })
-        .eq('id', codeRow.id);
-
-      setSuccessMsg('¡Cuenta creada! Revisa tu correo para confirmarla.');
+      setLoading(false);
+      return;
     }
 
+    try {
+      const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      sendEmailVerification(created.user).catch(() => {});
+    } catch (err) {
+      setError(translateError(err));
+    }
     setLoading(false);
   };
 
+  const handleForgotPassword = async () => {
+    setError(null);
+    setNotice(null);
+    const target = email.trim();
+    if (!target) {
+      setError('Escribe tu correo y te mandamos un enlace para cambiar tu contraseña.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, target);
+      // Mismo mensaje exista o no la cuenta, para no revelar qué correos están registrados
+      setNotice(`Si ${target} tiene cuenta, te llegará un correo para cambiar tu contraseña.`);
+    } catch (err) {
+      const code = (err as { code?: string })?.code;
+      if (code === 'auth/user-not-found') {
+        setNotice(`Si ${target} tiene cuenta, te llegará un correo para cambiar tu contraseña.`);
+      } else {
+        setError(translateError(err));
+      }
+    }
+  };
+
   const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/app' },
-    });
+    setError(null);
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err) {
+      const msg = translateError(err);
+      if (msg) setError(msg);
+    }
   };
 
   return (
@@ -93,24 +102,17 @@ export function LoginPage() {
           <div className="login-tabs">
             <button
               className={`login-tab ${mode === 'login' ? 'active' : ''}`}
-              onClick={() => { setMode('login'); setError(null); setSuccessMsg(null); }}
+              onClick={() => { setMode('login'); setError(null); setNotice(null); }}
             >
               Entrar
             </button>
             <button
               className={`login-tab ${mode === 'signup' ? 'active' : ''}`}
-              onClick={() => { setMode('signup'); setError(null); setSuccessMsg(null); }}
+              onClick={() => { setMode('signup'); setError(null); setNotice(null); }}
             >
               Crear cuenta
             </button>
           </div>
-
-          {mode === 'signup' && (
-            <div className="invite-banner">
-              <Lock size={15} />
-              <span>¿No tienes código? <Link to="/">Únete al acceso anticipado.</Link></span>
-            </div>
-          )}
 
           <h1 className="login-title brand-gradient-text">
             {mode === 'login' ? 'Bienvenido de vuelta.' : 'Únete al movimiento.'}
@@ -118,7 +120,7 @@ export function LoginPage() {
           <p className="login-subtitle">
             {mode === 'login'
               ? 'Inicia sesión y sigue explorando.'
-              : 'Ingresa tu código de invitación para entrar.'}
+              : 'Crea tu cuenta y sal a explorar.'}
           </p>
 
           <form onSubmit={handleSubmit} className="login-form">
@@ -157,26 +159,15 @@ export function LoginPage() {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {mode === 'login' && (
+                <button type="button" className="login-forgot" onClick={handleForgotPassword}>
+                  ¿Olvidaste tu contraseña?
+                </button>
+              )}
             </div>
 
-            {mode === 'signup' && (
-              <div className="login-field">
-                <label htmlFor="invite-code">Código de invitación</label>
-                <input
-                  id="invite-code"
-                  type="text"
-                  placeholder="BRUUK-XXXX"
-                  value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value)}
-                  required
-                  autoComplete="off"
-                  style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}
-                />
-              </div>
-            )}
-
             {error && <p className="login-error">{error}</p>}
-            {successMsg && <p className="login-success">{successMsg}</p>}
+            {notice && <p className="login-success">{notice}</p>}
 
             <button type="submit" className="btn btn-primary w-full" disabled={loading}>
               {loading ? 'Procesando...' : (
@@ -208,11 +199,29 @@ export function LoginPage() {
   );
 }
 
-function translateError(msg: string): string {
-  if (msg.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.';
-  if (msg.includes('Email not confirmed')) return 'Confirma tu correo antes de entrar.';
-  if (msg.includes('User already registered')) return 'Este correo ya tiene una cuenta. Inicia sesión.';
-  if (msg.includes('Password should be at least')) return 'La contraseña debe tener al menos 6 caracteres.';
-  if (msg.includes('Unable to validate email')) return 'El correo no es válido.';
-  return msg;
+function translateError(err: unknown): string {
+  const code = (err as { code?: string })?.code ?? '';
+  switch (code) {
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found':
+      return 'Correo o contraseña incorrectos.';
+    case 'auth/email-already-in-use':
+      return 'Este correo ya tiene una cuenta. Inicia sesión.';
+    case 'auth/weak-password':
+      return 'La contraseña debe tener al menos 6 caracteres.';
+    case 'auth/invalid-email':
+      return 'El correo no es válido.';
+    case 'auth/too-many-requests':
+      return 'Demasiados intentos. Espera un momento e intenta de nuevo.';
+    case 'auth/network-request-failed':
+      return 'Sin conexión. Intenta de nuevo.';
+    case 'auth/popup-closed-by-user':
+    case 'auth/cancelled-popup-request':
+      return '';
+    case 'auth/account-exists-with-different-credential':
+      return 'Ya existe una cuenta con este correo. Entra con tu contraseña.';
+    default:
+      return (err as Error)?.message ?? 'Algo salió mal.';
+  }
 }

@@ -4,20 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { SpotCard } from './SpotCard';
 import { OceanCanvas } from './OceanCanvas';
-import spotsData from '../data/spots.json';
+import { useSpots } from '../app/hooks/useSpots';
+import type { Spot } from '../app/hooks/useSpots';
 import './OceanLanding.css';
-
-type Spot = {
-  id: string;
-  name: string;
-  type: string;
-  description: string;
-  imageUrl: string;
-  colorAccent: string;
-  mapsLink: string;
-  rating?: number;
-  price?: string;
-};
 
 /* ── Handmade ripple types ── */
 interface RippleParams {
@@ -146,7 +135,7 @@ export function OceanLanding({ onBack }: OceanLandingProps = {}) {
   const [ripple, setRipple]         = useState<RippleParams | null>(null);
   const [activeSpot, setActiveSpot] = useState<ActiveSpot | null>(null);
   const [clickCount, setClickCount] = useState(0);
-  const [spots]                     = useState<Spot[]>(spotsData as Spot[]);
+  const { spots }                   = useSpots();
 
   const [isMobile] = useState(() => window.innerWidth <= 768);
   const [videoFailed, setVideoFailed] = useState(false);

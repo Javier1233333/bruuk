@@ -1,61 +1,51 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { onIdTokenChanged, signOut as firebaseSignOut } from 'firebase/auth';
+import type { User } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 interface AuthContextType {
-  session: Session | null;
   user: User | null;
   loading: boolean;
+  // Custom claim puesto con scripts/set-admin.mjs
+  isAdmin: boolean;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    let subscription: { unsubscribe: () => void } | null = null;
-
-    const init = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setSession(data.session);
-      } catch {
-        // Supabase no está configurado aún — la app sigue funcionando
-      } finally {
-        setLoading(false);
-      }
-
-      try {
-        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-          setSession(session);
-        });
-        subscription = data.subscription;
-      } catch {
-        // Ignorar si Supabase no está disponible
-      }
-    };
-
-    init();
-
-    return () => {
-      subscription?.unsubscribe();
-    };
+  const readClaims = useCallback(async (u: User | null) => {
+    if (!u) {
+      setIsAdmin(false);
+      return;
+    }
+    try {
+      const { claims } = await u.getIdTokenResult();
+      setIsAdmin(claims.admin === true);
+    } catch {
+      setIsAdmin(false);
+    }
   }, []);
 
+  useEffect(() => {
+    return onIdTokenChanged(auth, async (u) => {
+      await readClaims(u);
+      setUser(u);
+      setLoading(false);
+    });
+  }, [readClaims]);
+
   const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch {
-      setSession(null);
-    }
+    await firebaseSignOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signOut }}>
       {children}
     </AuthContext.Provider>
   );

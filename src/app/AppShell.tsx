@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase';
+import { getIdToken } from '../lib/firebase';
 import { AppHeader } from './components/AppHeader';
 import { TabBar } from './components/TabBar';
 import type { AppTab } from './components/TabBar';
@@ -36,24 +36,22 @@ export function AppShell() {
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from('profiles')
-      .select('display_name, avatar_color')
-      .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setProfile({
-            display_name: (data as Profile).display_name ?? user.email?.split('@')[0] ?? '',
-            avatar_color: (data as Profile).avatar_color ?? '#6366f1',
-          });
-        } else {
-          setProfile({
-            display_name: user.email?.split('@')[0] ?? '',
-            avatar_color: '#6366f1',
-          });
-        }
-      });
+    const fallback = { display_name: user.email?.split('@')[0] ?? '', avatar_color: '#6366f1' };
+    let cancelled = false;
+
+    getIdToken()
+      .then((token) => fetch('/api/app/me', { headers: { Authorization: `Bearer ${token}` } }))
+      .then((r) => (r.ok ? (r.json() as Promise<{ profile: Profile }>) : null))
+      .then((data) => {
+        if (cancelled) return;
+        setProfile({
+          display_name: data?.profile.display_name || fallback.display_name,
+          avatar_color: data?.profile.avatar_color || fallback.avatar_color,
+        });
+      })
+      .catch(() => { if (!cancelled) setProfile(fallback); });
+
+    return () => { cancelled = true; };
   }, [user]);
 
   const handleSignOut = async () => {
