@@ -32,7 +32,15 @@
     "scheme": "bruuk",
     "backgroundColor": "#0b0a12",
     "extra": {
-      "siteUrl": "https://bruuk.space"
+      "siteUrl": "https://bruuk.space",
+      "firebase": {
+        "apiKey": "AIzaSyCXOOpMOaFmeeqKJHtDQeYWKyGZqr0dwiA",
+        "authDomain": "bruuk-8f275.firebaseapp.com",
+        "projectId": "bruuk-8f275",
+        "storageBucket": "bruuk-8f275.firebasestorage.app",
+        "messagingSenderId": "952026606452",
+        "appId": "1:952026606452:web:31d549c525d4afb2479a21"
+      }
     }
   }
 }

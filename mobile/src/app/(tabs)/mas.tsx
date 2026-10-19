@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router, type Href } from 'expo-router';
 import { Body, Kicker, Logo, openUrl, Screen } from '../../components/ui';
+import { useAuth } from '../../lib/auth';
 import { SITE_URL } from '../../lib/catalog';
 import { colors, fonts } from '../../theme';
 
@@ -17,6 +18,7 @@ const ITEMS: Item[] = [
 ];
 
 export default function MoreScreen() {
+  const { user, signOut } = useAuth();
   return (
     <Screen>
       <Logo />
@@ -37,6 +39,17 @@ export default function MoreScreen() {
             <Feather name={'href' in item ? 'chevron-right' : 'external-link'} size={18} color={colors.muted} />
           </Pressable>
         ))}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void signOut()}
+          style={({ pressed }) => [styles.item, pressed && { backgroundColor: '#1a1826' }]}
+        >
+          <Feather name="log-out" size={22} color={colors.violet} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.label}>Cerrar sesión</Text>
+            {user?.email && <Text style={styles.hint}>{user.email}</Text>}
+          </View>
+        </Pressable>
       </View>
       <Body>Bruuk es una guía hecha por personas. Menos pantalla, más mundo.</Body>
     </Screen>
