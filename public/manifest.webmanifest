@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Bruuk — Guadalajara",
+  "short_name": "Bruuk",
+  "description": "Spots, vintage, rutas y planes en Guadalajara elegidos por personas. Menos pantalla, más mundo.",
+  "lang": "es-MX",
+  "start_url": "/guadalajara?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0a12",
+  "theme_color": "#0b0a12",
+  "categories": ["travel", "lifestyle", "food"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Comer y tomar", "url": "/guadalajara/spots", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Vintage y tianguis", "url": "/guadalajara/rack", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Arma tu plan", "url": "/guadalajara/arma-tu-plan", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Sube un spot", "url": "/sube-un-spot", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

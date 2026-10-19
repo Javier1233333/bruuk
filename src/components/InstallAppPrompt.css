@@ -1,0 +1,12 @@
+.install-app { position: fixed; z-index: 900; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); left: 12px; display: flex; align-items: center; gap: 12px; max-width: 460px; margin-inline: auto; padding: 12px 10px 12px 12px; color: #f7f6ff; background: #0b0a12; border: 1.5px solid #8b7cf6; box-shadow: 6px 6px 0 #8b7cf6; font-family: 'DM Sans', sans-serif; animation: install-app-in .3s ease both; }
+.install-app img { flex: none; border-radius: 10px; }
+.install-app-copy { display: grid; flex: 1; gap: 2px; min-width: 0; }
+.install-app-copy strong { font: 900 1rem/1.1 'Outfit', sans-serif; letter-spacing: -.02em; }
+.install-app-copy span { color: #aaa7ba; font-size: .82rem; line-height: 1.35; }
+.install-app-copy svg { vertical-align: -2px; }
+.install-app-copy b { color: #f7f6ff; white-space: nowrap; }
+.install-app-action { flex: none; min-height: 40px; padding: 0 14px; color: #0b0a12; background: #8b7cf6; border: 0; font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; }
+.install-app-close { flex: none; display: grid; width: 36px; height: 36px; place-items: center; color: #aaa7ba; background: none; border: 0; cursor: pointer; }
+.install-app-action:focus-visible, .install-app-close:focus-visible { outline: 2px solid #f7f6ff; outline-offset: 2px; }
+@keyframes install-app-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .install-app { animation: none; } }

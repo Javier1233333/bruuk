@@ -28,6 +28,10 @@ Sitio público: [bruuk.space](https://bruuk.space)
 - Vercel Functions
 - Vercel Analytics
 
+## Agregar a inicio (PWA)
+
+La web se puede instalar en la pantalla de inicio: `public/manifest.webmanifest`, íconos en `public/icons/` (se regeneran desde `public/favicon.svg` con `npm run icons`) y un service worker (`public/sw.js`) que permite abrirla sin conexión con lo último visto. En Android aparece un botón "Agregar"; en iPhone se muestran los pasos (Compartir → Agregar a inicio), porque Safari no permite instalar desde la página.
+
 ## App móvil
 
 La app de iOS y Android (React Native con Expo) está en [`mobile/`](mobile/README.md) y comparte el catálogo de `src/data` con la web.

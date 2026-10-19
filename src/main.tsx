@@ -6,6 +6,7 @@ import './index.css'
 import { LegacyRackRedirect } from './components/LegacyRedirects'
 import { RouteSeo } from './components/RouteSeo'
 import { ScrollToTop } from './components/ScrollToTop'
+import { InstallAppPrompt } from './components/InstallAppPrompt'
 import { RecommendationLoadingScreen, RecommendationTransitionProvider } from './components/RecommendationTransition'
 
 const App = lazy(() => import('./App.tsx'))
@@ -44,12 +45,20 @@ const routeFallback = (
   <RecommendationLoadingScreen />
 )
 
+// Necesario para que el navegador ofrezca "Agregar a inicio" y para abrir sin conexión.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((error) => console.error('Service worker:', error))
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <RecommendationTransitionProvider>
         <RouteSeo />
         <ScrollToTop />
+        <InstallAppPrompt />
         <Suspense fallback={routeFallback}>
           <Routes>
           <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : <App />} />
