@@ -31,3 +31,8 @@ export async function getIdToken(forceRefresh = false): Promise<string | null> {
     return null;
   }
 }
+
+// Al terminar en la página de acción de Firebase (verificar correo, cambiar
+// contraseña) muestra "Continuar" de regreso a Bruuk. El dominio debe estar
+// en Authentication → Dominios autorizados.
+export const emailActionSettings = () => ({ url: `${window.location.origin}/login` });

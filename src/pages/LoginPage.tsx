@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
-import { auth, googleProvider } from '../lib/firebase';
+import { auth, emailActionSettings, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import { IS_APP_MODE } from '../lib/appMode';
@@ -54,7 +54,7 @@ export function LoginPage() {
 
     try {
       const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      sendEmailVerification(created.user).catch(() => {});
+      sendEmailVerification(created.user, emailActionSettings()).catch(() => {});
     } catch (err) {
       setError(translateError(err));
     }
@@ -70,7 +70,7 @@ export function LoginPage() {
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, target);
+      await sendPasswordResetEmail(auth, target, emailActionSettings());
       // Mismo mensaje exista o no la cuenta, para no revelar qué correos están registrados
       setNotice(`Si ${target} tiene cuenta, te llegará un correo para cambiar tu contraseña.`);
     } catch (err) {
