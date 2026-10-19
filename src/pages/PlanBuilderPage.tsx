@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, Pencil, RefreshCw, Shuffle, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, Dices, Pencil, RefreshCw, Shuffle, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import {
@@ -9,6 +9,7 @@ import {
   MAX_INTERESTS,
   MAX_NOTE_LENGTH,
   MOMENT_OPTIONS,
+  PLAN_PLACES,
   PLAN_PLACES_BY_ID,
   STOP_OPTIONS,
   VIBE_OPTIONS,
@@ -18,10 +19,14 @@ import {
   type PlanInterest,
   type PlanStop,
 } from '../data/planBuilder';
+import { PlanRoulette, type RouletteState } from './PlanRoulette';
 import './PlanBuilderPage.css';
 
 type StepId = 'moment' | 'company' | 'interests' | 'vibe' | 'budget';
 type Status = 'choosing' | 'loading' | 'result' | 'error';
+type Mode = 'ruleta' | 'preguntas';
+
+const INITIAL_ROULETTE: RouletteState = { moment: 'sorpresa', interests: [], count: 3, slots: [] };
 
 const STEPS: StepId[] = ['moment', 'company', 'interests', 'vibe', 'budget'];
 
@@ -64,6 +69,10 @@ export function PlanBuilderPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [swappingIndex, setSwappingIndex] = useState<number | null>(null);
   const [swapError, setSwapError] = useState('');
+  const [mode, setMode] = useState<Mode>('ruleta');
+  const [roulette, setRoulette] = useState<RouletteState>(INITIAL_ROULETTE);
+  // Lo que salió en la ruleta al pedir el plan, para marcar qué paradas cambió la IA.
+  const [spunIds, setSpunIds] = useState<string[]>([]);
 
   if (city !== 'guadalajara') return <Navigate to="/guadalajara/arma-tu-plan" replace />;
 
@@ -117,6 +126,44 @@ export function PlanBuilderPage() {
     }
   };
 
+  const generateFromRoulette = async () => {
+    const placeIds = roulette.slots.map((slot) => slot.placeId);
+    setStatus('loading');
+    setError('');
+    setSpunIds(placeIds);
+    try {
+      const result = await requestPlan({
+        mode: 'roulette',
+        moment: roulette.moment,
+        placeIds,
+        locked: roulette.slots.filter((slot) => slot.locked).map((slot) => slot.placeId),
+      });
+      if (!result.plan) throw new Error('No pudimos armar tu plan.');
+      setPlan(result.plan as CustomPlan);
+      setStatus('result');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch (generateError) {
+      setStatus('error');
+      setError(generateError instanceof Error ? generateError.message : 'No pudimos armar tu plan. Inténtalo otra vez.');
+    }
+  };
+
+  // Regresa a la ruleta con las paradas finales del plan, conservando lo que estaba fijo.
+  const backToRoulette = () => {
+    if (plan) {
+      const locked = new Set(roulette.slots.filter((slot) => slot.locked).map((slot) => slot.placeId));
+      setRoulette((current) => ({ ...current, count: plan.stops.length, slots: plan.stops.map((stop) => ({ placeId: stop.placeId, locked: locked.has(stop.placeId) })) }));
+    }
+    setError('');
+    setStatus('choosing');
+  };
+
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setError('');
+    setStatus('choosing');
+  };
+
   const swap = async (index: number) => {
     if (!plan) return;
     setSwappingIndex(index);
@@ -161,7 +208,7 @@ export function PlanBuilderPage() {
   ].filter((item): item is { label: string; step: number } => Boolean(item));
 
   return (
-    <div className={`plan-builder-page ${stepIndex > 0 || status !== 'choosing' || isEditing ? 'is-in-progress' : ''}`}>
+    <div className={`plan-builder-page ${(mode === 'ruleta' ? roulette.slots.length > 0 : stepIndex > 0 || isEditing) || status !== 'choosing' ? 'is-in-progress' : ''}`}>
       <header className="plan-builder-nav">
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
         <span>/ ARMA TU PLAN · GDL</span>
@@ -170,10 +217,19 @@ export function PlanBuilderPage() {
 
       <main className="plan-builder-main">
         <section className="plan-builder-copy" aria-labelledby="plan-builder-title">
-          <span className="plan-builder-kicker">/ PLANES A TU MEDIDA</span>
-          <h1 id="plan-builder-title">ELIGE. <em>SAL.</em></h1>
-          <p>Cinco preguntas y armamos una ruta con lugares reales de la guía. Nada de rankings pagados ni lugares inventados.</p>
-          {summary.length > 0 && (
+          <span className="plan-builder-kicker">{mode === 'ruleta' ? '/ RULETA DE SPOTS' : '/ PLANES A TU MEDIDA'}</span>
+          {mode === 'ruleta' ? (
+            <>
+              <h1 id="plan-builder-title">GIRA. <em>SAL.</em></h1>
+              <p>La ruleta saca lugares de los {PLAN_PLACES.length} de la guía. Fija los que te gusten, gira el resto y la IA encuentra qué los une.</p>
+            </>
+          ) : (
+            <>
+              <h1 id="plan-builder-title">ELIGE. <em>SAL.</em></h1>
+              <p>Cinco preguntas y armamos una ruta con lugares reales de la guía. Nada de rankings pagados ni lugares inventados.</p>
+            </>
+          )}
+          {mode === 'preguntas' && summary.length > 0 && (
             <ul className="plan-builder-summary" aria-label="Tus elecciones">
               {summary.map((item) => <li key={item.label}>{item.label}</li>)}
             </ul>
@@ -181,6 +237,13 @@ export function PlanBuilderPage() {
         </section>
 
         <section className="plan-builder-card" aria-live="polite">
+          {(status === 'choosing' || status === 'error') && !isEditing && (
+            <div className="plan-mode-switch" role="tablist" aria-label="Cómo armar tu plan">
+              <button type="button" role="tab" aria-selected={mode === 'ruleta'} className={mode === 'ruleta' ? 'is-active' : ''} onClick={() => switchMode('ruleta')}><Dices size={16} aria-hidden="true" /> RULETA</button>
+              <button type="button" role="tab" aria-selected={mode === 'preguntas'} className={mode === 'preguntas' ? 'is-active' : ''} onClick={() => switchMode('preguntas')}><SlidersHorizontal size={16} aria-hidden="true" /> 5 PREGUNTAS</button>
+            </div>
+          )}
+
           {status === 'loading' && (
             <div className="plan-builder-loading" role="status">
               <Sparkles size={34} aria-hidden="true" />
@@ -195,16 +258,19 @@ export function PlanBuilderPage() {
             <article className="plan-result">
               <span className="plan-result-kicker"><Check size={16} aria-hidden="true" /> TU PLAN</span>
               <h2>{plan.title}</h2>
+              {plan.thread && (
+                <p className="plan-result-thread"><b>EL HILO</b>{plan.thread}</p>
+              )}
               {plan.intro && <p className="plan-result-intro">{plan.intro}</p>}
 
-              <div className="plan-result-adjust">
+              {mode === 'preguntas' && <div className="plan-result-adjust">
                 <span><SlidersHorizontal size={14} aria-hidden="true" /> AJUSTA UNA OPCIÓN</span>
                 <div>
                   {summary.map((item) => (
                     <button key={item.label} type="button" onClick={() => editStep(item.step)}>{item.label} <Pencil size={12} aria-hidden="true" /></button>
                   ))}
                 </div>
-              </div>
+              </div>}
 
               <ol className="plan-result-stops">
                 {plan.stops.map((stop, index) => {
@@ -217,6 +283,7 @@ export function PlanBuilderPage() {
                       <div className="plan-stop-body">
                         {place.imageUrl && <img src={place.imageUrl} alt={place.name} loading="lazy" decoding="async" />}
                         <span className="plan-stop-type">{place.type}{place.price ? ` · ${place.price}` : ''}</span>
+                        {mode === 'ruleta' && spunIds.length > 0 && !spunIds.includes(stop.placeId) && <span className="plan-stop-swapped">LA IA LA CAMBIÓ PARA QUE ENCAJE</span>}
                         <h3>{place.name}</h3>
                         {stop.why && <p>{stop.why}</p>}
                         {place.tip && (
@@ -227,9 +294,11 @@ export function PlanBuilderPage() {
                         )}
                         <div className="plan-stop-links">
                           <a href={place.mapsUrl} target="_blank" rel="noreferrer">CÓMO LLEGAR <ArrowUpRight size={16} aria-hidden="true" /></a>
-                          <button type="button" onClick={() => void swap(index)} disabled={swappingIndex !== null}>
-                            <Shuffle size={15} aria-hidden="true" /> {isSwapping ? 'BUSCANDO…' : 'CAMBIAR PARADA'}
-                          </button>
+                          {mode === 'preguntas' && (
+                            <button type="button" onClick={() => void swap(index)} disabled={swappingIndex !== null}>
+                              <Shuffle size={15} aria-hidden="true" /> {isSwapping ? 'BUSCANDO…' : 'CAMBIAR PARADA'}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </li>
@@ -238,15 +307,29 @@ export function PlanBuilderPage() {
               </ol>
               {swapError && <p className="plan-builder-error" role="alert">{swapError}</p>}
               {plan.closing && <p className="plan-result-closing">{plan.closing}</p>}
-              <div className="plan-result-actions">
-                <button type="button" className="plan-builder-button" onClick={() => void generate()} disabled={swappingIndex !== null}><RefreshCw size={18} aria-hidden="true" /> OTRO PLAN</button>
-                <button type="button" className="plan-builder-secondary" onClick={() => editStep(0)}><SlidersHorizontal size={18} aria-hidden="true" /> CAMBIAR OPCIONES</button>
-              </div>
+              {mode === 'ruleta' ? (
+                <div className="plan-result-actions">
+                  <button type="button" className="plan-builder-button" onClick={backToRoulette}><Dices size={18} aria-hidden="true" /> VOLVER A GIRAR</button>
+                  <button type="button" className="plan-builder-secondary" onClick={() => void generateFromRoulette()}><RefreshCw size={18} aria-hidden="true" /> OTRO HILO, MISMOS LUGARES</button>
+                </div>
+              ) : (
+                <div className="plan-result-actions">
+                  <button type="button" className="plan-builder-button" onClick={() => void generate()} disabled={swappingIndex !== null}><RefreshCw size={18} aria-hidden="true" /> OTRO PLAN</button>
+                  <button type="button" className="plan-builder-secondary" onClick={() => editStep(0)}><SlidersHorizontal size={18} aria-hidden="true" /> CAMBIAR OPCIONES</button>
+                </div>
+              )}
               <p className="plan-builder-note">La IA ordena el plan; los lugares y las recomendaciones salen de la guía Bruuk. Revisa horarios antes de salir.</p>
             </article>
           )}
 
-          {(status === 'choosing' || status === 'error') && (
+          {(status === 'choosing' || status === 'error') && mode === 'ruleta' && (
+            <>
+              {error && <p className="plan-builder-error plan-roulette-error" role="alert">{error}</p>}
+              <PlanRoulette state={roulette} onChange={setRoulette} onGenerate={() => void generateFromRoulette()} disabled={isLoading} />
+            </>
+          )}
+
+          {(status === 'choosing' || status === 'error') && mode === 'preguntas' && (
             <div className="plan-step">
               <div className="plan-step-top">
                 <span>{isEditing ? 'AJUSTANDO TU PLAN' : `PASO ${stepIndex + 1} DE ${STEPS.length}`}</span>

@@ -114,11 +114,19 @@
     },
     "/guadalajara/arma-tu-plan": {
       "title": "Arma tu plan en Guadalajara — Planes a tu medida | Bruuk",
-      "description": "Elige cuándo sales, con quién y qué se te antoja. Bruuk arma una ruta con cafés, comida, vintage, cultura y miradores reales de Guadalajara.",
+      "description": "Gira la ruleta entre los cafés, comida, vintage, cultura y miradores de la guía Bruuk y deja que la IA encuentre qué los une. O arma tu plan con cinco preguntas.",
       "image": "/ocean-frame.jpg",
       "imageAlt": "Arma tu plan en Guadalajara con Bruuk",
       "type": "website",
-      "lastmod": "2026-10-18"
+      "lastmod": "2026-10-19"
+    },
+    "/guadalajara/eventos": {
+      "title": "Bruuk Eventos en Guadalajara — Próximamente | Bruuk",
+      "description": "Encuentros pequeños y en persona en lugares de la guía Bruuk en Guadalajara. Próximamente.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Bruuk Eventos en Guadalajara",
+      "type": "website",
+      "lastmod": "2026-10-19"
     }
   }
 }

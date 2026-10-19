@@ -1,4 +1,4 @@
-import { ArrowUpRight, Compass, Radio, Sparkles, Store } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, Compass, Dices, Radio, Store } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AsciiDiscoveryBackground } from '../components/AsciiDiscoveryBackground';
 import { CityNav } from '../components/CityNav';
@@ -65,15 +65,28 @@ export default function CityHomePage() {
             </Link>
             <Link to="/guadalajara/arma-tu-plan" className="city-gateway city-gateway-plans">
               <div className="city-gateway-number">04</div>
-              <div className="city-gateway-icon"><Sparkles size={27} strokeWidth={1.8} /></div>
+              <div className="city-gateway-icon"><Dices size={27} strokeWidth={1.8} /></div>
               <div className="city-gateway-copy">
-                <span>A TU MEDIDA · ELIGE Y SAL</span>
+                <span>RULETA · GIRA Y SAL</span>
                 <h3>ARMA TU PLAN</h3>
-                <p>Elige cuándo sales, con quién y qué se te antoja. Te armamos una ruta con lugares de la guía.</p>
+                <p>Gira la ruleta entre todos los lugares de la guía y la IA encuentra qué los une. O contesta cinco preguntas.</p>
               </div>
               <div className="city-gateway-action">
-                <span>5 PREGUNTAS</span>
-                <strong>EMPEZAR <ArrowUpRight size={22} /></strong>
+                <span>TODA LA GUÍA</span>
+                <strong>GIRAR <ArrowUpRight size={22} /></strong>
+              </div>
+            </Link>
+            <Link to="/guadalajara/eventos" className="city-gateway city-gateway-events">
+              <div className="city-gateway-number">05</div>
+              <div className="city-gateway-icon"><CalendarDays size={27} strokeWidth={1.8} /></div>
+              <div className="city-gateway-copy">
+                <span>BRUUK EVENTOS · EN PERSONA</span>
+                <h3>EVENTOS</h3>
+                <p>Encuentros pequeños en lugares de la guía. Estamos preparando el primero.</p>
+              </div>
+              <div className="city-gateway-action">
+                <span>PRÓXIMAMENTE</span>
+                <strong>AVÍSAME <ArrowUpRight size={22} /></strong>
               </div>
             </Link>
           </nav>

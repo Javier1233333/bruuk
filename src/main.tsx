@@ -7,6 +7,8 @@ import { LegacyRackRedirect } from './components/LegacyRedirects'
 import { RouteSeo } from './components/RouteSeo'
 import { ScrollToTop } from './components/ScrollToTop'
 import { InstallAppPrompt } from './components/InstallAppPrompt'
+import { AppTabBar } from './components/AppTabBar'
+import { IS_APP_MODE } from './lib/appMode'
 import { RecommendationLoadingScreen, RecommendationTransitionProvider } from './components/RecommendationTransition'
 
 const App = lazy(() => import('./App.tsx'))
@@ -25,6 +27,7 @@ const CityHomePage = lazy(() => import('./pages/CityHomePage'))
 const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
+const EventsPage = lazy(() => import('./pages/EventsPage'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
@@ -61,7 +64,7 @@ createRoot(document.getElementById('root')!).render(
         <InstallAppPrompt />
         <Suspense fallback={routeFallback}>
           <Routes>
-          <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : <App />} />
+          <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : IS_APP_MODE ? <Navigate to="/guadalajara" replace /> : <App />} />
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
@@ -73,6 +76,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
           <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
           <Route path="/:city/arma-tu-plan" element={<PlanBuilderPage />} />
+          <Route path="/:city/eventos" element={<EventsPage />} />
           <Route path="/rack/lugares" element={<LegacyRackRedirect />} />
           <Route path="/planes" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
@@ -86,6 +90,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/:city" element={<CityHomePage />} />
           </Routes>
         </Suspense>
+        <AppTabBar />
       </RecommendationTransitionProvider>
     </BrowserRouter>
     <Analytics />

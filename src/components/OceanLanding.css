@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100dvh;
+  height: var(--app-dvh);
   overflow: hidden;
   background: #0a0911;
 }
@@ -191,7 +191,7 @@
 
 .tiktok-slide {
   width: 100%;
-  height: calc(100dvh - 80px);
+  height: calc(var(--app-dvh) - 80px);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   display: flex;
@@ -470,7 +470,7 @@
     padding: 6px 8px;
     font-size: 0.65rem;
   }
-  .tiktok-slide { height: calc(100dvh - 70px); }
+  .tiktok-slide { height: calc(var(--app-dvh) - 70px); }
   .filter-btn-rack svg {
     display: none;
   }
@@ -488,7 +488,7 @@
     font-size: 0.52rem;
   }
   .end-slide-card {
-    max-height: calc(100dvh - 158px);
+    max-height: calc(var(--app-dvh) - 158px);
     padding: 1.6rem 1.25rem max(1.6rem, env(safe-area-inset-bottom));
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -501,7 +501,7 @@
     padding-top: 4rem;
   }
 
-  .card-wrapper-centered .spot-card { max-height: calc(100dvh - 174px); }
+  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 174px); }
 }
 
 @media (min-width: 481px) and (max-width: 760px) {

@@ -75,7 +75,44 @@ export type PlanChoices = {
 export const MAX_NOTE_LENGTH = 200;
 
 export type PlanStop = { placeId: string; time: string; why: string };
-export type CustomPlan = { title: string; intro: string; stops: PlanStop[]; closing: string };
+// "thread" sólo viene en los planes de la ruleta: lo que une a las paradas.
+export type CustomPlan = { title: string; intro: string; stops: PlanStop[]; closing: string; thread?: string };
+
+// Ruleta: el azar elige lugares de toda la guía y la IA encuentra el hilo entre ellos.
+export const ROULETTE_MOMENTS: Option<'sorpresa' | 'manana' | 'tarde' | 'noche'>[] = [
+  { value: 'sorpresa', label: 'Sorpréndeme', hint: 'Cualquier hora' },
+  { value: 'manana', label: 'Mañana', hint: 'Café y luz de día' },
+  { value: 'tarde', label: 'Tarde', hint: 'Caminar y buscar' },
+  { value: 'noche', label: 'Noche', hint: 'Cena y tragos' },
+];
+
+export type RouletteMoment = (typeof ROULETTE_MOMENTS)[number]['value'];
+
+// Qué categorías tienen sentido a cada hora; así la ruleta no saca un bar para desayunar.
+export const MOMENT_INTERESTS: Record<RouletteMoment, PlanInterest[]> = {
+  sorpresa: ['cafe', 'comida', 'noche', 'vintage', 'cultura', 'atardecer'],
+  manana: ['cafe', 'comida', 'vintage', 'cultura'],
+  tarde: ['cafe', 'comida', 'vintage', 'cultura', 'atardecer'],
+  noche: ['comida', 'noche', 'atardecer'],
+};
+
+export type RouletteRequest = { placeIds: string[]; locked: string[]; moment: RouletteMoment };
+
+export const parseRouletteRequest = (body: unknown): RouletteRequest | null => {
+  if (!body || typeof body !== 'object') return null;
+  const input = body as Record<string, unknown>;
+  const ids = (value: unknown) => (Array.isArray(value) ? [...new Set(value.filter((id): id is string => typeof id === 'string'))] : []);
+  const placeIds = ids(input.placeIds);
+  const locked = ids(input.locked).filter((id) => placeIds.includes(id));
+  if (
+    !isOneOf(ROULETTE_MOMENTS, input.moment) ||
+    !STOP_OPTIONS.some((count) => count === placeIds.length) ||
+    !placeIds.every((id) => PLAN_PLACES_BY_ID.has(id))
+  ) {
+    return null;
+  }
+  return { placeIds, locked, moment: input.moment };
+};
 
 export const labelFor = <T extends string>(options: Option<T>[], value: T) =>
   options.find((option) => option.value === value)?.label ?? value;

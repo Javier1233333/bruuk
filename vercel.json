@@ -52,6 +52,10 @@
       "destination": "/guadalajara/arma-tu-plan/index.html"
     },
     {
+      "source": "/guadalajara/eventos",
+      "destination": "/guadalajara/eventos/index.html"
+    },
+    {
       "source": "/sube-un-spot",
       "destination": "/sube-un-spot/index.html"
     },

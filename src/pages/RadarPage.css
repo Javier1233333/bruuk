@@ -6,7 +6,7 @@
   --radar-purple: #9a7cf7;
   --radar-acid: #c7ff35;
   --radar-orange: #ff9559;
-  min-height: 100svh;
+  min-height: var(--app-svh);
   overflow: hidden;
   color: var(--radar-text);
   background: var(--radar-bg);
@@ -60,7 +60,7 @@
 .radar-page-nav button:active,
 .radar-page-nav .radar-nav-category:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--radar-purple); }
 
-.radar-infinity-shell { position: relative; height: calc(100svh - 76px); overflow: hidden; background: var(--radar-bg); }
+.radar-infinity-shell { position: relative; height: calc(var(--app-svh) - 76px); overflow: hidden; background: var(--radar-bg); }
 .radar-infinity-shell::before {
   position: absolute;
   z-index: 0;
@@ -281,17 +281,17 @@
   .radar-ascii-background {
     position: fixed;
     top: 70px;
-    height: calc(100dvh - 70px);
+    height: calc(var(--app-dvh) - 70px);
     opacity: .7;
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
     mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
   }
-  .radar-page { height: 100svh; }
+  .radar-page { height: var(--app-svh); }
   .radar-page-nav { height: 70px; gap: 11px; padding-inline: 14px; }
   .radar-page-nav svg { max-width: 82px; }
   .radar-page-nav-title span { display: none; }
   .radar-page-nav button, .radar-page-nav .radar-nav-category { min-height: 40px; padding-inline: .7rem; font-size: .57rem; }
-  .radar-infinity-shell { height: calc(100svh - 70px); }
+  .radar-infinity-shell { height: calc(var(--app-svh) - 70px); }
   .radar-infinity-topline {
     top: 0;
     right: 0;

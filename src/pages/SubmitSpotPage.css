@@ -1,5 +1,5 @@
 /* Mobile first: una pregunta por pantalla y acciones al alcance del pulgar. */
-.submit-spot-page { min-height: 100dvh; display: flex; flex-direction: column; color: #f7f6ff; background: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.submit-spot-page { min-height: var(--app-dvh); display: flex; flex-direction: column; color: #f7f6ff; background: #0b0a12; font-family: 'DM Sans', sans-serif; }
 .submit-spot-page *, .submit-spot-page *::before, .submit-spot-page *::after { box-sizing: border-box; }
 
 .submit-spot-nav { display: grid; grid-template-columns: 1fr auto; min-height: 60px; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,.16); }
@@ -73,7 +73,7 @@
 @media (max-width: 899px) {
   .submit-spot-page.is-in-progress .submit-spot-main { padding-top: 12px; }
   .submit-spot-page.is-in-progress .submit-spot-copy { display: none; }
-  .submit-spot-page.is-in-progress .submit-spot-card { min-height: calc(100dvh - 88px - env(safe-area-inset-bottom)); }
+  .submit-spot-page.is-in-progress .submit-spot-card { min-height: calc(var(--app-dvh) - 88px - env(safe-area-inset-bottom)); }
 }
 
 /* Escritorio: dos columnas, el formulario conserva el mismo flujo por pasos */

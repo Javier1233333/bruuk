@@ -45,9 +45,9 @@
 }
 
 @media (max-width: 600px) {
-  .maz-route-entry { height: 100svh; overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 70px; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; }
+  .maz-route-entry { height: var(--app-svh); overflow-y: auto; overscroll-behavior-y: contain; scroll-padding-top: 70px; scroll-snap-type: y mandatory; scrollbar-width: none; touch-action: pan-y; }
   .maz-route-entry::-webkit-scrollbar { display: none; }
-  .maz-route-entry .maz-route-snap-card { min-height: calc(100svh - 70px); scroll-margin-top: 70px; scroll-snap-align: start; scroll-snap-stop: always; }
+  .maz-route-entry .maz-route-snap-card { min-height: calc(var(--app-svh) - 70px); scroll-margin-top: 70px; scroll-snap-align: start; scroll-snap-stop: always; }
   .maz-route-scroll-guide { top: 70px; right: 0; bottom: auto; left: 0; min-height: 4px; display: block; max-width: none; padding: 0; border: 0; background: rgba(10, 9, 17, .72); backdrop-filter: none; }
   .maz-route-scroll-guide > span,
   .maz-route-scroll-guide > small { display: none; }

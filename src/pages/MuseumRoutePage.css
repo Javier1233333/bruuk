@@ -80,7 +80,7 @@
 .museum-route-hero {
   display: grid;
   width: 100%;
-  min-height: calc(100svh - 76px);
+  min-height: calc(var(--app-svh) - 76px);
   grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
   padding: 0;
 }
@@ -436,7 +436,7 @@
 
 @media (max-width: 820px) {
   .museum-route-page {
-    height: 100svh;
+    height: var(--app-svh);
     min-height: 0;
     overflow: hidden;
   }
@@ -505,7 +505,7 @@
   .museum-route-outro {
     width: 100%;
     height: auto;
-    min-height: calc(100svh - 70px);
+    min-height: calc(var(--app-svh) - 70px);
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }

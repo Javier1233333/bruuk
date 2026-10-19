@@ -39,7 +39,7 @@
 
 .cabanas-entry-hero {
   position: relative;
-  min-height: calc(100svh - 76px);
+  min-height: calc(var(--app-svh) - 76px);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -214,7 +214,7 @@
   .cabanas-entry-nav svg { max-width: 82px; }
   .cabanas-entry-nav > div span { display: none; }
   .cabanas-entry-nav > a:last-child { min-height: 38px; padding-inline: .65rem; font-size: .54rem; }
-  .cabanas-entry-hero { min-height: calc(100svh - 70px); padding: 80px 18px max(42px, env(safe-area-inset-bottom)); }
+  .cabanas-entry-hero { min-height: calc(var(--app-svh) - 70px); padding: 80px 18px max(42px, env(safe-area-inset-bottom)); }
   .cabanas-entry-hero > img { object-position: 53% center; }
   .cabanas-entry-hero-shade { background: linear-gradient(0deg, rgba(10,9,17,.98) 0%, rgba(10,9,17,.65) 68%, rgba(10,9,17,.25) 100%); }
   .cabanas-entry-hero-copy { width: 100%; }

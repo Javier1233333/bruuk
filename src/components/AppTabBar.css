@@ -1,0 +1,59 @@
+/* Alto del menú: las páginas de pantalla completa lo restan con var(--app-dvh)/var(--app-svh). */
+:root { --app-tabbar-h: 0px; --app-dvh: 100dvh; --app-svh: 100svh; }
+html.is-app-mode {
+  --app-tabbar-h: calc(64px + env(safe-area-inset-bottom));
+  --app-dvh: calc(100dvh - var(--app-tabbar-h));
+  --app-svh: calc(100svh - var(--app-tabbar-h));
+}
+html.is-app-mode body { padding-bottom: var(--app-tabbar-h); }
+
+.app-tabbar {
+  position: fixed;
+  z-index: 800;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: stretch;
+  height: var(--app-tabbar-h);
+  padding: 0 6px env(safe-area-inset-bottom);
+  background: #0b0a12;
+  border-top: 1.5px solid rgba(255, 255, 255, .16);
+  font-family: 'Outfit', sans-serif;
+}
+
+.app-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  color: #8f8a9f;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.app-tab span { font-size: .62rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.app-tab.is-active { color: #f7f6ff; }
+.app-tab.is-active svg { color: #b8affe; }
+.app-tab:focus-visible { outline: 2px solid #8b7cf6; outline-offset: -4px; }
+
+.app-tab-add i {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  place-items: center;
+  color: #0b0a12;
+  background: #b8affe;
+  border: 1.5px solid #0b0a12;
+  box-shadow: 4px 4px 0 #8b7cf6;
+}
+.app-tab-add.is-active i { color: #fff; background: #0b0a12; border-color: #b8affe; }
+.app-tab-add:active i { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #8b7cf6; }
+
+@media (min-width: 700px) {
+  .app-tabbar { right: 50%; left: auto; width: 520px; transform: translateX(50%); border-inline: 1.5px solid rgba(255, 255, 255, .16); }
+}

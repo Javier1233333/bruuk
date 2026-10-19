@@ -32,6 +32,10 @@ Sitio público: [bruuk.space](https://bruuk.space)
 
 La web se puede instalar en la pantalla de inicio: `public/manifest.webmanifest`, íconos en `public/icons/` (se regeneran desde `public/favicon.svg` con `npm run icons`) y un service worker (`public/sw.js`) que permite abrirla sin conexión con lo último visto. En Android aparece un botón "Agregar"; en iPhone se muestran los pasos (Compartir → Agregar a inicio), porque Safari no permite instalar desde la página.
 
+Al abrir la web en un teléfono aparece una guía de pantalla completa con los pasos para iPhone y Android (y un aviso si se abrió desde Instagram o TikTok, donde no se puede instalar). Se cierra con "Sitio web" y no vuelve a salir en 30 días; el aviso pequeño de las portadas sigue funcionando igual.
+
+**Modo app.** Sólo cuando Bruuk se abre desde el ícono instalado (`display-mode: standalone`) aparece el menú inferior (`src/components/AppTabBar.tsx`): Inicio, Rack, + Sube un spot, Plan y Radar, y `/` lleva directo a `/guadalajara`. En el navegador la web se ve como siempre. Para probarlo en desarrollo abre cualquier ruta con `?app=1`. Las páginas de pantalla completa usan `var(--app-dvh)` / `var(--app-svh)` en lugar de `100dvh` / `100svh` para no quedar debajo del menú.
+
 ## App móvil
 
 La app de iOS y Android (React Native con Expo) está en [`mobile/`](mobile/README.md) y comparte el catálogo de `src/data` con la web.
@@ -84,7 +88,9 @@ DEEPSEEK_MODEL=
 
 `/guadalajara/arma-tu-plan` hace cinco preguntas (momento, compañía, intereses, ritmo y presupuesto, más una nota libre opcional) y envía las opciones a `api/custom-plan.ts`. DeepSeek sólo elige y ordena paradas del catálogo de Bruuk (`src/data/planBuilder.ts`) y explica por qué encajan con base en ese catálogo; cualquier lugar fuera del catálogo se descarta. El tip de cada parada ("Ve por") no lo escribe la IA: se muestra tal cual desde la guía.
 
-Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
+Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero.
+
+La página abre en modo **Ruleta** (`src/pages/PlanRoulette.tsx`): gira entre todo el catálogo (filtrado por la hora y, si quieres, por categorías), reparte categorías entre las casillas y deja fijar con candado las que te gusten antes de volver a girar. "Darle sentido" envía `mode: 'roulette'` a la misma API: DeepSeek busca el hilo que une las paradas, las ordena y sólo cambia una no fijada si de plano no encaja, usando un catálogo de apoyo; las fijas nunca se cambian. El modo "5 preguntas" sigue disponible en la misma página. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
 
 ### Preparar la hoja de propuestas de ciudad
 
@@ -118,6 +124,8 @@ La hoja de ciudades creará automáticamente una pestaña llamada `Respuestas`. 
 | `/radar/museo-cabanas-cafe-redescubrimiento` | Artículo del Museo Cabañas |
 | `/radar/maz-desayuno-cafe-zapopan` | Recorrido del MAZ y Zapopan Centro |
 | `/guadalajara/ruta-museos` | Selector de museos y espacios culturales |
+| `/guadalajara/arma-tu-plan` | Ruleta de spots y planes a tu medida |
+| `/guadalajara/eventos` | Bruuk Eventos (próximamente) |
 | `/sube-un-spot` | Recomendar un spot de cualquier ciudad |
 | `/lleva-bruuk` | Redirección a `/sube-un-spot` |
 | `/privacidad` | Aviso de privacidad |
