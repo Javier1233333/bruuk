@@ -239,7 +239,7 @@ export function PlanBuilderPage() {
           {mode === 'ruleta' ? (
             <>
               <h1 id="plan-builder-title">GIRA. <em>SAL.</em></h1>
-              <p>La ruleta saca lugares de los {PLAN_PLACES.length} de la guía. Fija los que te gusten, gira el resto y la IA encuentra qué los une.</p>
+              <p>{PLAN_PLACES.length} lugares. Gira, fija los que te laten y sal.</p>
             </>
           ) : (
             <>

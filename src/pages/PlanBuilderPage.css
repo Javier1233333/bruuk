@@ -140,46 +140,56 @@
 .plan-mode-switch button.is-active { color: #fff; background: #0b0a12; }
 .plan-mode-switch button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: -4px; }
 
-.plan-roulette { gap: 0; }
-.plan-roulette-filters { display: grid; gap: 8px; }
-.plan-roulette-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.plan-roulette-row.is-scroll { flex-wrap: nowrap; overflow-x: auto; margin-inline: -18px; padding: 2px 18px; scrollbar-width: none; }
-.plan-roulette-row.is-scroll::-webkit-scrollbar { display: none; }
-.plan-roulette-row button, .plan-roulette-count button { flex: none; min-height: 38px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 800 .74rem 'Outfit', sans-serif; letter-spacing: .04em; cursor: pointer; touch-action: manipulation; }
-.plan-roulette-row.is-scroll button { color: #575463; border-style: dashed; }
-.plan-roulette-row button.is-active, .plan-roulette-count button.is-active { color: #fff; background: #0b0a12; border-style: solid; }
-.plan-roulette-row button:disabled, .plan-roulette-count button:disabled { opacity: .45; cursor: not-allowed; }
-.plan-roulette-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 2px; }
-.plan-roulette-meta > span { color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .14em; }
-.plan-roulette-count { display: flex; gap: 4px; }
-.plan-roulette-count button { width: 38px; padding: 0; font-size: .9rem; font-weight: 900; }
+.plan-roulette { gap: 12px; padding-top: 14px; }
 
-.plan-roulette-slots { display: grid; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
-.plan-slot { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 12px; min-height: 80px; padding: 8px; background: #fff; border: 1.5px solid #0b0a12; transition: box-shadow .15s, transform .15s; }
-.plan-slot.is-locked { background: #e9e6ff; box-shadow: 4px 4px 0 #8b7cf6; }
-.plan-slot.is-empty { border-style: dashed; background: transparent; }
-.plan-slot-media { display: grid; width: 64px; height: 64px; overflow: hidden; place-items: center; color: #fff; background: #0b0a12; }
-.plan-slot-media img { width: 100%; height: 100%; object-fit: cover; }
-.plan-slot-media span { font: 900 1.6rem 'Outfit', sans-serif; text-transform: uppercase; }
-.plan-slot.is-empty .plan-slot-media { color: #6557d8; background: #e9e6ff; }
-.plan-slot-copy { display: grid; gap: 4px; min-width: 0; }
-.plan-slot-copy span { overflow: hidden; color: #6557d8; font: 850 .6rem 'Outfit', sans-serif; letter-spacing: .12em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.plan-slot-copy strong { display: -webkit-box; overflow: hidden; font: 900 1.05rem/1.1 'Outfit', sans-serif; letter-spacing: -.02em; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.plan-slot.is-rolling .plan-slot-media img, .plan-slot.is-rolling .plan-slot-copy { filter: blur(1.5px); opacity: .75; }
-.plan-slot-actions { display: flex; gap: 4px; }
-.plan-slot-actions button { display: grid; width: 40px; height: 40px; place-items: center; color: #0b0a12; background: transparent; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; }
-.plan-slot-actions button[aria-pressed="true"] { color: #fff; background: #0b0a12; }
-.plan-slot-actions button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
-.plan-roulette-hint { margin: 14px 0 0; color: #575463; font-size: .85rem; line-height: 1.45; }
-.plan-roulette .plan-step-actions { margin-top: auto; padding-top: 16px; }
+.plan-roulette-moments { display: grid; grid-template-columns: repeat(4, 1fr); border: 1.5px solid #0b0a12; }
+.plan-roulette-moments button { display: grid; justify-items: center; gap: 4px; min-height: 58px; padding: 8px 2px; color: #575463; background: #fff; border: 0; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-moments button + button { border-left: 1.5px solid #0b0a12; }
+.plan-roulette-moments button.is-active { color: #fff; background: #0b0a12; }
+.plan-roulette-moments button.is-active svg { color: #b8affe; }
+
+.plan-roulette-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.plan-roulette-interests { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.plan-roulette-interests::-webkit-scrollbar { display: none; }
+.plan-roulette-interests button, .plan-roulette-count button { flex: none; display: grid; width: 42px; height: 42px; place-items: center; padding: 0; color: #6557d8; background: transparent; border: 1.5px dashed #6557d8; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-interests button.is-active { color: #fff; background: #6557d8; border-style: solid; }
+.plan-roulette-count { flex: none; display: flex; border: 1.5px solid #0b0a12; }
+.plan-roulette-count button { width: 36px; height: 39px; color: #0b0a12; border: 0; font: 900 .95rem 'Outfit', sans-serif; }
+.plan-roulette-count button.is-active { color: #fff; background: #0b0a12; }
+.plan-roulette button:disabled { cursor: not-allowed; }
+.plan-roulette-interests button:disabled, .plan-roulette-count button:disabled, .plan-roulette-moments button:disabled { opacity: .45; }
+.plan-roulette button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+
+/* Las tarjetas se reparten el alto disponible: la foto manda. */
+.plan-roulette-slots { flex: 1; display: flex; flex-direction: column; gap: 10px; min-height: 0; margin: 0; padding: 0; list-style: none; }
+.plan-slot { position: relative; flex: 1 1 0; min-height: 112px; }
+.plan-slot-face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; overflow: hidden; padding: 14px; color: #fff; text-align: left; background: #0b0a12; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; transition: transform .15s, box-shadow .15s; }
+.plan-slot-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.plan-slot-face::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,10,18,.88), rgba(11,10,18,.1) 62%); }
+.plan-slot-face > :not(img) { position: relative; z-index: 1; }
+.plan-slot-art { position: absolute !important; inset: 0; display: grid; place-items: center; color: #b8affe; background: repeating-linear-gradient(135deg, #17142a 0 14px, #1c1934 14px 28px); }
+.plan-slot-tag { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; max-width: 100%; overflow: hidden; padding: 4px 8px; color: #0b0a12; background: #b8affe; font: 850 .6rem 'Outfit', sans-serif; letter-spacing: .1em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.plan-slot-face strong { display: -webkit-box; overflow: hidden; font: 900 clamp(1.25rem, 6vw, 1.6rem)/1 'Outfit', sans-serif; letter-spacing: -.03em; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.plan-slot-lock { position: absolute !important; top: 10px; right: 10px; display: grid; width: 36px; height: 36px; place-items: center; color: #fff; background: rgba(11,10,18,.55); border: 1.5px solid rgba(255,255,255,.6); }
+.plan-slot.is-locked .plan-slot-face { border: 3px solid #b8affe; box-shadow: 5px 5px 0 #8b7cf6; transform: translate(-2px, -2px); }
+.plan-slot.is-locked .plan-slot-lock { color: #0b0a12; background: #b8affe; border-color: #0b0a12; }
+.plan-slot.is-rolling .plan-slot-face img, .plan-slot.is-rolling .plan-slot-face strong { filter: blur(2px); }
+.plan-slot.is-empty .plan-slot-face { justify-content: center; align-items: center; color: #6557d8; background: #e9e6ff; border: 2px dashed #6557d8; }
+.plan-slot.is-empty .plan-slot-face::after { display: none; }
+.plan-slot.is-empty .plan-slot-face strong { font-size: 2.6rem; }
+.plan-slot-respin { position: absolute; z-index: 2; right: 10px; bottom: 10px; display: grid; width: 40px; height: 40px; place-items: center; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; }
+.plan-slot:has(.plan-slot-respin) .plan-slot-face strong { padding-right: 46px; }
+
+.plan-roulette .plan-step-actions { margin-top: 0; padding-top: 14px; }
 .plan-roulette-respin { flex: none; width: 56px; padding: 0; }
+.plan-roulette-spin { font-size: 1rem; letter-spacing: .16em; }
 .plan-roulette-error { margin: 12px 18px 0; }
 
 .plan-result-thread { display: grid; gap: 4px; margin: 0 0 12px; padding: 12px 14px; color: #fff; background: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; font: 800 1rem/1.35 'Outfit', sans-serif; }
 .plan-result-thread b { color: #b8affe; font-size: .62rem; letter-spacing: .16em; }
 .plan-stop-swapped { justify-self: start; padding: 3px 7px; color: #0b0a12; background: #b8affe; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .12em; }
 
-@media (prefers-reduced-motion: reduce) { .plan-slot { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .plan-slot-face { transition: none; } }
 
 .plan-result-share { width: 100%; margin-top: 22px; }
 
@@ -193,16 +203,6 @@ html.is-app-mode .plan-builder-card { min-height: calc(var(--app-dvh) - 56px - e
 html.is-app-mode .plan-mode-switch { position: sticky; top: calc(56px + env(safe-area-inset-top)); z-index: 10; background: #f7f6ff; }
 html.is-app-mode .plan-mode-switch button { min-height: 52px; }
 
-html.is-app-mode .plan-roulette-row button,
-html.is-app-mode .plan-roulette-count button { min-height: 44px; }
-html.is-app-mode .plan-roulette-count button { width: 44px; }
-html.is-app-mode .plan-roulette-slots { gap: 10px; }
-html.is-app-mode .plan-slot { grid-template-columns: 92px 1fr auto; min-height: 112px; padding: 10px; }
-html.is-app-mode .plan-slot-media { width: 92px; height: 92px; }
-html.is-app-mode .plan-slot-copy strong { font-size: 1.2rem; }
-html.is-app-mode .plan-slot-actions { flex-direction: column; gap: 6px; }
-html.is-app-mode .plan-slot-actions button { width: 44px; height: 44px; }
-html.is-app-mode .plan-slot.is-locked { transform: translate(-2px, -2px); }
 
 html.is-app-mode .plan-step-actions,
 html.is-app-mode .plan-result-actions { position: sticky; bottom: var(--app-tabbar-h); z-index: 10; padding-bottom: 14px; }

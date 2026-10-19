@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dices, Lock, LockOpen, Shuffle, Sparkles } from 'lucide-react';
+import { Dices, Lock, LockOpen, Moon, Shuffle, Sparkles, Sun, Sunrise, type LucideIcon } from 'lucide-react';
 import {
   INTEREST_OPTIONS,
   MOMENT_INTERESTS,
@@ -7,11 +7,11 @@ import {
   PLAN_PLACES_BY_ID,
   ROULETTE_MOMENTS,
   STOP_OPTIONS,
-  labelFor,
   type PlanInterest,
   type PlanPlace,
   type RouletteMoment,
 } from '../data/planBuilder';
+import { INTEREST_ICONS, placeIcon } from '../lib/placeIcons';
 
 export type RouletteSlot = { placeId: string; locked: boolean };
 export type RouletteState = { moment: RouletteMoment; interests: PlanInterest[]; count: number; slots: RouletteSlot[] };
@@ -63,7 +63,7 @@ const pickSlots = (state: RouletteState): RouletteSlot[] => {
   }).filter((slot): slot is RouletteSlot => slot !== null);
 };
 
-const interestLabel = (place: PlanPlace) => labelFor(INTEREST_OPTIONS, place.interest);
+const MOMENT_ICONS: Record<RouletteMoment, LucideIcon> = { sorpresa: Sparkles, manana: Sunrise, tarde: Sun, noche: Moon };
 
 type Props = {
   state: RouletteState;
@@ -139,32 +139,40 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
 
   const lockedCount = state.slots.filter((slot) => slot.locked).length;
 
+  // Pocas palabras: íconos para filtrar, tarjetas con foto y tocar una tarjeta la fija.
   return (
     <div className="plan-step plan-roulette">
-      <div className="plan-roulette-filters">
-        <div className="plan-roulette-row" role="radiogroup" aria-label="¿Cuándo sales?">
-          {ROULETTE_MOMENTS.map((option) => (
-            <button key={option.value} type="button" role="radio" aria-checked={state.moment === option.value} className={state.moment === option.value ? 'is-active' : ''} onClick={() => onChange({ ...state, moment: option.value })} disabled={isSpinning}>
-              {option.label}
+      <div className="plan-roulette-moments" role="radiogroup" aria-label="¿Cuándo sales?">
+        {ROULETTE_MOMENTS.map((option) => {
+          const Icon = MOMENT_ICONS[option.value];
+          const selected = state.moment === option.value;
+          return (
+            <button key={option.value} type="button" role="radio" aria-checked={selected} className={selected ? 'is-active' : ''} onClick={() => onChange({ ...state, moment: option.value })} disabled={isSpinning}>
+              <Icon size={20} strokeWidth={2.2} aria-hidden="true" />
+              <span>{option.value === 'sorpresa' ? 'Lo que sea' : option.label}</span>
             </button>
-          ))}
-        </div>
-        <div className="plan-roulette-row is-scroll" role="group" aria-label="Qué entra en la ruleta">
-          {INTEREST_OPTIONS.filter((option) => MOMENT_INTERESTS[state.moment].includes(option.value)).map((option) => (
-            <button key={option.value} type="button" aria-pressed={state.interests.includes(option.value)} className={state.interests.includes(option.value) ? 'is-active' : ''} onClick={() => toggleInterest(option.value)} disabled={isSpinning}>
-              {option.label}
-            </button>
-          ))}
-        </div>
-        <div className="plan-roulette-meta">
-          <span>{pool.length} LUGARES EN LA RULETA</span>
-          <div className="plan-roulette-count" role="radiogroup" aria-label="Número de paradas">
-            {STOP_OPTIONS.map((value) => (
-              <button key={value} type="button" role="radio" aria-checked={state.count === value} className={state.count === value ? 'is-active' : ''} onClick={() => setCount(value)} disabled={isSpinning || value < lockedCount}>
-                {value}
+          );
+        })}
+      </div>
+
+      <div className="plan-roulette-tools">
+        <div className="plan-roulette-interests" role="group" aria-label="Qué entra en la ruleta">
+          {INTEREST_OPTIONS.filter((option) => MOMENT_INTERESTS[state.moment].includes(option.value)).map((option) => {
+            const Icon = INTEREST_ICONS[option.value];
+            const selected = state.interests.includes(option.value);
+            return (
+              <button key={option.value} type="button" aria-pressed={selected} aria-label={option.label} title={option.label} className={selected ? 'is-active' : ''} onClick={() => toggleInterest(option.value)} disabled={isSpinning}>
+                <Icon size={19} strokeWidth={2.2} aria-hidden="true" />
               </button>
-            ))}
-          </div>
+            );
+          })}
+        </div>
+        <div className="plan-roulette-count" role="radiogroup" aria-label="Número de paradas">
+          {STOP_OPTIONS.map((value) => (
+            <button key={value} type="button" role="radio" aria-checked={state.count === value} aria-label={`${value} paradas`} className={state.count === value ? 'is-active' : ''} onClick={() => setCount(value)} disabled={isSpinning || value < lockedCount}>
+              {value}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -173,47 +181,43 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
           const slot = state.slots[index];
           const place = rolling?.[index] ?? (slot ? PLAN_PLACES_BY_ID.get(slot.placeId) : undefined);
           const isRolling = Boolean(rolling?.[index]);
+          const Icon = place ? placeIcon(place) : Dices;
           return (
             <li key={index} className={`plan-slot ${slot?.locked ? 'is-locked' : ''} ${isRolling ? 'is-rolling' : ''} ${!place ? 'is-empty' : ''}`}>
-              <div className="plan-slot-media" aria-hidden="true">
-                {place?.imageUrl ? <img src={place.imageUrl} alt="" loading="lazy" decoding="async" /> : <span>{place ? place.name.charAt(0) : '?'}</span>}
-              </div>
-              <div className="plan-slot-copy">
-                <span>{place ? `${interestLabel(place)} · ${place.type}` : `PARADA ${index + 1}`}</span>
-                <strong>{place ? place.name : 'Gira la ruleta'}</strong>
-              </div>
-              {slot && !isSpinning && (
-                <div className="plan-slot-actions">
-                  {!slot.locked && (
-                    <button type="button" onClick={() => spin(index)} aria-label={`Volver a girar ${place?.name ?? 'esta parada'}`}><Shuffle size={17} aria-hidden="true" /></button>
-                  )}
-                  <button type="button" aria-pressed={slot.locked} onClick={() => toggleLock(index)} aria-label={slot.locked ? `Soltar ${place?.name}` : `Fijar ${place?.name}`}>
-                    {slot.locked ? <Lock size={17} aria-hidden="true" /> : <LockOpen size={17} aria-hidden="true" />}
-                  </button>
-                </div>
+              <button
+                type="button"
+                className="plan-slot-face"
+                onClick={() => (slot ? toggleLock(index) : spin())}
+                disabled={isSpinning || (!slot && pool.length < state.count)}
+                aria-pressed={slot ? slot.locked : undefined}
+                aria-label={!slot ? 'Girar la ruleta' : slot.locked ? `Soltar ${place?.name}` : `Fijar ${place?.name}`}
+              >
+                {place?.imageUrl ? <img src={place.imageUrl} alt="" loading="lazy" decoding="async" /> : <span className="plan-slot-art"><Icon size={46} strokeWidth={1.6} aria-hidden="true" /></span>}
+                {place && <span className="plan-slot-tag"><Icon size={14} strokeWidth={2.4} aria-hidden="true" />{place.type}</span>}
+                <strong>{place ? place.name : '?'}</strong>
+                {slot && !isSpinning && <span className="plan-slot-lock" aria-hidden="true">{slot.locked ? <Lock size={16} /> : <LockOpen size={16} />}</span>}
+              </button>
+              {slot && !slot.locked && !isSpinning && (
+                <button type="button" className="plan-slot-respin" onClick={() => spin(index)} aria-label={`Volver a girar ${place?.name ?? 'esta parada'}`}><Shuffle size={16} aria-hidden="true" /></button>
               )}
             </li>
           );
         })}
       </ol>
 
-      <p className="plan-roulette-hint">
-        {hasSpun ? 'Fija con el candado lo que te late y vuelve a girar el resto. Luego la IA encuentra qué los une.' : 'La ruleta saca lugares reales de la guía. Tú decides cuáles se quedan.'}
-      </p>
-
       <div className="plan-step-actions">
         {hasSpun ? (
           <>
             <button type="button" className="plan-builder-secondary plan-roulette-respin" onClick={() => spin()} disabled={isSpinning || disabled || lockedCount === state.count} aria-label="Girar otra vez">
-              <Dices size={20} aria-hidden="true" />
+              <Dices size={22} aria-hidden="true" />
             </button>
             <button type="button" className="plan-builder-button" onClick={onGenerate} disabled={isSpinning || disabled}>
-              DARLE SENTIDO <Sparkles size={18} aria-hidden="true" />
+              ARMAR PLAN <Sparkles size={18} aria-hidden="true" />
             </button>
           </>
         ) : (
-          <button type="button" className="plan-builder-button" onClick={() => spin()} disabled={isSpinning || pool.length < state.count}>
-            <Dices size={20} aria-hidden="true" /> GIRAR LA RULETA
+          <button type="button" className="plan-builder-button plan-roulette-spin" onClick={() => spin()} disabled={isSpinning || pool.length < state.count}>
+            <Dices size={22} aria-hidden="true" /> GIRAR
           </button>
         )}
       </div>

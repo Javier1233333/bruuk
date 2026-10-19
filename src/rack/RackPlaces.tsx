@@ -319,6 +319,31 @@ export function RackPlaces() {
     preload.src = nextImage;
   }, [activeIndex, filteredPlaces]);
 
+  // Con mouse, cada gesto de la rueda avanza exactamente una tarjeta. Sin esto, la rueda manda
+  // varios eventos por giro y, entre el snap y el recentrado, el feed saltaba dos lugares.
+  useEffect(() => {
+    const feed = feedRef.current;
+    if (viewMode !== 'feed' || !feed) return;
+
+    let lastWheel = 0;
+    let lockedUntil = 0;
+    const handleWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      event.preventDefault();
+      const now = performance.now();
+      const sinceLast = now - lastWheel;
+      lastWheel = now;
+      // Los eventos seguidos (inercia del trackpad, varios clics de rueda) cuentan como un solo gesto.
+      if (sinceLast < 250 || now < lockedUntil) return;
+      lockedUntil = now + 500;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      feed.scrollBy({ top: Math.sign(event.deltaY) * feed.clientHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+    };
+
+    feed.addEventListener('wheel', handleWheel, { passive: false });
+    return () => feed.removeEventListener('wheel', handleWheel);
+  }, [viewMode]);
+
   useEffect(
     () => () => {
       if (scrollSettleRef.current !== null) {

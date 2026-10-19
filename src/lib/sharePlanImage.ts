@@ -1,7 +1,13 @@
+import { createElement, type ReactElement } from 'react';
+import { flushSync } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import type { LucideIcon } from 'lucide-react';
+import { BruukLogo } from '../components/BruukLogo';
 import { PLAN_PLACES_BY_ID, type CustomPlan } from '../data/planBuilder';
+import { placeIcon } from './placeIcons';
 
 // Imagen vertical (formato historia) para mandar el plan por WhatsApp o Instagram.
-// Sólo lleva "bruuk.space" como texto: nada de links al plan.
+// El link que se manda es sólo el del sitio, nunca uno al plan.
 const WIDTH = 1080;
 const HEIGHT = 1920;
 const PAD = 84;
@@ -10,7 +16,24 @@ const PAPER = '#f7f6ff';
 const PURPLE = '#8b7cf6';
 const LILAC = '#b8affe';
 
-const SHARE_TEXT = 'Mi plan en Bruuk · bruuk.space';
+const SITE_URL = 'https://bruuk.app';
+const SHARE_TEXT = `Mi plan en Bruuk · ${SITE_URL}`;
+
+// Pasa un SVG de React (íconos de lucide, el logo) a imagen para dibujarlo en el canvas.
+const svgImage = (element: ReactElement) => {
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  flushSync(() => root.render(element));
+  const svg = container.innerHTML;
+  root.unmount();
+  return loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+};
+
+const iconImage = (Icon: LucideIcon, color: string) => svgImage(createElement(Icon, { size: 96, color, strokeWidth: 2 }));
+
+// El viewBox del logo mide 375 × 120.
+const LOGO_WIDTH = 300;
+const LOGO_HEIGHT = LOGO_WIDTH * (120 / 375);
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement | null>((resolve) => {
@@ -65,23 +88,29 @@ const drawPlan = async (plan: CustomPlan) => {
     .filter((item): item is { stop: typeof item.stop; place: NonNullable<typeof item.place> } => Boolean(item.place))
     .slice(0, 5);
   const images = await Promise.all(stops.map(({ place }) => (place.imageUrl ? loadImage(place.imageUrl) : Promise.resolve(null))));
+  const icons = await Promise.all(stops.map(({ place }) => iconImage(placeIcon(place), LILAC)));
+  const logo = await svgImage(createElement(BruukLogo, { width: LOGO_WIDTH, height: LOGO_HEIGHT }));
 
   ctx.fillStyle = INK;
   ctx.fillRect(0, 0, WIDTH, HEIGHT);
   ctx.textBaseline = 'top';
 
   // Encabezado
-  let y = PAD + 10;
-  ctx.fillStyle = PAPER;
-  ctx.font = '900 64px Outfit';
-  ctx.fillText('BRUUK', PAD, y);
+  let y = PAD;
+  if (logo) {
+    ctx.drawImage(logo, PAD, y, LOGO_WIDTH, LOGO_HEIGHT);
+  } else {
+    ctx.fillStyle = PAPER;
+    ctx.font = '900 64px Outfit';
+    ctx.fillText('bruuk.', PAD, y + 16);
+  }
   ctx.fillStyle = LILAC;
   ctx.font = '800 30px Outfit';
   const kicker = 'MI PLAN · GDL';
-  ctx.fillText(kicker, WIDTH - PAD - ctx.measureText(kicker).width, y + 22);
+  ctx.fillText(kicker, WIDTH - PAD - ctx.measureText(kicker).width, y + (LOGO_HEIGHT - 30) / 2);
 
   // Título
-  y += 140;
+  y += LOGO_HEIGHT + 70;
   ctx.fillStyle = PAPER;
   ctx.font = '900 104px Outfit';
   for (const line of wrapLines(ctx, plan.title.toUpperCase(), WIDTH - PAD * 2, 3)) {
@@ -117,12 +146,30 @@ const drawPlan = async (plan: CustomPlan) => {
   stops.forEach(({ stop, place }, index) => {
     const top = y + index * (rowHeight + rowGap);
     const image = images[index];
+    const icon = icons[index];
     ctx.fillStyle = '#1c1930';
     ctx.fillRect(PAD, top, thumb, thumb);
-    if (image) drawCover(ctx, image, PAD, top, thumb);
+    if (image) {
+      drawCover(ctx, image, PAD, top, thumb);
+    } else if (icon) {
+      // Sin foto (atardeceres): el ícono grande ocupa el cuadro.
+      const size = thumb * 0.5;
+      ctx.drawImage(icon, PAD + (thumb - size) / 2, top + (thumb - size) / 2, size, size);
+    }
     ctx.strokeStyle = PAPER;
     ctx.lineWidth = 4;
     ctx.strokeRect(PAD, top, thumb, thumb);
+    // Sello de categoría en la esquina de la foto.
+    if (image && icon) {
+      const badge = Math.round(thumb * 0.34);
+      const badgeX = PAD + thumb - badge;
+      const badgeY = top + thumb - badge;
+      ctx.fillStyle = INK;
+      ctx.fillRect(badgeX, badgeY, badge, badge);
+      ctx.strokeRect(badgeX, badgeY, badge, badge);
+      const iconSize = badge * 0.6;
+      ctx.drawImage(icon, badgeX + (badge - iconSize) / 2, badgeY + (badge - iconSize) / 2, iconSize, iconSize);
+    }
 
     const textX = PAD + thumb + 36;
     const textWidth = WIDTH - PAD - textX;
@@ -136,12 +183,12 @@ const drawPlan = async (plan: CustomPlan) => {
     wrapLines(ctx, place.name, textWidth, 2).forEach((line, lineIndex) => ctx.fillText(line, textX, top + 52 + lineIndex * (nameSize + 4)));
   });
 
-  // Pie: sólo el sitio, como texto.
+  // Pie: sólo el sitio.
   ctx.fillStyle = 'rgba(247, 246, 255, .2)';
   ctx.fillRect(PAD, footerTop, WIDTH - PAD * 2, 3);
   ctx.fillStyle = PAPER;
   ctx.font = '900 48px Outfit';
-  ctx.fillText('bruuk.space', PAD, footerTop + 34);
+  ctx.fillText(SITE_URL.replace('https://', ''), PAD, footerTop + 34);
   ctx.fillStyle = '#aaa7ba';
   ctx.font = '800 26px Outfit';
   const motto = 'MENOS PANTALLA · MÁS MUNDO';

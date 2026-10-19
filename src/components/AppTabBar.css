@@ -7,6 +7,10 @@ html.is-app-mode {
   --app-svh: calc(100svh - var(--app-tabbar-h));
 }
 html.is-app-mode body { padding-bottom: var(--app-tabbar-h); }
+/* Como app nativa: sin barras de scroll (se sigue deslizando igual) ni rebote al final. */
+html.is-app-mode, html.is-app-mode body { overscroll-behavior: none; }
+html.is-app-mode, html.is-app-mode * { scrollbar-width: none; }
+html.is-app-mode::-webkit-scrollbar, html.is-app-mode *::-webkit-scrollbar { display: none; }
 .app-route-fallback { min-height: var(--app-dvh); background: #0b0a12; }
 
 .app-tabbar {
