@@ -28,6 +28,10 @@ Sitio público: [bruuk.space](https://bruuk.space)
 - Vercel Functions
 - Vercel Analytics
 
+## App móvil
+
+La app de iOS y Android (React Native con Expo) está en [`mobile/`](mobile/README.md) y comparte el catálogo de `src/data` con la web.
+
 ## Desarrollo local
 
 Requisitos:
