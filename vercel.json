@@ -1,6 +1,11 @@
 {
   "installCommand": "npm install",
   "buildCommand": "npm run build",
+  "functions": {
+    "api/custom-plan.ts": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -43,6 +48,10 @@
       "destination": "/privacidad/index.html"
     },
     {
+      "source": "/guadalajara/arma-tu-plan",
+      "destination": "/guadalajara/arma-tu-plan/index.html"
+    },
+    {
       "source": "/sube-un-spot",
       "destination": "/sube-un-spot/index.html"
     },
@@ -52,6 +61,24 @@
     }
   ],
   "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [

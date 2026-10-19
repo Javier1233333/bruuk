@@ -28,6 +28,14 @@ Sitio público: [bruuk.space](https://bruuk.space)
 - Vercel Functions
 - Vercel Analytics
 
+## Agregar a inicio (PWA)
+
+La web se puede instalar en la pantalla de inicio: `public/manifest.webmanifest`, íconos en `public/icons/` (se regeneran desde `public/favicon.svg` con `npm run icons`) y un service worker (`public/sw.js`) que permite abrirla sin conexión con lo último visto. En Android aparece un botón "Agregar"; en iPhone se muestran los pasos (Compartir → Agregar a inicio), porque Safari no permite instalar desde la página.
+
+## App móvil
+
+La app de iOS y Android (React Native con Expo) está en [`mobile/`](mobile/README.md) y comparte el catálogo de `src/data` con la web.
+
 ## Desarrollo local
 
 Requisitos:
@@ -65,7 +73,18 @@ CITY_PROPOSALS_SECRET=
 # Bot de Telegram que recibe los spots recomendados
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_SPOTS_CHAT_ID=
+
+# Generador de planes personalizados (/guadalajara/arma-tu-plan)
+DEEPSEEK_API_KEY=
+# Opcional, por defecto deepseek-chat
+DEEPSEEK_MODEL=
 ```
+
+### Arma tu plan
+
+`/guadalajara/arma-tu-plan` hace cinco preguntas (momento, compañía, intereses, ritmo y presupuesto, más una nota libre opcional) y envía las opciones a `api/custom-plan.ts`. DeepSeek sólo elige y ordena paradas del catálogo de Bruuk (`src/data/planBuilder.ts`) y explica por qué encajan con base en ese catálogo; cualquier lugar fuera del catálogo se descarta. El tip de cada parada ("Ve por") no lo escribe la IA: se muestra tal cual desde la guía.
+
+Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
 
 ### Preparar la hoja de propuestas de ciudad
 

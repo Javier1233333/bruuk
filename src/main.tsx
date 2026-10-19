@@ -6,6 +6,7 @@ import './index.css'
 import { LegacyRackRedirect } from './components/LegacyRedirects'
 import { RouteSeo } from './components/RouteSeo'
 import { ScrollToTop } from './components/ScrollToTop'
+import { InstallAppPrompt } from './components/InstallAppPrompt'
 import { RecommendationLoadingScreen, RecommendationTransitionProvider } from './components/RecommendationTransition'
 
 const App = lazy(() => import('./App.tsx'))
@@ -23,6 +24,7 @@ const RackPlaces = lazy(() =>
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
 const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
+const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
@@ -43,12 +45,20 @@ const routeFallback = (
   <RecommendationLoadingScreen />
 )
 
+// Necesario para que el navegador ofrezca "Agregar a inicio" y para abrir sin conexión.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((error) => console.error('Service worker:', error))
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <RecommendationTransitionProvider>
         <RouteSeo />
         <ScrollToTop />
+        <InstallAppPrompt />
         <Suspense fallback={routeFallback}>
           <Routes>
           <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : <App />} />
@@ -62,6 +72,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
           <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
           <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
+          <Route path="/:city/arma-tu-plan" element={<PlanBuilderPage />} />
           <Route path="/rack/lugares" element={<LegacyRackRedirect />} />
           <Route path="/planes" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/planes/:slug" element={<Navigate to="/guadalajara" replace />} />

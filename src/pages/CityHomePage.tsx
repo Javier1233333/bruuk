@@ -1,4 +1,4 @@
-import { ArrowUpRight, Compass, Radio, Store } from 'lucide-react';
+import { ArrowUpRight, Compass, Radio, Sparkles, Store } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AsciiDiscoveryBackground } from '../components/AsciiDiscoveryBackground';
 import { CityNav } from '../components/CityNav';
@@ -61,6 +61,19 @@ export default function CityHomePage() {
               <div className="city-gateway-action">
                 <span>3 PLANES</span>
                 <strong>EXPLORAR <ArrowUpRight size={22} /></strong>
+              </div>
+            </Link>
+            <Link to="/guadalajara/arma-tu-plan" className="city-gateway city-gateway-plans">
+              <div className="city-gateway-number">04</div>
+              <div className="city-gateway-icon"><Sparkles size={27} strokeWidth={1.8} /></div>
+              <div className="city-gateway-copy">
+                <span>A TU MEDIDA · ELIGE Y SAL</span>
+                <h3>ARMA TU PLAN</h3>
+                <p>Elige cuándo sales, con quién y qué se te antoja. Te armamos una ruta con lugares de la guía.</p>
+              </div>
+              <div className="city-gateway-action">
+                <span>5 PREGUNTAS</span>
+                <strong>EMPEZAR <ArrowUpRight size={22} /></strong>
               </div>
             </Link>
           </nav>

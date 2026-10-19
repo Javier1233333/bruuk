@@ -2032,7 +2032,7 @@
 .landing-spot-body h3 { margin: 0; color: #0b0a12; font: 900 1.2rem/1.05 'Outfit', sans-serif; text-transform: uppercase; letter-spacing: -.02em; }
 .landing-spot-body p { margin: 4px 0 0; color: #222; font-size: .9rem; font-weight: 600; line-height: 1.4; }
 .landing-spot-body b { display: block; margin-bottom: 2px; color: #6557d8; font: 800 .6rem 'Outfit', sans-serif; letter-spacing: .15em; }
-.landing-categories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.landing-categories { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
 .landing-categories a { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; padding: 18px 20px; background: #0b0a12; color: #f7f6ff; text-decoration: none; border: 2px solid #0b0a12; transition: background .15s ease; }
 .landing-categories a:hover, .landing-categories a:focus-visible { background: #6557d8; }
 .landing-categories strong { font: 900 1.05rem 'Outfit', sans-serif; letter-spacing: -.01em; }

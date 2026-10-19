@@ -33,6 +33,7 @@ const CATEGORY_LINKS = [
   { to: '/guadalajara/spots', label: 'COMER Y TOMAR', hint: 'Cafés, comida y noche' },
   { to: '/guadalajara/rack', label: 'VINTAGE Y TIANGUIS', hint: 'Ropa, objetos y mercados' },
   { to: '/guadalajara/senales', label: 'PLANES Y RUTAS', hint: 'Museos, rutas y eventos' },
+  { to: '/guadalajara/arma-tu-plan', label: 'ARMA TU PLAN', hint: 'Cinco preguntas, una ruta a tu medida' },
 ];
 
 function App() {
