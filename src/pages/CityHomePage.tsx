@@ -2,16 +2,17 @@ import { ArrowUpRight, CalendarDays, Compass, Dices, Radio, Store } from 'lucide
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AsciiDiscoveryBackground } from '../components/AsciiDiscoveryBackground';
 import { CityNav } from '../components/CityNav';
-import spotsData from '../data/spots.json';
+import { useSpots } from '../lib/useSpots';
 import { IS_APP_MODE } from '../lib/appMode';
 import './CityHomePage.css';
 
 export default function CityHomePage() {
   const { city } = useParams();
+  const allSpots = useSpots();
   if (city !== 'guadalajara') return <Navigate to="/guadalajara" replace />;
   // En el modo app, Inicio es Comer y tomar.
   if (IS_APP_MODE) return <Navigate to="/guadalajara/spots" replace />;
-  const spotCount = (spotsData as Array<{ city: string }>).filter((spot) => spot.city === 'guadalajara').length;
+  const spotCount = (allSpots as Array<{ city: string }>).filter((spot) => spot.city === 'guadalajara').length;
   const rackCount = 46;
 
   return (

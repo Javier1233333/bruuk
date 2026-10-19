@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,5 +11,23 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
+if (!firebaseConfig.apiKey) {
+  console.warn('[BRUUK] Configura las variables VITE_FIREBASE_* en tu .env');
+}
+
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+export const auth = getAuth(app);
+auth.languageCode = 'es';
+export const googleProvider = new GoogleAuthProvider();
+
+// Firestore y Storage solo se usan en /admin/spots: se importan ahí
+// para que no entren al bundle principal.
+
+// ID token para las APIs (Authorization: Bearer <token>)
+export async function getIdToken(forceRefresh = false): Promise<string | null> {
+  try {
+    return (await auth.currentUser?.getIdToken(forceRefresh)) ?? null;
+  } catch {
+    return null;
+  }
+}

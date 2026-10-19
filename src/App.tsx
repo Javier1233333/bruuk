@@ -5,7 +5,7 @@ import { PrivacyModal } from './components/PrivacyModal';
 import { UsagePolicyModal } from './components/UsagePolicyModal';
 import { BruukLogo } from './components/BruukLogo';
 import { useRecommendationTransition } from './components/RecommendationTransition';
-import spotsData from './data/spots.json';
+import { useSpots } from './lib/useSpots';
 import './App.css';
 
 const CAROUSEL_IMAGES = [
@@ -23,11 +23,7 @@ type FeaturedSpot = {
   city: string;
 };
 
-const ALL_SPOTS = spotsData as FeaturedSpot[];
-const GDL_SPOT_COUNT = ALL_SPOTS.filter((spot) => spot.city === 'guadalajara').length;
-const FEATURED_SPOTS = ['spot_003', 'spot_018', 'spot_105', 'spot_131']
-  .map((id) => ALL_SPOTS.find((spot) => spot.id === id))
-  .filter((spot): spot is FeaturedSpot => Boolean(spot));
+const FEATURED_IDS = ['spot_003', 'spot_018', 'spot_105', 'spot_131'];
 
 const CATEGORY_LINKS = [
   { to: '/guadalajara/spots', label: 'COMER Y TOMAR', hint: 'Cafés, comida y noche' },
@@ -37,6 +33,11 @@ const CATEGORY_LINKS = [
 ];
 
 function App() {
+  const allSpots = useSpots() as FeaturedSpot[];
+  const GDL_SPOT_COUNT = allSpots.filter((spot) => spot.city === 'guadalajara').length;
+  const FEATURED_SPOTS = FEATURED_IDS
+    .map((id) => allSpots.find((spot) => spot.id === id))
+    .filter((spot): spot is FeaturedSpot => Boolean(spot));
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isUsagePolicyOpen, setIsUsagePolicyOpen] = useState(false);

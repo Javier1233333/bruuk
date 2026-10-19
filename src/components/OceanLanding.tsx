@@ -10,7 +10,7 @@ import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import { RadarPromo } from './RadarPromo';
 import { RegistrationModal } from './RegistrationModal';
-import spotsData from '../data/spots.json';
+import { useSpots } from '../lib/useSpots';
 import './OceanLanding.css';
 
 type Spot = {
@@ -43,14 +43,15 @@ export function OceanLanding() {
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
   const [isRadarOpen, setIsRadarOpen] = useState(false);
+  const allSpots = useSpots();
   const spots = useMemo(
     () =>
       shuffleArray(
-        (spotsData as Spot[]).filter(
+        (allSpots as Spot[]).filter(
           (spot) => spot.city === activeCity,
         ),
       ),
-    [activeCity],
+    [allSpots, activeCity],
   );
   const containerRef = useRef<HTMLDivElement>(null);
 

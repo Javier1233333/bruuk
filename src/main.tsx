@@ -25,6 +25,10 @@ const RackPlaces = lazy(() =>
   })),
 )
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
+const AuthLayout = lazy(() => import('./components/AuthLayout'))
+const LoginPage = lazy(() => import('./pages/LoginPage').then((module) => ({ default: module.LoginPage })))
+const AuthActionPage = lazy(() => import('./pages/AuthActionPage').then((module) => ({ default: module.AuthActionPage })))
+const SpotsAdminPage = lazy(() => import('./admin/SpotsAdminPage').then((module) => ({ default: module.SpotsAdminPage })))
 const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
@@ -67,6 +71,11 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/action" element={<AuthActionPage />} />
+            <Route path="/admin/spots" element={<SpotsAdminPage />} />
+          </Route>
           <Route path="/sube-un-spot" element={<SubmitSpotPage />} />
           <Route path="/lleva-bruuk" element={<Navigate to="/sube-un-spot" replace />} />
           <Route path="/radar" element={<Navigate to="/guadalajara/senales" replace />} />
