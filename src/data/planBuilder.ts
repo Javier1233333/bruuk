@@ -14,6 +14,8 @@ export type PlanPlace = {
   interest: PlanInterest;
   type: string;
   description: string;
+  // Texto escrito por Bruuk; se muestra tal cual como tip, nunca lo genera la IA.
+  tip?: string;
   price?: string;
   imageUrl?: string;
   mapsUrl: string;
@@ -72,9 +74,7 @@ export type PlanChoices = {
 
 export const MAX_NOTE_LENGTH = 200;
 
-// El tip sólo existe si salió de una fuente web encontrada en la búsqueda.
-export type PlanSource = { url: string; title: string };
-export type PlanStop = { placeId: string; time: string; why: string; tip?: string; source?: PlanSource };
+export type PlanStop = { placeId: string; time: string; why: string };
 export type CustomPlan = { title: string; intro: string; stops: PlanStop[]; closing: string };
 
 export const labelFor = <T extends string>(options: Option<T>[], value: T) =>
@@ -107,7 +107,7 @@ export const parsePlanChoices = (body: unknown): PlanChoices | null => {
 };
 
 type Spot = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string; mapsLink: string; city: string };
-type Sunset = { id: string; name: string; type: string; description: string; mapsLink: string };
+type Sunset = { id: string; name: string; type: string; description: string; highlight?: string; mapsLink: string };
 type RackPlace = { name: string; category: string; description: string; google_maps_url: string };
 
 const NIGHT_TYPES = /bar|club|discoteca|coctel|cervecer|jazz|vinos/i;
@@ -134,7 +134,8 @@ export const PLAN_PLACES: PlanPlace[] = [
       name: spot.name,
       interest: spotInterest(spot),
       type: spot.type,
-      description: spot.highlight ? `${spot.description} Ve por: ${spot.highlight}.` : spot.description,
+      description: spot.description,
+      tip: spot.highlight,
       price: spot.price,
       imageUrl: spot.imageUrl?.endsWith('.webp') ? spot.imageUrl : undefined,
       mapsUrl: spot.mapsLink,
@@ -147,6 +148,7 @@ export const PLAN_PLACES: PlanPlace[] = [
       interest: (place.category === 'Cultura' ? 'cultura' : 'vintage') as PlanInterest,
       type: place.category === 'Rack recomienda' ? 'Tienda vintage' : place.category,
       description: place.description,
+      tip: place.description,
       imageUrl: SPOT_IMAGES[place.name],
       mapsUrl: SPOT_MAP_LINKS[place.name] ?? place.google_maps_url,
     })),
@@ -156,6 +158,7 @@ export const PLAN_PLACES: PlanPlace[] = [
     interest: 'atardecer' as PlanInterest,
     type: sunset.type,
     description: sunset.description,
+    tip: sunset.highlight,
     mapsUrl: sunset.mapsLink,
   })),
 ];

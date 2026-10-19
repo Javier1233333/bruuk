@@ -89,7 +89,7 @@
 .plan-stop-body p { margin: 0; color: #36333f; font-size: .92rem; line-height: 1.5; }
 .plan-stop-tip { display: grid; gap: 4px; padding: 10px 12px; background: #e9e6ff; }
 .plan-stop-tip b { margin-right: 8px; color: #6557d8; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .14em; }
-.plan-stop-tip a { display: inline-flex; justify-self: start; align-items: center; gap: 4px; color: #575463; font-size: .74rem; overflow-wrap: anywhere; }
+.plan-stop-tip span { color: #575463; font-size: .72rem; }
 .plan-stop-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; }
 .plan-stop-links a, .plan-stop-links button { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; color: #0b0a12; background: none; border: 0; font: 900 .7rem 'Outfit', sans-serif; letter-spacing: .12em; cursor: pointer; }
 .plan-stop-links button { color: #6557d8; }

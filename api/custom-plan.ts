@@ -16,11 +16,7 @@ import {
 } from '../src/data/planBuilder.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
-const TAVILY_URL = 'https://api.tavily.com/search';
 const MAX_PLACES_PER_INTEREST = 30;
-const RESULTS_PER_PLACE = 4;
-
-type WebResult = { url: string; title: string; content: string };
 
 const clean = (value: unknown, maxLength: number) =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, maxLength) : '';
@@ -66,83 +62,13 @@ const askDeepSeek = async (system: string, user: string, maxTokens: number, temp
   }
 };
 
-// Búsqueda web real (Tavily). Sin key, no hay tips: preferimos no mostrar nada a inventarlo.
-const searchPlace = async (place: PlanPlace): Promise<WebResult[]> => {
-  const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) return [];
-  try {
-    const response = await fetch(TAVILY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        query: `${place.name} ${place.type} Guadalajara Jalisco qué pedir horario reseñas`,
-        search_depth: 'basic',
-        max_results: RESULTS_PER_PLACE,
-        include_answer: false,
-      }),
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!response.ok) {
-      console.error('Tavily error:', response.status, await response.text());
-      return [];
-    }
-    const data = await response.json();
-    return (Array.isArray(data?.results) ? data.results : [])
-      .map((result: Record<string, unknown>) => ({ url: clean(result.url, 500), title: clean(result.title, 160), content: clean(result.content, 700) }))
-      .filter((result: WebResult) => /^https?:\/\//.test(result.url) && result.content);
-  } catch (error) {
-    console.error('Tavily search failed:', error);
-    return [];
-  }
-};
-
-const TIPS_PROMPT = [
-  'Escribes consejos prácticos para salir en Guadalajara usando SÓLO los fragmentos web que te doy.',
-  'Reglas estrictas:',
-  '- Cada consejo debe estar respaldado por un fragmento concreto de ese mismo lugar. No agregues nada que el fragmento no diga: ni platillos, ni precios, ni horarios, ni ambiente.',
-  '- Si los fragmentos no hablan claramente de ese lugar o no tienen nada útil, deja "tip" vacío. Es mejor vacío que inventado.',
-  '- "sourceUrl" debe ser copiada exactamente de la URL del fragmento que usaste.',
-  '- Español de México, directo, máximo 2 frases, sin emojis.',
-  'Responde sólo JSON: {"tips": [{"placeId": "...", "tip": "...", "sourceUrl": "..."}]}',
-].join('\n');
-
-// Un tip sobrevive sólo si cita una URL que de verdad salió de la búsqueda de ese lugar.
-const addSourcedTips = async (stops: PlanStop[]): Promise<PlanStop[]> => {
-  const searches = await Promise.all(stops.map((stop) => searchPlace(PLAN_PLACES_BY_ID.get(stop.placeId)!)));
-  if (searches.every((results) => results.length === 0)) return stops;
-
-  const input = stops
-    .map((stop, index) => {
-      const place = PLAN_PLACES_BY_ID.get(stop.placeId)!;
-      const fragments = searches[index].map((result, n) => `  [${n + 1}] ${result.url}\n      ${result.title}: ${result.content}`).join('\n');
-      return `placeId: ${place.id}\nLugar: ${place.name} (${place.type})\nFragmentos:\n${fragments || '  (sin resultados)'}`;
-    })
-    .join('\n\n');
-
-  let parsed: Record<string, unknown> | null = null;
-  try {
-    parsed = await askDeepSeek(TIPS_PROMPT, input, 900, 0.2);
-  } catch {
-    return stops;
-  }
-  const tips = Array.isArray(parsed?.tips) ? (parsed.tips as Record<string, unknown>[]) : [];
-
-  return stops.map((stop, index) => {
-    const found = tips.find((tip) => tip?.placeId === stop.placeId);
-    const tip = clean(found?.tip, 300);
-    const source = searches[index].find((result) => result.url === clean(found?.sourceUrl, 500));
-    if (!tip || !source) return stop;
-    return { ...stop, tip, source: { url: source.url, title: source.title || new URL(source.url).hostname } };
-  });
-};
-
 const catalogFor = (choices: PlanChoices, exclude: Set<string> = new Set()) =>
   choices.interests.flatMap((interest) =>
     shuffle(PLAN_PLACES.filter((place) => place.interest === interest && !exclude.has(place.id))).slice(0, MAX_PLACES_PER_INTEREST),
   );
 
 const catalogText = (places: PlanPlace[]) =>
-  places.map((place) => [place.id, place.name, place.type, place.price ?? 's/p', place.description].join(' | ')).join('\n');
+  places.map((place) => [place.id, place.name, place.type, place.price ?? 's/p', place.tip && place.tip !== place.description ? `${place.description} Ve por: ${place.tip}.` : place.description].join(' | ')).join('\n');
 
 const choicesText = (choices: PlanChoices) =>
   [
@@ -159,6 +85,7 @@ const choicesText = (choices: PlanChoices) =>
 const PLAN_PROMPT = [
   'Eres el editor de Bruuk, una guía hecha por personas para salir en Guadalajara. Lema: menos pantalla, más mundo.',
   'Armas planes usando EXCLUSIVAMENTE lugares del catálogo. Nunca inventes lugares, direcciones, precios, platillos ni horarios que no estén en la descripción del catálogo.',
+  'Todo lo que digas de un lugar debe venir de su descripción en el catálogo. Si el catálogo no lo dice, no lo digas.',
   'Escribe en español de México, cercano y directo. Nada de frases de folleto ni emojis.',
   'Ordena las paradas en una secuencia lógica para el momento del día (el atardecer cae alrededor de las 19:00; los bares van de noche).',
   'Si el catálogo menciona días u horarios (un tianguis que sólo abre sábado), respétalos y dilo en "why".',
@@ -196,7 +123,7 @@ const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> =>
   return {
     title: clean(raw.title, 80) || 'Tu plan en Guadalajara',
     intro: clean(raw.intro, 400),
-    stops: await addSourcedTips(stops),
+    stops,
     closing: clean(raw.closing, 300),
   };
 };
@@ -221,8 +148,7 @@ const swapStop = async (choices: PlanChoices, planPlaceIds: string[], swapIndex:
   const raw = await askDeepSeek(PLAN_PROMPT, user, 500, 1.1);
   const stop = toStop(Array.isArray(raw?.stops) ? raw.stops[0] : null);
   if (!PLAN_PLACES_BY_ID.has(stop.placeId) || exclude.has(stop.placeId)) return null;
-  const [withTip] = await addSourcedTips([stop]);
-  return withTip;
+  return stop;
 };
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {

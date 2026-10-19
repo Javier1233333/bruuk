@@ -70,19 +70,13 @@ TELEGRAM_SPOTS_CHAT_ID=
 DEEPSEEK_API_KEY=
 # Opcional, por defecto deepseek-chat
 DEEPSEEK_MODEL=
-# Búsqueda web para los tips con fuente (tavily.com). Sin ella, el plan sale sin tips.
-TAVILY_API_KEY=
 ```
 
 ### Arma tu plan
 
-`/guadalajara/arma-tu-plan` hace cinco preguntas (momento, compañía, intereses, ritmo y presupuesto, más una nota libre opcional) y envía las opciones a `api/custom-plan.ts`:
+`/guadalajara/arma-tu-plan` hace cinco preguntas (momento, compañía, intereses, ritmo y presupuesto, más una nota libre opcional) y envía las opciones a `api/custom-plan.ts`. DeepSeek sólo elige y ordena paradas del catálogo de Bruuk (`src/data/planBuilder.ts`) y explica por qué encajan con base en ese catálogo; cualquier lugar fuera del catálogo se descarta. El tip de cada parada ("Ve por") no lo escribe la IA: se muestra tal cual desde la guía.
 
-1. DeepSeek elige las paradas sólo entre los lugares del catálogo de Bruuk (`src/data/planBuilder.ts`); cualquier lugar fuera del catálogo se descarta.
-2. Para cada parada se busca el lugar en internet con Tavily.
-3. DeepSeek escribe el tip usando sólo esos resultados y cita la URL. Si la URL no salió de la búsqueda, el tip se descarta: no hay tips sin fuente.
-
-Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero. Configura `DEEPSEEK_API_KEY` y `TAVILY_API_KEY` en Vercel para activarlo.
+Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
 
 ### Preparar la hoja de propuestas de ciudad
 

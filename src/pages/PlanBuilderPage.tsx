@@ -42,14 +42,6 @@ const OPTIONS_FOR_STEP = {
 type SingleStep = keyof typeof OPTIONS_FOR_STEP;
 type Draft = Partial<Omit<PlanChoices, 'interests' | 'note'>> & { interests: PlanInterest[]; note: string };
 
-const hostname = (url: string) => {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '');
-  } catch {
-    return url;
-  }
-};
-
 const requestPlan = async (body: object) => {
   const response = await fetch('/api/custom-plan', {
     method: 'POST',
@@ -180,7 +172,7 @@ export function PlanBuilderPage() {
         <section className="plan-builder-copy" aria-labelledby="plan-builder-title">
           <span className="plan-builder-kicker">/ PLANES A TU MEDIDA</span>
           <h1 id="plan-builder-title">ELIGE. <em>SAL.</em></h1>
-          <p>Cinco preguntas y armamos una ruta con lugares reales de la guía. Los tips salen de fuentes en internet y siempre te decimos cuál.</p>
+          <p>Cinco preguntas y armamos una ruta con lugares reales de la guía. Nada de rankings pagados ni lugares inventados.</p>
           {summary.length > 0 && (
             <ul className="plan-builder-summary" aria-label="Tus elecciones">
               {summary.map((item) => <li key={item.label}>{item.label}</li>)}
@@ -194,7 +186,7 @@ export function PlanBuilderPage() {
               <Sparkles size={34} aria-hidden="true" />
               <span>/ ARMANDO TU PLAN</span>
               <h2>BUSCANDO EN<br />LA GUÍA…</h2>
-              <p>Elegimos los lugares de Bruuk que encajan con lo que pediste y buscamos en internet datos reales de cada uno. Puede tardar unos segundos.</p>
+              <p>Elegimos entre los lugares de Bruuk los que mejor encajan con lo que pediste. Puede tardar unos segundos.</p>
               <div className="plan-builder-loading-bar" aria-hidden="true"><i /></div>
             </div>
           )}
@@ -227,10 +219,10 @@ export function PlanBuilderPage() {
                         <span className="plan-stop-type">{place.type}{place.price ? ` · ${place.price}` : ''}</span>
                         <h3>{place.name}</h3>
                         {stop.why && <p>{stop.why}</p>}
-                        {stop.tip && stop.source && (
+                        {place.tip && (
                           <div className="plan-stop-tip">
-                            <p><b>TIP</b>{stop.tip}</p>
-                            <a href={stop.source.url} target="_blank" rel="noreferrer">Fuente: {hostname(stop.source.url)} <ArrowUpRight size={12} aria-hidden="true" /></a>
+                            <p><b>VE POR</b>{place.tip}</p>
+                            <span>Recomendación de la guía Bruuk</span>
                           </div>
                         )}
                         <div className="plan-stop-links">
@@ -250,7 +242,7 @@ export function PlanBuilderPage() {
                 <button type="button" className="plan-builder-button" onClick={() => void generate()} disabled={swappingIndex !== null}><RefreshCw size={18} aria-hidden="true" /> OTRO PLAN</button>
                 <button type="button" className="plan-builder-secondary" onClick={() => editStep(0)}><SlidersHorizontal size={18} aria-hidden="true" /> CAMBIAR OPCIONES</button>
               </div>
-              <p className="plan-builder-note">Las paradas salen de la selección de Bruuk. Los tips se escriben con IA sólo a partir de la fuente enlazada; revisa horarios antes de salir.</p>
+              <p className="plan-builder-note">La IA ordena el plan; los lugares y las recomendaciones salen de la guía Bruuk. Revisa horarios antes de salir.</p>
             </article>
           )}
 
