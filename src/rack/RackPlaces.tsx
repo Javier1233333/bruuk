@@ -18,7 +18,7 @@ import {
   Store,
   X,
 } from 'lucide-react';
-import { Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import placesData from '../../lugares-mapa-gdl.json';
@@ -233,6 +233,7 @@ const VIRTUAL_FEED_OFFSETS = [-2, -1, 0, 1, 2] as const;
 export function RackPlaces() {
   const { city } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialFilter = filterFromSearchParams(searchParams);
   const feedRef = useRef<HTMLDivElement | null>(null);
   const scrollSettleRef = useRef<number | null>(null);
@@ -634,11 +635,14 @@ export function RackPlaces() {
           <BruukSelect
             ariaLabel="Filtrar lugares por categoría"
             value={activeFilter}
-            onChange={(filter) => changeFilter(filter as PlaceFilter)}
-            options={(Object.keys(FILTER_LABELS) as PlaceFilter[]).map((filter) => ({
-              value: filter,
-              label: FILTER_LABELS[filter],
-            }))}
+            onChange={(filter) => (filter === 'atardeceres' ? navigate('/guadalajara/atardeceres') : changeFilter(filter as PlaceFilter))}
+            options={[
+              ...(Object.keys(FILTER_LABELS) as PlaceFilter[]).map((filter) => ({
+                value: filter,
+                label: FILTER_LABELS[filter],
+              })),
+              { value: 'atardeceres', label: 'Atardeceres' },
+            ]}
           />
         </div>
         <div className="rack-places-filters" role="group" aria-label="Filtrar lugares">
@@ -653,6 +657,7 @@ export function RackPlaces() {
               {FILTER_LABELS[filter]}
             </button>
           ))}
+          <Link to="/guadalajara/atardeceres" className="rack-places-filter-link">Atardeceres</Link>
         </div>
 
         <div

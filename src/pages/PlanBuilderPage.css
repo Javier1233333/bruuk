@@ -180,3 +180,38 @@
 .plan-stop-swapped { justify-self: start; padding: 3px 7px; color: #0b0a12; background: #b8affe; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .12em; }
 
 @media (prefers-reduced-motion: reduce) { .plan-slot { transition: none; } }
+
+.plan-result-share { width: 100%; margin-top: 22px; }
+
+/* Modo app: la ruleta ocupa la pantalla, como una pantalla nativa.
+   Sin portada, tarjeta de borde a borde y los botones siempre a la mano sobre el menú inferior. */
+html.is-app-mode .plan-builder-nav { position: sticky; top: 0; z-index: 20; min-height: calc(56px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); background: #0b0a12; }
+html.is-app-mode .plan-builder-nav-app { display: block; justify-self: end; color: #b8affe; font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .16em; }
+html.is-app-mode .plan-builder-copy { display: none; }
+html.is-app-mode .plan-builder-main { padding: 0; gap: 0; }
+html.is-app-mode .plan-builder-card { min-height: calc(var(--app-dvh) - 56px - env(safe-area-inset-top)); box-shadow: none; }
+html.is-app-mode .plan-mode-switch { position: sticky; top: calc(56px + env(safe-area-inset-top)); z-index: 10; background: #f7f6ff; }
+html.is-app-mode .plan-mode-switch button { min-height: 52px; }
+
+html.is-app-mode .plan-roulette-row button,
+html.is-app-mode .plan-roulette-count button { min-height: 44px; }
+html.is-app-mode .plan-roulette-count button { width: 44px; }
+html.is-app-mode .plan-roulette-slots { gap: 10px; }
+html.is-app-mode .plan-slot { grid-template-columns: 92px 1fr auto; min-height: 112px; padding: 10px; }
+html.is-app-mode .plan-slot-media { width: 92px; height: 92px; }
+html.is-app-mode .plan-slot-copy strong { font-size: 1.2rem; }
+html.is-app-mode .plan-slot-actions { flex-direction: column; gap: 6px; }
+html.is-app-mode .plan-slot-actions button { width: 44px; height: 44px; }
+html.is-app-mode .plan-slot.is-locked { transform: translate(-2px, -2px); }
+
+html.is-app-mode .plan-step-actions,
+html.is-app-mode .plan-result-actions { position: sticky; bottom: var(--app-tabbar-h); z-index: 10; padding-bottom: 14px; }
+html.is-app-mode .plan-result-actions { grid-template-columns: 1fr 1fr; margin-inline: -18px; padding: 14px 18px; background: #f7f6ff; border-top: 1.5px solid rgba(11,10,18,.12); }
+html.is-app-mode .plan-result-actions .plan-builder-button,
+html.is-app-mode .plan-result-actions .plan-builder-secondary { padding: 0 10px; font-size: .7rem; }
+html.is-app-mode .plan-result { padding-bottom: 0; }
+html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
+
+@media (min-width: 900px) {
+  html.is-app-mode .plan-builder-main { grid-template-columns: 1fr; width: min(620px, 100%); padding: 0; }
+}

@@ -198,6 +198,13 @@
   .city-nav-change { gap: 6px; padding-inline: 8px; font-size: .52rem; }
 }
 
+/* Modo app: logo a la izquierda y Radar en la esquina. */
+.city-nav.is-app-nav { grid-template-columns: auto auto; justify-content: space-between; }
+.city-nav-radar { justify-self: end; }
+@media (max-width: 760px) {
+  .city-nav.is-app-nav { grid-template-columns: auto auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .city-nav-change { transition: none; }
 }

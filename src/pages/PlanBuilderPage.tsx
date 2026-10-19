@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, Dices, Pencil, RefreshCw, Shuffle, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronLeft, Dices, Pencil, RefreshCw, Share2, Shuffle, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import {
@@ -19,6 +19,8 @@ import {
   type PlanInterest,
   type PlanStop,
 } from '../data/planBuilder';
+import { IS_APP_MODE } from '../lib/appMode';
+import { sharePlanImage } from '../lib/sharePlanImage';
 import { PlanRoulette, type RouletteState } from './PlanRoulette';
 import './PlanBuilderPage.css';
 
@@ -73,6 +75,8 @@ export function PlanBuilderPage() {
   const [roulette, setRoulette] = useState<RouletteState>(INITIAL_ROULETTE);
   // Lo que salió en la ruleta al pedir el plan, para marcar qué paradas cambió la IA.
   const [spunIds, setSpunIds] = useState<string[]>([]);
+  const [isSharing, setIsSharing] = useState(false);
+  const [shareError, setShareError] = useState('');
 
   if (city !== 'guadalajara') return <Navigate to="/guadalajara/arma-tu-plan" replace />;
 
@@ -192,6 +196,19 @@ export function PlanBuilderPage() {
     goTo(stepIndex + 1);
   };
 
+  const share = async () => {
+    if (!plan) return;
+    setIsSharing(true);
+    setShareError('');
+    try {
+      await sharePlanImage(plan);
+    } catch {
+      setShareError('No pudimos crear la imagen. Inténtalo otra vez.');
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const editStep = (index: number) => {
     setIsEditing(true);
     setStatus('choosing');
@@ -212,7 +229,8 @@ export function PlanBuilderPage() {
       <header className="plan-builder-nav">
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
         <span>/ ARMA TU PLAN · GDL</span>
-        <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>
+        {/* En el modo app se regresa con el menú inferior. */}
+        {IS_APP_MODE ? <span className="plan-builder-nav-app">{mode === 'ruleta' ? '/ RULETA' : '/ 5 PREGUNTAS'}</span> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
       </header>
 
       <main className="plan-builder-main">
@@ -307,6 +325,10 @@ export function PlanBuilderPage() {
               </ol>
               {swapError && <p className="plan-builder-error" role="alert">{swapError}</p>}
               {plan.closing && <p className="plan-result-closing">{plan.closing}</p>}
+              <button type="button" className="plan-builder-button plan-result-share" onClick={() => void share()} disabled={isSharing}>
+                <Share2 size={18} aria-hidden="true" /> {isSharing ? 'CREANDO IMAGEN…' : 'COMPARTIR PLAN'}
+              </button>
+              {shareError && <p className="plan-builder-error" role="alert">{shareError}</p>}
               {mode === 'ruleta' ? (
                 <div className="plan-result-actions">
                   <button type="button" className="plan-builder-button" onClick={backToRoulette}><Dices size={18} aria-hidden="true" /> VOLVER A GIRAR</button>

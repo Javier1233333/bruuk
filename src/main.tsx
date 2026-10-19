@@ -64,7 +64,7 @@ createRoot(document.getElementById('root')!).render(
         <InstallAppPrompt />
         <Suspense fallback={routeFallback}>
           <Routes>
-          <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : IS_APP_MODE ? <Navigate to="/guadalajara" replace /> : <App />} />
+          <Route path="/" element={isMuseumMicrosite ? <MuseumRoutePage /> : IS_APP_MODE ? <Navigate to="/guadalajara/spots" replace /> : <App />} />
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />

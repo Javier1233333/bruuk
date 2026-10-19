@@ -46,7 +46,8 @@
   display: none;
 }
 
-.rack-places-controls button {
+.rack-places-controls button,
+.rack-places-filter-link {
   display: inline-flex;
   min-height: 46px;
   align-items: center;
@@ -65,7 +66,10 @@
     border-color 150ms ease;
 }
 
-.rack-places-controls button:hover {
+.rack-places-filter-link { color: #ff9a5c; border-color: rgba(255, 154, 92, 0.45); text-decoration: none; }
+
+.rack-places-controls button:hover,
+.rack-places-filter-link:hover {
   color: var(--rack-text);
   border-color: rgba(255, 255, 255, 0.5);
 }

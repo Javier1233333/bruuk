@@ -1,7 +1,9 @@
+import { Radio } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from './BruukLogo';
 import { BruukSelect } from './BruukSelect';
+import { IS_APP_MODE } from '../lib/appMode';
 import { useRecommendationTransition } from './RecommendationTransition';
 import './CityNav.css';
 
@@ -9,6 +11,15 @@ type CitySection = 'spots' | 'rack' | 'planes';
 
 export function CityNav({ active, trailing }: { active?: CitySection; trailing?: ReactNode }) {
   const transitionTo = useRecommendationTransition();
+  // En el modo app las categorías están en el menú inferior; arriba sólo queda Radar.
+  if (IS_APP_MODE && active) {
+    return (
+      <header className="city-nav is-feed-nav is-app-nav">
+        <Link className="city-nav-logo" to="/guadalajara/spots" aria-label="Inicio"><BruukLogo width={104} /></Link>
+        <Link className="city-nav-change city-nav-radar" to="/guadalajara/senales"><Radio size={16} strokeWidth={2.2} aria-hidden="true" /> RADAR</Link>
+      </header>
+    );
+  }
   return (
     <header className={`city-nav ${active ? 'is-feed-nav' : 'is-home-nav'}`}>
       <Link className="city-nav-logo" to="/" aria-label="Volver al landing de Bruuk"><BruukLogo width={104} /></Link>

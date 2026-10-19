@@ -1,7 +1,8 @@
 /* Alto del menú: las páginas de pantalla completa lo restan con var(--app-dvh)/var(--app-svh). */
 :root { --app-tabbar-h: 0px; --app-dvh: 100dvh; --app-svh: 100svh; }
 html.is-app-mode {
-  --app-tabbar-h: calc(64px + env(safe-area-inset-bottom));
+  --app-tabbar-pad: calc(env(safe-area-inset-bottom) + 8px);
+  --app-tabbar-h: calc(70px + var(--app-tabbar-pad));
   --app-dvh: calc(100dvh - var(--app-tabbar-h));
   --app-svh: calc(100svh - var(--app-tabbar-h));
 }
@@ -17,7 +18,7 @@ html.is-app-mode body { padding-bottom: var(--app-tabbar-h); }
   grid-template-columns: repeat(5, 1fr);
   align-items: stretch;
   height: var(--app-tabbar-h);
-  padding: 0 6px env(safe-area-inset-bottom);
+  padding: 0 6px var(--app-tabbar-pad);
   background: #0b0a12;
   border-top: 1.5px solid rgba(255, 255, 255, .16);
   font-family: 'Outfit', sans-serif;
