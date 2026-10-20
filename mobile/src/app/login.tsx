@@ -8,7 +8,8 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { Body, Button, Kicker, Logo, Title } from '../components/ui';
+import { Body, Button, Kicker, Logo, openUrl } from '../components/ui';
+import { SITE_URL } from '../lib/catalog';
 import { auth, emailActionSettings } from '../lib/firebase';
 import { authErrorMessage } from '../lib/auth';
 import { colors, fonts, space } from '../theme';
@@ -69,85 +70,95 @@ export default function LoginScreen() {
     <SafeAreaView style={styles.screen}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Logo size={38} />
+          <Logo size={30} />
 
-          <View style={styles.tabs}>
-            {(['login', 'signup'] as const).map((tab) => (
-              <Pressable
-                key={tab}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: mode === tab }}
-                onPress={() => switchMode(tab)}
-                style={[styles.tab, mode === tab && styles.tabActive]}
-              >
-                <Text style={[styles.tabText, mode === tab && { color: colors.ink }]}>{tab === 'login' ? 'ENTRAR' : 'CREAR CUENTA'}</Text>
-              </Pressable>
-            ))}
+          <View style={styles.intro}>
+            <Kicker>/ BRUUK · GUADALAJARA</Kicker>
+            <Text style={styles.headline}>
+              {isLogin ? 'ENTRA.' : 'ÚNETE.'}{'\n'}<Text style={{ color: colors.violet }}>SAL.</Text>
+            </Text>
+            <Body>{isLogin ? 'Inicia sesión para seguir explorando spots, vintage y planes en Guadalajara.' : 'Crea tu cuenta con tu correo. Toma menos de un minuto.'}</Body>
           </View>
 
-          <Kicker>{isLogin ? '/ BIENVENIDO DE VUELTA' : '/ ÚNETE AL MOVIMIENTO'}</Kicker>
-          <Title>{isLogin ? 'Sigue explorando.' : 'Sal a explorar.'}</Title>
-          <Body>{isLogin ? 'Inicia sesión para usar Bruuk.' : 'Crea tu cuenta con tu correo.'}</Body>
-
-          <View style={styles.field}>
-            <Text style={styles.label}>Correo electrónico</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="tu@correo.com"
-              placeholderTextColor={colors.muted}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              textContentType="emailAddress"
-              editable={!loading}
-            />
-          </View>
-
-          <View style={styles.field}>
-            <Text style={styles.label}>Contraseña</Text>
-            <View>
-              <TextInput
-                style={[styles.input, { paddingRight: 52 }]}
-                value={password}
-                onChangeText={setPassword}
-                placeholder={isLogin ? '••••••••' : 'Mínimo 6 caracteres'}
-                placeholderTextColor={colors.muted}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-                autoComplete={isLogin ? 'current-password' : 'new-password'}
-                textContentType={isLogin ? 'password' : 'newPassword'}
-                editable={!loading}
-                onSubmitEditing={() => void submit()}
-              />
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                onPress={() => setShowPassword((value) => !value)}
-                style={styles.eye}
-                hitSlop={8}
-              >
-                <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color={colors.mutedDark} />
-              </Pressable>
+          <View style={styles.card}>
+            <View style={styles.tabs} accessibilityRole="tablist">
+              {(['login', 'signup'] as const).map((tab, index) => (
+                <Pressable
+                  key={tab}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: mode === tab }}
+                  onPress={() => switchMode(tab)}
+                  style={[styles.tab, index > 0 && styles.tabDivider, mode === tab && styles.tabActive]}
+                >
+                  <Text style={[styles.tabText, mode === tab && { color: colors.white }]}>{tab === 'login' ? 'ENTRAR' : 'CREAR CUENTA'}</Text>
+                </Pressable>
+              ))}
             </View>
-            {isLogin && (
-              <Pressable accessibilityRole="button" onPress={() => void forgotPassword()} style={styles.forgot} hitSlop={8}>
-                <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
-              </Pressable>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>CORREO ELECTRÓNICO</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="tu@correo.com"
+                placeholderTextColor="#8a8794"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                textContentType="emailAddress"
+                editable={!loading}
+              />
+            </View>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>CONTRASEÑA</Text>
+              <View>
+                <TextInput
+                  style={[styles.input, { paddingRight: 52 }]}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder={isLogin ? '••••••••' : 'Mínimo 6 caracteres'}
+                  placeholderTextColor="#8a8794"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  textContentType={isLogin ? 'password' : 'newPassword'}
+                  editable={!loading}
+                  onSubmitEditing={() => void submit()}
+                />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  onPress={() => setShowPassword((value) => !value)}
+                  style={styles.eye}
+                  hitSlop={8}
+                >
+                  <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color={colors.mutedDark} />
+                </Pressable>
+              </View>
+              {isLogin && (
+                <Pressable accessibilityRole="button" onPress={() => void forgotPassword()} style={styles.forgot} hitSlop={8}>
+                  <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+                </Pressable>
+              )}
+            </View>
+
+            {!!error && <Text style={styles.error}>{error}</Text>}
+            {!!notice && <Text style={styles.notice}>{notice}</Text>}
+
+            <Button
+              label={loading ? 'PROCESANDO…' : isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
+              icon="arrow-right"
+              onPress={() => void submit()}
+              disabled={loading || !email.trim() || password.length < 6}
+            />
+            {!isLogin && (
+              <Text style={styles.legal}>
+                Al crear tu cuenta aceptas el <Text style={styles.legalLink} onPress={() => openUrl(`${SITE_URL}/privacidad`)}>aviso de privacidad</Text>.
+              </Text>
             )}
           </View>
-
-          {!!error && <Text style={styles.error}>{error}</Text>}
-          {!!notice && <Text style={styles.notice}>{notice}</Text>}
-
-          <Button
-            label={loading ? 'PROCESANDO…' : isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
-            icon="arrow-right"
-            onPress={() => void submit()}
-            disabled={loading || !email.trim() || password.length < 6}
-            style={styles.submit}
-          />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -156,18 +167,23 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.ink },
-  content: { padding: space.gutter, paddingTop: 32, paddingBottom: 48, gap: 16 },
-  tabs: { flexDirection: 'row', borderWidth: 1.5, borderColor: colors.paper, marginTop: 8 },
+  content: { padding: space.gutter, paddingTop: 20, paddingBottom: 48, gap: 22 },
+  intro: { gap: 10 },
+  headline: { color: colors.paper, fontFamily: fonts.display, fontSize: 60, lineHeight: 54, paddingTop: 8, letterSpacing: -3 },
+  card: { gap: 16, padding: 18, backgroundColor: colors.paper, shadowColor: colors.violet, shadowOffset: { width: 6, height: 6 }, shadowOpacity: 1, shadowRadius: 0, elevation: 0 },
+  tabs: { flexDirection: 'row', borderWidth: 1.5, borderColor: colors.ink, marginBottom: 4 },
   tab: { flex: 1, minHeight: 46, alignItems: 'center', justifyContent: 'center' },
-  tabActive: { backgroundColor: colors.violet },
-  tabText: { color: colors.paper, fontFamily: fonts.heading, fontSize: 12, letterSpacing: 1.2 },
-  field: { gap: 8 },
-  label: { color: colors.paper, fontFamily: fonts.heading, fontSize: 16 },
-  input: { minHeight: 52, paddingHorizontal: 14, color: colors.ink, backgroundColor: colors.paper, fontFamily: fonts.body, fontSize: 16 },
+  tabDivider: { borderLeftWidth: 1.5, borderColor: colors.ink },
+  tabActive: { backgroundColor: colors.ink },
+  tabText: { color: colors.ink, fontFamily: fonts.display, fontSize: 12, letterSpacing: 1.4 },
+  field: { gap: 7 },
+  label: { color: colors.violetDeep, fontFamily: fonts.heading, fontSize: 10, letterSpacing: 1.6 },
+  input: { minHeight: 54, paddingHorizontal: 14, color: colors.ink, backgroundColor: colors.white, borderWidth: 1.5, borderColor: colors.ink, fontFamily: fonts.body, fontSize: 16 },
   eye: { position: 'absolute', right: 14, top: 0, bottom: 0, justifyContent: 'center' },
   forgot: { alignSelf: 'flex-end' },
-  forgotText: { color: colors.violetSoft, fontFamily: fonts.bodyBold, fontSize: 13 },
+  forgotText: { color: colors.violetDeep, fontFamily: fonts.bodyBold, fontSize: 13, textDecorationLine: 'underline' },
   error: { padding: 12, color: colors.white, backgroundColor: colors.error, fontFamily: fonts.body },
-  notice: { padding: 12, color: colors.ink, backgroundColor: colors.lilac, fontFamily: fonts.body },
-  submit: { backgroundColor: colors.violet, borderColor: colors.violet, marginTop: 4 },
+  notice: { padding: 12, color: colors.ink, backgroundColor: colors.lilac, borderLeftWidth: 4, borderColor: colors.violet, fontFamily: fonts.body },
+  legal: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 12, textAlign: 'center' },
+  legalLink: { color: colors.ink, textDecorationLine: 'underline' },
 });
