@@ -6,6 +6,7 @@ import { auth, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import { ZONE_NAMES, placeZone, spotZone } from '../lib/zones';
+import { getSpotVisual } from '../lib/spotVisual';
 import {
   MAX_IMAGE_BYTES,
   deleteSpot,
@@ -23,6 +24,40 @@ import './SpotsAdminPage.css';
 
 type Filter = 'all' | 'active' | 'hidden';
 type View = 'spots' | 'zonas';
+
+// Mismas categorías que las tarjetas del sitio (getSpotVisual), en este orden
+const CATEGORY_ORDER = ['CAFÉ', 'PAN', 'POSTRE', 'COMIDA', 'BAR', 'NOCHE', 'TIENDA', 'ATARDECER'];
+
+function groupByCategory<T>(items: T[], spotOf: (item: T) => SpotDoc) {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const label = getSpotVisual(spotOf(item).type).label;
+    groups.set(label, [...(groups.get(label) ?? []), item]);
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b))
+    .map(([label, groupItems]) => ({
+      label,
+      Icon: getSpotVisual(spotOf(groupItems[0]).type).Icon,
+      items: groupItems,
+      missingZone: groupItems.filter((item) => !spotZone(spotOf(item))).length,
+    }));
+}
+
+// Encabezado plegable de cada categoría: cuántos hay y cuántos sin zona
+function CategoryGroup({ label, Icon, count, missingZone, children }: { label: string; Icon: ReturnType<typeof getSpotVisual>['Icon']; count: number; missingZone: number; children: React.ReactNode }) {
+  return (
+    <details className="sa-group" open>
+      <summary>
+        <Icon size={16} aria-hidden="true" />
+        <span className="sa-group__label">{label}</span>
+        <span className="sa-group__count">{count}</span>
+        {missingZone > 0 && <span className="sa-group__missing">{missingZone} sin zona</span>}
+      </summary>
+      <ul className="sa-list">{children}</ul>
+    </details>
+  );
+}
 
 export function SpotsAdminPage() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -200,8 +235,9 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
             {spots.length === 0 ? 'Aún no hay spots. Corre scripts/seed-spots.mjs o crea uno.' : 'Ningún spot coincide.'}
           </p>
         ) : (
-          <ul className="sa-list">
-            {visible.map((spot) => (
+          groupByCategory(visible, (spot) => spot).map((group) => (
+          <CategoryGroup key={group.label} label={group.label} Icon={group.Icon} count={group.items.length} missingZone={group.missingZone}>
+            {group.items.map((spot) => (
               <li key={spot.id} className={`sa-row${spot.active ? '' : ' is-hidden'}${spotZone(spot) ? '' : ' is-no-zone'}`}>
                 <img className="sa-row__img" src={spot.imageUrl} alt="" loading="lazy" />
                 <div className="sa-row__info">
@@ -241,7 +277,8 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
                 </div>
               </li>
             ))}
-          </ul>
+          </CategoryGroup>
+          ))
         )}
       </main>
       )}
@@ -316,8 +353,9 @@ function ZonesView({ spots, loaded }: { spots: SpotDoc[]; loaded: boolean }) {
       ) : rows.length === 0 ? (
         <p className="sa-empty">Todos los spots tienen zona.</p>
       ) : (
-        <ul className="sa-list">
-          {rows.map(({ spot, zone }) => {
+        groupByCategory(rows, (row) => row.spot).map((group) => (
+        <CategoryGroup key={group.label} label={group.label} Icon={group.Icon} count={group.items.length} missingZone={group.missingZone}>
+          {group.items.map(({ spot, zone }) => {
             const auto = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
             return (
               <li key={spot.id} className={`sa-row${zone ? '' : ' is-no-zone'}${spot.active ? '' : ' is-hidden'}`}>
@@ -340,7 +378,8 @@ function ZonesView({ spots, loaded }: { spots: SpotDoc[]; loaded: boolean }) {
               </li>
             );
           })}
-        </ul>
+        </CategoryGroup>
+        ))
       )}
     </main>
   );

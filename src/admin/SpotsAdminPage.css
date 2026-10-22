@@ -426,3 +426,13 @@
   .sa-zone-select { width: 100%; }
   .sa-zone-select select { flex: 1; }
 }
+
+/* ── Grupos por categoría (plegables) ── */
+.sa-group { margin-bottom: 1rem; }
+.sa-group > summary { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0 0.25rem; color: var(--accent-text); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; list-style: none; border-bottom: 2px solid var(--border-color); margin-bottom: 0.5rem; }
+.sa-group > summary::-webkit-details-marker { display: none; }
+.sa-group > summary::after { content: '−'; margin-left: auto; color: var(--text-secondary); font-size: 1rem; }
+.sa-group:not([open]) > summary::after { content: '+'; }
+.sa-group__count { color: var(--text-secondary); }
+.sa-group__missing { padding: 1px 6px; color: #0b0a12; background: #f5d547; font-size: 0.7rem; letter-spacing: 0.04em; }
+.sa-group > summary:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
