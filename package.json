@@ -19,7 +19,7 @@
     "@vercel/analytics": "^2.0.1",
     "email-validator": "^2.0.4",
     "firebase": "^12.10.0",
-    "firebase-admin": "^14.5.0",
+    "firebase-admin": "^13.10.0",
     "framer-motion": "^12.38.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.577.0",
