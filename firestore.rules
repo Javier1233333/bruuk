@@ -19,6 +19,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Configuración del admin (colonias agregadas a mano): sólo el admin
+    match /meta/{docId} {
+      allow read, write: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

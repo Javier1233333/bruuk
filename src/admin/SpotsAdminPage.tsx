@@ -16,9 +16,12 @@ import {
   removeImage,
   saveSpot,
   setSpotActive,
+  addCustomZone,
   rackStore,
+  removeCustomZone,
   setSpotZone,
   uploadSpotImage,
+  watchCustomZones,
   watchSpots,
 } from './spotsStore';
 import type { RackDoc, SpotDoc, SpotInput } from './spotsStore';
@@ -121,6 +124,14 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
     (err) => { setRackError(err.message); setRackLoaded(true); },
   ), []);
 
+  // Colonias: las de src/lib/zones.ts, las agregadas a mano (meta/zones) y cualquiera ya asignada
+  const [customZones, setCustomZones] = useState<string[]>([]);
+  useEffect(() => watchCustomZones(setCustomZones, (err) => setRowError(`No se pudieron cargar las colonias: ${err.message}`)), []);
+  const zoneNames = useMemo(() => {
+    const names = [...ZONE_NAMES, ...customZones, ...[...spots, ...rack].map((item) => item.zone?.trim() ?? '')].filter(Boolean);
+    return [...new Set(names)];
+  }, [customZones, spots, rack]);
+
   const types = useMemo(() => [...new Set(spots.map(s => s.type).filter(Boolean))].sort(), [spots]);
 
   const visible = useMemo(() => {
@@ -173,7 +184,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         </div>
       </header>
 
-      {view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} /> : (
+      {view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} zoneNames={zoneNames} customZones={customZones} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} zoneNames={zoneNames} /> : (
       <main className="sa-main">
         <div className="sa-toolbar">
           <div className="sa-search">
@@ -265,6 +276,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         <SpotForm
           spot={editing === 'new' ? null : editing}
           types={types}
+          zoneNames={zoneNames}
           onClose={() => setEditing(null)}
         />
       )}
@@ -280,10 +292,11 @@ type ZoneRow = { key: string; source: 'spots' | 'rack'; item: SpotDoc | RackDoc;
 
 const rowCategory = (row: ZoneRow) => (row.source === 'spots' ? spotCategory(row.item as SpotDoc) : rackCategory(row.item as RackDoc));
 
-function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: RackDoc[]; loaded: boolean }) {
+function ZonesView({ spots, rack, loaded, zoneNames, customZones }: { spots: SpotDoc[]; rack: RackDoc[]; loaded: boolean; zoneNames: string[]; customZones: string[] }) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [onlyMissing, setOnlyMissing] = useState(false);
+  const [newZone, setNewZone] = useState('');
 
   const allRows = useMemo<ZoneRow[]>(() => [
     ...spots.map((item) => ({ key: `spots/${item.id}`, source: 'spots' as const, item, zone: spotZone(item) })),
@@ -315,15 +328,55 @@ function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: RackDoc[];
     setSaving(null);
   };
 
+  const addZone = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const name = newZone.trim().replace(/\s+/g, ' ');
+    if (!name) return;
+    if (zoneNames.some((existing) => existing.toLowerCase() === name.toLowerCase())) {
+      setError(`La colonia "${name}" ya existe.`);
+      return;
+    }
+    setError(null);
+    try {
+      await addCustomZone(name);
+      setNewZone('');
+    } catch (err) {
+      setError(`No se pudo agregar la colonia: ${(err as Error).message}`);
+    }
+  };
+
+  const removeZone = async (name: string) => {
+    setError(null);
+    try {
+      await removeCustomZone(name);
+    } catch (err) {
+      setError(`No se pudo quitar la colonia: ${(err as Error).message}`);
+    }
+  };
+
   return (
     <main className="sa-main">
+      <form className="sa-zone-add" onSubmit={(event) => void addZone(event)}>
+        <label htmlFor="sa-new-zone">Nueva colonia</label>
+        <input id="sa-new-zone" value={newZone} onChange={(event) => setNewZone(event.target.value)} placeholder="Santa Tere" maxLength={40} />
+        <button type="submit" className="btn btn-primary" disabled={!newZone.trim()}><Plus size={16} strokeWidth={3} /> Agregar</button>
+      </form>
+
       <div className="sa-zone-summary">
         <button className={`sa-zone-chip is-missing${onlyMissing ? ' is-active' : ''}`} onClick={() => setOnlyMissing((value) => !value)} disabled={counts.missing === 0}>
           Sin zona {counts.missing}
         </button>
-        {ZONE_NAMES.map((name) => (
-          <span key={name} className="sa-zone-chip">{name} {counts.byName.get(name) ?? 0}</span>
-        ))}
+        {zoneNames.map((name) => {
+          const count = counts.byName.get(name) ?? 0;
+          // Sólo se pueden quitar las agregadas a mano que ya no tengan lugares
+          const removable = customZones.includes(name) && count === 0;
+          return (
+            <span key={name} className="sa-zone-chip">
+              {name} {count}
+              {removable && <button type="button" className="sa-zone-chip__remove" onClick={() => void removeZone(name)} aria-label={`Quitar la colonia ${name}`}><X size={12} /></button>}
+            </span>
+          );
+        })}
       </div>
       <p className="sa-hint">
         Spots y Rack juntos. Elige la colonia a mano o agrega coordenadas para que se calcule sola. “Automática” usa las coordenadas.
@@ -356,7 +409,7 @@ function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: RackDoc[];
                   <MapPin size={15} aria-hidden="true" />
                   <select aria-label={`Colonia de ${item.name}`} value={item.zone ?? ''} onChange={(event) => void change(row, event.target.value)} disabled={saving === row.key}>
                     <option value="">{auto ? `Automática (${auto.name})` : 'Sin zona'}</option>
-                    {ZONE_NAMES.map((name) => <option key={name} value={name}>{name}</option>)}
+                    {zoneNames.map((name) => <option key={name} value={name}>{name}</option>)}
                   </select>
                 </label>
               </li>
@@ -407,7 +460,7 @@ function toForm(spot: SpotDoc | null): FormState {
   };
 }
 
-function SpotForm({ spot, types, onClose }: { spot: SpotDoc | null; types: string[]; onClose: () => void }) {
+function SpotForm({ spot, types, zoneNames, onClose }: { spot: SpotDoc | null; types: string[]; zoneNames: string[]; onClose: () => void }) {
   const [spotId] = useState(() => spot?.id ?? newSpotId());
   const [form, setForm] = useState<FormState>(() => toForm(spot));
   const [uploading, setUploading] = useState(false);
@@ -579,7 +632,7 @@ function SpotForm({ spot, types, onClose }: { spot: SpotDoc | null; types: strin
             <label htmlFor="sa-zone">Colonia</label>
             <select id="sa-zone" className={spotZone({ zone: form.zone, coordinates: form.lat && form.lng ? { lat: Number(form.lat), lng: Number(form.lng) } : null }) ? '' : 'is-no-zone'} value={form.zone} onChange={e => set('zone', e.target.value)}>
               <option value="">Automática por coordenadas</option>
-              {ZONE_NAMES.map(name => <option key={name} value={name}>{name}</option>)}
+              {zoneNames.map(name => <option key={name} value={name}>{name}</option>)}
             </select>
           </div>
 

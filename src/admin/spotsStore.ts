@@ -1,4 +1,6 @@
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -104,6 +106,21 @@ export const setSpotActive = spotsStore.setActive;
 export const setSpotZone = spotsStore.setZone;
 export const deleteSpot = spotsStore.remove;
 export const uploadSpotImage = spotsStore.uploadImage;
+
+// Colonias agregadas a mano en el admin (además de las de src/lib/zones.ts)
+const zonesDoc = doc(db, 'meta', 'zones');
+
+export function watchCustomZones(onChange: (names: string[]) => void, onError: (err: Error) => void): () => void {
+  return onSnapshot(zonesDoc, (snap) => onChange((snap.data()?.names as string[] | undefined) ?? []), onError);
+}
+
+export async function addCustomZone(name: string): Promise<void> {
+  await setDoc(zonesDoc, { names: arrayUnion(name), updatedAt: serverTimestamp() }, { merge: true });
+}
+
+export async function removeCustomZone(name: string): Promise<void> {
+  await setDoc(zonesDoc, { names: arrayRemove(name), updatedAt: serverTimestamp() }, { merge: true });
+}
 
 // Best effort: si la foto ya no existe no es un error
 export async function removeImage(path: string): Promise<void> {

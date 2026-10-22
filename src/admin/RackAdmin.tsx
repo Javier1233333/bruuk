@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Eye, EyeOff, ImagePlus, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
-import { ZONE_NAMES, spotZone } from '../lib/zones';
+import { spotZone } from '../lib/zones';
 import { CategoryGroup, RowImage } from './adminShared';
 import { RACK_CATEGORY_NAMES, groupByCategory, rackCategory } from './adminCategories';
 import { MAX_IMAGE_BYTES, rackStore, removeImage } from './spotsStore';
@@ -13,7 +13,7 @@ import type { RackDoc, RackInput } from './spotsStore';
 
 type Filter = 'all' | 'active' | 'hidden';
 
-export function RackView({ places, loaded, loadError }: { places: RackDoc[]; loaded: boolean; loadError: string | null }) {
+export function RackView({ places, loaded, loadError, zoneNames }: { places: RackDoc[]; loaded: boolean; loadError: string | null; zoneNames: string[] }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [editing, setEditing] = useState<RackDoc | 'new' | null>(null);
@@ -109,7 +109,7 @@ export function RackView({ places, loaded, loadError }: { places: RackDoc[]; loa
         ))
       )}
 
-      {editing && <RackForm place={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />}
+      {editing && <RackForm place={editing === 'new' ? null : editing} zoneNames={zoneNames} onClose={() => setEditing(null)} />}
     </main>
   );
 }
@@ -142,7 +142,7 @@ const toForm = (place: RackDoc | null): FormState => ({
   active: place?.active ?? true,
 });
 
-function RackForm({ place, onClose }: { place: RackDoc | null; onClose: () => void }) {
+function RackForm({ place, zoneNames, onClose }: { place: RackDoc | null; zoneNames: string[]; onClose: () => void }) {
   const [placeId] = useState(() => place?.id ?? rackStore.newId());
   const [form, setForm] = useState<FormState>(() => toForm(place));
   const [uploading, setUploading] = useState(false);
@@ -282,7 +282,7 @@ function RackForm({ place, onClose }: { place: RackDoc | null; onClose: () => vo
             <label htmlFor="ra-zone">Colonia</label>
             <select id="ra-zone" className={currentZone ? '' : 'is-no-zone'} value={form.zone} onChange={(e) => set('zone', e.target.value)}>
               <option value="">Automática por coordenadas</option>
-              {ZONE_NAMES.map((name) => <option key={name} value={name}>{name}</option>)}
+              {zoneNames.map((name) => <option key={name} value={name}>{name}</option>)}
             </select>
           </div>
 

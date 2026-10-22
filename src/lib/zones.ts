@@ -38,9 +38,13 @@ export const placeZone = (lat?: number | null, lng?: number | null): PlaceZone |
 };
 
 // La colonia asignada a mano en el admin gana; si no hay, se calcula con las coordenadas.
+// Las colonias agregadas en el admin (meta/zones) no tienen grupo: en la ruleta sólo salen en "Toda".
 export const spotZone = (spot: { zone?: string | null; coordinates?: { lat: number; lng: number } | null }): (PlaceZone & { manual: boolean }) | undefined => {
-  const manual = ZONE_CENTERS.find((center) => center.name === spot.zone);
-  if (manual) return { name: manual.name, zone: manual.zone, manual: true };
+  const manualName = spot.zone?.trim();
+  if (manualName) {
+    const center = ZONE_CENTERS.find((item) => item.name === manualName);
+    return { name: manualName, zone: center?.zone, manual: true };
+  }
   const auto = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
   return auto && { ...auto, manual: false };
 };

@@ -439,3 +439,13 @@
 
 /* Miniatura sin foto (tianguis) */
 .sa-row__img--empty { display: grid; place-items: center; color: var(--accent-text); background: var(--bg-primary); font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 0.85rem; }
+
+/* Agregar colonia (pestaña Zonas) */
+.sa-zone-add { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+.sa-zone-add label { color: var(--accent-text); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.sa-zone-add input { flex: 1; min-width: 160px; min-height: 40px; padding: 0 0.7rem; background: var(--bg-primary); border: 2px solid var(--border-color); color: var(--text-primary); font: 600 16px 'DM Sans', sans-serif; border-radius: 0; }
+.sa-zone-add input:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+.sa-zone-add .btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.55rem 1rem; font-size: 0.8rem; }
+.sa-zone-chip { display: inline-flex; align-items: center; gap: 0.35rem; }
+.sa-zone-chip__remove { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; color: var(--text-secondary); background: none; border: 1px solid var(--border-color); cursor: pointer; }
+.sa-zone-chip__remove:hover { color: #ff4d4f; border-color: #ff4d4f; }
