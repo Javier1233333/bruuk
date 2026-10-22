@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, ChevronLeft, ClipboardPaste, LocateFixed, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { IS_APP_MODE } from '../lib/appMode';
 import * as validator from 'email-validator';
 import { BruukLogo } from '../components/BruukLogo';
 import './SubmitSpotPage.css';
@@ -170,8 +171,11 @@ export function SubmitSpotPage() {
     <div className={`submit-spot-page ${stepIndex > 0 || status === 'success' ? 'is-in-progress' : ''}`}>
       <header className="submit-spot-nav">
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
-        <span>/ APORTA AL MAPA</span>
-        <Link to="/"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>
+        {/* En la app "Spot" es una pestaña: título en vez de "regresar" */}
+        {IS_APP_MODE ? <span className="app-screen-title">/ SUBE UN SPOT</span> : <>
+          <span>/ APORTA AL MAPA</span>
+          <Link to="/"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>
+        </>}
       </header>
 
       <main className="submit-spot-main">

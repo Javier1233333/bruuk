@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type PointerEvent, type WheelEvent } from 'react';
-import { ArrowRight, ArrowUpRight, Coffee, Crosshair, Radio, Route, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ChevronLeft, Coffee, Crosshair, Radio, Route, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { IS_APP_MODE } from '../lib/appMode';
 import { BruukLogo } from '../components/BruukLogo';
 import { AsciiRadarBackground } from '../components/AsciiRadarBackground';
 import { RegistrationModal } from '../components/RegistrationModal';
@@ -129,7 +130,10 @@ export function RadarPage() {
       <header className="radar-page-nav">
         <Link to="/guadalajara" aria-label="Volver a las categorías de Guadalajara"><BruukLogo width={96} /></Link>
         <div className="radar-page-nav-title"><span>/ SEÑALES</span><strong>PLANES Y RUTAS</strong></div>
-        <Link className="radar-nav-category" to="/guadalajara">CATEGORÍAS <ArrowRight size={15} /></Link>
+        {/* En la app Radar se abre desde Inicio: botón de volver como en cualquier app */}
+        {IS_APP_MODE
+          ? <Link className="radar-nav-category" to="/guadalajara/spots"><ChevronLeft size={16} aria-hidden="true" /> INICIO</Link>
+          : <Link className="radar-nav-category" to="/guadalajara">CATEGORÍAS <ArrowRight size={15} /></Link>}
       </header>
 
       <main className="radar-infinity-shell">

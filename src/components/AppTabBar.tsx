@@ -10,6 +10,16 @@ const TABS = [
   { to: '/guadalajara/eventos', label: 'Eventos', icon: CalendarDays, match: (path: string) => path === '/guadalajara/eventos' },
 ];
 
+// Vibración corta al tocar el menú (Android; iOS la ignora).
+const tapFeedback = () => navigator.vibrate?.(8);
+
+// Tocar la pestaña en la que ya estás regresa arriba, como en las apps nativas.
+const scrollToTop = () => {
+  const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  window.scrollTo({ top: 0, behavior });
+  document.querySelectorAll<HTMLElement>('.tiktok-scroll-container').forEach((el) => el.scrollTo({ top: 0, behavior }));
+};
+
 // Menú inferior del modo app. El botón central es "Sube un spot"; Radar vive arriba, en CityNav.
 export function AppTabBar() {
   const { pathname } = useLocation();
@@ -17,7 +27,19 @@ export function AppTabBar() {
 
   const [inicio, rack, plan, eventos] = TABS;
   const renderTab = ({ to, label, icon: Icon, match }: (typeof TABS)[number]) => (
-    <Link key={to} to={to} className={`app-tab ${match(pathname) ? 'is-active' : ''}`} aria-current={match(pathname) ? 'page' : undefined}>
+    <Link
+      key={to}
+      to={to}
+      className={`app-tab ${match(pathname) ? 'is-active' : ''}`}
+      aria-current={match(pathname) ? 'page' : undefined}
+      onClick={(event) => {
+        tapFeedback();
+        if (match(pathname)) {
+          event.preventDefault();
+          scrollToTop();
+        }
+      }}
+    >
       <Icon size={22} strokeWidth={2} aria-hidden="true" />
       <span>{label}</span>
     </Link>
@@ -27,7 +49,7 @@ export function AppTabBar() {
     <nav className="app-tabbar" aria-label="Menú de Bruuk">
       {renderTab(inicio)}
       {renderTab(rack)}
-      <NavLink to="/sube-un-spot" className={({ isActive }) => `app-tab app-tab-add ${isActive ? 'is-active' : ''}`} aria-label="Sube un spot">
+      <NavLink to="/sube-un-spot" className={({ isActive }) => `app-tab app-tab-add ${isActive ? 'is-active' : ''}`} aria-label="Sube un spot" onClick={tapFeedback}>
         <i><Plus size={26} strokeWidth={2.6} aria-hidden="true" /></i>
         <span>Spot</span>
       </NavLink>

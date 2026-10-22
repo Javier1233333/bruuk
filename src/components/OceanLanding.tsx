@@ -12,6 +12,7 @@ import { RadarPromo } from './RadarPromo';
 import { FREE_SPOTS, feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from './RegistrationModal';
 import { useSpots } from '../lib/useSpots';
+import { IS_APP_MODE } from '../lib/appMode';
 import './OceanLanding.css';
 
 type Spot = {
@@ -137,8 +138,8 @@ export function OceanLanding() {
       {/* Vertical Snap Scroll Container */}
       <div className="tiktok-scroll-container" ref={containerRef}>
         
-        {/* Slide 0: Immersive Intro */}
-        <section className="tiktok-slide intro-slide">
+        {/* Slide 0: Immersive Intro (en la app se abre directo en los spots) */}
+        {!IS_APP_MODE && <section className="tiktok-slide intro-slide">
           <div className="intro-card-overlay">
             <span className="spots-eyebrow" style={{ textTransform: 'uppercase', letterSpacing: '2px' }}>
               Guadalajara
@@ -158,7 +159,7 @@ export function OceanLanding() {
               </motion.div>
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* Slides 1 to N: The Spot Cards */}
         <AnimatePresence mode="wait">

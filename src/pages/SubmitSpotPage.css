@@ -4,6 +4,7 @@
 
 .submit-spot-nav { display: grid; grid-template-columns: 1fr auto; min-height: 60px; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,.16); }
 .submit-spot-nav > span { display: none; color: #b8affe; font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .16em; }
+.submit-spot-nav > span.app-screen-title { display: block; }
 .submit-spot-nav > a { line-height: 0; }
 .submit-spot-nav > a:last-child { display: inline-flex; justify-self: end; align-items: center; gap: 6px; min-height: 44px; line-height: 1; color: #f7f6ff; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
 
