@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowRight, Dices, Download, EllipsisVertical, Globe, Plus, Radio, Share, SquarePlus, X } from 'lucide-react';
+import { ArrowRight, Download, EllipsisVertical, Globe, Plus, Share, SquarePlus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { isStandalone } from '../lib/appMode';
 import './InstallAppPrompt.css';
@@ -47,22 +47,14 @@ const STEPS: Record<Platform, { icon: typeof Share; text: ReactNode }[]> = {
   ios: [
     { icon: Share, text: <>Toca <b>Compartir</b> en la barra de Safari. Si no lo ves, ábrelo desde el menú <b>⋯</b>.</> },
     { icon: SquarePlus, text: <>Desliza hacia abajo y elige <b>Agregar a inicio</b>.</> },
-    { icon: Plus, text: <>Toca <b>Agregar</b> arriba a la derecha.</> },
-    { icon: ArrowRight, text: <>Abre Bruuk desde el ícono en tu pantalla de inicio.</> },
+    { icon: Plus, text: <>Toca <b>Agregar</b> y ábrela desde tu inicio.</> },
   ],
   android: [
     { icon: EllipsisVertical, text: <>Toca el menú <b>⋮</b> de Chrome, arriba a la derecha.</> },
     { icon: Download, text: <>Elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</> },
-    { icon: Plus, text: <>Confirma con <b>Instalar</b>.</> },
-    { icon: ArrowRight, text: <>Abre Bruuk desde el ícono en tu pantalla de inicio.</> },
+    { icon: Plus, text: <>Confirma con <b>Instalar</b> y ábrela desde tu inicio.</> },
   ],
 };
-
-const APP_FEATURES = [
-  { icon: Plus, title: 'Menú abajo', copy: 'Inicio, Rack, Plan y Radar a un toque, y el botón + para subir un spot.' },
-  { icon: Dices, title: 'Ruleta de planes', copy: 'Gira entre todos los lugares de la guía y la IA encuentra qué los une.' },
-  { icon: Radio, title: 'Sin buscar la página', copy: 'Se abre como cualquier app y guarda lo último que viste para cuando no tengas señal.' },
-];
 
 export function InstallAppPrompt() {
   const { pathname } = useLocation();
@@ -137,13 +129,8 @@ export function InstallAppPrompt() {
           </header>
 
           <h2 id="install-guide-title">LLEVA BRUUK<br /><em>COMO APP.</em></h2>
-          <p className="install-guide-lead">Agrégala a tu pantalla de inicio en menos de un minuto. No pasa por ninguna tienda y no ocupa casi espacio.</p>
-
-          <ul className="install-guide-features">
-            {APP_FEATURES.map(({ icon: Icon, title, copy }) => (
-              <li key={title}><Icon size={18} aria-hidden="true" /><div><strong>{title}</strong><span>{copy}</span></div></li>
-            ))}
-          </ul>
+          {/* Corta a propósito: tiene que caber en una pantalla sin deslizar */}
+          <p className="install-guide-lead">Menos de un minuto, sin tienda de apps. Se abre como cualquier app, con menú abajo.</p>
 
           <section className="install-guide-steps" aria-labelledby="install-guide-steps-title">
             <div className="install-guide-steps-head">
