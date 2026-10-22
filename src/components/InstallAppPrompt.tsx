@@ -8,7 +8,6 @@ type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{
 type Platform = 'ios' | 'android';
 
 const DISMISS_KEY = 'bruuk-install-dismissed';
-const GUIDE_KEY = 'bruuk-install-guide-dismissed';
 const DISMISS_DAYS = 30;
 // Sólo en las portadas: en feeds y formularios estorbaría a las acciones de abajo.
 const PROMPT_ROUTES = new Set(['/', '/guadalajara']);
@@ -70,7 +69,8 @@ export function InstallAppPrompt() {
   const [installEvent, setInstallEvent] = useState<InstallEvent | null>(null);
   const [showIosHelp, setShowIosHelp] = useState(false);
   const [hidden, setHidden] = useState(() => isStandalone() || wasDismissed(DISMISS_KEY));
-  const [showGuide, setShowGuide] = useState(() => !isStandalone() && isPhone() && !wasDismissed(GUIDE_KEY));
+  // La guía sale cada vez que se abre Bruuk en el teléfono (no en los enlaces de los correos).
+  const [showGuide, setShowGuide] = useState(() => !isStandalone() && isPhone() && window.location.pathname !== '/auth/action');
   // Si la persona acaba de cerrar la guía, el aviso chico espera a la siguiente visita.
   const [guideClosedNow, setGuideClosedNow] = useState(false);
   const [platform, setPlatform] = useState<Platform>(() => (isIos() ? 'ios' : 'android'));
@@ -121,7 +121,6 @@ export function InstallAppPrompt() {
   };
 
   const closeGuide = () => {
-    rememberDismiss(GUIDE_KEY);
     setShowGuide(false);
     setGuideClosedNow(true);
   };

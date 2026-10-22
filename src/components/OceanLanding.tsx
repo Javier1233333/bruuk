@@ -9,6 +9,7 @@ import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import { RadarPromo } from './RadarPromo';
+import { FEED_PROMO_EVERY } from '../lib/appSession';
 import { RegistrationModal } from './RegistrationModal';
 import { useSpots } from '../lib/useSpots';
 import './OceanLanding.css';
@@ -82,7 +83,7 @@ export function OceanLanding() {
   });
 
   const feedSlides = filteredSpots.flatMap((spot, index) => {
-    const isRadarMoment = (index + 1) % 6 === 0 && index < 18;
+    const isRadarMoment = (index + 1) % FEED_PROMO_EVERY === 0 && index < FEED_PROMO_EVERY * 3;
     return isRadarMoment ? [spot, { id: `radar-${index}`, radar: true }] : [spot];
   });
 

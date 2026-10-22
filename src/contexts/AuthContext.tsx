@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { onIdTokenChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { rememberSignedIn } from '../lib/appSession';
 
 interface AuthContextType {
   user: User | null;
@@ -42,6 +43,7 @@ function AuthStateProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     return onIdTokenChanged(auth, async (u) => {
       await readClaims(u);
+      rememberSignedIn(Boolean(u));
       setUser(u);
       setLoading(false);
     });

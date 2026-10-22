@@ -21,7 +21,7 @@ export function LoginPage() {
   const nextParam = params.get('next');
   const next = nextParam?.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/guadalajara';
   const { user } = useAuth();
-  const [mode, setMode] = useState<Mode>('login');
+  const [mode, setMode] = useState<Mode>(params.get('modo') === 'crear' ? 'signup' : 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

@@ -76,6 +76,29 @@ html.is-app-mode body:has(.login-page) { padding-bottom: 0; }
 
 @media (prefers-reduced-motion: reduce) { .login-field input { transition: none; } }
 
+/* Celular: el formulario completo (con el botón) cabe arriba del teclado. */
+@media (max-width: 899px) {
+  /* Tapa la barra de estado para que el contenido no se encime al hacer scroll */
+  .login-page::before { content: ''; position: fixed; inset: 0 0 auto; z-index: 10; height: env(safe-area-inset-top); background: #0b0a12; }
+  .login-top { min-height: 52px; border-bottom: 0; }
+  .login-main { gap: 16px; padding-top: 8px; }
+  .login-intro { gap: 8px; }
+  .login-kicker { display: none; }
+  .login-headline { margin: 0; font-size: clamp(2.3rem, 11vw, 2.9rem); line-height: .88; }
+  .login-lead { font-size: .88rem; line-height: 1.4; }
+  .login-card { padding: 16px; box-shadow: 4px 4px 0 #8b7cf6; }
+  .login-tabs { margin-bottom: 16px; }
+  .login-tab { min-height: 42px; font-size: .7rem; }
+  .login-form { gap: 12px; }
+  .login-field input { min-height: 50px; scroll-margin: 96px 0 120px; }
+  .login-forgot { min-height: 32px; }
+  .login-submit { min-height: 52px; }
+  .login-divider { margin: 14px 0; }
+
+  /* Escribiendo: fuera el título para que se vea el botón de entrar */
+  .login-page:has(.login-form input:focus) .login-intro { display: none; }
+}
+
 /* Escritorio: el texto a la izquierda y la tarjeta a la derecha, como Sube un spot. */
 @media (min-width: 900px) {
   .login-top { min-height: 76px; padding: 0 clamp(20px, 4vw, 60px); }

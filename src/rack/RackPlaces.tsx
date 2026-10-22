@@ -27,6 +27,7 @@ import { SPOT_MAP_LINKS } from './spotMapLinks';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
+import { FEED_PROMO_EVERY } from '../lib/appSession';
 import { RegistrationModal } from '../components/RegistrationModal';
 import { BruukSelect } from '../components/BruukSelect';
 
@@ -374,7 +375,7 @@ export function RackPlaces() {
           const nextIndex = modulo(activeIndex + offset, count);
           const returningToRadar = offset < 0 && radarBoundariesRef.current.has(activeIndex);
           const knownRadarBoundary = radarBoundariesRef.current.has(nextIndex);
-          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % 6 === 0;
+          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % FEED_PROMO_EVERY === 0;
 
           if (returningToRadar) {
             setIsRadarSlide(true);

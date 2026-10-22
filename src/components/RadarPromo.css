@@ -203,7 +203,8 @@
 .radar-promo-rack__actions a:focus-visible,
 .radar-promo-rack__copy button:hover,
 .radar-promo-rack__copy button:focus-visible { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #6366f1; }
-.radar-promo-rack__actions button { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); box-shadow: none; }
+.radar-promo-rack__actions button,
+.radar-promo-rack__actions .radar-promo-rack__secondary { color: #fff; background: transparent; border-color: rgba(255,255,255,.4); box-shadow: none; }
 
 .radar-promo-rack__hint {
   position: absolute;
