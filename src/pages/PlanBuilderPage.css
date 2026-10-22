@@ -108,6 +108,12 @@
   .plan-builder-page.is-in-progress .plan-builder-main { padding-top: 12px; }
   .plan-builder-page.is-in-progress .plan-builder-copy { display: none; }
   .plan-builder-page.is-in-progress .plan-builder-card { min-height: calc(var(--app-dvh) - 88px - env(safe-area-inset-bottom)); }
+  /* Que GIRAR y ARMAR PLAN se vean sin deslizar */
+  .plan-builder-copy > p { display: none; }
+  .plan-slot { min-height: 96px; }
+  .plan-slot.is-empty { min-height: 60px; }
+  /* Como en la app: GIRAR / ARMAR PLAN pegados abajo, siempre a la vista */
+  .plan-roulette .plan-step-actions { position: sticky; bottom: 0; z-index: 10; margin-inline: -18px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); background: #f7f6ff; border-top: 1.5px solid rgba(11,10,18,.12); }
 }
 
 @media (max-width: 380px) {
@@ -147,6 +153,14 @@
 .plan-roulette-moments button + button { border-left: 1.5px solid #0b0a12; }
 .plan-roulette-moments button.is-active { color: #fff; background: #0b0a12; }
 .plan-roulette-moments button.is-active svg { color: #b8affe; }
+
+/* Zona: fila compacta de texto, debajo del momento */
+.plan-roulette-zones { display: flex; align-items: center; gap: 6px; color: #6557d8; }
+.plan-roulette-zones svg { flex: none; }
+.plan-roulette-zones button { flex: 1; min-height: 36px; padding: 0 4px; color: #0b0a12; background: transparent; border: 1.5px solid rgba(11,10,18,.25); font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-zones button.is-active { color: #fff; background: #0b0a12; border-color: #0b0a12; }
+.plan-roulette-zones button:disabled { opacity: .45; }
+.plan-roulette-zones button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
 
 .plan-roulette-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .plan-roulette-interests { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }

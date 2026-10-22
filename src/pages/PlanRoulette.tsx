@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dices, Lock, LockOpen, Moon, Shuffle, Sparkles, Sun, Sunrise, type LucideIcon } from 'lucide-react';
+import { Dices, Lock, LockOpen, MapPin, Moon, Shuffle, Sparkles, Sun, Sunrise, type LucideIcon } from 'lucide-react';
 import {
   INTEREST_OPTIONS,
   MOMENT_INTERESTS,
   PLAN_PLACES,
   PLAN_PLACES_BY_ID,
   ROULETTE_MOMENTS,
+  ROULETTE_ZONES,
   STOP_OPTIONS,
   type PlanInterest,
   type PlanPlace,
   type RouletteMoment,
+  type RouletteZone,
 } from '../data/planBuilder';
 import { INTEREST_ICONS, placeIcon } from '../lib/placeIcons';
 
 export type RouletteSlot = { placeId: string; locked: boolean };
-export type RouletteState = { moment: RouletteMoment; interests: PlanInterest[]; count: number; slots: RouletteSlot[] };
+export type RouletteState = { moment: RouletteMoment; zone: RouletteZone; interests: PlanInterest[]; count: number; slots: RouletteSlot[] };
 
 const SPIN_TICK_MS = 70;
 const SPIN_FIRST_STOP_MS = 650;
@@ -38,16 +40,18 @@ const allowedInterests = ({ moment, interests }: Pick<RouletteState, 'moment' | 
   return chosen.length > 0 ? chosen : forMoment;
 };
 
-const roulettePool = (state: Pick<RouletteState, 'moment' | 'interests'>) => {
+const roulettePool = (state: Pick<RouletteState, 'moment' | 'interests' | 'zone'>) => {
   const interests = allowedInterests(state);
-  return PLAN_PLACES.filter((place) => interests.includes(place.interest));
+  return PLAN_PLACES.filter((place) => interests.includes(place.interest) && (state.zone === 'toda' || place.zone === state.zone));
 };
 
 // Llena las casillas sin fijar repartiendo categorías, para que no salgan tres cafés seguidos.
+// Con "Toda la ciudad", después de la primera parada busca lugares de la misma zona: así la ruta se puede caminar.
 const pickSlots = (state: RouletteState): RouletteSlot[] => {
   const pool = roulettePool(state);
   const kept = state.slots.slice(0, state.count);
   const used = new Set(kept.filter((slot) => slot.locked).map((slot) => slot.placeId));
+  let anchorZone = kept.map((slot) => (slot.locked ? PLAN_PLACES_BY_ID.get(slot.placeId)?.zone : undefined)).find(Boolean);
   const interests = shuffle([...new Set(pool.map((place) => place.interest))]);
   let turn = 0;
   return Array.from({ length: state.count }, (_, index) => {
@@ -55,10 +59,13 @@ const pickSlots = (state: RouletteState): RouletteSlot[] => {
     if (current?.locked) return current;
     const interest = interests[turn++ % interests.length];
     const options = pool.filter((place) => !used.has(place.id));
-    const preferred = options.filter((place) => place.interest === interest);
-    const place = randomItem(preferred.length > 0 ? preferred : options);
+    const nearby = anchorZone ? options.filter((place) => place.zone === anchorZone) : options;
+    const candidates = nearby.length > 0 ? nearby : options;
+    const preferred = candidates.filter((place) => place.interest === interest);
+    const place = randomItem(preferred.length > 0 ? preferred : candidates);
     if (!place) return null;
     used.add(place.id);
+    anchorZone ??= place.zone;
     return { placeId: place.id, locked: false };
   }).filter((slot): slot is RouletteSlot => slot !== null);
 };
@@ -155,6 +162,20 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
         })}
       </div>
 
+      <div className="plan-roulette-zones" role="radiogroup" aria-label="¿En qué zona?">
+        <MapPin size={15} strokeWidth={2.4} aria-hidden="true" />
+        {ROULETTE_ZONES.map((option) => {
+          const selected = state.zone === option.value;
+          // Una zona sin lugares suficientes a esa hora no se puede elegir
+          const tooFew = roulettePool({ ...state, zone: option.value }).length < state.count;
+          return (
+            <button key={option.value} type="button" role="radio" aria-checked={selected} title={tooFew ? `${option.hint}: pocos lugares a esa hora` : option.hint} className={selected ? 'is-active' : ''} onClick={() => onChange({ ...state, zone: option.value, slots: state.slots.filter((slot) => slot.locked) })} disabled={isSpinning || (tooFew && !selected)}>
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="plan-roulette-tools">
         <div className="plan-roulette-interests" role="group" aria-label="Qué entra en la ruleta">
           {INTEREST_OPTIONS.filter((option) => MOMENT_INTERESTS[state.moment].includes(option.value)).map((option) => {
@@ -217,7 +238,7 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
           </>
         ) : (
           <button type="button" className="plan-builder-button plan-roulette-spin" onClick={() => spin()} disabled={isSpinning || pool.length < state.count}>
-            <Dices size={22} aria-hidden="true" /> GIRAR
+            <Dices size={22} aria-hidden="true" /> {pool.length < state.count ? 'POCOS LUGARES AQUÍ' : 'GIRAR'}
           </button>
         )}
       </div>

@@ -28,7 +28,7 @@ type StepId = 'moment' | 'company' | 'interests' | 'vibe' | 'budget';
 type Status = 'choosing' | 'loading' | 'result' | 'error';
 type Mode = 'ruleta' | 'preguntas';
 
-const INITIAL_ROULETTE: RouletteState = { moment: 'sorpresa', interests: [], count: 3, slots: [] };
+const INITIAL_ROULETTE: RouletteState = { moment: 'sorpresa', zone: 'toda', interests: [], count: 3, slots: [] };
 
 const STEPS: StepId[] = ['moment', 'company', 'interests', 'vibe', 'budget'];
 
@@ -139,6 +139,7 @@ export function PlanBuilderPage() {
       const result = await requestPlan({
         mode: 'roulette',
         moment: roulette.moment,
+        zone: roulette.zone,
         placeIds,
         locked: roulette.slots.filter((slot) => slot.locked).map((slot) => slot.placeId),
       });

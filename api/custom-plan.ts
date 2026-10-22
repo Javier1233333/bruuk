@@ -8,6 +8,7 @@ import {
   PLAN_PLACES,
   PLAN_PLACES_BY_ID,
   ROULETTE_MOMENTS,
+  ROULETTE_ZONES,
   VIBE_OPTIONS,
   labelFor,
   parsePlanChoices,
@@ -20,8 +21,10 @@ import {
 } from '../src/data/planBuilder.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
-const MAX_PLACES_PER_INTEREST = 30;
-const MAX_ROULETTE_BACKUPS = 45;
+// Pocos lugares por llamada: el catálogo es casi todo el costo en tokens.
+const MAX_PLACES_PER_INTEREST = 12;
+const MAX_ROULETTE_BACKUPS = 12;
+const MAX_INFO_LENGTH = 140;
 
 const clean = (value: unknown, maxLength: number) =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, maxLength) : '';
@@ -72,8 +75,28 @@ const catalogFor = (choices: PlanChoices, exclude: Set<string> = new Set()) =>
     shuffle(PLAN_PLACES.filter((place) => place.interest === interest && !exclude.has(place.id))).slice(0, MAX_PLACES_PER_INTEREST),
   );
 
-const catalogText = (places: PlanPlace[]) =>
-  places.map((place) => [place.id, place.name, place.type, place.price ?? 's/p', place.tip && place.tip !== place.description ? `${place.description} Ve por: ${place.tip}.` : place.description].join(' | ')).join('\n');
+const ZONE_LABEL = Object.fromEntries(ROULETTE_ZONES.map((zone) => [zone.value, zone.label]));
+
+// Una línea corta por lugar: "n|nombre|tipo|precio|zona|qué es". El modelo responde con n, no con ids largos.
+const catalogLine = (place: PlanPlace, n: number, fixed = false) =>
+  [
+    `${fixed ? '*' : ''}${n}`,
+    place.name,
+    place.type,
+    place.price ?? '',
+    place.zone ? ZONE_LABEL[place.zone] : '',
+    clean(place.tip || place.description, MAX_INFO_LENGTH),
+  ].join('|');
+
+// Numera los lugares para el prompt y traduce de vuelta lo que conteste el modelo.
+const numbered = (places: PlanPlace[]) => {
+  const list = [...new Map(places.map((place) => [place.id, place])).values()];
+  return {
+    list,
+    text: (fixed: Set<string> = new Set()) => list.map((place, index) => catalogLine(place, index + 1, fixed.has(place.id))).join('\n'),
+    idOf: (value: unknown) => list[Number(value) - 1]?.id ?? '',
+  };
+};
 
 const choicesText = (choices: PlanChoices) =>
   [
@@ -87,47 +110,44 @@ const choicesText = (choices: PlanChoices) =>
     .filter(Boolean)
     .join('\n');
 
-const PLAN_RULES = [
-  'Eres el editor de Bruuk, una guía hecha por personas para salir en Guadalajara. Lema: menos pantalla, más mundo.',
-  'Armas planes usando EXCLUSIVAMENTE lugares del catálogo. Nunca inventes lugares, direcciones, precios, platillos ni horarios que no estén en la descripción del catálogo.',
-  'Todo lo que digas de un lugar debe venir de su descripción en el catálogo. Si el catálogo no lo dice, no lo digas.',
-  'Escribe en español de México, cercano y directo. Nada de frases de folleto ni emojis.',
-  'Ordena las paradas en una secuencia lógica para el momento del día (el atardecer cae alrededor de las 19:00; los bares van de noche).',
-  'Si el catálogo menciona días u horarios (un tianguis que sólo abre sábado), respétalos y dilo en "why".',
-];
-
-const PLAN_PROMPT = [
-  ...PLAN_RULES,
-  'Responde sólo JSON: {"title": "máx. 6 palabras", "intro": "1 o 2 frases", "stops": [{"placeId": "id exacto del catálogo", "time": "ej. 10:00", "why": "por qué encaja, 1 o 2 frases basadas en el catálogo"}], "closing": "1 frase"}',
+// Corto a propósito: va en cada llamada. El estilo Bruuk en pocas reglas.
+const BASE_RULES = [
+  'Eres el editor de Bruuk, guía de Guadalajara hecha por personas. Lema: menos pantalla, más mundo.',
+  'Usa SÓLO lugares de la lista, citándolos por su número n. No inventes nada: todo lo que digas de un lugar sale de su línea.',
+  'Español de México, directo y cercano. Sin emojis ni frases de folleto.',
+  'Ordena por hora (desayuno, comida, atardecer ~19:00, bares de noche) y pon seguidas las paradas de la misma zona.',
+  'Si la línea dice días u horarios, respétalos y dilo en "why".',
 ].join('\n');
 
-const ROULETTE_PROMPT = [
-  ...PLAN_RULES,
-  'Esta vez las paradas las eligió una ruleta al azar. Tu trabajo es encontrar el hilo que las une (un antojo, una zona, un tipo de lugar, una forma de pasar el día) y ordenarlas para que el recorrido tenga sentido.',
-  'Usa las paradas que salieron. Sólo si una parada NO FIJA de plano no cabe (un bar en un plan de mañana, un tianguis cerrado, dos lugares que se contradicen), cámbiala por una del catálogo de apoyo que refuerce el hilo. Cambia lo menos posible. Las FIJAS nunca se cambian.',
-  'Responde sólo JSON: {"title": "máx. 6 palabras", "thread": "el hilo que une las paradas, 1 frase", "intro": "1 o 2 frases", "stops": [{"placeId": "id exacto", "time": "ej. 10:00", "why": "qué aporta al hilo, 1 o 2 frases basadas en el catálogo"}], "closing": "1 frase"}',
-].join('\n');
+const PLAN_PROMPT = `${BASE_RULES}
+Responde sólo JSON: {"title":"máx 6 palabras","intro":"1 frase","stops":[{"n":1,"time":"10:00","why":"1 frase"}],"closing":"1 frase"}`;
 
-const toStop = (value: unknown): PlanStop => {
+const ROULETTE_PROMPT = `${BASE_RULES}
+Las paradas las eligió una ruleta. Encuentra el hilo que las une (un antojo, una zona, una forma de pasar el día) y ordénalas.
+Usa las que salieron. Sólo si una sin * de plano no cabe (bar en la mañana, tianguis cerrado, otra punta de la ciudad), cámbiala por una de "apoyo". Las de * nunca se cambian.
+Responde sólo JSON: {"title":"máx 6 palabras","thread":"1 frase","intro":"1 frase","stops":[{"n":1,"time":"10:00","why":"1 frase"}],"closing":"1 frase"}`;
+
+const toStop = (value: unknown, idOf: (n: unknown) => string): PlanStop => {
   const stop = (value ?? {}) as Record<string, unknown>;
-  return { placeId: clean(stop.placeId, 80), time: clean(stop.time, 20), why: clean(stop.why, 400) };
+  return { placeId: idOf(stop.n), time: clean(stop.time, 20), why: clean(stop.why, 300) };
 };
 
 const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> => {
+  const catalog = numbered(catalogFor(choices));
   const user = [
     'Opciones elegidas:',
     choicesText(choices),
-    `- Paradas: exactamente ${choices.stops}, sin repetir lugares, cubriendo los intereses elegidos cuando sea posible.`,
+    `- Paradas: exactamente ${choices.stops}, sin repetir, cubriendo los intereses.`,
     '',
-    'Catálogo (id | nombre | tipo | precio | descripción):',
-    catalogText(catalogFor(choices)),
+    'Lista (n|nombre|tipo|precio|zona|qué es):',
+    catalog.text(),
   ].join('\n');
-  const raw = await askDeepSeek(PLAN_PROMPT, user, 1200, 1.1);
+  const raw = await askDeepSeek(PLAN_PROMPT, user, 600, 1.1);
   if (!raw) return null;
 
   const seen = new Set<string>();
   const stops = (Array.isArray(raw.stops) ? raw.stops : [])
-    .map(toStop)
+    .map((stop) => toStop(stop, catalog.idOf))
     .filter((stop) => {
       if (!PLAN_PLACES_BY_ID.has(stop.placeId) || seen.has(stop.placeId)) return false;
       seen.add(stop.placeId);
@@ -148,6 +168,7 @@ const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> =>
 const swapStop = async (choices: PlanChoices, planPlaceIds: string[], swapIndex: number): Promise<PlanStop | null> => {
   const current = PLAN_PLACES_BY_ID.get(planPlaceIds[swapIndex])!;
   const exclude = new Set(planPlaceIds);
+  const catalog = numbered(catalogFor(choices, exclude));
   const user = [
     'Opciones elegidas:',
     choicesText(choices),
@@ -155,40 +176,44 @@ const swapStop = async (choices: PlanChoices, planPlaceIds: string[], swapIndex:
     'Plan actual, en orden:',
     ...planPlaceIds.map((id, index) => `${index + 1}. ${PLAN_PLACES_BY_ID.get(id)!.name}${index === swapIndex ? '  <- REEMPLAZAR' : ''}`),
     '',
-    `La persona quiere cambiar "${current.name}" por otra opción distinta que encaje en esa misma posición del recorrido.`,
-    'Devuelve un solo objeto en "stops" con el lugar nuevo.',
+    `Cambia "${current.name}" por otro lugar que encaje en esa posición. Devuelve sólo esa parada en "stops".`,
     '',
-    'Catálogo (id | nombre | tipo | precio | descripción):',
-    catalogText(catalogFor(choices, exclude)),
+    'Lista (n|nombre|tipo|precio|zona|qué es):',
+    catalog.text(),
   ].join('\n');
-  const raw = await askDeepSeek(PLAN_PROMPT, user, 500, 1.1);
-  const stop = toStop(Array.isArray(raw?.stops) ? raw.stops[0] : null);
+  const raw = await askDeepSeek(PLAN_PROMPT, user, 250, 1.1);
+  const stop = toStop(Array.isArray(raw?.stops) ? raw.stops[0] : null, catalog.idOf);
   if (!PLAN_PLACES_BY_ID.has(stop.placeId) || exclude.has(stop.placeId)) return null;
   return stop;
 };
 
 // Ruleta: respeta las paradas que salieron y deja que la IA cambie sólo las que no encajan.
-const generateRoulettePlan = async ({ placeIds, locked, moment }: RouletteRequest): Promise<CustomPlan | null> => {
+const generateRoulettePlan = async ({ placeIds, locked, moment, zone }: RouletteRequest): Promise<CustomPlan | null> => {
   const spun = new Set(placeIds);
-  const backups = shuffle(PLAN_PLACES.filter((place) => !spun.has(place.id) && MOMENT_INTERESTS[moment].includes(place.interest))).slice(0, MAX_ROULETTE_BACKUPS);
-  const momentLabel = moment === 'sorpresa' ? 'Cualquier hora; elige tú la que mejor le quede a estas paradas' : labelFor(ROULETTE_MOMENTS, moment);
+  // Reemplazos sólo de la misma zona que lo que salió, para que el cambio no rompa la ruta.
+  const spunZones = new Set(placeIds.map((id) => PLAN_PLACES_BY_ID.get(id)?.zone).filter(Boolean));
+  const nearby = (place: PlanPlace) => (zone === 'toda' ? spunZones.size === 0 || spunZones.has(place.zone) : place.zone === zone);
+  const backups = shuffle(PLAN_PLACES.filter((place) => !spun.has(place.id) && MOMENT_INTERESTS[moment].includes(place.interest) && nearby(place))).slice(0, MAX_ROULETTE_BACKUPS);
+  const spunPlaces = placeIds.map((id) => PLAN_PLACES_BY_ID.get(id)!);
+  const catalog = numbered([...spunPlaces, ...backups]);
+  const lines = catalog.text(new Set(locked)).split('\n');
+  const momentLabel = moment === 'sorpresa' ? 'cualquier hora (elige la mejor)' : labelFor(ROULETTE_MOMENTS, moment);
   const user = [
-    `Momento: ${momentLabel}`,
-    `Paradas: exactamente ${placeIds.length}, sin repetir lugares.`,
+    `Momento: ${momentLabel}. Paradas: exactamente ${placeIds.length}, sin repetir.`,
     '',
-    'Lo que salió en la ruleta (id | nombre | tipo | precio | descripción):',
-    ...placeIds.map((id) => `${locked.includes(id) ? '[FIJA] ' : ''}${catalogText([PLAN_PLACES_BY_ID.get(id)!])}`),
+    'Salieron (n|nombre|tipo|precio|zona|qué es; * = fija):',
+    ...lines.slice(0, spunPlaces.length),
     '',
-    'Catálogo de apoyo, sólo para reemplazos (id | nombre | tipo | precio | descripción):',
-    catalogText(backups),
+    'Apoyo, sólo para reemplazos:',
+    ...lines.slice(spunPlaces.length),
   ].join('\n');
-  const raw = await askDeepSeek(ROULETTE_PROMPT, user, 1300, 0.9);
+  const raw = await askDeepSeek(ROULETTE_PROMPT, user, 650, 0.9);
   if (!raw) return null;
 
-  const allowed = new Set([...placeIds, ...backups.map((place) => place.id)]);
+  const allowed = new Set(catalog.list.map((place) => place.id));
   const seen = new Set<string>();
   const stops = (Array.isArray(raw.stops) ? raw.stops : [])
-    .map(toStop)
+    .map((stop) => toStop(stop, catalog.idOf))
     .filter((stop) => {
       if (!allowed.has(stop.placeId) || seen.has(stop.placeId)) return false;
       seen.add(stop.placeId);
