@@ -9,6 +9,8 @@ import {
 import {
   ArrowUpRight,
   BookOpen,
+  ChevronDown,
+  ChevronUp,
   Disc3,
   Grid3X3,
   List,
@@ -404,6 +406,14 @@ export function RackPlaces() {
     }, 90);
   };
 
+  // Botones de la esquina (computadora): avanzan una tarjeta, igual que un giro de la rueda
+  const scrollFeedBy = (direction: 1 | -1) => {
+    const feed = feedRef.current;
+    if (!feed) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    feed.scrollBy({ top: direction * feed.clientHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
   const changeFilter = (filter: PlaceFilter) => {
     const nextView =
       filter !== 'tianguis' && viewMode === 'history'
@@ -768,6 +778,14 @@ export function RackPlaces() {
               />
             );
           })}
+          <div className="rack-feed-arrows">
+            <button type="button" onClick={() => scrollFeedBy(-1)} aria-label="Lugar anterior">
+              <ChevronUp size={22} strokeWidth={2.4} aria-hidden="true" />
+            </button>
+            <button type="button" onClick={() => scrollFeedBy(1)} aria-label="Siguiente lugar" disabled={isRadarSlide && isFeedLocked()}>
+              <ChevronDown size={22} strokeWidth={2.4} aria-hidden="true" />
+            </button>
+          </div>
           <div className="rack-places-feed-status" aria-live="polite">
             {isRadarSlide ? 'RADAR / BRUUK' : <>{String(activeIndex + 1).padStart(2, '0')} / {String(filteredPlaces.length).padStart(2, '0')}</>}
           </div>

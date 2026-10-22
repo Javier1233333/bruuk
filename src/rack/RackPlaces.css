@@ -368,6 +368,18 @@
   letter-spacing: 0.14em;
 }
 
+/* Flechas para avanzar con el mouse: solo en computadora (en el teléfono se desliza) */
+.rack-feed-arrows { position: fixed; z-index: 30; right: 24px; bottom: 56px; display: none; flex-direction: column; gap: 8px; }
+.rack-feed-arrows button { width: 48px; height: 48px; display: grid; place-items: center; color: #09090d; background: #ffffff; border: 2px solid #ffffff; box-shadow: 4px 4px 0 var(--rack-purple); cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease; }
+.rack-feed-arrows button:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--rack-purple); }
+.rack-feed-arrows button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--rack-purple); }
+.rack-feed-arrows button:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+.rack-feed-arrows button:focus-visible { outline: 2px solid var(--rack-purple); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+  .rack-feed-arrows { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) { .rack-feed-arrows button { transition: none; } }
+
 .rack-places-feed-status {
   position: fixed;
   z-index: 30;
