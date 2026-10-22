@@ -15,6 +15,7 @@ html.is-app-mode body:has(.login-page) { padding-bottom: 0; }
 .login-kicker { color: #b8affe; font: 800 .64rem 'Outfit', sans-serif; letter-spacing: .16em; }
 .login-headline { margin: 8px 0 0; padding-top: .08em; font: 900 clamp(3rem, 17vw, 4.4rem)/.84 'Outfit', sans-serif; letter-spacing: -.06em; }
 .login-headline em { color: #8b7cf6; font-style: normal; }
+.login-app-icon { display: none; }
 .login-lead { max-width: 440px; margin: 0; color: #aaa7ba; font-size: .95rem; line-height: 1.5; }
 
 .login-card { width: 100%; padding: 18px; color: #0b0a12; background: #f7f6ff; border: 0; box-shadow: 6px 6px 0 #8b7cf6; }
@@ -74,29 +75,41 @@ html.is-app-mode body:has(.login-page) { padding-bottom: 0; }
 .login-back a:hover { color: #f7f6ff; }
 .w-full { width: 100%; }
 
-@media (prefers-reduced-motion: reduce) { .login-field input { transition: none; } }
+.login-spinner { animation: login-spin .8s linear infinite; }
+@keyframes login-spin { to { transform: rotate(360deg); } }
 
-/* Celular: el formulario completo (con el botón) cabe arriba del teclado. */
+@media (prefers-reduced-motion: reduce) { .login-field input { transition: none; } .login-spinner { animation: none; } }
+
+/* Celular: como el login de una app. Marca arriba sobre fondo tinta y el formulario
+   en una hoja clara pegada abajo; con el teclado abierto el botón sigue a la vista. */
 @media (max-width: 899px) {
   /* Tapa la barra de estado para que el contenido no se encime al hacer scroll */
   .login-page::before { content: ''; position: fixed; inset: 0 0 auto; z-index: 10; height: env(safe-area-inset-top); background: #0b0a12; }
+  .login-page { overscroll-behavior: contain; }
   .login-top { min-height: 52px; border-bottom: 0; }
-  .login-main { gap: 16px; padding-top: 8px; }
-  .login-intro { gap: 8px; }
+  .login-main { justify-content: flex-end; gap: 0; padding: 8px 0 0; }
+  /* En la app no hay "inicio" al que volver: solo la marca */
+  html.is-app-mode .login-top { display: none; }
+  html.is-app-mode .login-main { padding-top: calc(28px + env(safe-area-inset-top)); }
+  .login-intro { gap: 10px; padding: 0 20px 24px; }
+  .login-app-icon { display: block; width: 56px; height: 56px; margin-bottom: 6px; border: 1.5px solid rgba(255,255,255,.18); }
   .login-kicker { display: none; }
-  .login-headline { margin: 0; font-size: clamp(2.3rem, 11vw, 2.9rem); line-height: .88; }
-  .login-lead { font-size: .88rem; line-height: 1.4; }
-  .login-card { padding: 16px; box-shadow: 4px 4px 0 #8b7cf6; }
-  .login-tabs { margin-bottom: 16px; }
-  .login-tab { min-height: 42px; font-size: .7rem; }
+  .login-headline { margin: 0; font-size: clamp(2.4rem, 12vw, 3rem); line-height: .86; }
+  .login-lead { font-size: .9rem; line-height: 1.45; }
+  .login-card { padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); border-top: 4px solid #8b7cf6; box-shadow: none; }
+  .login-tabs { margin-bottom: 18px; }
+  .login-tab { min-height: 44px; font-size: .7rem; }
   .login-form { gap: 12px; }
-  .login-field input { min-height: 50px; scroll-margin: 96px 0 120px; }
-  .login-forgot { min-height: 32px; }
-  .login-submit { min-height: 52px; }
-  .login-divider { margin: 14px 0; }
+  .login-field input { min-height: 52px; scroll-margin: 96px 0 140px; }
+  .login-forgot { min-height: 44px; }
+  .login-submit { min-height: 54px; }
+  .login-divider { margin: 16px 0; }
 
-  /* Escribiendo: fuera el título para que se vea el botón de entrar */
+  /* Escribiendo: fuera la marca para que el formulario y el botón quepan arriba del teclado */
   .login-page:has(.login-form input:focus) .login-intro { display: none; }
+  .login-page:has(.login-form input:focus) .login-main { padding-top: env(safe-area-inset-top); }
+  /* Ya eligió correo: Google y el separador ya no hacen falta mientras escribe */
+  .login-page:has(.login-form input:focus) :is(.btn-google, .login-divider) { display: none; }
 }
 
 /* Escritorio: el texto a la izquierda y la tarjeta a la derecha, como Sube un spot. */

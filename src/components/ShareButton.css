@@ -1,0 +1,2 @@
+.share-button { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: inherit; background: none; border: 0; font: inherit; cursor: pointer; touch-action: manipulation; }
+.share-button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 3px; }

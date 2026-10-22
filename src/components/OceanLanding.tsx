@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ChevronDown,
 } from 'lucide-react';
@@ -46,15 +46,14 @@ export function OceanLanding() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
   const [isRadarOpen, setIsRadarOpen] = useState(false);
   const allSpots = useSpots();
-  const spots = useMemo(
-    () =>
-      shuffleArray(
-        (allSpots as Spot[]).filter(
-          (spot) => spot.city === activeCity,
-        ),
-      ),
-    [allSpots, activeCity],
-  );
+  // Enlace compartido (?spot=): ese spot va primero
+  const [searchParams] = useSearchParams();
+  const sharedSpotId = searchParams.get('spot');
+  const spots = useMemo(() => {
+    const shuffled = shuffleArray((allSpots as Spot[]).filter((spot) => spot.city === activeCity));
+    const shared = shuffled.find((spot) => String(spot.id) === sharedSpotId);
+    return shared ? [shared, ...shuffled.filter((spot) => spot !== shared)] : shuffled;
+  }, [allSpots, activeCity, sharedSpotId]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

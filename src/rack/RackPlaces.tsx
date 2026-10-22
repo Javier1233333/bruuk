@@ -27,6 +27,7 @@ import { SPOT_MAP_LINKS } from './spotMapLinks';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
+import { ShareButton } from '../components/ShareButton';
 import { feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from '../components/RegistrationModal';
 import { BruukSelect } from '../components/BruukSelect';
@@ -251,7 +252,10 @@ export function RackPlaces() {
   const [viewMode, setViewMode] = useState<ViewMode>(() =>
     viewFromSearchParams(searchParams, initialFilter),
   );
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Enlace compartido (?lugar=): el feed empieza en ese lugar
+  const [activeIndex, setActiveIndex] = useState(() =>
+    Math.max(0, RACK_PLACES.findIndex((place) => place.name === searchParams.get('lugar'))),
+  );
   const [isMapOpen, setIsMapOpen] = useState(
     () => searchParams.get('view') === 'map',
   );
@@ -1090,6 +1094,13 @@ function PlaceFeedCard({
         >
           ABRIR EN MAPS <ArrowUpRight size={18} aria-hidden="true" />
         </a>
+        <ShareButton
+          className="rack-place-share"
+          title={place.name}
+          text={`Mira ${place.name} en Bruuk`}
+          path={`/guadalajara/rack?lugar=${encodeURIComponent(place.name)}`}
+          tabIndex={isClone ? -1 : undefined}
+        />
         <span className="rack-place-scroll-hint">DESLIZA PARA SEGUIR ↓</span>
       </div>
     </article>

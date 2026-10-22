@@ -756,3 +756,9 @@
 .spot-card__link:hover {
   opacity: 0.6;
 }
+
+/* Maps y Compartir en la misma fila; 44px de alto para tocarlos con el dedo */
+.spot-card__actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.spot-card__actions .spot-card__link { min-height: 44px; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.spot-card__share { min-height: 44px; padding: 0 12px; color: #000; border: 1.5px solid #000; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+.spot-card__share:hover { background: #000; color: #fff; }

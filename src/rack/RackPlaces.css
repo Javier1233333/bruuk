@@ -353,6 +353,10 @@
   box-shadow: 7px 7px 0 var(--rack-purple);
 }
 
+/* Compartir: secundario, debajo de "Abrir en Maps" */
+.rack-place-share { min-height: 44px; margin-top: 14px; padding: 0 1rem; align-self: flex-start; color: #ffffff; border: 2px solid rgba(255, 255, 255, 0.4); font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.rack-place-share:hover { border-color: #ffffff; }
+
 .rack-place-scroll-hint {
   position: absolute;
   right: 28px;
