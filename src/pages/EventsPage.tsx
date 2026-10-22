@@ -7,9 +7,9 @@ import { RegistrationModal } from '../components/RegistrationModal';
 import './EventsPage.css';
 
 const FORMATS = [
-  { number: '01', title: 'Pocos lugares', copy: 'Grupos chicos, para que sí se pueda platicar.' },
-  { number: '02', title: 'Spots de la guía', copy: 'Cada encuentro pasa en un lugar que ya recomendamos.' },
-  { number: '03', title: 'Sin pantalla', copy: 'El plan es estar ahí, no grabarlo.' },
+  { number: '01', title: 'Pocos lugares', copy: 'Grupos chicos para platicar.' },
+  { number: '02', title: 'Spots de la guía', copy: 'En lugares que ya recomendamos.' },
+  { number: '03', title: 'Sin pantalla', copy: 'Estar ahí, no grabarlo.' },
 ];
 
 export default function EventsPage() {
@@ -26,10 +26,13 @@ export default function EventsPage() {
       </header>
 
       <main className="events-main">
-        <span className="events-kicker">/ BRUUK EVENTOS · GDL</span>
+        {/* Todo en una pantalla: textos de una línea, sin deslizar */}
+        <div className="events-top">
+          <span className="events-kicker">/ BRUUK EVENTOS · GDL</span>
+          <span className="events-soon">PRÓXIMAMENTE</span>
+        </div>
         <h1>ENCUENTROS<br />EN PERSONA.</h1>
-        <span className="events-soon">PRÓXIMAMENTE</span>
-        <p className="events-lead">Estamos armando eventos de Bruuk en Guadalajara: planes reales con gente real. Cuando abramos el primero, la comunidad de Radar se entera antes.</p>
+        <p className="events-lead">Planes reales con gente real. Te avisamos cuando abramos el primero.</p>
 
         <ol className="events-formats">
           {FORMATS.map((format) => (
@@ -45,7 +48,7 @@ export default function EventsPage() {
             <Bell size={18} aria-hidden="true" /> AVÍSAME
           </button>
           <Link className="events-secondary" to="/guadalajara/arma-tu-plan">
-            <Dices size={18} aria-hidden="true" /> MIENTRAS, GIRA UN PLAN <ArrowRight size={16} aria-hidden="true" />
+            <Dices size={18} aria-hidden="true" /> GIRA UN PLAN <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
       </main>
