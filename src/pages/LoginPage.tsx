@@ -3,12 +3,10 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
-import { auth, emailActionSettings, googleProvider } from '../lib/firebase';
+import { auth, googleProvider, sendResetEmail, sendVerificationEmail } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import { IS_APP_MODE } from '../lib/appMode';
@@ -54,7 +52,7 @@ export function LoginPage() {
 
     try {
       const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      sendEmailVerification(created.user, emailActionSettings()).catch(() => {});
+      sendVerificationEmail(created.user).catch(() => {});
     } catch (err) {
       setError(translateError(err));
     }
@@ -70,7 +68,7 @@ export function LoginPage() {
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, target, emailActionSettings());
+      await sendResetEmail(target);
       // Mismo mensaje exista o no la cuenta, para no revelar qué correos están registrados
       setNotice(`Si ${target} tiene cuenta, te llegará un correo para cambiar tu contraseña.`);
     } catch (err) {

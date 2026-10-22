@@ -4,13 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { Body, Button, Kicker, Logo, openUrl } from '../components/ui';
 import { SITE_URL } from '../lib/catalog';
-import { auth, emailActionSettings } from '../lib/firebase';
+import { auth, sendResetEmail, sendVerificationEmail } from '../lib/firebase';
 import { authErrorMessage } from '../lib/auth';
 import { colors, fonts, space } from '../theme';
 
@@ -41,7 +39,7 @@ export default function LoginScreen() {
         await signInWithEmailAndPassword(auth, email.trim(), password);
       } else {
         const created = await createUserWithEmailAndPassword(auth, email.trim(), password);
-        sendEmailVerification(created.user, emailActionSettings).catch(() => {});
+        sendVerificationEmail(created.user).catch(() => {});
       }
     } catch (submitError) {
       setError(authErrorMessage(submitError));
@@ -56,7 +54,7 @@ export default function LoginScreen() {
     if (!target) return setError('Escribe tu correo y te mandamos un enlace para cambiar tu contraseña.');
     const sent = `Si ${target} tiene cuenta, te llegará un correo para cambiar tu contraseña.`;
     try {
-      await sendPasswordResetEmail(auth, target, emailActionSettings);
+      await sendResetEmail(target);
       setNotice(sent);
     } catch (resetError) {
       // Mismo mensaje exista o no la cuenta, para no revelar qué correos están registrados

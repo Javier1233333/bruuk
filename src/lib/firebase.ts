@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, type User } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -36,3 +36,31 @@ export async function getIdToken(forceRefresh = false): Promise<string | null> {
 // contraseña) muestra "Continuar" de regreso a Bruuk. El dominio debe estar
 // en Authentication → Dominios autorizados.
 export const emailActionSettings = () => ({ url: `${window.location.origin}/login` });
+
+// Los correos de cuenta salen de /api/auth-email (diseño de Bruuk y enlace a
+// /auth/action). Si esa API falla, Firebase manda su correo de siempre.
+async function postAuthEmail(body: object, idToken?: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/auth-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function sendVerificationEmail(user: User): Promise<void> {
+  const sent = await postAuthEmail({ type: 'verify' }, await user.getIdToken());
+  if (!sent) await sendEmailVerification(user, emailActionSettings());
+}
+
+export async function sendResetEmail(email: string): Promise<void> {
+  const sent = await postAuthEmail({ type: 'reset', email });
+  if (!sent) await sendPasswordResetEmail(auth, email, emailActionSettings());
+}

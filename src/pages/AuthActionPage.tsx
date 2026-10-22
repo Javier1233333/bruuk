@@ -5,10 +5,9 @@ import {
   applyActionCode,
   checkActionCode,
   confirmPasswordReset,
-  sendPasswordResetEmail,
   verifyPasswordResetCode,
 } from 'firebase/auth';
-import { auth, emailActionSettings } from '../lib/firebase';
+import { auth, sendResetEmail } from '../lib/firebase';
 import { BruukLogo } from '../components/BruukLogo';
 import './LoginPage.css';
 
@@ -121,7 +120,7 @@ export function AuthActionPage() {
 
   const handleSendReset = async (email: string) => {
     try {
-      await sendPasswordResetEmail(auth, email, emailActionSettings());
+      await sendResetEmail(email);
       setResetSent(true);
     } catch {
       setFormError('No pudimos enviar el correo. Intenta desde la pantalla de inicio de sesión.');
