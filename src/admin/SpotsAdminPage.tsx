@@ -6,7 +6,9 @@ import { auth, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
 import { ZONE_NAMES, placeZone, spotZone } from '../lib/zones';
-import { getSpotVisual } from '../lib/spotVisual';
+import { CategoryGroup, RowImage } from './adminShared';
+import { groupByCategory, rackCategory, spotCategory } from './adminCategories';
+import { RackView } from './RackAdmin';
 import {
   MAX_IMAGE_BYTES,
   deleteSpot,
@@ -14,50 +16,17 @@ import {
   removeImage,
   saveSpot,
   setSpotActive,
+  rackStore,
   setSpotZone,
   uploadSpotImage,
   watchSpots,
 } from './spotsStore';
-import type { SpotDoc, SpotInput } from './spotsStore';
+import type { RackDoc, SpotDoc, SpotInput } from './spotsStore';
 import '../pages/LoginPage.css';
 import './SpotsAdminPage.css';
 
 type Filter = 'all' | 'active' | 'hidden';
-type View = 'spots' | 'zonas';
-
-// Mismas categorías que las tarjetas del sitio (getSpotVisual), en este orden
-const CATEGORY_ORDER = ['CAFÉ', 'PAN', 'POSTRE', 'COMIDA', 'BAR', 'NOCHE', 'TIENDA', 'ATARDECER'];
-
-function groupByCategory<T>(items: T[], spotOf: (item: T) => SpotDoc) {
-  const groups = new Map<string, T[]>();
-  for (const item of items) {
-    const label = getSpotVisual(spotOf(item).type).label;
-    groups.set(label, [...(groups.get(label) ?? []), item]);
-  }
-  return [...groups.entries()]
-    .sort(([a], [b]) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b))
-    .map(([label, groupItems]) => ({
-      label,
-      Icon: getSpotVisual(spotOf(groupItems[0]).type).Icon,
-      items: groupItems,
-      missingZone: groupItems.filter((item) => !spotZone(spotOf(item))).length,
-    }));
-}
-
-// Encabezado plegable de cada categoría: cuántos hay y cuántos sin zona
-function CategoryGroup({ label, Icon, count, missingZone, children }: { label: string; Icon: ReturnType<typeof getSpotVisual>['Icon']; count: number; missingZone: number; children: React.ReactNode }) {
-  return (
-    <details className="sa-group" open>
-      <summary>
-        <Icon size={16} aria-hidden="true" />
-        <span className="sa-group__label">{label}</span>
-        <span className="sa-group__count">{count}</span>
-        {missingZone > 0 && <span className="sa-group__missing">{missingZone} sin zona</span>}
-      </summary>
-      <ul className="sa-list">{children}</ul>
-    </details>
-  );
-}
+type View = 'spots' | 'rack' | 'zonas';
 
 export function SpotsAdminPage() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -144,6 +113,14 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
     (err) => { setLoadError(err.message); setLoaded(true); },
   ), []);
 
+  const [rack, setRack] = useState<RackDoc[]>([]);
+  const [rackLoaded, setRackLoaded] = useState(false);
+  const [rackError, setRackError] = useState<string | null>(null);
+  useEffect(() => rackStore.watch(
+    (data) => { setRack(data); setRackLoaded(true); },
+    (err) => { setRackError(err.message); setRackLoaded(true); },
+  ), []);
+
   const types = useMemo(() => [...new Set(spots.map(s => s.type).filter(Boolean))].sort(), [spots]);
 
   const visible = useMemo(() => {
@@ -156,7 +133,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
   }, [spots, query, filter]);
 
   const activeCount = spots.filter(s => s.active).length;
-  const noZoneCount = spots.filter(s => !spotZone(s)).length;
+  const noZoneCount = spots.filter(s => !spotZone(s)).length + rack.filter(p => !spotZone(p)).length;
 
   const toggleActive = async (spot: SpotDoc) => {
     setRowError(null);
@@ -184,6 +161,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
           <Link to="/" className="sa-logo"><BruukLogo /></Link>
           <nav className="sa-views" aria-label="Secciones del admin">
             <button className={`sa-view${view === 'spots' ? ' is-active' : ''}`} onClick={() => setView('spots')}>Spots</button>
+            <button className={`sa-view${view === 'rack' ? ' is-active' : ''}`} onClick={() => setView('rack')}>Rack</button>
             <button className={`sa-view${view === 'zonas' ? ' is-active' : ''}`} onClick={() => setView('zonas')}>
               Zonas{noZoneCount > 0 && <span className="sa-view__badge">{noZoneCount}</span>}
             </button>
@@ -195,7 +173,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         </div>
       </header>
 
-      {view === 'zonas' ? <ZonesView spots={spots} loaded={loaded} /> : (
+      {view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} /> : (
       <main className="sa-main">
         <div className="sa-toolbar">
           <div className="sa-search">
@@ -235,11 +213,11 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
             {spots.length === 0 ? 'Aún no hay spots. Corre scripts/seed-spots.mjs o crea uno.' : 'Ningún spot coincide.'}
           </p>
         ) : (
-          groupByCategory(visible, (spot) => spot).map((group) => (
+          groupByCategory(visible, spotCategory, (spot) => Boolean(spotZone(spot))).map((group) => (
           <CategoryGroup key={group.label} label={group.label} Icon={group.Icon} count={group.items.length} missingZone={group.missingZone}>
             {group.items.map((spot) => (
               <li key={spot.id} className={`sa-row${spot.active ? '' : ' is-hidden'}${spotZone(spot) ? '' : ' is-no-zone'}`}>
-                <img className="sa-row__img" src={spot.imageUrl} alt="" loading="lazy" />
+                <RowImage src={spot.imageUrl} name={spot.name} />
                 <div className="sa-row__info">
                   <span className="sa-row__name">{spot.name}</span>
                   <span className="sa-row__meta">
@@ -296,38 +274,43 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
 
 /* ── Zonas ─────────────────────────────────────────────────── */
 
-// Asignar colonia a cada spot. Los que no tienen (ni a mano ni por coordenadas) salen
-// primero y en amarillo. El cambio se guarda al momento.
-function ZonesView({ spots, loaded }: { spots: SpotDoc[]; loaded: boolean }) {
+// Asignar colonia a cada spot y lugar de Rack. Los que no tienen (ni a mano ni por coordenadas)
+// salen primero y en amarillo. El cambio se guarda al momento.
+type ZoneRow = { key: string; source: 'spots' | 'rack'; item: SpotDoc | RackDoc; zone: ReturnType<typeof spotZone> };
+
+const rowCategory = (row: ZoneRow) => (row.source === 'spots' ? spotCategory(row.item as SpotDoc) : rackCategory(row.item as RackDoc));
+
+function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: RackDoc[]; loaded: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [onlyMissing, setOnlyMissing] = useState(false);
 
-  const rows = useMemo(() => {
-    const withZone = spots.map((spot) => ({ spot, zone: spotZone(spot) }));
-    return withZone
-      .filter((row) => !onlyMissing || !row.zone)
-      .sort((a, b) => Number(Boolean(a.zone)) - Number(Boolean(b.zone)) || a.spot.name.localeCompare(b.spot.name, 'es'));
-  }, [spots, onlyMissing]);
+  const allRows = useMemo<ZoneRow[]>(() => [
+    ...spots.map((item) => ({ key: `spots/${item.id}`, source: 'spots' as const, item, zone: spotZone(item) })),
+    ...rack.map((item) => ({ key: `rack/${item.id}`, source: 'rack' as const, item, zone: spotZone(item) })),
+  ], [spots, rack]);
+
+  const rows = useMemo(() => allRows
+    .filter((row) => !onlyMissing || !row.zone)
+    .sort((a, b) => Number(Boolean(a.zone)) - Number(Boolean(b.zone)) || a.item.name.localeCompare(b.item.name, 'es')), [allRows, onlyMissing]);
 
   const counts = useMemo(() => {
     const byName = new Map<string, number>();
     let missing = 0;
-    for (const spot of spots) {
-      const zone = spotZone(spot);
-      if (zone) byName.set(zone.name, (byName.get(zone.name) ?? 0) + 1);
+    for (const row of allRows) {
+      if (row.zone) byName.set(row.zone.name, (byName.get(row.zone.name) ?? 0) + 1);
       else missing += 1;
     }
     return { byName, missing };
-  }, [spots]);
+  }, [allRows]);
 
-  const change = async (spot: SpotDoc, value: string) => {
+  const change = async (row: ZoneRow, value: string) => {
     setError(null);
-    setSaving(spot.id);
+    setSaving(row.key);
     try {
-      await setSpotZone(spot.id, value || null);
+      await (row.source === 'spots' ? setSpotZone : rackStore.setZone)(row.item.id, value || null);
     } catch (err) {
-      setError(`No se pudo guardar la zona de ${spot.name}: ${(err as Error).message}`);
+      setError(`No se pudo guardar la zona de ${row.item.name}: ${(err as Error).message}`);
     }
     setSaving(null);
   };
@@ -343,34 +326,35 @@ function ZonesView({ spots, loaded }: { spots: SpotDoc[]; loaded: boolean }) {
         ))}
       </div>
       <p className="sa-hint">
-        Elige la colonia a mano o agrega coordenadas al spot para que se calcule sola. “Automática” usa las coordenadas.
+        Spots y Rack juntos. Elige la colonia a mano o agrega coordenadas para que se calcule sola. “Automática” usa las coordenadas.
       </p>
 
       {error && <p className="login-error">{error}</p>}
 
       {!loaded ? (
-        <p className="sa-empty">Cargando spots...</p>
+        <p className="sa-empty">Cargando lugares...</p>
       ) : rows.length === 0 ? (
-        <p className="sa-empty">Todos los spots tienen zona.</p>
+        <p className="sa-empty">Todos los lugares tienen zona.</p>
       ) : (
-        groupByCategory(rows, (row) => row.spot).map((group) => (
+        groupByCategory(rows, rowCategory, (row) => Boolean(row.zone)).map((group) => (
         <CategoryGroup key={group.label} label={group.label} Icon={group.Icon} count={group.items.length} missingZone={group.missingZone}>
-          {group.items.map(({ spot, zone }) => {
-            const auto = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
+          {group.items.map((row) => {
+            const { item, zone } = row;
+            const auto = placeZone(item.coordinates?.lat, item.coordinates?.lng);
             return (
-              <li key={spot.id} className={`sa-row${zone ? '' : ' is-no-zone'}${spot.active ? '' : ' is-hidden'}`}>
-                <img className="sa-row__img" src={spot.imageUrl} alt="" loading="lazy" />
+              <li key={row.key} className={`sa-row${zone ? '' : ' is-no-zone'}${item.active ? '' : ' is-hidden'}`}>
+                <RowImage src={item.imageUrl} name={item.name} />
                 <div className="sa-row__info">
-                  <span className="sa-row__name">{spot.name}</span>
+                  <span className="sa-row__name">{item.name}</span>
                   <span className="sa-row__meta">
-                    {spot.type}
+                    {row.source === 'spots' ? (item as SpotDoc).type : `Rack · ${(item as RackDoc).category}`}
                     {' · '}
-                    {zone ? (zone.manual ? 'a mano' : 'por coordenadas') : <span className="sa-warn">sin zona{spot.coordinates ? ' (lejos de las colonias)' : ' (sin coordenadas)'}</span>}
+                    {zone ? (zone.manual ? 'a mano' : 'por coordenadas') : <span className="sa-warn">sin zona{item.coordinates ? ' (lejos de las colonias)' : ' (sin coordenadas)'}</span>}
                   </span>
                 </div>
                 <label className="sa-zone-select">
                   <MapPin size={15} aria-hidden="true" />
-                  <select aria-label={`Colonia de ${spot.name}`} value={spot.zone ?? ''} onChange={(event) => void change(spot, event.target.value)} disabled={saving === spot.id}>
+                  <select aria-label={`Colonia de ${item.name}`} value={item.zone ?? ''} onChange={(event) => void change(row, event.target.value)} disabled={saving === row.key}>
                     <option value="">{auto ? `Automática (${auto.name})` : 'Sin zona'}</option>
                     {ZONE_NAMES.map((name) => <option key={name} value={name}>{name}</option>)}
                   </select>

@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Fotos de spots: lectura pública, solo el admin sube o borra (máx 5 MB, imágenes).
+// Fotos de spots y Rack: lectura pública, solo el admin sube o borra (máx 5 MB, imágenes).
 service firebase.storage {
   match /b/{bucket}/o {
     function isAdmin() {
@@ -8,6 +8,15 @@ service firebase.storage {
     }
 
     match /spots/{spotId}/{fileName} {
+      allow read: if true;
+      allow delete: if isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Fotos de lugares de Rack subidas desde el admin
+    match /rack/{placeId}/{fileName} {
       allow read: if true;
       allow delete: if isAdmin();
       allow create, update: if isAdmin()

@@ -1,0 +1,841 @@
+[
+  {
+    "id": "rack_bad-people-gdl-vintage-store",
+    "name": "Bad people Gdl Vintage Store",
+    "category": "Rack recomienda",
+    "description": "Vintage para hombre, nostalgia y piezas que no aparecen dos veces.",
+    "imageUrl": "/img/spots/01-bad-people-gdl-vintage-store.webp",
+    "mapsLink": "https://maps.app.goo.gl/jmhAX51RtUXMQkGD7",
+    "coordinates": {
+      "lat": 20.673116,
+      "lng": -103.3625324
+    },
+    "order": 0,
+    "active": true
+  },
+  {
+    "id": "rack_undisclosed-vintage",
+    "name": "Undisclosed Vintage",
+    "category": "Rack recomienda",
+    "description": "Playeras de bandas, chamarras y archivo masculino. Aquí cada pieza tiene historia.",
+    "imageUrl": "/img/spots/02-undisclosed-vintage.webp",
+    "mapsLink": "https://maps.app.goo.gl/mpQd51LGqBrfVYZAA",
+    "coordinates": {
+      "lat": 20.6728076,
+      "lng": -103.3620801
+    },
+    "order": 1,
+    "active": true
+  },
+  {
+    "id": "rack_erica-street-vintage",
+    "name": "Erica Street Vintage",
+    "category": "Rack recomienda",
+    "description": "Vintage femenino con firmas de lujo. Ven por las bolsas, quédate por los zapatos.",
+    "imageUrl": "/img/spots/03-erica-street-vintage.webp",
+    "mapsLink": "https://maps.app.goo.gl/FoatysbZFs1C2JrGA",
+    "coordinates": {
+      "lat": 20.6725864,
+      "lng": -103.3620796
+    },
+    "order": 2,
+    "active": true
+  },
+  {
+    "id": "rack_bravo-vintage-2",
+    "name": "Bravo Vintage 2",
+    "category": "Rack recomienda",
+    "description": "Más archivo que tienda. Ropa antigua para mirar, aprender y llevar a otra vida.",
+    "imageUrl": "/img/spots/04-bravo-vintage-2.webp",
+    "mapsLink": "https://maps.app.goo.gl/nFYA1S7BcpY1wtzR8",
+    "coordinates": {
+      "lat": 20.6728075,
+      "lng": -103.3626267
+    },
+    "order": 3,
+    "active": true
+  },
+  {
+    "id": "rack_lavanda-vintage",
+    "name": "Lavanda Vintage",
+    "category": "Rack recomienda",
+    "description": "Vintage clásico entre plantas y café. El plan se arma solo.",
+    "imageUrl": "/img/spots/05-lavanda-vintage.webp",
+    "mapsLink": "https://maps.app.goo.gl/jqFphMiCDNWHeDPe6",
+    "coordinates": {
+      "lat": 20.6738922,
+      "lng": -103.3609668
+    },
+    "order": 4,
+    "active": true
+  },
+  {
+    "id": "rack_dislocal-market",
+    "name": "Dislocal market",
+    "category": "Rack recomienda",
+    "description": "Streetwear, diseñador y ediciones difíciles de ver. Para buscar con calma.",
+    "imageUrl": "/img/spots/06-dislocal-market.webp",
+    "mapsLink": "https://maps.app.goo.gl/r4cGEhD12SzX9Az88",
+    "coordinates": {
+      "lat": 20.673885,
+      "lng": -103.360896
+    },
+    "order": 5,
+    "active": true
+  },
+  {
+    "id": "rack_jardin-americana",
+    "name": "Jardín Americana",
+    "category": "Rack recomienda",
+    "description": "Mercados, proyectos locales y algo para comer. Revisa la agenda antes de caer.",
+    "imageUrl": "/img/spots/07-jardin-americana.webp",
+    "mapsLink": "https://maps.app.goo.gl/n7BpKMbmEqzUACmZA",
+    "coordinates": {
+      "lat": 20.6744521,
+      "lng": -103.365396
+    },
+    "order": 6,
+    "active": true
+  },
+  {
+    "id": "rack_segunda-piel",
+    "name": "Segunda Piel",
+    "category": "Rack recomienda",
+    "description": "Segunda mano femenina, precios amables y accesorios que cierran el look.",
+    "imageUrl": "/img/spots/08-segunda-piel.webp",
+    "mapsLink": "https://maps.app.goo.gl/i2KD64VtcUbLGcYq8",
+    "coordinates": {
+      "lat": 20.6739783,
+      "lng": -103.3569732
+    },
+    "order": 7,
+    "active": true
+  },
+  {
+    "id": "rack_d-o-s-t-a-concept-store",
+    "name": "D O S T A concept store",
+    "category": "Rack recomienda",
+    "description": "Muchas marcas bajo un techo. Segunda mano, cultura geek y hallazgos inesperados.",
+    "imageUrl": "/img/spots/09-d-o-s-t-a-concept-store.webp",
+    "mapsLink": "https://maps.app.goo.gl/LL4opu1KQfrZYue76",
+    "coordinates": {
+      "lat": 20.6739475,
+      "lng": -103.3566305
+    },
+    "order": 8,
+    "active": true
+  },
+  {
+    "id": "rack_archivo-gdl",
+    "name": "Archivo GDL",
+    "category": "Rack recomienda",
+    "description": "Moda alternativa, segunda mano y upcycling. Joven, accesible y sin uniforme.",
+    "imageUrl": "/img/spots/10-archivo-gdl.webp",
+    "mapsLink": "https://www.google.com/maps/place/ARCHIVOGDL/data=!4m7!3m6!1s0x8428b16f9f9d817b:0xd98c3c213ffb028a!8m2!3d20.6740166!4d-103.3570084!16s%2Fg%2F11tf9lx3r4!19sChIJe4Gdn2-xKIQRigL7PyE8jNk?authuser=0&hl=es&rclk=1",
+    "coordinates": {
+      "lat": 20.6740166,
+      "lng": -103.3570084
+    },
+    "order": 9,
+    "active": true
+  },
+  {
+    "id": "rack_el-sotano",
+    "name": "El sótano",
+    "category": "Rack recomienda",
+    "description": "Indie, gótico y mucho calzado. Baja si tu clóset pide algo más oscuro.",
+    "imageUrl": "/img/spots/11-el-sotano.webp",
+    "mapsLink": "https://www.google.com/maps/place/El+sotano/data=!4m7!3m6!1s0x8428b12d771993b7:0x5f820b4ffb722157!8m2!3d20.6752797!4d-103.3565391!16s%2Fg%2F11h0t2h11l!19sChIJt5MZdy2xKIQRVyFy-08Lgl8?authuser=0&hl=es&rclk=1",
+    "coordinates": {
+      "lat": 20.6752734,
+      "lng": -103.3565248
+    },
+    "order": 10,
+    "active": true
+  },
+  {
+    "id": "rack_el-baul",
+    "name": "El baúl",
+    "category": "Rack recomienda",
+    "description": "Una casa llena de marcas. Vintage arriba, gótico abajo y sorpresas entre cuartos.",
+    "imageUrl": "/img/spots/12-el-baul.webp",
+    "mapsLink": "https://maps.app.goo.gl/gVu6LoYxT9JFAjXz6",
+    "coordinates": {
+      "lat": 20.6754605,
+      "lng": -103.3565197
+    },
+    "order": 11,
+    "active": true
+  },
+  {
+    "id": "rack_con-b-de-vintage",
+    "name": "Con B de vintage",
+    "category": "Rack recomienda",
+    "description": "Los sesenta, setenta y ochenta bien elegidos. Pocas piezas, mucha personalidad.",
+    "mapsLink": "https://www.google.com/maps?q=20.678754,-103.36163",
+    "coordinates": {
+      "lat": 20.678754,
+      "lng": -103.36163
+    },
+    "order": 12,
+    "active": false
+  },
+  {
+    "id": "rack_comunidad-colibri",
+    "name": "Comunidad Colibrí",
+    "category": "Rack recomienda",
+    "description": "Segunda mano para todos, algunos tesoros vintage y precios para volver.",
+    "imageUrl": "/img/spots/14-comunidad-colibri.webp",
+    "mapsLink": "https://maps.app.goo.gl/oPTZQTnDxfERim5r5",
+    "coordinates": {
+      "lat": 20.6754162,
+      "lng": -103.3536703
+    },
+    "order": 13,
+    "active": true
+  },
+  {
+    "id": "rack_maple-showroom",
+    "name": "Maple Showroom",
+    "category": "Rack recomienda",
+    "description": "Moda juvenil y ventas relámpago. Síguelos: las mejores piezas duran poco.",
+    "mapsLink": "https://www.google.com/maps?q=20.67578,-103.3703729",
+    "coordinates": {
+      "lat": 20.67578,
+      "lng": -103.3703729
+    },
+    "order": 14,
+    "active": false
+  },
+  {
+    "id": "rack_proyecto-mexa",
+    "name": "Proyecto Mexa",
+    "category": "Rack recomienda",
+    "description": "Diseño local, accesorios y objetos hechos con intención. Buen lugar para descubrir marcas.",
+    "imageUrl": "/img/spots/16-proyecto-mexa.webp",
+    "mapsLink": "https://maps.app.goo.gl/tgf49JhmCWp2zPPE6",
+    "coordinates": {
+      "lat": 20.6738356,
+      "lng": -103.3734775
+    },
+    "order": 15,
+    "active": true
+  },
+  {
+    "id": "rack_bazar-moda-diseno",
+    "name": "Bazar Moda Diseño",
+    "category": "Rack recomienda",
+    "description": "Historia de la moda jalisciense en percheros. Pregunta, escucha y busca la pieza rara.",
+    "imageUrl": "/img/spots/17-bazar-moda-diseno.webp",
+    "mapsLink": "https://www.google.com/maps?q=20.6747226,-103.3708393",
+    "coordinates": {
+      "lat": 20.6747226,
+      "lng": -103.3708393
+    },
+    "order": 16,
+    "active": false
+  },
+  {
+    "id": "rack_via-libertad",
+    "name": "VÍA LIBERTAD",
+    "category": "Rack recomienda",
+    "description": "Comida, diseño y bazares que cambian. Siempre hay una razón nueva para entrar.",
+    "imageUrl": "/img/spots/18-via-libertad.webp",
+    "mapsLink": "https://maps.app.goo.gl/u64bWFv8daEUdvRR7",
+    "coordinates": {
+      "lat": 20.672773,
+      "lng": -103.365779
+    },
+    "order": 17,
+    "active": true
+  },
+  {
+    "id": "rack_casa-del-prado",
+    "name": "Casa del Prado",
+    "category": "Rack recomienda",
+    "description": "Ochentas, noventas y Y2K sin precios imposibles. Mucha ropa y cero prisa.",
+    "imageUrl": "/img/spots/19-casa-del-prado.webp",
+    "mapsLink": "https://maps.app.goo.gl/tQY4fxF2bwvDszqp9",
+    "coordinates": {
+      "lat": 20.6739097,
+      "lng": -103.3603632
+    },
+    "order": 18,
+    "active": true
+  },
+  {
+    "id": "rack_casa-sabina-hostal-boutique",
+    "name": "Casa Sabina Hostal Boutique",
+    "category": "Rack recomienda",
+    "description": "Vintage colorido escondido dentro de un hostal. Los ochenta siguen vivos aquí.",
+    "imageUrl": "/img/spots/20-casa-sabina-hostal-boutique.webp",
+    "mapsLink": "https://maps.app.goo.gl/oX4jSHkSHB7im5156",
+    "coordinates": {
+      "lat": 20.6732202,
+      "lng": -103.371474
+    },
+    "order": 19,
+    "active": true
+  },
+  {
+    "id": "rack_almondcoco-boutique",
+    "name": "Almondcoco Boutique",
+    "category": "Rack recomienda",
+    "description": "Diseño local, talleres y marcas emergentes. Una tienda que también hace comunidad.",
+    "imageUrl": "/img/spots/21-almondcoco-boutique.webp",
+    "mapsLink": "https://maps.app.goo.gl/zKuxQSjJCdbXuuHCA",
+    "coordinates": {
+      "lat": 20.6768899,
+      "lng": -103.36314
+    },
+    "order": 20,
+    "active": true
+  },
+  {
+    "id": "rack_exuvia-showroom",
+    "name": "Exuvia Showroom",
+    "category": "Rack recomienda",
+    "description": "Joyería, diseño independiente y vintage bien curado. Difícil salir con las manos vacías.",
+    "imageUrl": "/img/spots/22-exuvia-showroom.webp",
+    "mapsLink": "https://maps.app.goo.gl/z6ZhEUbi5MbNfZEC6",
+    "coordinates": {
+      "lat": 20.6770199,
+      "lng": -103.3552768
+    },
+    "order": 21,
+    "active": true
+  },
+  {
+    "id": "rack_ohmm-store",
+    "name": "Ohmm Store",
+    "category": "Rack recomienda",
+    "description": "Diseño mexicano emergente en un espacio que pide foto.",
+    "imageUrl": "/img/spots/23-ohmm-store.webp",
+    "mapsLink": "https://maps.app.goo.gl/EcQnYGqtzQus8Zfe6",
+    "coordinates": {
+      "lat": 20.6709492,
+      "lng": -103.3724798
+    },
+    "order": 22,
+    "active": true
+  },
+  {
+    "id": "rack_mondo-shop",
+    "name": "Mondo Shop",
+    "category": "Rack recomienda",
+    "description": "Vintage y segunda mano con energía emo. Para vestir fuera del algoritmo.",
+    "imageUrl": "/img/spots/24-mondo-shop.webp",
+    "mapsLink": "https://maps.app.goo.gl/FHgRhWHQpULDZKGFA",
+    "coordinates": {
+      "lat": 20.6744314,
+      "lng": -103.3519152
+    },
+    "order": 23,
+    "active": true
+  },
+  {
+    "id": "rack_vacr",
+    "name": "VACR",
+    "category": "Rack recomienda",
+    "description": "Calzado mexicano con diseño propio. Hecho aquí, pensado para durar.",
+    "imageUrl": "/img/spots/25-vacr.webp",
+    "mapsLink": "https://maps.app.goo.gl/y5TrwRen9mFu26Zj6",
+    "coordinates": {
+      "lat": 20.6754576,
+      "lng": -103.361039
+    },
+    "order": 24,
+    "active": true
+  },
+  {
+    "id": "rack_divine-222",
+    "name": "DIVINE 222",
+    "category": "Rack recomienda",
+    "description": "Y2K y segunda mano. Brillos, nostalgia y piezas para volver a jugar.",
+    "imageUrl": "/img/spots/26-divine-222.webp",
+    "mapsLink": "https://maps.app.goo.gl/zZqUoBotkj4REyTZ7",
+    "coordinates": {
+      "lat": 20.6737423,
+      "lng": -103.3617446
+    },
+    "order": 25,
+    "active": true
+  },
+  {
+    "id": "rack_apartamento-102",
+    "name": "Apartamento 102",
+    "category": "Rack recomienda",
+    "description": "Showroom y tatuajes en la misma dirección. Un plan completo.",
+    "mapsLink": "https://www.google.com/maps?q=20.6740786,-103.3555467",
+    "coordinates": {
+      "lat": 20.6740786,
+      "lng": -103.3555467
+    },
+    "order": 26,
+    "active": false
+  },
+  {
+    "id": "rack_witch-mx",
+    "name": "Witch mx",
+    "category": "Rack recomienda",
+    "description": "Ropa y accesorios girly para cuando el detalle hace todo.",
+    "imageUrl": "/img/spots/28-witch-mx.webp",
+    "mapsLink": "https://maps.app.goo.gl/qAYTj4ghbiQXUVSr9",
+    "coordinates": {
+      "lat": 20.6741708,
+      "lng": -103.3567173
+    },
+    "order": 27,
+    "active": true
+  },
+  {
+    "id": "rack_pin-heart-closet",
+    "name": "Pin heart Closet",
+    "category": "Tianguis",
+    "description": "Y2K para mujer a buen precio. Sábados en Parque Rojo; @Pin.heart_closet.",
+    "mapsLink": "https://www.google.com/maps?q=20.6742821,-103.3563121",
+    "coordinates": {
+      "lat": 20.6742821,
+      "lng": -103.3563121
+    },
+    "order": 28,
+    "active": false
+  },
+  {
+    "id": "rack_stray-groovey",
+    "name": "Stray Groovey",
+    "category": "Tianguis",
+    "description": "Pantalones ochenteros al inicio del pasillo derecho. Busca @stay.groovy.clothes.",
+    "mapsLink": "https://www.google.com/maps?q=20.6742714,-103.3562953",
+    "coordinates": {
+      "lat": 20.6742714,
+      "lng": -103.3562953
+    },
+    "order": 29,
+    "active": false
+  },
+  {
+    "id": "rack_ropa-de-hombre",
+    "name": "Ropa de hombre",
+    "category": "Tianguis",
+    "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+    "mapsLink": "https://www.google.com/maps?q=20.6741654,-103.3563859",
+    "coordinates": {
+      "lat": 20.6741654,
+      "lng": -103.3563859
+    },
+    "order": 30,
+    "active": false
+  },
+  {
+    "id": "rack_ropa-de-segunda-mano-de-mujer",
+    "name": "Ropa de segunda mano de mujer",
+    "category": "Tianguis",
+    "description": "Y2K, upcycling y ofertas en un mismo tramo del pasillo.",
+    "mapsLink": "https://www.google.com/maps?q=20.6744967,-103.3563168",
+    "coordinates": {
+      "lat": 20.6744967,
+      "lng": -103.3563168
+    },
+    "order": 31,
+    "active": false
+  },
+  {
+    "id": "rack_ropa-de-hombre-2",
+    "name": "Ropa de hombre",
+    "category": "Tianguis",
+    "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+    "mapsLink": "https://www.google.com/maps?q=20.6742403,-103.3560935",
+    "coordinates": {
+      "lat": 20.6742403,
+      "lng": -103.3560935
+    },
+    "order": 32,
+    "active": false
+  },
+  {
+    "id": "rack_meztisa-modisteria",
+    "name": "Meztisa Modisteria",
+    "category": "Tianguis",
+    "description": "Vintage e intervenciones con mano propia. Encuéntralos como @meztizamodisteria.",
+    "mapsLink": "https://www.google.com/maps?q=20.6743756,-103.356166",
+    "coordinates": {
+      "lat": 20.6743756,
+      "lng": -103.356166
+    },
+    "order": 33,
+    "active": false
+  },
+  {
+    "id": "rack_libritos",
+    "name": "Libritos",
+    "category": "Tianguis",
+    "description": "Libros nuevos y usados en la esquina correcta del parque.",
+    "mapsLink": "https://www.google.com/maps?q=20.6748014,-103.3554047",
+    "coordinates": {
+      "lat": 20.6748014,
+      "lng": -103.3554047
+    },
+    "order": 34,
+    "active": false
+  },
+  {
+    "id": "rack_tianguis-feminista-mercadita",
+    "name": "Tianguis Feminista (Mercadita)",
+    "category": "Tianguis",
+    "description": "Ropa a precios bajos y proyectos de mujeres. Un espacio hecho por y para ellas.",
+    "mapsLink": "https://www.google.com/maps?q=20.6753085,-103.3563214",
+    "coordinates": {
+      "lat": 20.6753085,
+      "lng": -103.3563214
+    },
+    "order": 35,
+    "active": false
+  },
+  {
+    "id": "rack_tianguis-del-parque-rojo",
+    "name": "Tianguis del parque rojo",
+    "category": "Tianguis",
+    "description": "El sábado empieza aquí. Llega desde las 9:00 y busca sin prisa.",
+    "order": 36,
+    "active": false
+  },
+  {
+    "id": "rack_ropa-de-hombre-3",
+    "name": "Ropa de hombre",
+    "category": "Tianguis",
+    "description": "Vintage masculino entre camisas, chamarras y pantalones. Aquí toca buscar.",
+    "mapsLink": "https://www.google.com/maps?q=20.6743208,-103.3554488",
+    "coordinates": {
+      "lat": 20.6743208,
+      "lng": -103.3554488
+    },
+    "order": 37,
+    "active": false
+  },
+  {
+    "id": "rack_bazar-de-muebles-y-antiguedades-en-guadalajara-bazar-el-viejo-del-costal",
+    "name": "Bazar de Muebles y Antiguedades en Guadalajara - Bazar El Viejo del Costal",
+    "category": "Vinilos y antigüedades",
+    "description": "Muebles, objetos y piezas con otra vida. Ven listo para escarbar.",
+    "imageUrl": "/img/spots/29-bazar-de-muebles-y-antiguedades-en-guadalajara-bazar-el-viejo-del-costal.webp",
+    "mapsLink": "https://maps.app.goo.gl/kCNY5EUbXrqwLDA38",
+    "coordinates": {
+      "lat": 20.6723629,
+      "lng": -103.3535118
+    },
+    "order": 38,
+    "active": true
+  },
+  {
+    "id": "rack_bazar-muebles-y-antiguedades",
+    "name": "Bazar, muebles y antiguedades",
+    "category": "Vinilos y antigüedades",
+    "description": "Antigüedades sin catálogo fijo. Lo bueno aparece cuando menos lo esperas.",
+    "mapsLink": "https://www.google.com/maps/place/Bazar,+muebles+y+antiguedades/data=!4m7!3m6!1s0x8428ae172d6b2281:0xa612163fe5c61802!8m2!3d20.6810892!4d-103.3651224!16s%2Fg%2F1tg2k_25!19sChIJgSJrLReuKIQRAhjG5T8WEqY?authuser=0&hl=es&rclk=1",
+    "coordinates": {
+      "lat": 20.6810892,
+      "lng": -103.3651224
+    },
+    "order": 39,
+    "active": true
+  },
+  {
+    "id": "rack_roxy-n-roll",
+    "name": "Roxy n roll",
+    "category": "Vinilos y antigüedades",
+    "description": "Rock, objetos y nostalgia. Una parada con volumen propio.",
+    "imageUrl": "/img/spots/31-roxy-n-roll.webp",
+    "mapsLink": "https://maps.app.goo.gl/JoJdJX44QNQKF53PA",
+    "coordinates": {
+      "lat": 20.6786164,
+      "lng": -103.3531845
+    },
+    "order": 40,
+    "active": true
+  },
+  {
+    "id": "rack_joselino-records",
+    "name": "Joselino Records",
+    "category": "Vinilos y antigüedades",
+    "description": "Vinilos para revisar uno por uno. Así se encuentran los buenos.",
+    "imageUrl": "/img/spots/32-joselino-records.webp",
+    "mapsLink": "https://maps.app.goo.gl/zgYpKTjZUeBa7Y6Q8",
+    "coordinates": {
+      "lat": 20.6818428,
+      "lng": -103.3555984
+    },
+    "order": 41,
+    "active": true
+  },
+  {
+    "id": "rack_la-musique-records-guadalajara",
+    "name": "La Musique Records Guadalajara",
+    "category": "Vinilos y antigüedades",
+    "description": "Discos para escuchar, coleccionar y volver a empezar.",
+    "imageUrl": "/img/spots/33-la-musique-records-guadalajara.webp",
+    "mapsLink": "https://maps.app.goo.gl/QQwWNX6CmXtYzzRq9",
+    "coordinates": {
+      "lat": 20.6747227,
+      "lng": -103.3519829
+    },
+    "order": 42,
+    "active": true
+  },
+  {
+    "id": "rack_la-perla-records-books",
+    "name": "La Perla Records & Books",
+    "category": "Vinilos y antigüedades",
+    "description": "Vinilos y libros en el mismo lugar. Dos buenas razones para perder la tarde.",
+    "imageUrl": "/img/spots/34-la-perla-records-books.webp",
+    "mapsLink": "https://maps.app.goo.gl/wf8RY3hPstB7146e6",
+    "coordinates": {
+      "lat": 20.6756485,
+      "lng": -103.3691191
+    },
+    "order": 43,
+    "active": true
+  },
+  {
+    "id": "rack_bazar-la-fortuna",
+    "name": "Bazar La Fortuna",
+    "category": "Vinilos y antigüedades",
+    "description": "Objetos con historia y hallazgos que dependen de la suerte.",
+    "imageUrl": "/img/spots/35-bazar-la-fortuna.webp",
+    "mapsLink": "https://maps.app.goo.gl/gvXd54WV8rFEPNgZ9",
+    "coordinates": {
+      "lat": 20.6797289,
+      "lng": -103.3536203
+    },
+    "order": 44,
+    "active": true
+  },
+  {
+    "id": "rack_alto-voltaje",
+    "name": "Alto Voltaje",
+    "category": "Vinilos y antigüedades",
+    "description": "Música para buscar con el volumen arriba.",
+    "imageUrl": "/img/spots/36-alto-voltaje.webp",
+    "mapsLink": "https://maps.app.goo.gl/qx629SXZ2LvJSQ8cA",
+    "coordinates": {
+      "lat": 20.6779785,
+      "lng": -103.3527677
+    },
+    "order": 45,
+    "active": true
+  },
+  {
+    "id": "rack_lopa",
+    "name": "LOPA",
+    "category": "Vinilos y antigüedades",
+    "description": "Piezas singulares y objetos que no entran en una sola categoría.",
+    "imageUrl": "/img/spots/37-lopa.webp",
+    "mapsLink": "https://www.google.com/maps?q=20.6703409,-103.3643891",
+    "coordinates": {
+      "lat": 20.6703409,
+      "lng": -103.3643891
+    },
+    "order": 46,
+    "active": false
+  },
+  {
+    "id": "rack_libreria-de-usado-y-antiguo-el-desvan-de-don-quijote",
+    "name": "LIBRERIA DE USADO Y ANTIGUO EL DESVAN DE DON QUIJOTE",
+    "category": "Vinilos y antigüedades",
+    "description": "Libros usados y antiguos para quien disfruta buscar más que encontrar.",
+    "imageUrl": "/img/spots/38-libreria-de-usado-y-antiguo-el-desvan-de-don-quijote.webp",
+    "mapsLink": "https://maps.app.goo.gl/VKt3mtKyhHH8sYQAA",
+    "coordinates": {
+      "lat": 20.6739557,
+      "lng": -103.3571311
+    },
+    "order": 47,
+    "active": true
+  },
+  {
+    "id": "rack_librero-en-andanzas",
+    "name": "Librero en andanzas",
+    "category": "Vinilos y antigüedades",
+    "description": "Libros que viajan y títulos que aparecen sin aviso.",
+    "imageUrl": "/img/spots/39-librero-en-andanzas.webp",
+    "mapsLink": "https://maps.app.goo.gl/ZAEkghKFQuitCgLW6",
+    "coordinates": {
+      "lat": 20.6739352,
+      "lng": -103.356935
+    },
+    "order": 48,
+    "active": true
+  },
+  {
+    "id": "rack_tea-recs",
+    "name": "Tea Recs",
+    "category": "Vinilos y antigüedades",
+    "description": "Vinilos y música para escuchar sin saltar pistas.",
+    "imageUrl": "/img/spots/40-tea-recs.webp",
+    "mapsLink": "https://maps.app.goo.gl/w1Dpbmyvqb1Yt27FA",
+    "coordinates": {
+      "lat": 20.6793791,
+      "lng": -103.3714014
+    },
+    "order": 49,
+    "active": true
+  },
+  {
+    "id": "rack_cosmik-records",
+    "name": "Cosmik Records",
+    "category": "Vinilos y antigüedades",
+    "description": "Discos para salir de la órbita habitual.",
+    "imageUrl": "/img/spots/41-cosmik-records.webp",
+    "mapsLink": "https://maps.app.goo.gl/paXPrQKS2PPSmbUw7",
+    "coordinates": {
+      "lat": 20.6775301,
+      "lng": -103.3680423
+    },
+    "order": 50,
+    "active": true
+  },
+  {
+    "id": "rack_jamaica-records",
+    "name": "Jamaica Records",
+    "category": "Vinilos y antigüedades",
+    "description": "Vinilos, reggae y una selección con ritmo propio.",
+    "mapsLink": "https://www.google.com/maps?q=20.6727358,-103.3798362",
+    "coordinates": {
+      "lat": 20.6727358,
+      "lng": -103.3798362
+    },
+    "order": 51,
+    "active": false
+  },
+  {
+    "id": "rack_velvet-records-gdl",
+    "name": "Velvet Records Gdl",
+    "category": "Vinilos y antigüedades",
+    "description": "Una dirección para seguir ampliando la colección.",
+    "imageUrl": "/img/spots/43-velvet-records-gdl.webp",
+    "mapsLink": "https://maps.app.goo.gl/QrCxcENbSZdKaR6z5",
+    "coordinates": {
+      "lat": 20.675887,
+      "lng": -103.3679924
+    },
+    "order": 52,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-del-sol",
+    "name": "Tianguis del Sol",
+    "category": "Tianguis",
+    "description": "Miércoles, viernes y domingo, de 7:00 a 15:00. Llega temprano.",
+    "mapsLink": "https://maps.app.goo.gl/ym1mh91HwoCHtvie7",
+    "coordinates": {
+      "lat": 20.6517874,
+      "lng": -103.4328311
+    },
+    "order": 53,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-de-mezquitan",
+    "name": "Tianguis de Mezquitan",
+    "category": "Tianguis",
+    "description": "Los martes desde las 8:00. Para buscar hasta que la tarde diga basta.",
+    "mapsLink": "https://maps.app.goo.gl/jT3rK8D7YpiwEx2U6",
+    "coordinates": {
+      "lat": 20.69128,
+      "lng": -103.3536592
+    },
+    "order": 54,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-san-juan-bosco",
+    "name": "Tianguis San Juan Bosco",
+    "category": "Tianguis",
+    "description": "Un tianguis de barrio donde el hallazgo depende de caminar.",
+    "mapsLink": "https://maps.app.goo.gl/NcgNfnn5Y6mB2jcU9",
+    "coordinates": {
+      "lat": 20.6749382,
+      "lng": -103.3108693
+    },
+    "order": 55,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-de-medrano-calle-66",
+    "name": "Tianguis de Medrano Calle 66",
+    "category": "Tianguis",
+    "description": "Calle, puestos y segunda mano. La 66 tiene su propio ritmo.",
+    "mapsLink": "https://maps.app.goo.gl/mC4dJPMapQvmJAAX6",
+    "coordinates": {
+      "lat": 20.6617629,
+      "lng": -103.3122617
+    },
+    "order": 56,
+    "active": true
+  },
+  {
+    "id": "rack_baratillo",
+    "name": "Baratillo",
+    "category": "Tianguis",
+    "description": "Grande, caótico y lleno de posibilidades. Ve con tiempo.",
+    "mapsLink": "https://maps.app.goo.gl/3fCu1gQatdBmiZ9D8",
+    "coordinates": {
+      "lat": 20.680911,
+      "lng": -103.3199355
+    },
+    "order": 57,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-cultural",
+    "name": "Tianguis Cultural",
+    "category": "Tianguis",
+    "description": "Sábados desde las 9:00. Cultura, ropa y tribus de la ciudad.",
+    "mapsLink": "https://maps.app.goo.gl/AdbJx4gTpcHKvAfJ9",
+    "coordinates": {
+      "lat": 20.6597335,
+      "lng": -103.3506883
+    },
+    "order": 58,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-de-santa-tere",
+    "name": "Tianguis de Santa Tere",
+    "category": "Tianguis",
+    "description": "Barrio, comida y puestos que cambian cada visita.",
+    "mapsLink": "https://maps.app.goo.gl/8bNT3Pex8gn5TXbM8",
+    "coordinates": {
+      "lat": 20.6842013,
+      "lng": -103.3681435
+    },
+    "order": 59,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-del-trocadero",
+    "name": "Tianguis del trocadero",
+    "category": "Tianguis",
+    "description": "Domingos de 8:00 a 16:00. Una mañana completa de búsqueda.",
+    "mapsLink": "https://maps.app.goo.gl/g6SAMEynqRFkgbCy9",
+    "coordinates": {
+      "lat": 20.6791183,
+      "lng": -103.3700777
+    },
+    "order": 60,
+    "active": true
+  },
+  {
+    "id": "rack_tianguis-francisco-villa-la-74-jueves",
+    "name": "Tianguis Francisco Villa / La 74 (Jueves)",
+    "category": "Tianguis",
+    "description": "Los jueves, la 74 se vuelve ruta de hallazgos.",
+    "mapsLink": "https://maps.app.goo.gl/J1z7SQaWqd9LZ96Z6",
+    "coordinates": {
+      "lat": 20.6722939,
+      "lng": -103.3047025
+    },
+    "order": 61,
+    "active": true
+  }
+]

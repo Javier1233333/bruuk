@@ -23,34 +23,19 @@ import {
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import placesData from '../../lugares-mapa-gdl.json';
-import { SPOT_IMAGES } from './spotImages';
-import { SPOT_MAP_LINKS } from './spotMapLinks';
+import { useRackPlaces, type RackPlace } from './useRackPlaces';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
 import { ShareButton } from '../components/ShareButton';
-import { placeZone } from '../lib/zones';
+import { spotZone } from '../lib/zones';
 import { feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from '../components/RegistrationModal';
 import { BruukSelect } from '../components/BruukSelect';
 
-type SourceCategory = 'Rack recomienda' | 'Vinilos y antigüedades' | 'Tianguis';
 type PlaceKind = 'tiendas' | 'antiguedades' | 'tianguis';
 type PlaceFilter = 'todos' | PlaceKind;
 type ViewMode = 'feed' | 'grid' | 'history';
-
-interface RackPlace {
-  name: string;
-  category: SourceCategory;
-  description: string;
-  geometry?: {
-    type: 'Point';
-    latitude?: number;
-    longitude?: number;
-  };
-  google_maps_url: string;
-}
 
 const FILTER_LABELS: Record<PlaceFilter, string> = {
   todos: 'Todos',
@@ -88,7 +73,7 @@ const kindForPlace = (place: RackPlace): PlaceKind => {
   return 'antiguedades';
 };
 
-const directMapsUrl = (place: RackPlace) => SPOT_MAP_LINKS[place.name];
+const directMapsUrl = (place: RackPlace) => place.mapsLink;
 
 const KIND_COLORS: Record<PlaceKind, string> = {
   tiendas: '#64d23c',
@@ -96,36 +81,11 @@ const KIND_COLORS: Record<PlaceKind, string> = {
   tianguis: '#a78bfa',
 };
 
-const MAP_COORDINATE_OVERRIDES: Partial<
-  Record<string, { latitude: number; longitude: number }>
-> = {
-  'Tianguis del Sol': {
-    latitude: 20.6517874,
-    longitude: -103.4328311,
-  },
-  'Tianguis de Mezquitan': {
-    latitude: 20.69128,
-    longitude: -103.3536592,
-  },
-  'Tianguis San Juan Bosco': {
-    latitude: 20.6749382,
-    longitude: -103.3108693,
-  },
-  'Tianguis Cultural': {
-    latitude: 20.6597335,
-    longitude: -103.3506883,
-  },
-  'Tianguis del trocadero': {
-    latitude: 20.6791183,
-    longitude: -103.3700777,
-  },
-};
-
-const coordinatesForPlace = (place: RackPlace) =>
-  MAP_COORDINATE_OVERRIDES[place.name] ?? {
-    latitude: place.geometry?.latitude,
-    longitude: place.geometry?.longitude,
-  };
+// Las correcciones de coordenadas de tianguis ya vienen en src/data/rack.json / Firestore
+const coordinatesForPlace = (place: RackPlace) => ({
+  latitude: place.coordinates?.lat,
+  longitude: place.coordinates?.lng,
+});
 
 type RoutePoint = {
   place: RackPlace;
@@ -203,33 +163,6 @@ const escapeMapHtml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 
-const ALL_RACK_PLACES = (placesData.places as RackPlace[]).filter(
-  (place) =>
-    place.category === 'Rack recomienda' ||
-    place.category === 'Vinilos y antigüedades' ||
-    place.category === 'Tianguis'
-).filter(
-  (place) =>
-    ![
-      'jamaica records',
-      'maple showroom',
-      'bazar moda diseño',
-      'lopa',
-      'con b de vintage',
-      'apartamento 102',
-    ].includes(
-      place.name.toLocaleLowerCase('es-MX'),
-    ),
-);
-
-const FIRST_TEN_TIANGUIS = new Set(
-  ALL_RACK_PLACES.filter((place) => place.category === 'Tianguis').slice(0, 10),
-);
-
-const RACK_PLACES = ALL_RACK_PLACES.filter(
-  (place) => !FIRST_TEN_TIANGUIS.has(place),
-);
-
 const modulo = (value: number, divisor: number) =>
   ((value % divisor) + divisor) % divisor;
 
@@ -239,6 +172,8 @@ export function RackPlaces() {
   const { city } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  // Ya vienen filtrados (sólo activos) desde /api/rack o src/data/rack.json
+  const RACK_PLACES = useRackPlaces();
   const initialFilter = filterFromSearchParams(searchParams);
   const feedRef = useRef<HTMLDivElement | null>(null);
   const scrollSettleRef = useRef<number | null>(null);
@@ -287,7 +222,7 @@ export function RackPlaces() {
   const filteredPlaces = useMemo(() => {
     if (activeFilter === 'todos') return RACK_PLACES;
     return RACK_PLACES.filter((place) => kindForPlace(place) === activeFilter);
-  }, [activeFilter]);
+  }, [RACK_PLACES, activeFilter]);
 
   const virtualFeedPlaces = useMemo(
     () =>
@@ -319,7 +254,7 @@ export function RackPlaces() {
     const nextPlace = filteredPlaces[
       modulo(activeIndex + 1, filteredPlaces.length)
     ];
-    const nextImage = nextPlace ? SPOT_IMAGES[nextPlace.name] : undefined;
+    const nextImage = nextPlace ? nextPlace.imageUrl : undefined;
     if (!nextImage) return;
 
     const preload = new Image();
@@ -459,7 +394,7 @@ export function RackPlaces() {
     setActiveIndex(Math.max(targetIndex, 0));
     setIsMapOpen(false);
     updateRackUrl(targetFilter, 'feed');
-  }, [updateRackUrl]);
+  }, [RACK_PLACES, updateRackUrl]);
 
   useEffect(() => {
     if (!isMapOpen) return;
@@ -589,7 +524,7 @@ export function RackPlaces() {
 
       const kind = kindForPlace(place);
       const imageUrl =
-        kind !== 'tianguis' ? SPOT_IMAGES[place.name] : undefined;
+        kind !== 'tianguis' ? place.imageUrl : undefined;
       const placeIndex = RACK_PLACES.indexOf(place);
       const imageMarkup = imageUrl
         ? `<img class="rack-map-popup-image" src="${escapeMapHtml(
@@ -668,7 +603,7 @@ export function RackPlaces() {
       container.removeEventListener('click', handleMapAction);
       map.remove();
     };
-  }, [isMapOpen, mapFilter, showPlaceInFeed]);
+  }, [RACK_PLACES, isMapOpen, mapFilter, showPlaceInFeed]);
 
   if (city && city !== 'guadalajara') return <Navigate to="/guadalajara/rack" replace />;
 
@@ -1044,9 +979,9 @@ function PlaceFeedCard({
   isActive: boolean;
 }) {
   const kind = kindForPlace(place);
-  const imageUrl = SPOT_IMAGES[place.name];
+  const imageUrl = place.imageUrl;
   const showPhoto = kind !== 'tianguis' && Boolean(imageUrl);
-  const zone = placeZone(place.geometry?.latitude, place.geometry?.longitude);
+  const zone = spotZone(place);
 
   return (
     <article
@@ -1061,8 +996,8 @@ function PlaceFeedCard({
         <div className="rack-place-visual-top">
           <span>GDL / {String(index + 1).padStart(2, '0')}</span>
           <span>
-            {place.geometry?.latitude != null
-              ? `${place.geometry.latitude.toFixed(4)}° N`
+            {place.coordinates?.lat != null
+              ? `${place.coordinates.lat.toFixed(4)}° N`
               : 'TIANGUIS · GDL'}
           </span>
         </div>
@@ -1083,8 +1018,8 @@ function PlaceFeedCard({
           </figure>
         )}
         <span className="rack-place-visual-coordinate">
-          {place.geometry?.longitude != null
-            ? `${Math.abs(place.geometry.longitude).toFixed(4)}° O`
+          {place.coordinates?.lng != null
+            ? `${Math.abs(place.coordinates.lng).toFixed(4)}° O`
             : 'FICHA DE MERCADO'}
         </span>
       </div>
@@ -1130,15 +1065,15 @@ function PlaceFeedCard({
 
 function PlaceGridCard({ place, index }: { place: RackPlace; index: number }) {
   const kind = kindForPlace(place);
-  const imageUrl = SPOT_IMAGES[place.name];
+  const imageUrl = place.imageUrl;
   const showPhoto = kind !== 'tianguis' && Boolean(imageUrl);
 
   return (
     <article className={`rack-place-grid-card is-${kind}`}>
       <div className="rack-place-grid-ticket" aria-label={`Ficha ${index + 1}`}>
         <span>
-          {place.geometry?.latitude != null
-            ? `${place.geometry.latitude.toFixed(4)}° N`
+          {place.coordinates?.lat != null
+            ? `${place.coordinates.lat.toFixed(4)}° N`
             : `${FILTER_LABELS[kind]} · GDL`}
         </span>
         <strong>{String(index + 1).padStart(2, '0')}</strong>

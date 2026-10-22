@@ -436,3 +436,6 @@
 .sa-group__count { color: var(--text-secondary); }
 .sa-group__missing { padding: 1px 6px; color: #0b0a12; background: #f5d547; font-size: 0.7rem; letter-spacing: 0.04em; }
 .sa-group > summary:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+
+/* Miniatura sin foto (tianguis) */
+.sa-row__img--empty { display: grid; place-items: center; color: var(--accent-text); background: var(--bg-primary); font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 0.85rem; }
