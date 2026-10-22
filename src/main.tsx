@@ -27,6 +27,7 @@ const RackPlaces = lazy(() =>
 const CityHomePage = lazy(() => import('./pages/CityHomePage'))
 const AuthLayout = lazy(() => import('./components/AuthLayout'))
 const AppAuthGate = lazy(() => import('./components/AppAuthGate'))
+const RequireLogin = lazy(() => import('./components/RequireLogin'))
 const LoginPage = lazy(() => import('./pages/LoginPage').then((module) => ({ default: module.LoginPage })))
 const AuthActionPage = lazy(() => import('./pages/AuthActionPage').then((module) => ({ default: module.AuthActionPage })))
 const SpotsAdminPage = lazy(() => import('./admin/SpotsAdminPage').then((module) => ({ default: module.SpotsAdminPage })))
@@ -83,15 +84,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/auth/action" element={<AuthActionPage />} />
             <Route path="/admin/spots" element={<SpotsAdminPage />} />
           </Route>
-          <Route path="/sube-un-spot" element={<SubmitSpotPage />} />
           <Route path="/lleva-bruuk" element={<Navigate to="/sube-un-spot" replace />} />
           <Route path="/radar" element={<Navigate to="/guadalajara/senales" replace />} />
-          <Route path="/radar/museo-cabanas-cafe-redescubrimiento" element={<RadarCabanasPage />} />
-          <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
-          <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
-          <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
-          <Route path="/:city/arma-tu-plan" element={<PlanBuilderPage />} />
-          <Route path="/:city/eventos" element={<EventsPage />} />
           <Route path="/rack/lugares" element={<LegacyRackRedirect />} />
           <Route path="/planes" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
@@ -100,8 +94,18 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/:city/spots" element={<OceanLanding />} />
           <Route path="/:city/rack" element={<RackPlaces />} />
           <Route path="/:city/planes" element={<Navigate to="/guadalajara/senales" replace />} />
-          <Route path="/:city/senales" element={<RadarPage />} />
           <Route path="/:city/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
+          {/* Solo Spots y Rack son libres en la web; lo demás pide iniciar sesión */}
+          <Route element={<RequireLogin />}>
+            <Route path="/sube-un-spot" element={<SubmitSpotPage />} />
+            <Route path="/radar/museo-cabanas-cafe-redescubrimiento" element={<RadarCabanasPage />} />
+            <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
+            <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />
+            <Route path="/guadalajara/atardeceres" element={<SunsetPage />} />
+            <Route path="/:city/arma-tu-plan" element={<PlanBuilderPage />} />
+            <Route path="/:city/eventos" element={<EventsPage />} />
+            <Route path="/:city/senales" element={<RadarPage />} />
+          </Route>
           <Route path="/:city" element={<CityHomePage />} />
           </Routes>
           {IS_APP_MODE && <FirstRouteLoaded />}

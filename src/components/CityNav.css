@@ -121,7 +121,6 @@
   letter-spacing: .13em;
 }
 
-.city-nav-current-home { min-width: 250px; }
 .city-nav-change {
   min-height: 42px;
   display: inline-flex;
@@ -140,6 +139,8 @@
 
 .city-nav-change:hover { border-color: var(--nav-accent); background: #211b3d; }
 .city-nav-trailing { justify-self: end; display: flex; align-items: center; }
+/* Inicio no tiene categoría al centro: lo de la derecha se queda a la derecha */
+.city-nav.is-home-nav .city-nav-trailing { grid-column: -2; }
 .city-nav-trailing:empty::after { content: 'EDICIÓN 001'; color: var(--nav-muted); font-size: .62rem; font-weight: 700; letter-spacing: .14em; }
 .city-nav :focus-visible { outline: 2px solid #b8affe; outline-offset: 3px; }
 
@@ -163,9 +164,11 @@
   .city-nav-category > span { font-size: .54rem; }
   .city-nav-category .bruuk-select-trigger { min-height: 40px; font-size: .61rem; }
   .city-nav-current { min-width: 74px; align-items: flex-start; }
-  .city-nav-current-home { min-width: 0; align-items: center; margin: auto; }
   .city-nav-change { min-height: 40px; padding-inline: 11px; font-size: .57rem; }
   .city-nav-trailing { display: none; }
+
+  /* Inicio: solo logo y ciudad, en una línea */
+  .city-nav.is-home-nav { height: 64px; grid-template-rows: 64px; }
 
   .city-nav.is-feed-nav {
     height: 70px;

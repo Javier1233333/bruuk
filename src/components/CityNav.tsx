@@ -48,8 +48,8 @@ export function CityNav({ active, trailing }: { active?: CitySection; trailing?:
           />
         </div>
       )}
-      <div className="city-nav-sections">
-        {active ? (
+      {/* En Inicio la pregunta ya es el título de la página: aquí solo la categoría */}
+      {active && <div className="city-nav-sections">
           <div className="city-nav-category">
             <span>/ CATEGORÍA</span>
             <BruukSelect
@@ -63,10 +63,7 @@ export function CityNav({ active, trailing }: { active?: CitySection; trailing?:
               ]}
             />
           </div>
-        ) : (
-          <span className="city-nav-current city-nav-current-home"><strong>¿QUÉ QUIERES DESCUBRIR HOY?</strong></span>
-        )}
-      </div>
+      </div>}
       <div className="city-nav-trailing">{trailing}</div>
     </header>
   );

@@ -1,10 +1,21 @@
-import { ArrowUpRight, CalendarDays, Compass, Dices, Radio, Store } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, Compass, Dices, Lock, Radio, Store, type LucideIcon } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AsciiDiscoveryBackground } from '../components/AsciiDiscoveryBackground';
 import { CityNav } from '../components/CityNav';
 import { useSpots } from '../lib/useSpots';
 import { IS_APP_MODE } from '../lib/appMode';
+import { hasSignedIn } from '../lib/appSession';
 import './CityHomePage.css';
+
+type Section = {
+  to: string;
+  title: string;
+  copy: string;
+  icon: LucideIcon;
+  meta?: string;
+  // Spots y Rack son libres; lo demás pide iniciar sesión
+  free?: boolean;
+};
 
 export default function CityHomePage() {
   const { city } = useParams();
@@ -14,92 +25,45 @@ export default function CityHomePage() {
   if (IS_APP_MODE) return <Navigate to="/guadalajara/spots" replace />;
   const spotCount = (allSpots as Array<{ city: string }>).filter((spot) => spot.city === 'guadalajara').length;
   const rackCount = 46;
+  const signedIn = hasSignedIn();
+  const sections: Section[] = [
+    { to: '/guadalajara/spots', title: 'Comer y tomar', copy: 'Cafés, comida y bares elegidos a mano.', icon: Compass, meta: `${spotCount} lugares`, free: true },
+    { to: '/guadalajara/rack', title: 'Vintage y tianguis', copy: 'Ropa, objetos y mercados con historia.', icon: Store, meta: `${rackCount} lugares`, free: true },
+    { to: '/guadalajara/senales', title: 'Planes y rutas', copy: 'Lo que está por pasar en la ciudad.', icon: Radio },
+    { to: '/guadalajara/arma-tu-plan', title: 'Arma tu plan', copy: 'Gira la ruleta y sal hoy.', icon: Dices },
+    { to: '/guadalajara/eventos', title: 'Eventos', copy: 'Encuentros en persona. Próximamente.', icon: CalendarDays },
+  ];
 
   return (
     <div className="city-home">
       <CityNav />
       <AsciiDiscoveryBackground />
-      <main>
-        <section className="city-index" aria-labelledby="city-index-title">
-          <header className="city-index-heading">
-            <span>/ ELIGE UNA CATEGORÍA</span>
-            <h2 id="city-index-title">¿QUÉ QUIERES DESCUBRIR HOY?</h2>
-            <p>Elige una categoría con un toque.</p>
-          </header>
+      {/* Todo en una pantalla: nadie tiene que deslizar para ver las secciones */}
+      <main className="city-menu">
+        <header className="city-menu-heading">
+          <span>/ GUADALAJARA</span>
+          <h1>¿Qué quieres descubrir hoy?</h1>
+        </header>
 
-          <nav className="city-gateways" aria-label="Categorías para descubrir">
-            <Link to="/guadalajara/spots" className="city-gateway city-gateway-spots">
-              <div className="city-gateway-number">01</div>
-              <div className="city-gateway-icon"><Compass size={27} strokeWidth={1.8} /></div>
-              <div className="city-gateway-copy">
-                <span>SPOTS · CAFÉS, COMIDA Y NOCHE</span>
-                <h3>COMER Y TOMAR</h3>
-                <p>Cafés, comida, bares y rincones elegidos para encontrar un plan sin perderte en el feed.</p>
-              </div>
-              <div className="city-gateway-action">
-                <span>{spotCount} LUGARES</span>
-                <strong>EXPLORAR <ArrowUpRight size={22} /></strong>
-              </div>
-            </Link>
-            <Link to="/guadalajara/rack" className="city-gateway city-gateway-rack">
-              <div className="city-gateway-number">02</div>
-              <div className="city-gateway-icon"><Store size={27} strokeWidth={1.8} /></div>
-              <div className="city-gateway-copy">
-                <span>RACK · ROPA, OBJETOS Y MERCADOS</span>
-                <h3>VINTAGE Y TIANGUIS</h3>
-                <p>Moda, tianguis, antigüedades y objetos para encontrar piezas y lugares con historia propia.</p>
-              </div>
-              <div className="city-gateway-action">
-                <span>{rackCount} LUGARES</span>
-                <strong>EXPLORAR <ArrowUpRight size={22} /></strong>
-              </div>
-            </Link>
-            <Link to="/guadalajara/senales" className="city-gateway city-gateway-plans">
-              <div className="city-gateway-number">03</div>
-              <div className="city-gateway-icon"><Radio size={27} strokeWidth={1.8} /></div>
-              <div className="city-gateway-copy">
-                <span>SEÑALES · LO QUE ESTÁ PASANDO</span>
-                <h3>PLANES Y RUTAS</h3>
-                <p>Planes, eventos, aperturas y cosas que están por pasar en la ciudad.</p>
-              </div>
-              <div className="city-gateway-action">
-                <span>3 PLANES</span>
-                <strong>EXPLORAR <ArrowUpRight size={22} /></strong>
-              </div>
-            </Link>
-            <Link to="/guadalajara/arma-tu-plan" className="city-gateway city-gateway-plans">
-              <div className="city-gateway-number">04</div>
-              <div className="city-gateway-icon"><Dices size={27} strokeWidth={1.8} /></div>
-              <div className="city-gateway-copy">
-                <span>RULETA · GIRA Y SAL</span>
-                <h3>ARMA TU PLAN</h3>
-                <p>Gira la ruleta entre todos los lugares de la guía y la IA encuentra qué los une. O contesta cinco preguntas.</p>
-              </div>
-              <div className="city-gateway-action">
-                <span>TODA LA GUÍA</span>
-                <strong>GIRAR <ArrowUpRight size={22} /></strong>
-              </div>
-            </Link>
-            <Link to="/guadalajara/eventos" className="city-gateway city-gateway-events">
-              <div className="city-gateway-number">05</div>
-              <div className="city-gateway-icon"><CalendarDays size={27} strokeWidth={1.8} /></div>
-              <div className="city-gateway-copy">
-                <span>BRUUK EVENTOS · EN PERSONA</span>
-                <h3>EVENTOS</h3>
-                <p>Encuentros pequeños en lugares de la guía. Estamos preparando el primero.</p>
-              </div>
-              <div className="city-gateway-action">
-                <span>PRÓXIMAMENTE</span>
-                <strong>AVÍSAME <ArrowUpRight size={22} /></strong>
-              </div>
-            </Link>
-          </nav>
-        </section>
-
-        <footer className="city-home-footer">
-          <span>BRUUK / 2026</span>
-          <span>MENOS PANTALLA · MÁS MUNDO</span>
-        </footer>
+        <nav className="city-menu-grid" aria-label="Secciones de Bruuk">
+          {sections.map(({ to, title, copy, icon: Icon, meta, free }) => {
+            const locked = !free && !signedIn;
+            return (
+              <Link key={to} to={to} className={`city-menu-item ${free ? 'is-main' : ''}`}>
+                <span className="city-menu-icon"><Icon size={free ? 24 : 20} strokeWidth={1.9} aria-hidden="true" /></span>
+                <span className="city-menu-copy">
+                  <strong>{title}</strong>
+                  <span>{copy}</span>
+                </span>
+                <span className="city-menu-meta">
+                  {locked
+                    ? <><Lock size={13} strokeWidth={2.4} aria-hidden="true" /> CON CUENTA</>
+                    : <>{meta && <em>{meta}</em>}<ArrowUpRight size={18} aria-hidden="true" /></>}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
       </main>
     </div>
   );
