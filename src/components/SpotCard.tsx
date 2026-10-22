@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { getSpotVisual } from '../lib/spotVisual';
+import { placeZone } from '../lib/zones';
 import { ShareButton } from './ShareButton';
 
 interface Spot {
@@ -15,6 +16,7 @@ interface Spot {
   city?: string;
   rating?: number;
   price?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 interface SpotCardProps {
@@ -51,6 +53,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
   const hasOwnPhoto = /\.(?:jpe?g|png|webp|avif)(?:\?|$)/i.test(spot.imageUrl);
   const visual = getSpotVisual(spot.type);
   const SpotIcon = visual.Icon;
+  const zone = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
 
   useEffect(() => {
     if (!onClose || !isAbsolute) return;
@@ -121,7 +124,10 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
       <div className="spot-card__body">
         <div className="spot-card__meta">
           <span className="spot-card__type" style={{ background: spot.colorAccent }}>{spot.type}</span>
-          <span className="spot-card__label" style={{ textTransform: 'capitalize' }}>{spot.city || 'Guadalajara'}</span>
+          {/* Colonia si tiene coordenadas; si no, la ciudad */}
+          {zone
+            ? <span className="spot-card__zone">{zone.name}</span>
+            : <span className="spot-card__label" style={{ textTransform: 'capitalize' }}>{spot.city || 'Guadalajara'}</span>}
         </div>
         <h3 className="spot-card__name">{spot.name}</h3>
         {spot.highlight && (

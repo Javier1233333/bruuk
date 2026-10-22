@@ -676,6 +676,18 @@
   color: #999;
 }
 
+/* Etiqueta de colonia (src/lib/zones.ts) */
+.spot-card__zone {
+  padding: 2px 7px;
+  color: #0b0a12;
+  border: 1.5px solid #0b0a12;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .spot-card__name {
   font-family: 'Outfit', sans-serif;
   font-size: 1.15rem;

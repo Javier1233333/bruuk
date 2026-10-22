@@ -5,9 +5,10 @@ import sunsetData from './atardeceres.json' with { type: 'json' };
 import rackData from '../../lugares-mapa-gdl.json' with { type: 'json' };
 import { SPOT_IMAGES } from '../rack/spotImages.js';
 import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
+import { placeZone, type PlanZone } from '../lib/zones.js';
 
 export type PlanInterest = 'cafe' | 'comida' | 'noche' | 'vintage' | 'cultura' | 'atardecer';
-export type PlanZone = 'centro' | 'americana' | 'poniente';
+export type { PlanZone };
 
 export type PlanPlace = {
   id: string;
@@ -161,33 +162,6 @@ type Spot = { id: string; name: string; type: string; description: string; highl
 type Sunset = { id: string; name: string; type: string; description: string; highlight?: string; mapsLink: string };
 type RackPlace = { name: string; category: string; description: string; google_maps_url: string; geometry?: { latitude?: number | null; longitude?: number | null } };
 
-// Centro de cada colonia; el lugar va a la más cercana si está a menos de 3.5 km.
-const ZONE_CENTERS: { zone: PlanZone; lat: number; lng: number }[] = [
-  { zone: 'centro', lat: 20.6767, lng: -103.3475 },
-  { zone: 'americana', lat: 20.6735, lng: -103.3705 },
-  { zone: 'poniente', lat: 20.6945, lng: -103.3895 }, // Providencia
-  { zone: 'poniente', lat: 20.6655, lng: -103.4 }, // Chapalita
-  { zone: 'poniente', lat: 20.7225, lng: -103.391 }, // Zapopan centro
-  { zone: 'poniente', lat: 20.7095, lng: -103.413 }, // Andares
-];
-const MAX_ZONE_KM = 3.5;
-
-const distanceKm = (lat1: number, lng1: number, lat2: number, lng2: number) => {
-  const rad = (value: number) => (value * Math.PI) / 180;
-  const h = Math.sin(rad(lat2 - lat1) / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(rad(lng2 - lng1) / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(h));
-};
-
-const zoneFor = (lat?: number | null, lng?: number | null): PlanZone | undefined => {
-  if (lat == null || lng == null) return undefined;
-  let best: { zone: PlanZone; km: number } | undefined;
-  for (const center of ZONE_CENTERS) {
-    const km = distanceKm(lat, lng, center.lat, center.lng);
-    if (!best || km < best.km) best = { zone: center.zone, km };
-  }
-  return best && best.km <= MAX_ZONE_KM ? best.zone : undefined;
-};
-
 const NIGHT_TYPES = /bar|club|discoteca|coctel|cervecer|jazz|vinos/i;
 const CAFE_TYPES = /caf|panader|bagel|helad|gelat/i;
 
@@ -217,7 +191,7 @@ export const PLAN_PLACES: PlanPlace[] = [
       price: spot.price,
       imageUrl: spot.imageUrl?.endsWith('.webp') ? spot.imageUrl : undefined,
       mapsUrl: spot.mapsLink,
-      zone: zoneFor(spot.coordinates?.lat, spot.coordinates?.lng),
+      zone: placeZone(spot.coordinates?.lat, spot.coordinates?.lng)?.zone,
     })),
   ...rackPlaces
     .filter((place) => (place.category === 'Cultura' || place.category === 'Rack recomienda' || place.category === 'Vinilos y antigüedades' || place.category === 'Tianguis') && !tianguisStalls.has(place))
@@ -230,7 +204,7 @@ export const PLAN_PLACES: PlanPlace[] = [
       tip: place.description,
       imageUrl: SPOT_IMAGES[place.name],
       mapsUrl: SPOT_MAP_LINKS[place.name] ?? place.google_maps_url,
-      zone: zoneFor(place.geometry?.latitude, place.geometry?.longitude),
+      zone: placeZone(place.geometry?.latitude, place.geometry?.longitude)?.zone,
     })),
   ...(sunsetData.sunset as Sunset[]).map((sunset) => ({
     id: sunset.id,

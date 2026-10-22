@@ -30,6 +30,7 @@ import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
 import { ShareButton } from '../components/ShareButton';
+import { placeZone } from '../lib/zones';
 import { feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from '../components/RegistrationModal';
 import { BruukSelect } from '../components/BruukSelect';
@@ -1045,6 +1046,7 @@ function PlaceFeedCard({
   const kind = kindForPlace(place);
   const imageUrl = SPOT_IMAGES[place.name];
   const showPhoto = kind !== 'tianguis' && Boolean(imageUrl);
+  const zone = placeZone(place.geometry?.latitude, place.geometry?.longitude);
 
   return (
     <article
@@ -1099,6 +1101,7 @@ function PlaceFeedCard({
             )}
             {FILTER_LABELS[kind]}
           </span>
+          {zone && <span className="rack-place-zone">{zone.name}</span>}
           <span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
         </div>
         <h1>{place.name}</h1>

@@ -281,6 +281,15 @@
   background-size: 34px 34px;
 }
 
+/* Etiqueta de colonia junto a la categoría; el contador se queda a la derecha */
+.rack-place-zone {
+  margin-right: auto;
+  padding: 3px 8px;
+  color: var(--rack-text);
+  border: 1px solid var(--rack-line);
+  text-transform: uppercase;
+}
+
 .rack-place-meta {
   display: flex;
   justify-content: space-between;
