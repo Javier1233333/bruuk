@@ -9,7 +9,7 @@ import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import { RadarPromo } from './RadarPromo';
-import { FEED_PROMO_EVERY } from '../lib/appSession';
+import { FREE_SPOTS, feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from './RegistrationModal';
 import { useSpots } from '../lib/useSpots';
 import './OceanLanding.css';
@@ -82,8 +82,11 @@ export function OceanLanding() {
     return true;
   });
 
-  const feedSlides = filteredSpots.flatMap((spot, index) => {
-    const isRadarMoment = (index + 1) % FEED_PROMO_EVERY === 0 && index < FEED_PROMO_EVERY * 3;
+  // Sin sesión en la web: 5 spots de prueba y el feed termina en el aviso de login.
+  const feedLocked = isFeedLocked();
+  const promoEvery = feedPromoEvery();
+  const feedSlides = (feedLocked ? filteredSpots.slice(0, FREE_SPOTS) : filteredSpots).flatMap((spot, index) => {
+    const isRadarMoment = (index + 1) % promoEvery === 0 && index < promoEvery * 3;
     return isRadarMoment ? [spot, { id: `radar-${index}`, radar: true }] : [spot];
   });
 
@@ -175,7 +178,7 @@ export function OceanLanding() {
         </AnimatePresence>
 
         {/* Slide N+1: Snapping Final Footer */}
-        <section className="tiktok-slide footer-slide">
+        {!feedLocked && <section className="tiktok-slide footer-slide">
           <div className="end-slide-card">
             <div className="end-logo-wrap">
               <BruukLogo width={160} />
@@ -201,7 +204,7 @@ export function OceanLanding() {
               &copy; {new Date().getFullYear()} bruuk. No sigas las reglas.
             </p>
           </div>
-        </section>
+        </section>}
 
       </div>
       <RegistrationModal isOpen={isRadarOpen} onClose={() => setIsRadarOpen(false)} />

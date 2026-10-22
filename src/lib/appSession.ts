@@ -33,5 +33,8 @@ export const hasSignedIn = () => {
   }
 };
 
-// En la web, cada 5 spots el feed pide iniciar sesión; en la app (ya con sesión) sale Radar cada 6.
-export const FEED_PROMO_EVERY = IS_APP_MODE ? 6 : 5;
+// En la web sin sesión el feed muestra 5 spots de prueba y luego pide iniciar sesión.
+// En la app (ya con sesión) o con sesión en la web sale Radar cada 6.
+export const FREE_SPOTS = 5;
+export const isFeedLocked = () => !IS_APP_MODE && !hasSignedIn();
+export const feedPromoEvery = () => (isFeedLocked() ? FREE_SPOTS : 6);

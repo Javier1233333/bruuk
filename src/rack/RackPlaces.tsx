@@ -27,7 +27,7 @@ import { SPOT_MAP_LINKS } from './spotMapLinks';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { RadarPromo } from '../components/RadarPromo';
-import { FEED_PROMO_EVERY } from '../lib/appSession';
+import { feedPromoEvery, isFeedLocked } from '../lib/appSession';
 import { RegistrationModal } from '../components/RegistrationModal';
 import { BruukSelect } from '../components/BruukSelect';
 
@@ -372,10 +372,15 @@ export function RackPlaces() {
           setIsRadarSlide(false);
           if (offset < 0) setActiveIndex(modulo(activeIndex - 1, count));
         } else {
-          const nextIndex = modulo(activeIndex + offset, count);
+          const promoEvery = feedPromoEvery();
+          // Sin sesión en la web un deslizón rápido no puede saltarse el aviso de login
+          const lockedStop = isFeedLocked() && offset > 0
+            ? [1, 2].slice(0, offset).find((step) => (activeIndex + step) % promoEvery === 0)
+            : undefined;
+          const nextIndex = modulo(activeIndex + (lockedStop ?? offset), count);
           const returningToRadar = offset < 0 && radarBoundariesRef.current.has(activeIndex);
           const knownRadarBoundary = radarBoundariesRef.current.has(nextIndex);
-          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % FEED_PROMO_EVERY === 0;
+          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % promoEvery === 0;
 
           if (returningToRadar) {
             setIsRadarSlide(true);
@@ -742,7 +747,8 @@ export function RackPlaces() {
           onScroll={handleFeedScroll}
           aria-label="Feed infinito de lugares"
         >
-          {virtualFeedPlaces.map(({ place, index, offset }) => {
+          {/* Sin sesión en la web el aviso de login es el final: no hay spots debajo */}
+          {virtualFeedPlaces.filter(({ offset }) => !(isRadarSlide && offset > 0 && isFeedLocked())).map(({ place, index, offset }) => {
             return offset === 0 && isRadarSlide ? (
               <section className="rack-place-slide rack-radar-slide" key={offset}>
                 <RadarPromo variant="rack" onJoin={() => setIsRadarOpen(true)} />

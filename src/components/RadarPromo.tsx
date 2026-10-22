@@ -1,7 +1,6 @@
 import { ArrowRight, Radio, UserRound } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { IS_APP_MODE } from '../lib/appMode';
-import { hasSignedIn } from '../lib/appSession';
+import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
 import './RadarPromo.css';
 
 type RadarPromoProps = {
@@ -10,7 +9,7 @@ type RadarPromoProps = {
 };
 
 export function RadarPromo({ onJoin, variant = 'default' }: RadarPromoProps) {
-  if (!IS_APP_MODE && !hasSignedIn()) return <LoginPromo variant={variant} />;
+  if (isFeedLocked()) return <LoginPromo variant={variant} />;
 
   if (variant === 'rack') {
     return (
@@ -65,12 +64,12 @@ function LoginPromo({ variant }: { variant: RadarPromoProps['variant'] }) {
         <div className="radar-promo-rack__copy">
           <div className="radar-promo-rack__meta"><span><UserRound size={14} aria-hidden="true" /> / CUENTA BRUUK</span><span>NO ES UN SPOT</span></div>
           <h2>¿TE ESTÁ GUSTANDO? ENTRA A BRUUK.</h2>
-          <p>Inicia sesión o crea tu cuenta con tu correo o con Google para seguir descubriendo la ciudad con nosotros.</p>
+          <p>Ya viste tus {FREE_SPOTS} spots de prueba. Inicia sesión o crea tu cuenta gratis con tu correo o con Google para ver todos.</p>
           <div className="radar-promo-rack__actions">
             <Link to={login}>INICIAR SESIÓN <ArrowRight size={17} aria-hidden="true" /></Link>
             <Link to={signup} className="radar-promo-rack__secondary">CREAR CUENTA</Link>
           </div>
-          <span className="radar-promo-rack__hint">DESLIZA PARA SEGUIR EXPLORANDO ↓</span>
+          <span className="radar-promo-rack__hint">ENTRA PARA SEGUIR VIENDO SPOTS</span>
         </div>
       </article>
     );
@@ -80,10 +79,10 @@ function LoginPromo({ variant }: { variant: RadarPromoProps['variant'] }) {
     <article className="radar-promo" aria-label="Inicia sesión en Bruuk">
       <span className="radar-promo__eyebrow"><UserRound size={15} aria-hidden="true" /> TU CUENTA BRUUK</span>
       <h2>¿TE ESTÁ GUSTANDO? ENTRA A BRUUK.</h2>
-      <p>Inicia sesión o crea tu cuenta con tu correo o con Google. Toma menos de un minuto.</p>
+      <p>Ya viste tus {FREE_SPOTS} spots de prueba. Inicia sesión o crea tu cuenta gratis para ver todos. Toma menos de un minuto.</p>
       <Link to={login}>INICIAR SESIÓN <ArrowRight size={17} aria-hidden="true" /></Link>
       <Link to={signup} className="radar-promo__secondary">CREAR CUENTA</Link>
-      <span className="radar-promo__hint">DESLIZA PARA SEGUIR EXPLORANDO</span>
+      <span className="radar-promo__hint">ENTRA PARA SEGUIR VIENDO SPOTS</span>
     </article>
   );
 }
