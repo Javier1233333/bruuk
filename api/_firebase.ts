@@ -13,7 +13,11 @@ import { getFirestore } from 'firebase-admin/firestore';
 
 const projectId = process.env.FIREBASE_PROJECT_ID ?? '';
 const clientEmail = process.env.FIREBASE_CLIENT_EMAIL ?? '';
-const privateKey = (process.env.FIREBASE_PRIVATE_KEY ?? '').replace(/\\n/g, '\n');
+// Si se pegó con las comillas del JSON ("-----BEGIN…\n"), se las quitamos
+const privateKey = (process.env.FIREBASE_PRIVATE_KEY ?? '')
+  .trim()
+  .replace(/^"|"$/g, '')
+  .replace(/\\n/g, '\n');
 
 export const firebaseConfigured = Boolean(projectId && clientEmail && privateKey);
 
