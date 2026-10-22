@@ -48,6 +48,10 @@
       "destination": "/privacidad/index.html"
     },
     {
+      "source": "/negocios",
+      "destination": "/negocios/index.html"
+    },
+    {
       "source": "/guadalajara/arma-tu-plan",
       "destination": "/guadalajara/arma-tu-plan/index.html"
     },

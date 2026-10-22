@@ -1,0 +1,61 @@
+/* /negocios: una sola pantalla. Mismo lenguaje que el login: tinta arriba, hoja clara con el formulario. */
+.business-page { min-height: 100dvh; display: flex; flex-direction: column; color: #f7f6ff; background: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.business-page *, .business-page *::before, .business-page *::after { box-sizing: border-box; }
+
+.business-nav { display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 16px; padding: env(safe-area-inset-top) 16px 0; }
+.business-nav > a { line-height: 0; }
+.business-nav > span { color: #b8affe; font: 800 .64rem 'Outfit', sans-serif; letter-spacing: .16em; }
+
+.business-main { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 18px; width: 100%; max-width: 1100px; margin: 0 auto; padding: 8px 16px calc(20px + env(safe-area-inset-bottom)); }
+
+/* index.css le da padding a todo <section>: aquí no */
+.business-intro { padding: 0; }
+.business-intro h1 { margin: 0; font: 900 clamp(2rem, 9.5vw, 2.6rem)/.88 'Outfit', sans-serif; letter-spacing: -.05em; }
+.business-intro h1 em { color: #8b7cf6; font-style: normal; }
+.business-rules { display: grid; gap: 6px; margin: 14px 0 0; padding: 0; list-style: none; }
+.business-rules li { display: flex; align-items: center; gap: 8px; color: #d6d3e4; font-size: .88rem; line-height: 1.3; }
+.business-rules svg { flex: none; color: #8b7cf6; }
+
+.business-card { padding: 16px; color: #0b0a12; background: #f7f6ff; box-shadow: 5px 5px 0 #8b7cf6; }
+.business-form { display: grid; gap: 10px; }
+.business-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.business-field { display: grid; gap: 5px; min-width: 0; }
+.business-field label { color: #6557d8; font: 850 .6rem 'Outfit', sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+.business-field label small { color: #8a8794; font-size: inherit; letter-spacing: .06em; text-transform: none; }
+/* 16px evita el zoom de iOS al enfocar */
+.business-field input { width: 100%; min-height: 46px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; border-radius: 0; font: 600 16px 'DM Sans', sans-serif; outline: 0; -webkit-appearance: none; appearance: none; }
+.business-field input:focus { box-shadow: 3px 3px 0 #8b7cf6; }
+.business-field input::placeholder { color: #8a8794; opacity: 1; }
+
+.business-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.business-accept { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding-top: 4px; color: #36333f; font-size: .82rem; line-height: 1.35; cursor: pointer; }
+.business-accept input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: #6557d8; }
+
+.business-error { margin: 0; padding: 9px 12px; color: #fff; background: #351626; font-size: .84rem; line-height: 1.4; }
+
+.business-submit { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 10px; color: #fff; background: #0b0a12; border: 1.5px solid #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; font: 900 .82rem 'Outfit', sans-serif; letter-spacing: .1em; text-decoration: none; cursor: pointer; touch-action: manipulation; }
+.business-submit:hover, .business-submit:focus-visible { color: #0b0a12; background: #8b7cf6; box-shadow: 4px 4px 0 #0b0a12; }
+.business-submit:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #8b7cf6; }
+.business-submit:disabled { cursor: wait; opacity: .7; }
+.business-spinner { animation: business-spin .8s linear infinite; }
+@keyframes business-spin { to { transform: rotate(360deg); } }
+
+.business-sent { display: grid; justify-items: start; gap: 10px; }
+.business-sent > svg { color: #6557d8; }
+.business-sent h2 { margin: 0; font: 900 1.6rem/.95 'Outfit', sans-serif; letter-spacing: -.03em; }
+.business-sent p { margin: 0 0 6px; color: #36333f; font-size: .92rem; line-height: 1.45; }
+
+.business-field input:focus-visible, .business-accept input:focus-visible, .business-nav a:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { .business-spinner { animation: none; } .business-submit:active { transform: none; } }
+
+/* Escritorio: el mensaje a la izquierda y el formulario a la derecha */
+@media (min-width: 900px) {
+  .business-nav { min-height: 76px; padding: 0 clamp(20px, 4vw, 60px); border-bottom: 1px solid rgba(255,255,255,.16); }
+  .business-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); align-items: center; gap: clamp(48px, 7vw, 110px); }
+  .business-intro h1 { font-size: clamp(4rem, 7vw, 6.4rem); line-height: .82; letter-spacing: -.065em; }
+  .business-rules { gap: 10px; margin-top: 28px; }
+  .business-rules li { font-size: 1.05rem; }
+  .business-card { padding: 26px; box-shadow: 10px 10px 0 #8b7cf6; }
+}

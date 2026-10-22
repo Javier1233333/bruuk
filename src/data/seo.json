@@ -127,6 +127,14 @@
       "imageAlt": "Bruuk Eventos en Guadalajara",
       "type": "website",
       "lastmod": "2026-10-19"
+    },
+    "/negocios": {
+      "title": "Reseña honesta para tu negocio | Bruuk",
+      "description": "Pide que Bruuk visite tu negocio. Reseña honesta, cero pagada: no cobramos ni aceptamos intercambios.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Bruuk",
+      "type": "website",
+      "noindex": true
     }
   }
 }

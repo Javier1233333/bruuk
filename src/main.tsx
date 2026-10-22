@@ -32,6 +32,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage').then((module) => ({ def
 const AuthActionPage = lazy(() => import('./pages/AuthActionPage').then((module) => ({ default: module.AuthActionPage })))
 const SpotsAdminPage = lazy(() => import('./admin/SpotsAdminPage').then((module) => ({ default: module.SpotsAdminPage })))
 const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
+const BusinessPage = lazy(() => import('./pages/BusinessPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
 const EventsPage = lazy(() => import('./pages/EventsPage'))
@@ -79,6 +80,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/descubrir" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/descubrir/:city" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/privacidad" element={<PrivacyPage />} />
+          {/* Sólo por enlace directo: ningún link en la web ni en la app */}
+          <Route path="/negocios" element={<BusinessPage />} />
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/action" element={<AuthActionPage />} />
