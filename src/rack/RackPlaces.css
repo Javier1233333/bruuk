@@ -104,13 +104,13 @@
   scroll-snap-stop: always;
 }
 
-.rack-radar-slide {
+.rack-wall-slide {
   position: relative;
   display: block;
   background: var(--rack-bg);
 }
 
-.rack-radar-slide > .radar-promo-rack {
+.rack-wall-slide > .radar-promo-rack {
   position: absolute;
   inset: 0;
   width: 100%;

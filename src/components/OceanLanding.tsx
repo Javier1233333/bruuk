@@ -8,9 +8,8 @@ import { BruukLogo } from './BruukLogo';
 import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
-import { RadarPromo } from './RadarPromo';
-import { FREE_SPOTS, feedPromoEvery, isFeedLocked } from '../lib/appSession';
-import { RegistrationModal } from './RegistrationModal';
+import { FeedLoginWall } from './FeedLoginWall';
+import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
 import { useSpots } from '../lib/useSpots';
 import { IS_APP_MODE } from '../lib/appMode';
 import './OceanLanding.css';
@@ -44,7 +43,6 @@ export function OceanLanding() {
   const activeCity = 'guadalajara';
 
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('todos');
-  const [isRadarOpen, setIsRadarOpen] = useState(false);
   const allSpots = useSpots();
   // Enlace compartido (?spot=): ese spot va primero
   const [searchParams] = useSearchParams();
@@ -84,11 +82,9 @@ export function OceanLanding() {
 
   // Sin sesión en la web: 5 spots de prueba y el feed termina en el aviso de login.
   const feedLocked = isFeedLocked();
-  const promoEvery = feedPromoEvery();
-  const feedSlides = (feedLocked ? filteredSpots.slice(0, FREE_SPOTS) : filteredSpots).flatMap((spot, index) => {
-    const isRadarMoment = (index + 1) % promoEvery === 0 && index < promoEvery * 3;
-    return isRadarMoment ? [spot, { id: `radar-${index}`, radar: true }] : [spot];
-  });
+  const feedSlides: (Spot | { id: string; wall: true })[] = feedLocked
+    ? [...filteredSpots.slice(0, FREE_SPOTS), { id: 'login-wall', wall: true }]
+    : filteredSpots;
 
   // Reset scroll to top when category changes
   useEffect(() => {
@@ -163,9 +159,9 @@ export function OceanLanding() {
         {/* Slides 1 to N: The Spot Cards */}
         <AnimatePresence mode="wait">
           {feedSlides.map((slide) => (
-            'radar' in slide ? (
-              <section className="tiktok-slide radar-slide" key={`${slide.id}-${activeCategory}`}>
-                <RadarPromo onJoin={() => setIsRadarOpen(true)} />
+            'wall' in slide ? (
+              <section className="tiktok-slide login-wall-slide" key={`${slide.id}-${activeCategory}`}>
+                <FeedLoginWall />
               </section>
             ) : (
               <section className="tiktok-slide card-slide" key={`${slide.id}-${activeCategory}`}>
@@ -207,7 +203,6 @@ export function OceanLanding() {
         </section>}
 
       </div>
-      <RegistrationModal isOpen={isRadarOpen} onClose={() => setIsRadarOpen(false)} />
     </div>
   );
 }

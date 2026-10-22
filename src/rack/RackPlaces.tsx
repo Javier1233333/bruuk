@@ -26,11 +26,10 @@ import 'leaflet/dist/leaflet.css';
 import { useRackPlaces, type RackPlace } from './useRackPlaces';
 import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
-import { RadarPromo } from '../components/RadarPromo';
+import { FeedLoginWall } from '../components/FeedLoginWall';
 import { ShareButton } from '../components/ShareButton';
 import { spotZone } from '../lib/zones';
-import { feedPromoEvery, isFeedLocked } from '../lib/appSession';
-import { RegistrationModal } from '../components/RegistrationModal';
+import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
 import { BruukSelect } from '../components/BruukSelect';
 
 type PlaceKind = 'tiendas' | 'antiguedades' | 'tianguis';
@@ -182,7 +181,7 @@ export function RackPlaces() {
   const mapDialogRef = useRef<HTMLDivElement | null>(null);
   const mapCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
-  const radarBoundariesRef = useRef<Set<number>>(new Set());
+  const wallBoundariesRef = useRef<Set<number>>(new Set());
   const [activeFilter, setActiveFilter] =
     useState<PlaceFilter>(initialFilter);
   const [mapFilter, setMapFilter] =
@@ -197,9 +196,7 @@ export function RackPlaces() {
   const [isMapOpen, setIsMapOpen] = useState(
     () => searchParams.get('view') === 'map',
   );
-  const [radarSeen, setRadarSeen] = useState(0);
-  const [isRadarSlide, setIsRadarSlide] = useState(false);
-  const [isRadarOpen, setIsRadarOpen] = useState(false);
+  const [isWallSlide, setIsWallSlide] = useState(false);
 
   const updateRackUrl = useCallback(
     (
@@ -248,7 +245,7 @@ export function RackPlaces() {
       isRecenteringRef.current = false;
     });
     return () => window.cancelAnimationFrame(releaseFrame);
-  }, [activeIndex, filteredPlaces, isRadarSlide, viewMode]);
+  }, [activeIndex, filteredPlaces, isWallSlide, viewMode]);
 
   useEffect(() => {
     const nextPlace = filteredPlaces[
@@ -310,28 +307,22 @@ export function RackPlaces() {
       const virtualIndex = Math.round(feed.scrollTop / slideHeight);
       const offset = Math.max(-2, Math.min(2, virtualIndex - 2));
       if (offset !== 0) {
-        if (isRadarSlide) {
-          setIsRadarSlide(false);
+        if (isWallSlide) {
+          setIsWallSlide(false);
           if (offset < 0) setActiveIndex(modulo(activeIndex - 1, count));
         } else {
-          const promoEvery = feedPromoEvery();
-          // Sin sesión en la web un deslizón rápido no puede saltarse el aviso de login
-          const lockedStop = isFeedLocked() && offset > 0
-            ? [1, 2].slice(0, offset).find((step) => (activeIndex + step) % promoEvery === 0)
+          // Sin sesión en la web el feed se detiene en el aviso de login tras FREE_SPOTS lugares;
+          // ni un deslizón rápido se lo salta. Con sesión o en la app no hay nada entre lugares.
+          const wallStep = isFeedLocked() && offset > 0
+            ? [1, 2].slice(0, offset).find((step) => (activeIndex + step) % FREE_SPOTS === 0)
             : undefined;
-          const nextIndex = modulo(activeIndex + (lockedStop ?? offset), count);
-          const returningToRadar = offset < 0 && radarBoundariesRef.current.has(activeIndex);
-          const knownRadarBoundary = radarBoundariesRef.current.has(nextIndex);
-          const reachesRadarBoundary = offset > 0 && nextIndex !== 0 && nextIndex % promoEvery === 0;
+          const nextIndex = modulo(activeIndex + (wallStep ?? offset), count);
 
-          if (returningToRadar) {
-            setIsRadarSlide(true);
-          } else if (reachesRadarBoundary && (knownRadarBoundary || radarSeen < 3)) {
-            if (!knownRadarBoundary) {
-              radarBoundariesRef.current.add(nextIndex);
-              setRadarSeen((seen) => seen + 1);
-            }
-            setIsRadarSlide(true);
+          if (offset < 0 && wallBoundariesRef.current.has(activeIndex)) {
+            setIsWallSlide(true);
+          } else if (wallStep !== undefined && nextIndex !== 0) {
+            wallBoundariesRef.current.add(nextIndex);
+            setIsWallSlide(true);
             setActiveIndex(nextIndex);
           } else {
             setActiveIndex(nextIndex);
@@ -357,9 +348,8 @@ export function RackPlaces() {
         : viewMode;
     setActiveFilter(filter);
     setActiveIndex(0);
-    setIsRadarSlide(false);
-    setRadarSeen(0);
-    radarBoundariesRef.current.clear();
+    setIsWallSlide(false);
+    wallBoundariesRef.current.clear();
     setViewMode(nextView);
     updateRackUrl(filter, nextView);
   };
@@ -698,10 +688,10 @@ export function RackPlaces() {
           aria-label="Feed infinito de lugares"
         >
           {/* Sin sesión en la web el aviso de login es el final: no hay spots debajo */}
-          {virtualFeedPlaces.filter(({ offset }) => !(isRadarSlide && offset > 0 && isFeedLocked())).map(({ place, index, offset }) => {
-            return offset === 0 && isRadarSlide ? (
-              <section className="rack-place-slide rack-radar-slide" key={offset}>
-                <RadarPromo variant="rack" onJoin={() => setIsRadarOpen(true)} />
+          {virtualFeedPlaces.filter(({ offset }) => !(isWallSlide && offset > 0 && isFeedLocked())).map(({ place, index, offset }) => {
+            return offset === 0 && isWallSlide ? (
+              <section className="rack-place-slide rack-wall-slide" key={offset}>
+                <FeedLoginWall variant="rack" />
               </section>
             ) : (
               <PlaceFeedCard
@@ -718,12 +708,12 @@ export function RackPlaces() {
             <button type="button" onClick={() => scrollFeedBy(-1)} aria-label="Lugar anterior">
               <ChevronUp size={22} strokeWidth={2.4} aria-hidden="true" />
             </button>
-            <button type="button" onClick={() => scrollFeedBy(1)} aria-label="Siguiente lugar" disabled={isRadarSlide && isFeedLocked()}>
+            <button type="button" onClick={() => scrollFeedBy(1)} aria-label="Siguiente lugar" disabled={isWallSlide && isFeedLocked()}>
               <ChevronDown size={22} strokeWidth={2.4} aria-hidden="true" />
             </button>
           </div>
           <div className="rack-places-feed-status" aria-live="polite">
-            {isRadarSlide ? 'RADAR / BRUUK' : <>{String(activeIndex + 1).padStart(2, '0')} / {String(filteredPlaces.length).padStart(2, '0')}</>}
+            {isWallSlide ? 'ENTRA A BRUUK' : <>{String(activeIndex + 1).padStart(2, '0')} / {String(filteredPlaces.length).padStart(2, '0')}</>}
           </div>
         </main>
       ) : (
@@ -816,7 +806,6 @@ export function RackPlaces() {
           </section>
         </div>
       )}
-      <RegistrationModal isOpen={isRadarOpen} onClose={() => setIsRadarOpen(false)} />
     </div>
   );
 }
