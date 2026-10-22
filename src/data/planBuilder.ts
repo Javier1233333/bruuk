@@ -5,7 +5,7 @@ import sunsetData from './atardeceres.json' with { type: 'json' };
 import rackData from '../../lugares-mapa-gdl.json' with { type: 'json' };
 import { SPOT_IMAGES } from '../rack/spotImages.js';
 import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
-import { placeZone, type PlanZone } from '../lib/zones.js';
+import { placeZone, spotZone, type PlanZone } from '../lib/zones.js';
 
 export type PlanInterest = 'cafe' | 'comida' | 'noche' | 'vintage' | 'cultura' | 'atardecer';
 export type { PlanZone };
@@ -158,7 +158,7 @@ export const parsePlanChoices = (body: unknown): PlanChoices | null => {
   return { moment: input.moment, company: input.company, vibe: input.vibe, budget: input.budget, stops, interests, note };
 };
 
-type Spot = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string; mapsLink: string; city: string; coordinates?: { lat: number; lng: number } };
+type Spot = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string; mapsLink: string; city: string; coordinates?: { lat: number; lng: number }; zone?: string };
 type Sunset = { id: string; name: string; type: string; description: string; highlight?: string; mapsLink: string };
 type RackPlace = { name: string; category: string; description: string; google_maps_url: string; geometry?: { latitude?: number | null; longitude?: number | null } };
 
@@ -191,7 +191,7 @@ export const PLAN_PLACES: PlanPlace[] = [
       price: spot.price,
       imageUrl: spot.imageUrl?.endsWith('.webp') ? spot.imageUrl : undefined,
       mapsUrl: spot.mapsLink,
-      zone: placeZone(spot.coordinates?.lat, spot.coordinates?.lng)?.zone,
+      zone: spotZone(spot)?.zone,
     })),
   ...rackPlaces
     .filter((place) => (place.category === 'Cultura' || place.category === 'Rack recomienda' || place.category === 'Vinilos y antigüedades' || place.category === 'Tianguis') && !tianguisStalls.has(place))

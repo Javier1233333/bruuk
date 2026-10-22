@@ -35,6 +35,7 @@ export interface SpotDoc {
   price?: string | null;
   mapsLink: string;
   coordinates?: { lat: number; lng: number } | null;
+  zone?: string | null; // colonia asignada a mano; si falta, se calcula con las coordenadas
   active: boolean;
   order?: number; // posición original de spots.json; los nuevos van al final
 }
@@ -67,6 +68,10 @@ export async function saveSpot(id: string, data: SpotInput): Promise<void> {
 
 export async function setSpotActive(id: string, active: boolean): Promise<void> {
   await updateDoc(doc(spotsCol, id), { active, updatedAt: serverTimestamp() });
+}
+
+export async function setSpotZone(id: string, zone: string | null): Promise<void> {
+  await updateDoc(doc(spotsCol, id), { zone, updatedAt: serverTimestamp() });
 }
 
 export async function deleteSpot(spot: SpotDoc): Promise<void> {

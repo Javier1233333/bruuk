@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { getSpotVisual } from '../lib/spotVisual';
-import { placeZone } from '../lib/zones';
+import { spotZone } from '../lib/zones';
 import { ShareButton } from './ShareButton';
 
 interface Spot {
@@ -17,6 +17,7 @@ interface Spot {
   rating?: number;
   price?: string;
   coordinates?: { lat: number; lng: number };
+  zone?: string; // colonia asignada a mano en el admin
 }
 
 interface SpotCardProps {
@@ -53,7 +54,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
   const hasOwnPhoto = /\.(?:jpe?g|png|webp|avif)(?:\?|$)/i.test(spot.imageUrl);
   const visual = getSpotVisual(spot.type);
   const SpotIcon = visual.Icon;
-  const zone = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
+  const zone = spotZone(spot);
 
   useEffect(() => {
     if (!onClose || !isAbsolute) return;

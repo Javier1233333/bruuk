@@ -396,3 +396,33 @@
   .sa-icon-btn { min-width: 34px; height: 34px; padding: 0 0.35rem; }
   .sa-panel { max-width: none; border-left: none; }
 }
+
+/* ── Secciones (Spots / Zonas) ── */
+.sa-views { display: flex; border: 2px solid var(--border-color); }
+.sa-view { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 36px; padding: 0 0.8rem; background: var(--bg-secondary); border: none; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; }
+.sa-view + .sa-view { border-left: 2px solid var(--border-color); }
+.sa-view.is-active { background: var(--accent-light); color: #fff; }
+.sa-view__badge { min-width: 20px; padding: 1px 6px; color: #0b0a12; background: #f5d547; font-size: 0.7rem; text-align: center; }
+
+/* ── Zonas: amarillo = sin zona asignada todavía ── */
+.sa-row.is-no-zone { background: #3a3110; border-color: #f5d547; }
+.sa-row.is-no-zone .sa-warn { color: #f5d547; font-weight: 700; }
+
+.sa-zone-summary { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.sa-zone-chip { padding: 0.4rem 0.7rem; background: var(--bg-secondary); border: 2px solid var(--border-color); color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.sa-zone-chip.is-missing { color: #0b0a12; background: #f5d547; border-color: #f5d547; cursor: pointer; }
+.sa-zone-chip.is-missing.is-active { box-shadow: 4px 4px 0 var(--accent-light); }
+.sa-zone-chip.is-missing:disabled { color: var(--text-secondary); background: var(--bg-secondary); border-color: var(--border-color); cursor: default; }
+
+.sa-zone-select { flex: none; display: flex; align-items: center; gap: 0.4rem; color: var(--accent-text); }
+.sa-zone-select select,
+.sa-panel select { min-height: 40px; padding: 0 0.6rem; background: var(--bg-primary); border: 2px solid var(--border-color); color: var(--text-primary); font: 600 16px 'DM Sans', sans-serif; border-radius: 0; }
+.sa-panel select { width: 100%; min-height: 48px; }
+.sa-zone-select select:focus-visible, .sa-panel select:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+.sa-row.is-no-zone .sa-zone-select select, .sa-panel select.is-no-zone { border-color: #f5d547; }
+
+@media (max-width: 600px) {
+  .sa-row:has(.sa-zone-select) { flex-wrap: wrap; }
+  .sa-zone-select { width: 100%; }
+  .sa-zone-select select { flex: 1; }
+}

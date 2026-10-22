@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { Eye, EyeOff, ImagePlus, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+import { Eye, EyeOff, ImagePlus, MapPin, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { auth, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
+import { ZONE_NAMES, placeZone, spotZone } from '../lib/zones';
 import {
   MAX_IMAGE_BYTES,
   deleteSpot,
@@ -12,6 +13,7 @@ import {
   removeImage,
   saveSpot,
   setSpotActive,
+  setSpotZone,
   uploadSpotImage,
   watchSpots,
 } from './spotsStore';
@@ -20,6 +22,7 @@ import '../pages/LoginPage.css';
 import './SpotsAdminPage.css';
 
 type Filter = 'all' | 'active' | 'hidden';
+type View = 'spots' | 'zonas';
 
 export function SpotsAdminPage() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -99,6 +102,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
   const [editing, setEditing] = useState<SpotDoc | 'new' | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [rowError, setRowError] = useState<string | null>(null);
+  const [view, setView] = useState<View>('spots');
 
   useEffect(() => watchSpots(
     (data) => { setSpots(data); setLoaded(true); },
@@ -117,6 +121,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
   }, [spots, query, filter]);
 
   const activeCount = spots.filter(s => s.active).length;
+  const noZoneCount = spots.filter(s => !spotZone(s)).length;
 
   const toggleActive = async (spot: SpotDoc) => {
     setRowError(null);
@@ -142,7 +147,12 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
       <header className="sa-header">
         <div className="sa-header__left">
           <Link to="/" className="sa-logo"><BruukLogo /></Link>
-          <span className="sa-header__title">Spots</span>
+          <nav className="sa-views" aria-label="Secciones del admin">
+            <button className={`sa-view${view === 'spots' ? ' is-active' : ''}`} onClick={() => setView('spots')}>Spots</button>
+            <button className={`sa-view${view === 'zonas' ? ' is-active' : ''}`} onClick={() => setView('zonas')}>
+              Zonas{noZoneCount > 0 && <span className="sa-view__badge">{noZoneCount}</span>}
+            </button>
+          </nav>
         </div>
         <div className="sa-header__right">
           <span className="sa-header__email">{email}</span>
@@ -150,6 +160,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         </div>
       </header>
 
+      {view === 'zonas' ? <ZonesView spots={spots} loaded={loaded} /> : (
       <main className="sa-main">
         <div className="sa-toolbar">
           <div className="sa-search">
@@ -191,13 +202,14 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         ) : (
           <ul className="sa-list">
             {visible.map((spot) => (
-              <li key={spot.id} className={`sa-row${spot.active ? '' : ' is-hidden'}`}>
+              <li key={spot.id} className={`sa-row${spot.active ? '' : ' is-hidden'}${spotZone(spot) ? '' : ' is-no-zone'}`}>
                 <img className="sa-row__img" src={spot.imageUrl} alt="" loading="lazy" />
                 <div className="sa-row__info">
                   <span className="sa-row__name">{spot.name}</span>
                   <span className="sa-row__meta">
                     <span className="sa-dot" style={{ background: spot.colorAccent }} />
                     {spot.type}{spot.price ? ` · ${spot.price}` : ''}{spot.rating ? ` · ★ ${spot.rating}` : ''}
+                    {' · '}{spotZone(spot)?.name ?? <span className="sa-warn">sin zona</span>}
                     {!spot.coordinates && <span className="sa-warn"> · sin coordenadas</span>}
                   </span>
                 </div>
@@ -232,6 +244,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
           </ul>
         )}
       </main>
+      )}
 
       {editing && (
         <SpotForm
@@ -241,6 +254,95 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         />
       )}
     </div>
+  );
+}
+
+/* ── Zonas ─────────────────────────────────────────────────── */
+
+// Asignar colonia a cada spot. Los que no tienen (ni a mano ni por coordenadas) salen
+// primero y en amarillo. El cambio se guarda al momento.
+function ZonesView({ spots, loaded }: { spots: SpotDoc[]; loaded: boolean }) {
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [onlyMissing, setOnlyMissing] = useState(false);
+
+  const rows = useMemo(() => {
+    const withZone = spots.map((spot) => ({ spot, zone: spotZone(spot) }));
+    return withZone
+      .filter((row) => !onlyMissing || !row.zone)
+      .sort((a, b) => Number(Boolean(a.zone)) - Number(Boolean(b.zone)) || a.spot.name.localeCompare(b.spot.name, 'es'));
+  }, [spots, onlyMissing]);
+
+  const counts = useMemo(() => {
+    const byName = new Map<string, number>();
+    let missing = 0;
+    for (const spot of spots) {
+      const zone = spotZone(spot);
+      if (zone) byName.set(zone.name, (byName.get(zone.name) ?? 0) + 1);
+      else missing += 1;
+    }
+    return { byName, missing };
+  }, [spots]);
+
+  const change = async (spot: SpotDoc, value: string) => {
+    setError(null);
+    setSaving(spot.id);
+    try {
+      await setSpotZone(spot.id, value || null);
+    } catch (err) {
+      setError(`No se pudo guardar la zona de ${spot.name}: ${(err as Error).message}`);
+    }
+    setSaving(null);
+  };
+
+  return (
+    <main className="sa-main">
+      <div className="sa-zone-summary">
+        <button className={`sa-zone-chip is-missing${onlyMissing ? ' is-active' : ''}`} onClick={() => setOnlyMissing((value) => !value)} disabled={counts.missing === 0}>
+          Sin zona {counts.missing}
+        </button>
+        {ZONE_NAMES.map((name) => (
+          <span key={name} className="sa-zone-chip">{name} {counts.byName.get(name) ?? 0}</span>
+        ))}
+      </div>
+      <p className="sa-hint">
+        Elige la colonia a mano o agrega coordenadas al spot para que se calcule sola. “Automática” usa las coordenadas.
+      </p>
+
+      {error && <p className="login-error">{error}</p>}
+
+      {!loaded ? (
+        <p className="sa-empty">Cargando spots...</p>
+      ) : rows.length === 0 ? (
+        <p className="sa-empty">Todos los spots tienen zona.</p>
+      ) : (
+        <ul className="sa-list">
+          {rows.map(({ spot, zone }) => {
+            const auto = placeZone(spot.coordinates?.lat, spot.coordinates?.lng);
+            return (
+              <li key={spot.id} className={`sa-row${zone ? '' : ' is-no-zone'}${spot.active ? '' : ' is-hidden'}`}>
+                <img className="sa-row__img" src={spot.imageUrl} alt="" loading="lazy" />
+                <div className="sa-row__info">
+                  <span className="sa-row__name">{spot.name}</span>
+                  <span className="sa-row__meta">
+                    {spot.type}
+                    {' · '}
+                    {zone ? (zone.manual ? 'a mano' : 'por coordenadas') : <span className="sa-warn">sin zona{spot.coordinates ? ' (lejos de las colonias)' : ' (sin coordenadas)'}</span>}
+                  </span>
+                </div>
+                <label className="sa-zone-select">
+                  <MapPin size={15} aria-hidden="true" />
+                  <select aria-label={`Colonia de ${spot.name}`} value={spot.zone ?? ''} onChange={(event) => void change(spot, event.target.value)} disabled={saving === spot.id}>
+                    <option value="">{auto ? `Automática (${auto.name})` : 'Sin zona'}</option>
+                    {ZONE_NAMES.map((name) => <option key={name} value={name}>{name}</option>)}
+                  </select>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </main>
   );
 }
 
@@ -259,6 +361,7 @@ interface FormState {
   mapsLink: string;
   lat: string;
   lng: string;
+  zone: string;
   active: boolean;
 }
 
@@ -276,6 +379,7 @@ function toForm(spot: SpotDoc | null): FormState {
     mapsLink: spot?.mapsLink ?? '',
     lat: spot?.coordinates ? String(spot.coordinates.lat) : '',
     lng: spot?.coordinates ? String(spot.coordinates.lng) : '',
+    zone: spot?.zone ?? '',
     active: spot?.active ?? true,
   };
 }
@@ -349,6 +453,7 @@ function SpotForm({ spot, types, onClose }: { spot: SpotDoc | null; types: strin
       price: form.price.trim() || null,
       mapsLink: form.mapsLink.trim(),
       coordinates: hasCoords ? { lat, lng } : null,
+      zone: form.zone || null,
       active: form.active,
     };
 
@@ -446,6 +551,14 @@ function SpotForm({ spot, types, onClose }: { spot: SpotDoc | null; types: strin
             </div>
           </div>
           <p className="sa-hint">Puedes pegar “lat, lng” directo desde Google Maps en el campo de latitud.</p>
+
+          <div className="login-field">
+            <label htmlFor="sa-zone">Colonia</label>
+            <select id="sa-zone" className={spotZone({ zone: form.zone, coordinates: form.lat && form.lng ? { lat: Number(form.lat), lng: Number(form.lng) } : null }) ? '' : 'is-no-zone'} value={form.zone} onChange={e => set('zone', e.target.value)}>
+              <option value="">Automática por coordenadas</option>
+              {ZONE_NAMES.map(name => <option key={name} value={name}>{name}</option>)}
+            </select>
+          </div>
 
           <label className="sa-check">
             <input type="checkbox" checked={form.active} onChange={e => set('active', e.target.checked)} />
