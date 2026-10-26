@@ -17,6 +17,8 @@
   "dependencies": {
     "@types/leaflet": "^1.9.21",
     "@vercel/analytics": "^2.0.1",
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
     "email-validator": "^2.0.4",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.10.0",

@@ -135,6 +135,14 @@
       "imageAlt": "Bruuk",
       "type": "website",
       "noindex": true
+    },
+    "/momentos": {
+      "title": "Momentos | Bruuk",
+      "description": "Guarda lo que pasó afuera: fotos e historias que se quedan sólo en tu teléfono.",
+      "image": "/ocean-frame.jpg",
+      "imageAlt": "Momentos de Bruuk",
+      "type": "website",
+      "noindex": true
     }
   }
 }

@@ -1,4 +1,4 @@
-import { CalendarDays, Dices, House, Plus, Shirt } from 'lucide-react';
+import { BookHeart, Dices, House, Plus, Shirt } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { IS_APP_MODE } from '../lib/appMode';
 import './AppTabBar.css';
@@ -7,7 +7,7 @@ const TABS = [
   { to: '/guadalajara/spots', label: 'Inicio', icon: House, match: (path: string) => path === '/guadalajara' || path === '/guadalajara/spots' },
   { to: '/guadalajara/rack', label: 'Rack', icon: Shirt, match: (path: string) => path === '/guadalajara/rack' || path === '/guadalajara/atardeceres' },
   { to: '/guadalajara/arma-tu-plan', label: 'Plan', icon: Dices, match: (path: string) => path === '/guadalajara/arma-tu-plan' },
-  { to: '/guadalajara/eventos', label: 'Eventos', icon: CalendarDays, match: (path: string) => path === '/guadalajara/eventos' },
+  { to: '/momentos', label: 'Momentos', icon: BookHeart, match: (path: string) => path === '/momentos' },
 ];
 
 // Vibración corta al tocar el menú (Android; iOS la ignora).
@@ -20,12 +20,12 @@ const scrollToTop = () => {
   document.querySelectorAll<HTMLElement>('.tiktok-scroll-container').forEach((el) => el.scrollTo({ top: 0, behavior }));
 };
 
-// Menú inferior del modo app. El botón central es "Sube un spot"; Radar vive arriba, en CityNav.
+// Menú inferior del modo app. El botón central es "Sube un spot"; Eventos vive arriba, en CityNav.
 export function AppTabBar() {
   const { pathname } = useLocation();
   if (!IS_APP_MODE || pathname === '/login' || pathname === '/auth/action') return null;
 
-  const [inicio, rack, plan, eventos] = TABS;
+  const [inicio, rack, plan, momentos] = TABS;
   const renderTab = ({ to, label, icon: Icon, match }: (typeof TABS)[number]) => (
     <Link
       key={to}
@@ -54,7 +54,7 @@ export function AppTabBar() {
         <span>Spot</span>
       </NavLink>
       {renderTab(plan)}
-      {renderTab(eventos)}
+      {renderTab(momentos)}
     </nav>
   );
 }

@@ -64,6 +64,10 @@
       "destination": "/sube-un-spot/index.html"
     },
     {
+      "source": "/momentos",
+      "destination": "/momentos/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

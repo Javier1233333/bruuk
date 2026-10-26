@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Bell, Dices } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Bell, ChevronLeft, Dices } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { IS_APP_MODE } from '../lib/appMode';
 import { BruukLogo } from '../components/BruukLogo';
@@ -21,8 +21,8 @@ export default function EventsPage() {
     <div className="events-page">
       <header className="events-nav">
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
-        {/* En la app Eventos es una pestaña: título en vez de "regresar" */}
-        {IS_APP_MODE ? <span className="app-screen-title">/ EVENTOS</span> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
+        {/* En la app Eventos se abre desde el encabezado (ya no es pestaña): regresa al inicio */}
+        {IS_APP_MODE ? <Link to="/guadalajara/spots"><ChevronLeft size={17} aria-hidden="true" /> INICIO</Link> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
       </header>
 
       <main className="events-main">

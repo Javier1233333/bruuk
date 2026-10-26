@@ -36,6 +36,7 @@ const BusinessPage = lazy(() => import('./pages/BusinessPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
 const EventsPage = lazy(() => import('./pages/EventsPage'))
+const MemoryMicrosite = lazy(() => import('./momentos/MemoryMicrosite'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
 const MuseumRoutePage = lazy(() =>
   import('./pages/MuseumRoutePage').then((module) => ({ default: module.MuseumRoutePage })),
@@ -101,6 +102,8 @@ createRoot(document.getElementById('root')!).render(
           {/* Solo Spots y Rack son libres en la web; lo demás pide iniciar sesión */}
           <Route element={<RequireLogin />}>
             <Route path="/sube-un-spot" element={<SubmitSpotPage />} />
+            {/* Momentos se guarda sólo en el teléfono (IndexedDB), sin servidor */}
+            <Route path="/momentos" element={<MemoryMicrosite />} />
             <Route path="/radar/museo-cabanas-cafe-redescubrimiento" element={<RadarCabanasPage />} />
             <Route path="/radar/maz-desayuno-cafe-zapopan" element={<RadarMazRoutePage />} />
             <Route path="/guadalajara/ruta-museos" element={<MuseumRoutePage />} />

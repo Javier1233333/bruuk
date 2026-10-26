@@ -201,9 +201,9 @@
   .city-nav-change { gap: 6px; padding-inline: 8px; font-size: .52rem; }
 }
 
-/* Modo app: logo a la izquierda y Radar en la esquina. */
+/* Modo app: logo a la izquierda y Eventos en la esquina. */
 .city-nav.is-app-nav { grid-template-columns: auto auto; justify-content: space-between; }
-.city-nav-radar { justify-self: end; }
+.city-nav-events { justify-self: end; }
 @media (max-width: 760px) {
   .city-nav.is-app-nav { grid-template-columns: auto auto; }
 }
@@ -212,6 +212,6 @@
   .city-nav-change { transition: none; }
 }
 
-/* Modo app: Radar + cerrar sesión */
+/* Modo app: Eventos + cerrar sesión */
 .city-nav-app-actions { display: flex; align-items: center; gap: 8px; justify-self: end; }
 .city-nav-signout { cursor: pointer; font: inherit; padding-inline: 12px; }

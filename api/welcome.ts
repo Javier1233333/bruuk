@@ -1,25 +1,93 @@
+import { createHash } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { adminDb, firebaseConfigured } from './_firebase.js';
+
+/* ============================================================
+   Correo de bienvenida al registrarse.
+   Sin sesión, así que se limita en Firestore (sólo Admin SDK):
+   - welcomeEmails/{hash}: una bienvenida por correo, nunca dos.
+   - welcomeIps/{hash}: máx. MAX_PER_IP envíos por IP cada hora.
+   Guardamos hashes, no correos ni IPs.
+   ============================================================ */
+
+const MAX_PER_IP = 5;
+const IP_WINDOW_MS = 60 * 60 * 1000;
+
+const isEmail = (value: unknown): value is string =>
+  typeof value === 'string' && value.length <= 254 && /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(value);
+
+const hash = (value: string) => createHash('sha256').update(value).digest('hex');
+
+const clientIp = (req: VercelRequest) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim();
+  return (req.headers['x-real-ip'] as string | undefined) || first || 'unknown';
+};
+
+// true si la IP todavía tiene envíos disponibles en esta hora (y cuenta este)
+async function takeIpSlot(ip: string): Promise<boolean> {
+  const ref = adminDb().collection('welcomeIps').doc(hash(ip));
+  return adminDb().runTransaction(async (tx) => {
+    const now = Date.now();
+    const data = (await tx.get(ref)).data();
+    const inWindow = data && now - data.windowStart < IP_WINDOW_MS;
+    const count = inWindow ? data.count : 0;
+    if (count >= MAX_PER_IP) return false;
+    tx.set(ref, { count: count + 1, windowStart: inWindow ? data.windowStart : now });
+    return true;
+  });
+}
+
+// true si es la primera bienvenida para este correo (create falla si ya existe)
+async function claimEmail(email: string): Promise<boolean> {
+  try {
+    await adminDb().collection('welcomeEmails').doc(hash(email)).create({ sentAt: new Date() });
+    return true;
+  } catch (error) {
+    if ((error as { code?: number })?.code === 6) return false; // ALREADY_EXISTS
+    throw error;
+  }
+}
+
+// Si Resend falla, se libera el correo para que pueda reintentar
+const releaseEmail = (email: string) =>
+  adminDb().collection('welcomeEmails').doc(hash(email)).delete().catch(() => {});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, website } = req.body ?? {};
+  const { website } = req.body ?? {};
 
   if (typeof website === 'string' && website.trim()) {
     return res.status(200).json({ success: true });
   }
 
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required' });
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (!isEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email' });
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
   const FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
 
-  if (!RESEND_API_KEY || !FROM_EMAIL) {
-    return res.status(500).json({ error: 'Resend not configured' });
+  // Sin Firestore no hay límite de envíos: mejor no mandar nada
+  if (!firebaseConfigured || !RESEND_API_KEY || !FROM_EMAIL) {
+    return res.status(503).json({ error: 'Email not configured' });
+  }
+
+  try {
+    if (!(await takeIpSlot(clientIp(req)))) {
+      return res.status(429).json({ error: 'Too many requests' });
+    }
+    // Ya recibió su bienvenida: misma respuesta, sin volver a mandarla
+    if (!(await claimEmail(email))) {
+      return res.status(200).json({ success: true });
+    }
+  } catch (error) {
+    console.error('Welcome rate limit error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 
   try {
@@ -81,18 +149,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
     });
 
-    const resendBody = await resendRes.json();
-
     if (!resendRes.ok) {
-      console.error('Resend error status:', resendRes.status);
-      console.error('Resend error body:', JSON.stringify(resendBody));
-      return res.status(500).json({ error: 'Failed to send email', detail: resendBody });
+      console.error('Resend error:', resendRes.status, await resendRes.text());
+      await releaseEmail(email);
+      return res.status(500).json({ error: 'Failed to send email' });
     }
 
-    console.log('Resend success:', JSON.stringify(resendBody));
-    return res.status(200).json({ success: true, data: resendBody });
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Welcome email error:', error);
+    await releaseEmail(email);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
