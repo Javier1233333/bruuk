@@ -60,6 +60,7 @@ export async function importarRespaldo(file: File) {
       etiquetas: Array.isArray(m.etiquetas) ? m.etiquetas.filter(esTexto) : [],
       foto: esTexto(m.foto) && m.foto.startsWith('data:image/') ? await dataUrlABlob(m.foto) : null,
       creadoEn: typeof m.creadoEn === 'number' ? m.creadoEn : Date.now(),
+      destacado: m.destacado === true,
     });
   }
   await db.momentos.bulkPut(momentos);

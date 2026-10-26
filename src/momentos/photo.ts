@@ -26,7 +26,13 @@ export function usePhotoRef(foto: Blob) {
   useEffect(() => {
     const img = ref.current;
     if (!img) return;
-    const url = URL.createObjectURL(foto);
+    // Una foto dañada (p. ej. de una copia rota) no debe tumbar la pantalla: se queda sin imagen.
+    let url: string;
+    try {
+      url = URL.createObjectURL(foto);
+    } catch {
+      return;
+    }
     img.src = url;
     return () => URL.revokeObjectURL(url);
   }, [foto]);

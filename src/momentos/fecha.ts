@@ -15,13 +15,23 @@ export const mesCorto = (clave: string) => nombreMes(clave, false).slice(0, 3);
 
 export const diaDelMes = (fecha: string) => String(partes(fecha)[2]).padStart(2, '0');
 
+// "Hoy", "Ayer" o "18 oct" (con año si no es el actual).
+export function fechaCorta(fecha: string) {
+  const [anio, mes, dia] = partes(fecha);
+  const hoy = new Date();
+  const diferencia = Math.round((new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()).getTime() - new Date(anio, mes - 1, dia).getTime()) / 86400000);
+  if (diferencia === 0) return 'Hoy';
+  if (diferencia === 1) return 'Ayer';
+  return `${dia} ${MESES[mes - 1].slice(0, 3)}${anio === hoy.getFullYear() ? '' : ` ${anio}`}`;
+}
+
 export function fechaLarga(fecha: string) {
   const [anio, mes, dia] = partes(fecha);
   return `${DIAS[new Date(anio, mes - 1, dia).getDay()]} ${dia} de ${MESES[mes - 1]} ${anio}`;
 }
 
 // "café", "Cafe" y "#café" cuentan como la misma etiqueta.
-export const normalizar = (texto: string) => texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+export const normalizar = (texto: string) => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 
 export function leerEtiquetas(texto: string) {
   const vistas = new Set<string>();
