@@ -449,3 +449,25 @@
 .sa-zone-chip { display: inline-flex; align-items: center; gap: 0.35rem; }
 .sa-zone-chip__remove { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; color: var(--text-secondary); background: none; border: 1px solid var(--border-color); cursor: pointer; }
 .sa-zone-chip__remove:hover { color: #ff4d4f; border-color: #ff4d4f; }
+
+/* ── Importar lista de Google Maps ── */
+.sa-import-search { display: flex; align-items: flex-end; gap: 0.75rem; }
+.sa-import-search .login-field { flex: 1; min-width: 0; }
+.sa-import-search .btn { padding: 0.75rem 1.1rem; font-size: 0.9rem; }
+.sa-import-summary { font-size: 0.9rem; color: var(--text-secondary); }
+.sa-import-summary strong { color: var(--text-primary); }
+.sa-import-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.sa-import-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 52px;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+.sa-import-row input { flex: none; width: 18px; height: 18px; accent-color: var(--accent-light); }
+.sa-import-row.is-duplicate { opacity: 0.6; }
+.sa-import-done { display: flex; align-items: flex-start; gap: 0.6rem; font-weight: 600; line-height: 1.4; }
+.sa-import-done svg { flex: none; color: var(--accent-light); }

@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Eye, EyeOff, ImagePlus, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+import { Eye, EyeOff, ImagePlus, ListPlus, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { spotZone } from '../lib/zones';
 import { CategoryGroup, RowImage } from './adminShared';
 import { RACK_CATEGORY_NAMES, groupByCategory, rackCategory } from './adminCategories';
+import { MapsListImport } from './MapsListImport';
 import { MAX_IMAGE_BYTES, rackStore, removeImage } from './spotsStore';
 import type { RackDoc, RackInput } from './spotsStore';
 
@@ -19,6 +20,7 @@ export function RackView({ places, loaded, loadError, zoneNames }: { places: Rac
   const [editing, setEditing] = useState<RackDoc | 'new' | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [rowError, setRowError] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -54,6 +56,9 @@ export function RackView({ places, loaded, loadError, zoneNames }: { places: Rac
             </button>
           ))}
         </div>
+        <button className="btn btn-secondary sa-new" onClick={() => setImporting(true)}>
+          <ListPlus size={18} /> Importar de Maps
+        </button>
         <button className="btn btn-primary sa-new" onClick={() => setEditing('new')}>
           <Plus size={18} strokeWidth={3} /> Nuevo lugar
         </button>
@@ -109,6 +114,7 @@ export function RackView({ places, loaded, loadError, zoneNames }: { places: Rac
         ))
       )}
 
+      {importing && <MapsListImport kind="rack" existing={places} onClose={() => setImporting(false)} />}
       {editing && <RackForm place={editing === 'new' ? null : editing} zoneNames={zoneNames} onClose={() => setEditing(null)} />}
     </main>
   );

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { Eye, EyeOff, ImagePlus, MapPin, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+import { Eye, EyeOff, ImagePlus, ListPlus, MapPin, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
 import { auth, googleProvider } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { BruukLogo } from '../components/BruukLogo';
@@ -9,6 +9,7 @@ import { ZONE_NAMES, placeZone, spotZone } from '../lib/zones';
 import { CategoryGroup, RowImage } from './adminShared';
 import { groupByCategory, rackCategory, spotCategory } from './adminCategories';
 import { RackView } from './RackAdmin';
+import { MapsListImport } from './MapsListImport';
 import {
   MAX_IMAGE_BYTES,
   deleteSpot,
@@ -110,6 +111,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [rowError, setRowError] = useState<string | null>(null);
   const [view, setView] = useState<View>('spots');
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => watchSpots(
     (data) => { setSpots(data); setLoaded(true); },
@@ -209,6 +211,9 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
               </button>
             ))}
           </div>
+          <button className="btn btn-secondary sa-new" onClick={() => setImporting(true)}>
+            <ListPlus size={18} /> Importar de Maps
+          </button>
           <button className="btn btn-primary sa-new" onClick={() => setEditing('new')}>
             <Plus size={18} strokeWidth={3} /> Nuevo spot
           </button>
@@ -280,6 +285,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
           onClose={() => setEditing(null)}
         />
       )}
+      {importing && <MapsListImport kind="spots" existing={spots} types={types} onClose={() => setImporting(false)} />}
     </div>
   );
 }
