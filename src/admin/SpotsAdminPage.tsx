@@ -10,6 +10,7 @@ import { CategoryGroup, RowImage } from './adminShared';
 import { groupByCategory, rackCategory, spotCategory } from './adminCategories';
 import { RackView } from './RackAdmin';
 import { MapsListImport } from './MapsListImport';
+import { HotspotsView } from './HotspotsAdmin';
 import {
   MAX_IMAGE_BYTES,
   deleteSpot,
@@ -30,7 +31,7 @@ import '../pages/LoginPage.css';
 import './SpotsAdminPage.css';
 
 type Filter = 'all' | 'active' | 'hidden';
-type View = 'spots' | 'rack' | 'zonas';
+type View = 'spots' | 'rack' | 'zonas' | 'hotspots';
 
 export function SpotsAdminPage() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -175,6 +176,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
           <nav className="sa-views" aria-label="Secciones del admin">
             <button className={`sa-view${view === 'spots' ? ' is-active' : ''}`} onClick={() => setView('spots')}>Spots</button>
             <button className={`sa-view${view === 'rack' ? ' is-active' : ''}`} onClick={() => setView('rack')}>Rack</button>
+            <button className={`sa-view${view === 'hotspots' ? ' is-active' : ''}`} onClick={() => setView('hotspots')}>Hotspots</button>
             <button className={`sa-view${view === 'zonas' ? ' is-active' : ''}`} onClick={() => setView('zonas')}>
               Zonas{noZoneCount > 0 && <span className="sa-view__badge">{noZoneCount}</span>}
             </button>
@@ -186,7 +188,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         </div>
       </header>
 
-      {view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} zoneNames={zoneNames} customZones={customZones} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} zoneNames={zoneNames} /> : (
+      {view === 'hotspots' ? <HotspotsView spots={spots} loaded={loaded} /> : view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} zoneNames={zoneNames} customZones={customZones} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} zoneNames={zoneNames} /> : (
       <main className="sa-main">
         <div className="sa-toolbar">
           <div className="sa-search">

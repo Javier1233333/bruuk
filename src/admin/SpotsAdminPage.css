@@ -471,3 +471,21 @@
 .sa-import-row.is-duplicate { opacity: 0.6; }
 .sa-import-done { display: flex; align-items: flex-start; gap: 0.6rem; font-weight: 600; line-height: 1.4; }
 .sa-import-done svg { flex: none; color: var(--accent-light); }
+
+/* ── Hotspots de la semana ── */
+.sa-hot-head { margin-bottom: 1rem; }
+.sa-hot-head h2 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.sa-hot-head .sa-hint { margin-top: 0.3rem; }
+.sa-hot-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.sa-hot-slot { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; background: var(--bg-secondary); border: 2px solid var(--border-color); }
+.sa-hot-slot__num { flex: none; width: 1.6rem; color: var(--accent-light); font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.6rem; text-align: center; }
+.sa-hot-slot__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.sa-hot-slot select { width: 100%; min-height: 44px; padding: 0 0.6rem; background: var(--bg-primary); border: 2px solid var(--border-color); color: var(--text-primary); font: 600 16px 'DM Sans', sans-serif; border-radius: 0; }
+.sa-hot-slot select:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+.sa-hot-foot { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; }
+.sa-hot-foot .btn { padding: 0.7rem 1.4rem; font-size: 0.9rem; }
+@media (max-width: 600px) {
+  .sa-header__left { gap: 0.6rem; }
+  .sa-views { overflow-x: auto; scrollbar-width: none; }
+  .sa-view { padding: 0 0.5rem; font-size: 0.66rem; letter-spacing: 0.04em; }
+}

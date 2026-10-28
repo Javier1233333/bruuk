@@ -229,3 +229,74 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
 @media (min-width: 900px) {
   html.is-app-mode .plan-builder-main { grid-template-columns: 1fr; width: min(620px, 100%); padding: 0; }
 }
+
+/* Pantallas chicas (iPhone SE, Android compactos): filtros, paradas y GIRAR caben sin deslizar.
+   Las paradas se reparten el alto que sobra y bajan a una línea. */
+@media (max-width: 899px) and (max-height: 760px) {
+  .plan-builder-nav { min-height: 52px; }
+  .plan-builder-page.is-in-progress .plan-builder-main { padding-top: 8px; padding-bottom: 10px; }
+  .plan-builder-page.is-in-progress .plan-builder-card { min-height: calc(var(--app-dvh) - 70px - env(safe-area-inset-bottom)); }
+  .plan-mode-switch button { min-height: 42px; }
+
+  .plan-roulette { gap: 8px; padding-top: 10px; }
+  .plan-roulette-moments button { min-height: 46px; padding: 5px 2px; gap: 2px; }
+  .plan-roulette-moments svg { width: 17px; height: 17px; }
+  .plan-roulette-zones button { min-height: 32px; }
+  .plan-roulette-interests button { width: 36px; height: 36px; }
+  .plan-roulette-count button { width: 32px; height: 33px; }
+
+  .plan-slot, .plan-slot.is-empty { min-height: 60px; }
+  .plan-slot-face { gap: 4px; padding: 9px 12px; }
+  .plan-slot-face strong { font-size: 1.1rem; -webkit-line-clamp: 1; }
+  .plan-slot.is-empty .plan-slot-face strong { font-size: 1.8rem; }
+  .plan-slot-tag { padding: 3px 7px; font-size: .56rem; }
+  .plan-slot-art svg { width: 30px; height: 30px; opacity: .4; }
+  /* Candado y volver a girar, uno al lado del otro y centrados: no caben apilados */
+  .plan-slot-lock, .plan-slot-respin { top: 50%; bottom: auto; width: 34px; height: 34px; transform: translateY(-50%); }
+  .plan-slot-lock { right: 8px; }
+  .plan-slot-respin { right: 8px; }
+  .plan-slot:has(.plan-slot-respin) .plan-slot-lock { right: 48px; }
+  .plan-slot-face strong { padding-right: 40px; }
+  .plan-slot:has(.plan-slot-respin) .plan-slot-face strong { padding-right: 82px; }
+
+  /* Con 4 paradas: sólo el nombre, sin etiqueta */
+  .plan-roulette-slots:has(> li:nth-child(4)) { gap: 6px; }
+  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot { min-height: 44px; }
+  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot-tag { display: none; }
+  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot-face { justify-content: center; padding-block: 6px; }
+
+  .plan-roulette .plan-step-actions { padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+  .plan-builder-button, .plan-builder-secondary, .plan-step-back { min-height: 50px; }
+  .plan-roulette-respin, .plan-step-back { width: 50px; }
+}
+
+/* Muy bajitas (iPhone SE de 4", teclado o barras del navegador abiertas): los momentos sin ícono. */
+@media (max-width: 899px) and (max-height: 540px) {
+  .plan-builder-nav { min-height: 46px; }
+  .plan-mode-switch button { min-height: 36px; }
+  .plan-roulette { gap: 6px; padding-top: 8px; }
+  .plan-roulette-moments button { min-height: 34px; padding: 0 2px; align-content: center; }
+  .plan-roulette-moments svg { display: none; }
+  .plan-roulette-zones button { min-height: 30px; }
+  .plan-roulette-interests button { width: 34px; height: 34px; }
+  .plan-roulette-count button { height: 31px; }
+  .plan-slot, .plan-slot.is-empty { min-height: 54px; }
+  .plan-slot-face { padding-block: 7px; }
+  .plan-builder-button, .plan-builder-secondary, .plan-step-back { min-height: 46px; }
+}
+
+/* Celulares angostos (320-400px): más ancho para la tarjeta y textos que no se salen. */
+@media (max-width: 400px) {
+  .plan-builder-main { padding-inline: 10px; }
+  .plan-builder-card { box-shadow: 4px 4px 0 #8b7cf6; }
+  .plan-step { padding-inline: 12px; }
+  .plan-step-actions, .plan-roulette .plan-step-actions { margin-inline: -12px; padding-inline: 12px; }
+
+  .plan-roulette-moments button { font-size: .56rem; letter-spacing: .02em; white-space: nowrap; }
+  .plan-roulette-zones { gap: 4px; }
+  .plan-roulette-zones > svg { display: none; }
+  .plan-roulette-zones button { flex: 1 1 0; min-width: 0; padding: 0 2px; font-size: .56rem; letter-spacing: .02em; }
+  .plan-roulette-tools { gap: 8px; }
+  /* Si no caben todas las categorías se desliza de lado; el borde difuminado avisa que hay más */
+  .plan-roulette-interests { flex: 1; -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
+}

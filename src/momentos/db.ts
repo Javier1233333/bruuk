@@ -19,6 +19,48 @@ db.version(1).stores({
   momentos: 'id, fecha, *etiquetas, creadoEn',
 });
 
+// Las fotos se guardan como bytes, no como Blob: en Safari (iPhone) un Blob leído de IndexedDB
+// deja de poder leerse cuando la página se va a segundo plano (p. ej. al compartir a Instagram)
+// y la foto desaparece. Al leer se arma un Blob en memoria, que no tiene ese problema.
+type FotoGuardada = { datos: ArrayBuffer; tipo: string };
+
+const esFotoGuardada = (foto: unknown): foto is FotoGuardada =>
+  !!foto && typeof foto === 'object' && (foto as FotoGuardada).datos instanceof ArrayBuffer;
+
+db.momentos.hook('reading', (momento) => {
+  const foto: unknown = momento.foto;
+  if (esFotoGuardada(foto)) momento.foto = new Blob([foto.datos], { type: foto.tipo });
+  return momento;
+});
+
+const fotoAGuardar = async (foto: Blob): Promise<FotoGuardada> => ({ datos: await foto.arrayBuffer(), tipo: foto.type || 'image/jpeg' });
+
+// Guardar siempre por aquí (no con db.momentos.put directo) para que la foto vaya como bytes.
+export async function guardarMomentos(momentos: Momento[]) {
+  const listos = await Promise.all(momentos.map(async (m) => ({ ...m, foto: m.foto ? await fotoAGuardar(m.foto) : null })));
+  await db.momentos.bulkPut(listos as unknown as Momento[]);
+}
+
+// Los momentos guardados antes tienen la foto como Blob: se pasan a bytes una vez, al abrir Momentos.
+// Una foto que ya no se puede leer se deja como está.
+export async function migrarFotos() {
+  const viejos = (await db.momentos.toCollection().raw().toArray()).filter((m) => m.foto instanceof Blob);
+  for (const momento of viejos) {
+    try {
+      const foto = await fotoAGuardar(momento.foto!);
+      await db.transaction('rw', db.momentos, async () => {
+        // Si lo editaron mientras tanto, no se pisa la foto nueva
+        const actual = await db.momentos.where('id').equals(momento.id).raw().first();
+        if (actual?.foto instanceof Blob && actual.foto.size === foto.datos.byteLength) {
+          await db.momentos.update(momento.id, { foto: foto as unknown as Blob });
+        }
+      });
+    } catch {
+      // sigue con los demás
+    }
+  }
+}
+
 export const MAX_DESTACADOS = 3;
 
 // Marca o desmarca un momento como uno de "tus 3" de su año. Si ya hay 3 ese año, no hace nada.

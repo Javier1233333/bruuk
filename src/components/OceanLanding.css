@@ -774,3 +774,38 @@
 .spot-card__actions .spot-card__link { min-height: 44px; border-bottom: 0; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .spot-card__share { min-height: 44px; padding: 0 12px; color: #000; border: 1.5px solid #000; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
 .spot-card__share:hover { background: #000; color: #fff; }
+
+/* Atardeceres: sección aparte del feed, separada del resto de filtros y en naranja atardecer */
+.filter-btn-sunset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  flex: 1.35;
+  color: #ff9a5c;
+  border-left: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.filter-btn-sunset.active {
+  background: #ff9a5c;
+  color: #0b0a12;
+}
+
+.sunset-intro-slide {
+  background: radial-gradient(circle at center, rgba(255, 154, 92, 0.16) 0%, transparent 70%);
+}
+
+.sunset-intro-card { box-shadow: 8px 8px 0 #ff9a5c; }
+.sunset-intro-card .spots-eyebrow { color: #ff9a5c; }
+.sunset-intro-card .spots-subtitle { margin-top: 10px; font-size: 1rem; }
+
+/* Con Atardeceres son 5 botones: en celular se compactan para que quepan sin desbordar */
+@media (max-width: 480px) {
+  .filter-btn-floating { min-width: 0; padding-inline: 4px; letter-spacing: 0; }
+  .filter-btn-sunset svg { display: none; }
+}
+
+@media (max-width: 360px) {
+  .filter-btn-floating { font-size: 0.58rem; padding-inline: 3px; }
+  .filter-btn-sunset { flex: 1.7; }
+}

@@ -1,4 +1,4 @@
-import { db, nuevoId, type Momento } from './db';
+import { db, guardarMomentos, nuevoId, type Momento } from './db';
 import { blobADataUrl, dataUrlABlob } from './photo';
 
 // Copia de seguridad: un JSON con todos los momentos y sus fotos (como data URL),
@@ -63,6 +63,6 @@ export async function importarRespaldo(file: File) {
       destacado: m.destacado === true,
     });
   }
-  await db.momentos.bulkPut(momentos);
+  await guardarMomentos(momentos);
   return momentos.length;
 }

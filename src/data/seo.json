@@ -5,7 +5,7 @@
   "default": {
     "title": "Bruuk — Spots, rutas y cultura local en Guadalajara",
     "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
-    "image": "/ocean-frame.jpg",
+    "image": "/og-bruuk.jpg",
     "imageAlt": "Bruuk, guía editorial para explorar Guadalajara",
     "type": "website"
   },
@@ -13,7 +13,7 @@
     "/guadalajara/atardeceres": {
       "title": "Dónde ver el atardecer en Guadalajara | Bruuk",
       "description": "Miradores, parques y un rooftop para ver el atardecer en Guadalajara, Zapopan y Tlaquepaque. Selección de Bruuk.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Atardeceres en Guadalajara, por Bruuk",
       "type": "website",
       "lastmod": "2026-09-25"
@@ -21,7 +21,7 @@
     "/": {
       "title": "Bruuk — Spots, rutas y cultura local en Guadalajara",
       "description": "Descubre spots, rutas, tiendas y cultura local seleccionados por personas en Guadalajara. Menos pantalla, más mundo.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Bruuk, guía editorial para explorar Guadalajara",
       "type": "website",
       "lastmod": "2026-08-27"
@@ -29,7 +29,7 @@
     "/guadalajara": {
       "title": "Guadalajara — Spots y lugares seleccionados | Bruuk",
       "description": "Explora Guadalajara a través de spots, tiendas vintage, tianguis y rutas seleccionadas por personas locales.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Guía Bruuk de Guadalajara",
       "type": "website",
       "lastmod": "2026-08-26"
@@ -37,7 +37,7 @@
     "/guadalajara/spots": {
       "title": "Spots curados en Guadalajara | Bruuk",
       "description": "Cafés, comida, bares y rincones de Guadalajara elegidos para ayudarte a salir del feed y recorrer la ciudad.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Spots curados por Bruuk en Guadalajara",
       "type": "website",
       "lastmod": "2026-08-26"
@@ -99,7 +99,7 @@
     "/privacidad": {
       "title": "Aviso de privacidad | Bruuk",
       "description": "Consulta cómo Bruuk recopila, utiliza y protege tus datos personales.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Bruuk",
       "type": "website",
       "noindex": true
@@ -107,7 +107,7 @@
     "/sube-un-spot": {
       "title": "Sube un spot a Bruuk — Recomienda un lugar de tu ciudad",
       "description": "Comparte un café, tienda, museo, bar o rincón que te gusta. Puede estar en Guadalajara o en cualquier otra ciudad; Bruuk revisa cada recomendación antes de publicarla.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Sube un spot a Bruuk",
       "type": "website",
       "lastmod": "2026-09-25"
@@ -115,7 +115,7 @@
     "/guadalajara/arma-tu-plan": {
       "title": "Arma tu plan en Guadalajara — Planes a tu medida | Bruuk",
       "description": "Gira la ruleta entre los cafés, comida, vintage, cultura y miradores de la guía Bruuk y deja que la IA encuentre qué los une. O arma tu plan con cinco preguntas.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Arma tu plan en Guadalajara con Bruuk",
       "type": "website",
       "lastmod": "2026-10-19"
@@ -123,7 +123,7 @@
     "/guadalajara/eventos": {
       "title": "Bruuk Eventos en Guadalajara — Próximamente | Bruuk",
       "description": "Encuentros pequeños y en persona en lugares de la guía Bruuk en Guadalajara. Próximamente.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Bruuk Eventos en Guadalajara",
       "type": "website",
       "lastmod": "2026-10-19"
@@ -131,7 +131,7 @@
     "/negocios": {
       "title": "Reseña honesta para tu negocio | Bruuk",
       "description": "Pide que Bruuk visite tu negocio. Reseña honesta, cero pagada: no cobramos ni aceptamos intercambios.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Bruuk",
       "type": "website",
       "noindex": true
@@ -139,7 +139,7 @@
     "/momentos": {
       "title": "Momentos | Bruuk",
       "description": "Guarda lo que pasó afuera: fotos e historias que se quedan sólo en tu teléfono.",
-      "image": "/ocean-frame.jpg",
+      "image": "/og-bruuk.jpg",
       "imageAlt": "Momentos de Bruuk",
       "type": "website",
       "noindex": true

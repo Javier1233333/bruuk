@@ -1,0 +1,177 @@
+/* Hotspots de la semana: sección del feed de Comer y tomar */
+.hotspots-slide {
+  padding-top: 5rem;
+  background: radial-gradient(circle at center, rgba(139, 124, 246, 0.12) 0%, transparent 70%);
+}
+
+.hotspots-card {
+  width: min(420px, calc(100% - 32px));
+  padding: 1.6rem 1.25rem;
+  background: rgba(14, 13, 26, 0.88);
+  border: 2px solid #fff;
+  box-shadow: 8px 8px 0 #8b7cf6;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+}
+
+.hotspots-card__kicker {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #8b7cf6;
+}
+
+.hotspots-card__title {
+  margin: 0.5rem 0 0.35rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.6rem, 7vw, 2.1rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -1px;
+}
+
+.hotspots-card__sub {
+  margin: 0 0 1.1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hotspots-card__week { white-space: nowrap; }
+
+.hotspots-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.hotspots-card__item {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.6rem;
+  background: #0b0a12;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.hotspots-card__item:hover,
+.hotspots-card__item:focus-visible {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 #8b7cf6;
+  outline: none;
+}
+
+.hotspots-card__item:active { transform: translate(0, 0); box-shadow: none; }
+
+.hotspots-card__num {
+  flex: none;
+  width: 1.4rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #8b7cf6;
+  text-align: center;
+}
+
+.hotspots-card__thumb {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.hotspots-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.hotspots-card__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+
+.hotspots-card__name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hotspots-card__why {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.7);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hotspots-card__why b { color: #8b7cf6; font-size: 0.68rem; letter-spacing: 0.08em; }
+
+.hotspots-card__go { flex: none; color: rgba(255, 255, 255, 0.5); }
+
+/* Etiqueta sobre la foto de cada hotspot (arriba de la tarjeta la tapan los filtros).
+   Mismo ancho que .card-wrapper-centered .spot-card para que quede en su esquina. */
+.hotspot-card-wrap { position: relative; width: 90vw; max-width: 320px; }
+
+.hotspot-tag {
+  position: absolute;
+  top: 12px;
+  left: 10px;
+  z-index: 11;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  background: #8b7cf6;
+  border: 2px solid #0b0a12;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* Celular: la tarjeta empieza debajo de los filtros flotantes (terminan ~44px abajo del inicio del slide) */
+@media (max-width: 899px) {
+  .hotspots-slide { align-items: safe center; padding: 56px 0 10px; }
+}
+
+@media (max-width: 480px) {
+  .hotspots-card { padding: 1.2rem 1rem; }
+  .hotspots-card__sub { margin-bottom: 0.85rem; }
+}
+
+/* Pantallas bajitas: título más chico y una línea por lugar */
+@media (max-height: 640px) {
+  .hotspots-card { padding-block: 0.95rem; }
+  .hotspots-card__title { margin-top: 0.35rem; font-size: 1.35rem; letter-spacing: -0.5px; }
+  .hotspots-card__sub { margin-bottom: 0.7rem; font-size: 0.75rem; }
+  .hotspots-card__list { gap: 0.45rem; }
+  .hotspots-card__item { min-height: 52px; padding-block: 0.35rem; }
+  .hotspots-card__thumb { width: 36px; height: 36px; }
+  .hotspots-card__num { font-size: 1.4rem; }
+  .hotspots-card__why { -webkit-line-clamp: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hotspots-card__item { transition: none; }
+}

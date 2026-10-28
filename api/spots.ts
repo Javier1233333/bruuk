@@ -19,7 +19,13 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
   }
 
   try {
-    const snap = await adminDb().collection('spots').where('active', '==', true).get();
+    const [snap, hotspotsDoc] = await Promise.all([
+      adminDb().collection('spots').where('active', '==', true).get(),
+      adminDb().collection('meta').doc('hotspots').get(),
+    ]);
+    // Hotspots de la semana (pestaña Hotspots del admin): cada uno lleva su lugar 1-3 y la fecha en que se publicaron
+    const hotspotIds: string[] = hotspotsDoc.data()?.ids ?? [];
+    const hotspotDate: string | undefined = hotspotsDoc.data()?.publishedAt?.toDate().toISOString().slice(0, 10);
     const spots = snap.docs
       .map((doc) => ({ id: doc.id, data: doc.data() }))
       // El orden de spots.json se guarda en "order"; los nuevos van al final
@@ -30,6 +36,8 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
         for (const [key, value] of Object.entries(data)) {
           if (!INTERNAL_FIELDS.has(key) && value !== null && value !== '') spot[key] = value;
         }
+        const rank = hotspotIds.indexOf(id);
+        if (rank !== -1) Object.assign(spot, { hotspot: rank + 1, hotspotDate });
         return spot;
       });
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent } from 'react';
 import { CalendarDays, ImagePlus, Plus, Trash2, X } from 'lucide-react';
-import { db, hoy, nuevoId, pedirPersistencia, type Momento } from './db';
+import { guardarMomentos, hoy, nuevoId, pedirPersistencia, type Momento } from './db';
 import { fechaCorta, leerEtiquetas, normalizar } from './fecha';
 import { Foto } from './MemoryNode';
 import { comprimirFoto } from './photo';
@@ -104,7 +104,7 @@ export function AddMemoryModal({ momento, archivoInicial, etiquetasUsadas, onClo
         // "Tus 3" son por año: si la fecha cambia de año, deja de contar como uno de ellos.
         destacado: !!momento?.destacado && momento.fecha.slice(0, 4) === fecha.slice(0, 4),
       };
-      await db.momentos.put(guardado);
+      await guardarMomentos([guardado]);
       void pedirPersistencia();
       onSaved(guardado);
     } catch {

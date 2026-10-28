@@ -122,6 +122,25 @@ export async function removeCustomZone(name: string): Promise<void> {
   await setDoc(zonesDoc, { names: arrayRemove(name), updatedAt: serverTimestamp() }, { merge: true });
 }
 
+// Hotspots de la semana: los tres spots que van al inicio del feed (meta/hotspots)
+const hotspotsDoc = doc(db, 'meta', 'hotspots');
+
+export interface Hotspots {
+  ids: string[];
+  publishedAt: Date | null;
+}
+
+export function watchHotspots(onChange: (hotspots: Hotspots) => void, onError: (err: Error) => void): () => void {
+  return onSnapshot(hotspotsDoc, (snap) => onChange({
+    ids: (snap.data()?.ids as string[] | undefined) ?? [],
+    publishedAt: snap.data()?.publishedAt?.toDate() ?? null,
+  }), onError);
+}
+
+export async function publishHotspots(ids: string[]): Promise<void> {
+  await setDoc(hotspotsDoc, { ids, publishedAt: serverTimestamp() });
+}
+
 // Best effort: si la foto ya no existe no es un error
 export async function removeImage(path: string): Promise<void> {
   await deleteObject(ref(storage, path)).catch(() => {});

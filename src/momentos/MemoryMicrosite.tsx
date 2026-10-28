@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Plus, Search, Share2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { BruukLogo } from '../components/BruukLogo';
 import { IS_APP_MODE } from '../lib/appMode';
-import { db, type Momento } from './db';
+import { db, migrarFotos, type Momento } from './db';
 import { claveMes, mesCorto, normalizar } from './fecha';
 import { AddMemoryModal } from './AddMemoryModal';
 import { HelpSheet } from './HelpSheet';
@@ -20,6 +20,7 @@ const ordenar = (a: Momento, b: Momento) => b.fecha.localeCompare(a.fecha) || b.
 
 export default function MemoryMicrosite() {
   const momentos = useLiveQuery(async () => (await db.momentos.toArray()).sort(ordenar), []);
+  useEffect(() => void migrarFotos(), []);
   const fotoRef = useRef<HTMLInputElement>(null);
   const [busqueda, setBusqueda] = useState('');
   const [mes, setMes] = useState('todos');

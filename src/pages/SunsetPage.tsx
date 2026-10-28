@@ -4,37 +4,12 @@ import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import { AsciiSpotsBackground } from '../components/AsciiSpotsBackground';
 import { SpotCard } from '../components/SpotCard';
-import { useSpots } from '../lib/useSpots';
-import sunsetData from '../data/atardeceres.json';
+import { useSunsetSpots } from '../lib/sunsets';
 import '../components/OceanLanding.css';
 import './SunsetPage.css';
 
-type Spot = {
-  id: string;
-  name: string;
-  type: string;
-  description: string;
-  highlight?: string;
-  imageUrl: string;
-  colorAccent: string;
-  mapsLink: string;
-  city: string;
-  rating?: number;
-  price?: string;
-};
-
-// La lista acepta el id de un spot existente o un spot completo
-// (útil para miradores o parques que no pertenecen al feed de Spots).
-type SunsetEntry = string | Spot;
-
-const resolveEntries = (ALL_SPOTS: Spot[], entries: SunsetEntry[]) =>
-  entries
-    .map((entry) => (typeof entry === 'string' ? ALL_SPOTS.find((spot) => spot.id === entry) : entry))
-    .filter((spot): spot is Spot => Boolean(spot));
-
-
 export function SunsetPage() {
-  const SUNSET_SPOTS = resolveEntries(useSpots() as Spot[], sunsetData.sunset as SunsetEntry[]);
+  const SUNSET_SPOTS = useSunsetSpots();
   return (
     <div className="tiktok-feed-wrapper sunset-feed">
       <AsciiSpotsBackground />
