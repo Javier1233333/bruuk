@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { sheetSafe } from './_security.js';
 
 const clean = (value: unknown, maxLength: number) =>
   typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
@@ -34,8 +35,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
       body: JSON.stringify({
         secret,
         submissionType: 'city_proposal',
-        email,
-        city,
+        email: sheetSafe(email),
+        city: sheetSafe(city),
         timestamp: new Date().toISOString(),
       }),
     });

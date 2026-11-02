@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { sheetSafe } from './_security.js';
 
 const EVENTS: Record<string, { title: string; venue: string; depositAmount: number; depositCurrency: 'MXN' }> = {
   'club-de-vinilos-la-perla': {
@@ -60,20 +61,20 @@ export default async function handler(request: VercelRequest, response: VercelRe
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         secret: process.env.SHEETS_SECRET,
-        email,
+        email: sheetSafe(email),
         preferences: {
           type: 'event_registration',
           reservationCode,
           eventSlug,
           eventName: event.title,
           venue: event.venue,
-          name,
-          phone,
+          name: sheetSafe(name),
+          phone: sheetSafe(phone),
           instagram: `@${instagram}`,
           guests,
           consent,
           displayConsent,
-          publicName: displayConsent ? name : '',
+          publicName: displayConsent ? sheetSafe(name) : '',
           publicInstagram: displayConsent ? `@${instagram}` : '',
           paymentStatus: event.depositAmount > 0 ? 'deposit_pending' : 'not_required',
           depositAmount: event.depositAmount,

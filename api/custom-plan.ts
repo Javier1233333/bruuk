@@ -19,12 +19,29 @@ import {
   type PlanStop,
   type RouletteRequest,
 } from '../src/data/planBuilder.js';
+import { firebaseConfigured } from './_firebase.js';
+import { clientIp, takeSlot } from './_security.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
 // Pocos lugares por llamada: el catálogo es casi todo el costo en tokens.
 const MAX_PLACES_PER_INTEREST = 12;
 const MAX_ROULETTE_BACKUPS = 12;
 const MAX_INFO_LENGTH = 140;
+// Cada llamada cuesta tokens de DeepSeek y el endpoint no pide sesión:
+// límite por IP y un tope global diario para que nadie vacíe el saldo.
+const MAX_PER_IP = 30;
+const IP_WINDOW_MS = 60 * 60 * 1000;
+const MAX_GLOBAL_PER_DAY = Number(process.env.CUSTOM_PLAN_DAILY_LIMIT) || 1500;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// 'ok' si quedan llamadas; si no, el motivo para responder 429
+async function takePlanSlot(request: VercelRequest): Promise<'ok' | 'ip' | 'global'> {
+  // Sin Firestore (dev local) no hay dónde contar
+  if (!firebaseConfigured) return 'ok';
+  if (!(await takeSlot('customPlanIps', clientIp(request), MAX_PER_IP, IP_WINDOW_MS))) return 'ip';
+  if (!(await takeSlot('customPlanGlobal', 'all', MAX_GLOBAL_PER_DAY, DAY_MS))) return 'global';
+  return 'ok';
+}
 
 const clean = (value: unknown, maxLength: number) =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, maxLength) : '';
@@ -238,6 +255,15 @@ const generateRoulettePlan = async ({ placeIds, locked, moment, zone }: Roulette
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== 'POST') {
     return response.status(405).json({ error: 'Método no permitido.' });
+  }
+
+  try {
+    const slot = await takePlanSlot(request);
+    if (slot === 'ip') return response.status(429).json({ error: 'Armaste muchos planes seguidos. Espera un rato y vuelve a intentar.' });
+    if (slot === 'global') return response.status(429).json({ error: 'El generador de planes descansa por hoy. Vuelve mañana.' });
+  } catch (error) {
+    console.error('Custom plan rate limit error:', error);
+    return response.status(503).json({ error: 'No pudimos armar tu plan. Inténtalo otra vez.' });
   }
 
   if (request.body?.mode === 'roulette') {

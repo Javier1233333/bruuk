@@ -1,17 +1,48 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { sheetSafe } from './_security.js';
+
+/* ============================================================
+   POST /api/sheets → respuestas del registro (RegistrationModal).
+   El secreto de Sheets autentica a este servidor, así que aquí sólo
+   pasan las preguntas y opciones conocidas: nada de lo que mande el
+   navegador se reenvía tal cual (antes se podían inventar reservas
+   de eventos mandando preferences.type = 'event_registration').
+   ============================================================ */
+
+// Mismas preguntas y opciones que src/components/RegistrationModal.tsx
+const ALLOWED_ANSWERS: Record<string, readonly string[]> = {
+  weekend_vibe: ['underground', 'gastronomy', 'chill'],
+  cultural_interest: ['arts', 'music', 'urban'],
+  routine_breaker: ['spontaneous', 'experience', 'outdoors'],
+  social_goal: ['creatives', 'party', 'networking'],
+};
+
+const isEmail = (value: unknown): value is string =>
+  typeof value === 'string' && value.length <= 254 && /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(value);
+
+const pickAnswers = (raw: unknown) => {
+  const source = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+  const answers: Record<string, string> = {};
+  for (const [question, options] of Object.entries(ALLOWED_ANSWERS)) {
+    const value = source[question];
+    if (typeof value === 'string' && options.includes(value)) answers[question] = value;
+  }
+  return answers;
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, preferences, website } = req.body ?? {};
+  const { preferences, website } = req.body ?? {};
 
   if (typeof website === 'string' && website.trim()) {
     return res.status(200).json({ success: true });
   }
 
-  if (!email) {
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (!isEmail(email)) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
@@ -28,8 +59,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         secret: SHEETS_SECRET,
-        email,
-        preferences: preferences ?? {},
+        email: sheetSafe(email),
+        preferences: pickAnswers(preferences),
         timestamp: new Date().toISOString(),
       }),
     });
