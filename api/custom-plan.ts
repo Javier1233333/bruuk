@@ -5,8 +5,6 @@ import {
   INTEREST_OPTIONS,
   MOMENT_INTERESTS,
   MOMENT_OPTIONS,
-  PLAN_PLACES,
-  PLAN_PLACES_BY_ID,
   ROULETTE_MOMENTS,
   ROULETTE_ZONES,
   VIBE_OPTIONS,
@@ -19,7 +17,8 @@ import {
   type PlanStop,
   type RouletteRequest,
 } from '../src/data/planBuilder.js';
-import { firebaseConfigured } from './_firebase.js';
+import { findPlace, getLiveCatalog, type LiveCatalog } from './_catalog.js';
+import { firebaseConfigured, verifyAuthHeader } from './_firebase.js';
 import { clientIp, takeSlot } from './_security.js';
 
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
@@ -28,7 +27,8 @@ const MAX_PLACES_PER_INTEREST = 12;
 const MAX_ROULETTE_BACKUPS = 12;
 const MAX_INFO_LENGTH = 140;
 // Cada llamada cuesta tokens de DeepSeek y el endpoint no pide sesión:
-// límite por IP y un tope global diario para que nadie vacíe el saldo.
+// límite por persona (por cuenta si manda su token, si no por IP) y un tope global diario.
+// La app nativa manda el token: en datos móviles mucha gente comparte la misma IP.
 const MAX_PER_IP = 30;
 const IP_WINDOW_MS = 60 * 60 * 1000;
 const MAX_GLOBAL_PER_DAY = Number(process.env.CUSTOM_PLAN_DAILY_LIMIT) || 1500;
@@ -38,7 +38,11 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 async function takePlanSlot(request: VercelRequest): Promise<'ok' | 'ip' | 'global'> {
   // Sin Firestore (dev local) no hay dónde contar
   if (!firebaseConfigured) return 'ok';
-  if (!(await takeSlot('customPlanIps', clientIp(request), MAX_PER_IP, IP_WINDOW_MS))) return 'ip';
+  const user = await verifyAuthHeader(request.headers.authorization);
+  const allowed = user
+    ? await takeSlot('customPlanUsers', user.uid, MAX_PER_IP, IP_WINDOW_MS)
+    : await takeSlot('customPlanIps', clientIp(request), MAX_PER_IP, IP_WINDOW_MS);
+  if (!allowed) return 'ip';
   if (!(await takeSlot('customPlanGlobal', 'all', MAX_GLOBAL_PER_DAY, DAY_MS))) return 'global';
   return 'ok';
 }
@@ -87,9 +91,9 @@ const askDeepSeek = async (system: string, user: string, maxTokens: number, temp
   }
 };
 
-const catalogFor = (choices: PlanChoices, exclude: Set<string> = new Set()) =>
+const catalogFor = (catalog: LiveCatalog, choices: PlanChoices, exclude: Set<string> = new Set()) =>
   choices.interests.flatMap((interest) =>
-    shuffle(PLAN_PLACES.filter((place) => place.interest === interest && !exclude.has(place.id))).slice(0, MAX_PLACES_PER_INTEREST),
+    shuffle(catalog.places.filter((place) => place.interest === interest && !exclude.has(place.id))).slice(0, MAX_PLACES_PER_INTEREST),
   );
 
 const ZONE_LABEL = Object.fromEntries(ROULETTE_ZONES.map((zone) => [zone.value, zone.label]));
@@ -149,8 +153,8 @@ const toStop = (value: unknown, idOf: (n: unknown) => string): PlanStop => {
   return { placeId: idOf(stop.n), time: clean(stop.time, 20), why: clean(stop.why, 300) };
 };
 
-const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> => {
-  const catalog = numbered(catalogFor(choices));
+const generatePlan = async (live: LiveCatalog, choices: PlanChoices): Promise<CustomPlan | null> => {
+  const catalog = numbered(catalogFor(live, choices));
   const user = [
     'Opciones elegidas:',
     choicesText(choices),
@@ -166,7 +170,7 @@ const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> =>
   const stops = (Array.isArray(raw.stops) ? raw.stops : [])
     .map((stop) => toStop(stop, catalog.idOf))
     .filter((stop) => {
-      if (!PLAN_PLACES_BY_ID.has(stop.placeId) || seen.has(stop.placeId)) return false;
+      if (!findPlace(live, stop.placeId) || seen.has(stop.placeId)) return false;
       seen.add(stop.placeId);
       return true;
     })
@@ -182,16 +186,16 @@ const generatePlan = async (choices: PlanChoices): Promise<CustomPlan | null> =>
 };
 
 // Cambia una sola parada y deja el resto del plan como está.
-const swapStop = async (choices: PlanChoices, planPlaceIds: string[], swapIndex: number): Promise<PlanStop | null> => {
-  const current = PLAN_PLACES_BY_ID.get(planPlaceIds[swapIndex])!;
+const swapStop = async (live: LiveCatalog, choices: PlanChoices, planPlaceIds: string[], swapIndex: number): Promise<PlanStop | null> => {
+  const current = findPlace(live, planPlaceIds[swapIndex])!;
   const exclude = new Set(planPlaceIds);
-  const catalog = numbered(catalogFor(choices, exclude));
+  const catalog = numbered(catalogFor(live, choices, exclude));
   const user = [
     'Opciones elegidas:',
     choicesText(choices),
     '',
     'Plan actual, en orden:',
-    ...planPlaceIds.map((id, index) => `${index + 1}. ${PLAN_PLACES_BY_ID.get(id)!.name}${index === swapIndex ? '  <- REEMPLAZAR' : ''}`),
+    ...planPlaceIds.map((id, index) => `${index + 1}. ${findPlace(live, id)!.name}${index === swapIndex ? '  <- REEMPLAZAR' : ''}`),
     '',
     `Cambia "${current.name}" por otro lugar que encaje en esa posición. Devuelve sólo esa parada en "stops".`,
     '',
@@ -200,18 +204,18 @@ const swapStop = async (choices: PlanChoices, planPlaceIds: string[], swapIndex:
   ].join('\n');
   const raw = await askDeepSeek(PLAN_PROMPT, user, 250, 1.1);
   const stop = toStop(Array.isArray(raw?.stops) ? raw.stops[0] : null, catalog.idOf);
-  if (!PLAN_PLACES_BY_ID.has(stop.placeId) || exclude.has(stop.placeId)) return null;
+  if (!findPlace(live, stop.placeId) || exclude.has(stop.placeId)) return null;
   return stop;
 };
 
 // Ruleta: respeta las paradas que salieron y deja que la IA cambie sólo las que no encajan.
-const generateRoulettePlan = async ({ placeIds, locked, moment, zone }: RouletteRequest): Promise<CustomPlan | null> => {
+const generateRoulettePlan = async (live: LiveCatalog, { placeIds, locked, moment, zone }: RouletteRequest): Promise<CustomPlan | null> => {
   const spun = new Set(placeIds);
   // Reemplazos sólo de la misma zona que lo que salió, para que el cambio no rompa la ruta.
-  const spunZones = new Set(placeIds.map((id) => PLAN_PLACES_BY_ID.get(id)?.zone).filter(Boolean));
+  const spunZones = new Set(placeIds.map((id) => findPlace(live, id)?.zone).filter(Boolean));
   const nearby = (place: PlanPlace) => (zone === 'toda' ? spunZones.size === 0 || spunZones.has(place.zone) : place.zone === zone);
-  const backups = shuffle(PLAN_PLACES.filter((place) => !spun.has(place.id) && MOMENT_INTERESTS[moment].includes(place.interest) && nearby(place))).slice(0, MAX_ROULETTE_BACKUPS);
-  const spunPlaces = placeIds.map((id) => PLAN_PLACES_BY_ID.get(id)!);
+  const backups = shuffle(live.places.filter((place) => !spun.has(place.id) && MOMENT_INTERESTS[moment].includes(place.interest) && nearby(place))).slice(0, MAX_ROULETTE_BACKUPS);
+  const spunPlaces = placeIds.map((id) => findPlace(live, id)!);
   const catalog = numbered([...spunPlaces, ...backups]);
   const lines = catalog.text(new Set(locked)).split('\n');
   const momentLabel = moment === 'sorpresa' ? 'cualquier hora (elige la mejor)' : labelFor(ROULETTE_MOMENTS, moment);
@@ -266,12 +270,14 @@ export default async function handler(request: VercelRequest, response: VercelRe
     return response.status(503).json({ error: 'No pudimos armar tu plan. Inténtalo otra vez.' });
   }
 
+  const live = await getLiveCatalog();
+
   if (request.body?.mode === 'roulette') {
-    const roulette = parseRouletteRequest(request.body);
+    const roulette = parseRouletteRequest(request.body, (id) => Boolean(findPlace(live, id)));
     if (!roulette) return response.status(400).json({ error: 'Gira la ruleta antes de armar el plan.' });
     if (!process.env.DEEPSEEK_API_KEY) return response.status(500).json({ error: 'El generador de planes todavía no está configurado.' });
     try {
-      const plan = await generateRoulettePlan(roulette);
+      const plan = await generateRoulettePlan(live, roulette);
       if (!plan) return response.status(502).json({ error: 'No encontramos el hilo esta vez. Inténtalo otra vez.' });
       return response.status(200).json({ plan });
     } catch (error) {
@@ -292,15 +298,15 @@ export default async function handler(request: VercelRequest, response: VercelRe
     if (request.body?.mode === 'swap') {
       const planPlaceIds: string[] = Array.isArray(request.body.planPlaceIds) ? request.body.planPlaceIds.filter((id: unknown) => typeof id === 'string') : [];
       const swapIndex = Number(request.body.swapIndex);
-      if (planPlaceIds.length === 0 || planPlaceIds.length > 4 || !planPlaceIds.every((id) => PLAN_PLACES_BY_ID.has(id)) || !Number.isInteger(swapIndex) || !planPlaceIds[swapIndex]) {
+      if (planPlaceIds.length === 0 || planPlaceIds.length > 4 || !planPlaceIds.every((id) => findPlace(live, id)) || !Number.isInteger(swapIndex) || !planPlaceIds[swapIndex]) {
         return response.status(400).json({ error: 'No pudimos cambiar esa parada.' });
       }
-      const stop = await swapStop(choices, planPlaceIds, swapIndex);
+      const stop = await swapStop(live, choices, planPlaceIds, swapIndex);
       if (!stop) return response.status(502).json({ error: 'No encontramos otra opción. Inténtalo otra vez.' });
       return response.status(200).json({ stop });
     }
 
-    const plan = await generatePlan(choices);
+    const plan = await generatePlan(live, choices);
     if (!plan) return response.status(502).json({ error: 'El plan salió incompleto. Inténtalo otra vez.' });
     return response.status(200).json({ plan });
   } catch (error) {

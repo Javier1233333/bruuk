@@ -2,8 +2,8 @@
 // El modelo sólo puede elegir lugares de este catálogo, nunca inventarlos.
 import spotsData from './spots.json' with { type: 'json' };
 import sunsetData from './atardeceres.json' with { type: 'json' };
-import rackData from '../../lugares-mapa-gdl.json' with { type: 'json' };
-import { SPOT_IMAGES } from '../rack/spotImages.js';
+import rackData from './rack.json' with { type: 'json' };
+import cultureData from '../../lugares-mapa-gdl.json' with { type: 'json' };
 import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
 import { placeZone, spotZone, type PlanZone } from '../lib/zones.js';
 
@@ -23,6 +23,16 @@ export type PlanPlace = {
   mapsUrl: string;
   // Sólo si el lugar tiene coordenadas; sin ellas no entra a la ruleta por zona.
   zone?: PlanZone;
+  // Colonia para la etiqueta de las tarjetas (puede no tener grupo de ruleta).
+  zoneName?: string;
+  // Categoría de Rack: 'Rack recomienda' | 'Vinilos y antigüedades' | 'Tianguis'.
+  category?: string;
+  colorAccent?: string;
+  rating?: number;
+  coordinates?: { lat: number; lng: number };
+  // Hotspot de la semana (1-3) y la fecha en que se publicó.
+  hotspot?: number;
+  hotspotDate?: string;
 };
 
 type Option<T extends string> = { value: T; label: string; hint: string };
@@ -112,7 +122,8 @@ export const MOMENT_INTERESTS: Record<RouletteMoment, PlanInterest[]> = {
 
 export type RouletteRequest = { placeIds: string[]; locked: string[]; moment: RouletteMoment; zone: RouletteZone };
 
-export const parseRouletteRequest = (body: unknown): RouletteRequest | null => {
+// `isKnown` permite validar contra el catálogo en vivo de la API; por defecto, el empaquetado.
+export const parseRouletteRequest = (body: unknown, isKnown: (id: string) => boolean = (id) => PLAN_PLACES_BY_ID.has(id)): RouletteRequest | null => {
   if (!body || typeof body !== 'object') return null;
   const input = body as Record<string, unknown>;
   const ids = (value: unknown) => (Array.isArray(value) ? [...new Set(value.filter((id): id is string => typeof id === 'string'))] : []);
@@ -121,7 +132,7 @@ export const parseRouletteRequest = (body: unknown): RouletteRequest | null => {
   if (
     !isOneOf(ROULETTE_MOMENTS, input.moment) ||
     !STOP_OPTIONS.some((count) => count === placeIds.length) ||
-    !placeIds.every((id) => PLAN_PLACES_BY_ID.has(id))
+    !placeIds.every(isKnown)
   ) {
     return null;
   }
@@ -158,63 +169,131 @@ export const parsePlanChoices = (body: unknown): PlanChoices | null => {
   return { moment: input.moment, company: input.company, vibe: input.vibe, budget: input.budget, stops, interests, note };
 };
 
-type Spot = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string; mapsLink: string; city: string; coordinates?: { lat: number; lng: number }; zone?: string };
-type Sunset = { id: string; name: string; type: string; description: string; highlight?: string; mapsLink: string };
-type RackPlace = { name: string; category: string; description: string; google_maps_url: string; geometry?: { latitude?: number | null; longitude?: number | null } };
+// Formas de los datos tal como llegan de /api/spots, /api/rack y atardeceres.json.
+export type CatalogSpot = {
+  id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; price?: string;
+  mapsLink: string; city?: string; coordinates?: { lat: number; lng: number }; zone?: string; colorAccent?: string;
+  rating?: number; hotspot?: number; hotspotDate?: string;
+};
+export type CatalogRack = {
+  id: string; name: string; category: string; description: string; imageUrl?: string; mapsLink: string;
+  coordinates?: { lat: number; lng: number }; zone?: string; active?: boolean;
+};
+export type CatalogSunset = { id: string; name: string; type: string; description: string; highlight?: string; imageUrl?: string; mapsLink: string; colorAccent?: string; coordinates?: { lat: number; lng: number }; zone?: string };
+export type CatalogSunsetEntry = string | CatalogSunset;
+
+type CulturePlace = { name: string; category: string; description: string; google_maps_url: string; geometry?: { latitude?: number | null; longitude?: number | null } };
 
 const NIGHT_TYPES = /bar|club|discoteca|coctel|cervecer|jazz|vinos/i;
 const CAFE_TYPES = /caf|panader|bagel|helad|gelat/i;
 
-const spotInterest = (spot: Spot): PlanInterest => {
+const spotInterest = (spot: CatalogSpot): PlanInterest => {
   if (NIGHT_TYPES.test(spot.type)) return 'noche';
   if (CAFE_TYPES.test(spot.type)) return 'cafe';
   return 'comida';
 };
 
 const slug = (value: string) =>
-  value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-const rackPlaces = rackData.places as RackPlace[];
-// Los primeros diez "Tianguis" son puestos sueltos dentro de un tianguis, no lugares para una ruta.
-const tianguisStalls = new Set(rackPlaces.filter((place) => place.category === 'Tianguis').slice(0, 10));
+// Fotos reales (relativas del sitio o absolutas de Firebase Storage); los SVG de relleno no cuentan.
+const realImage = (url?: string) => (url && /\.(webp|jpe?g|png|avif)(\?|$)/i.test(url) ? url : undefined);
 
-export const PLAN_PLACES: PlanPlace[] = [
-  ...(spotsData as Spot[])
-    .filter((spot) => spot.city === 'guadalajara')
-    .map((spot) => ({
-      id: spot.id,
-      name: spot.name,
-      interest: spotInterest(spot),
-      type: spot.type,
-      description: spot.description,
-      tip: spot.highlight,
-      price: spot.price,
-      imageUrl: spot.imageUrl?.endsWith('.webp') ? spot.imageUrl : undefined,
-      mapsUrl: spot.mapsLink,
-      zone: spotZone(spot)?.zone,
-    })),
-  ...rackPlaces
-    .filter((place) => (place.category === 'Cultura' || place.category === 'Rack recomienda' || place.category === 'Vinilos y antigüedades' || place.category === 'Tianguis') && !tianguisStalls.has(place))
-    .map((place) => ({
+const zoneFields = (place: { zone?: string; coordinates?: { lat: number; lng: number } }) => {
+  const zone = spotZone(place);
+  return { zone: zone?.zone, zoneName: zone?.name };
+};
+
+// Museos y espacios culturales: todavía no están en el admin, salen del mapa original.
+const CULTURE_PLACES: PlanPlace[] = (cultureData.places as CulturePlace[])
+  .filter((place) => place.category === 'Cultura')
+  .map((place) => {
+    const zone = placeZone(place.geometry?.latitude, place.geometry?.longitude);
+    return {
       id: `rack_${slug(place.name)}`,
       name: place.name,
-      interest: (place.category === 'Cultura' ? 'cultura' : 'vintage') as PlanInterest,
-      type: place.category === 'Rack recomienda' ? 'Tienda vintage' : place.category,
+      interest: 'cultura' as PlanInterest,
+      type: 'Cultura',
       description: place.description,
       tip: place.description,
-      imageUrl: SPOT_IMAGES[place.name],
       mapsUrl: SPOT_MAP_LINKS[place.name] ?? place.google_maps_url,
-      zone: placeZone(place.geometry?.latitude, place.geometry?.longitude)?.zone,
-    })),
-  ...(sunsetData.sunset as Sunset[]).map((sunset) => ({
-    id: sunset.id,
-    name: sunset.name,
-    interest: 'atardecer' as PlanInterest,
-    type: sunset.type,
-    description: sunset.description,
-    tip: sunset.highlight,
-    mapsUrl: sunset.mapsLink,
-  })),
-];
+      zone: zone?.zone,
+      zoneName: zone?.name,
+      coordinates: place.geometry?.latitude != null && place.geometry?.longitude != null
+        ? { lat: place.geometry.latitude, lng: place.geometry.longitude }
+        : undefined,
+    };
+  });
+
+// Un solo catálogo para la web (JSON empaquetado), la API (Firestore en vivo) y la app.
+export function buildPlanPlaces({ spots, rack, sunsets }: { spots: CatalogSpot[]; rack: CatalogRack[]; sunsets: CatalogSunsetEntry[] }): PlanPlace[] {
+  const spotsById = new Map(spots.map((spot) => [spot.id, spot]));
+  const sunsetIds = new Set(sunsets.map((entry) => (typeof entry === 'string' ? entry : entry.id)));
+  const places: PlanPlace[] = [
+    ...spots
+      .filter((spot) => (spot.city ?? 'guadalajara') === 'guadalajara' && !sunsetIds.has(spot.id))
+      .map((spot) => ({
+        id: spot.id,
+        name: spot.name,
+        interest: spotInterest(spot),
+        type: spot.type,
+        description: spot.description,
+        tip: spot.highlight,
+        price: spot.price,
+        imageUrl: realImage(spot.imageUrl),
+        mapsUrl: spot.mapsLink,
+        colorAccent: spot.colorAccent,
+        rating: spot.rating,
+        coordinates: spot.coordinates,
+        hotspot: spot.hotspot,
+        hotspotDate: spot.hotspotDate,
+        ...zoneFields(spot),
+      })),
+    ...rack
+      .filter((place) => place.active !== false)
+      .map((place) => ({
+        id: place.id,
+        name: place.name,
+        interest: 'vintage' as PlanInterest,
+        type: place.category === 'Rack recomienda' ? 'Tienda vintage' : place.category,
+        category: place.category,
+        description: place.description,
+        tip: place.description,
+        // Los tianguis no llevan foto: cambian cada semana.
+        imageUrl: place.category === 'Tianguis' ? undefined : realImage(place.imageUrl),
+        mapsUrl: place.mapsLink,
+        coordinates: place.coordinates,
+        ...zoneFields(place),
+      })),
+    ...CULTURE_PLACES,
+    ...sunsets
+      .map((entry) => (typeof entry === 'string' ? spotsById.get(entry) : entry))
+      .filter((sunset): sunset is CatalogSunset | CatalogSpot => Boolean(sunset))
+      .map((sunset) => ({
+        id: sunset.id,
+        name: sunset.name,
+        interest: 'atardecer' as PlanInterest,
+        type: sunset.type,
+        description: sunset.description,
+        tip: sunset.highlight,
+        imageUrl: realImage(sunset.imageUrl),
+        mapsUrl: sunset.mapsLink,
+        colorAccent: sunset.colorAccent,
+        ...zoneFields(sunset),
+      })),
+  ];
+  // Un id repetido entre colecciones se queda con la primera aparición.
+  const seen = new Set<string>();
+  return places.filter((place) => !seen.has(place.id) && seen.add(place.id));
+}
+
+export const BUNDLED_SUNSETS = sunsetData.sunset as CatalogSunsetEntry[];
+
+// Catálogo empaquetado: lo que usa la web mientras no carga la API y el respaldo sin conexión.
+export const PLAN_PLACES: PlanPlace[] = buildPlanPlaces({
+  spots: spotsData as CatalogSpot[],
+  rack: rackData as CatalogRack[],
+  sunsets: BUNDLED_SUNSETS,
+});
 
 export const PLAN_PLACES_BY_ID = new Map(PLAN_PLACES.map((place) => [place.id, place]));
