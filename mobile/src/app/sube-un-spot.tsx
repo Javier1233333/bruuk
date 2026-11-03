@@ -1,122 +1,236 @@
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { useEffect, useRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type TextInputInstance } from 'react-native';
 import { router } from 'expo-router';
-import { Body, Button, Chip, Kicker, Title } from '../components/ui';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
+import { ArrowRight, Check, ChevronLeft, LocateFixed, Send } from 'lucide-react-native';
+import { Button, Chip, ErrorNote, Kicker, ShadowBox, tap } from '../components/ui';
 import { postApi } from '../lib/api';
+import { useAuth } from '../lib/auth';
 import { colors, fonts, space } from '../theme';
 
+type StepId = 'spot' | 'city' | 'location' | 'reason' | 'email';
+const STEPS: StepId[] = ['spot', 'city', 'location', 'reason', 'email'];
 const CITY_SHORTCUTS = ['Guadalajara', 'Zapopan', 'Tlaquepaque'];
+const EMAIL_KEY = 'bruuk-submit-email';
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
-type Status = 'idle' | 'loading' | 'success' | 'error';
+const COPY: Record<StepId, { question: string; helper: string }> = {
+  spot: { question: '¿Cómo se llama el lugar?', helper: 'Una cafetería, tienda, museo, mirador… lo que te guste.' },
+  city: { question: '¿En qué ciudad está?', helper: 'Puede ser Guadalajara o cualquier ciudad del mundo.' },
+  location: { question: '¿Dónde lo encontramos?', helper: 'Opcional. Un enlace de Google Maps o Instagram, o la dirección.' },
+  reason: { question: '¿Por qué te gusta?', helper: 'Cuéntalo como se lo contarías a un amigo: qué pedir, cuándo ir, qué lo hace especial.' },
+  email: { question: '¿A dónde te escribimos?', helper: 'Sólo por si necesitamos confirmar algo. Tu correo nunca se publica.' },
+};
 
 export default function SubmitSpotScreen() {
-  const [spotName, setSpotName] = useState('');
-  const [city, setCity] = useState('');
-  const [location, setLocation] = useState('');
-  const [reason, setReason] = useState('');
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<Status>('idle');
+  const { user } = useAuth();
+  const [stepIndex, setStepIndex] = useState(0);
+  const [values, setValues] = useState({ spot: '', city: '', location: '', reason: '', email: user?.email ?? '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
   const [error, setError] = useState('');
+  const [locating, setLocating] = useState(false);
+  const inputRef = useRef<TextInputInstance>(null);
 
-  const validate = () => {
-    if (spotName.trim().length < 2) return 'Escribe el nombre del spot.';
-    if (city.trim().length < 2) return 'Escribe la ciudad del spot.';
-    if (reason.trim().length < 10) return 'Cuéntanos un poco más: ¿por qué te gusta este lugar?';
-    if (!EMAIL_PATTERN.test(email.trim())) return 'Escribe un correo válido para poder preguntarte si falta algún dato.';
+  const step = STEPS[stepIndex];
+  const isLast = stepIndex === STEPS.length - 1;
+
+  useEffect(() => {
+    AsyncStorage.getItem(EMAIL_KEY)
+      .then((saved) => saved && setValues((current) => (current.email ? current : { ...current, email: saved })))
+      .catch(() => undefined);
+  }, []);
+
+  const set = (key: StepId, value: string) => {
+    setError('');
+    setValues((current) => ({ ...current, [key]: value }));
+  };
+
+  const validate = (id: StepId) => {
+    if (id === 'spot' && values.spot.trim().length < 2) return 'Escribe el nombre del spot.';
+    if (id === 'city' && values.city.trim().length < 2) return 'Escribe la ciudad del spot.';
+    if (id === 'reason' && values.reason.trim().length < 10) return 'Cuéntanos un poco más: ¿por qué te gusta este lugar?';
+    if (id === 'email' && !EMAIL_PATTERN.test(values.email.trim())) return 'Escribe un correo válido para poder preguntarte si falta algún dato.';
     return '';
   };
 
   const submit = async () => {
-    const problem = validate();
+    setStatus('loading');
+    try {
+      const email = values.email.trim().toLowerCase();
+      await postApi('place-proposal', {
+        spotName: values.spot.trim(),
+        city: values.city.trim(),
+        location: values.location.trim(),
+        reason: values.reason.trim(),
+        email,
+      });
+      await AsyncStorage.setItem(EMAIL_KEY, email).catch(() => undefined);
+      setStatus('success');
+    } catch (submitError) {
+      setStatus('idle');
+      setError(submitError instanceof Error ? submitError.message : 'No pudimos enviar el spot.');
+    }
+  };
+
+  const next = () => {
+    const problem = validate(step);
     if (problem) {
-      setStatus('error');
       setError(problem);
       return;
     }
-    setStatus('loading');
+    if (isLast) void submit();
+    else {
+      setStepIndex(stepIndex + 1);
+      setTimeout(() => inputRef.current?.focus(), 250);
+    }
+  };
+
+  const locate = async () => {
+    setLocating(true);
+    setError('');
     try {
-      await postApi('place-proposal', {
-        spotName: spotName.trim(),
-        city: city.trim(),
-        location: location.trim(),
-        reason: reason.trim(),
-        email: email.trim().toLowerCase(),
-        website: '',
-      });
-      setStatus('success');
-    } catch (submitError) {
-      setStatus('error');
-      setError(submitError instanceof Error ? submitError.message : 'No pudimos enviar el spot.');
+      const permission = await Location.requestForegroundPermissionsAsync();
+      if (!permission.granted) throw new Error('permission');
+      const { coords } = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+      set('location', `https://maps.google.com/?q=${coords.latitude.toFixed(6)},${coords.longitude.toFixed(6)}`);
+    } catch {
+      setError('No pudimos obtener tu ubicación. Pega un enlace o escribe la dirección.');
+    } finally {
+      setLocating(false);
     }
   };
 
   if (status === 'success') {
     return (
       <View style={[styles.screen, styles.success]}>
-        <Feather name="check" size={36} color={colors.violet} />
+        <View style={styles.successIcon}><Check size={34} color={colors.ink} strokeWidth={3} /></View>
         <Kicker>/ RECIBIDO</Kicker>
-        <Title>Ya está en nuestro radar.</Title>
-        <Body>Gracias por compartir {spotName.trim()}. Lo revisaremos con calma antes de sumarlo a Bruuk.</Body>
-        <Button label="VOLVER" icon="arrow-left" variant="secondary" onPress={() => router.back()} style={{ borderColor: colors.paper, alignSelf: 'stretch' }} />
+        <Text style={styles.successTitle}>YA ESTÁ EN{'\n'}NUESTRO RADAR.</Text>
+        <Text style={styles.successBody}>Gracias por compartir {values.spot.trim()}. Lo revisaremos con calma antes de sumarlo a Bruuk.</Text>
+        <Button
+          label="SUBIR OTRO SPOT"
+          icon={ArrowRight}
+          variant="accent"
+          onPress={() => {
+            setValues((current) => ({ spot: '', city: '', location: '', reason: '', email: current.email }));
+            setStepIndex(0);
+            setStatus('idle');
+          }}
+          style={{ alignSelf: 'stretch' }}
+        />
+        <Button label="LISTO" variant="ghost" onPress={() => router.back()} style={{ alignSelf: 'stretch' }} />
       </View>
     );
   }
 
   const loading = status === 'loading';
+  const multiline = step === 'reason';
   return (
-    <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Kicker>/ NO IMPORTA LA CIUDAD</Kicker>
-        <Title accent="Súbelo.">¿Te gusta un spot?</Title>
-        <Body>Toma menos de un minuto. Lo revisamos antes de publicarlo: aquí no entran rankings pagados.</Body>
-
-        <Field label="¿Cómo se llama el lugar?">
-          <TextInput style={styles.input} value={spotName} onChangeText={setSpotName} placeholder="Nombre del lugar" placeholderTextColor={colors.muted} maxLength={120} editable={!loading} />
-        </Field>
-        <Field label="¿En qué ciudad está?">
-          <TextInput style={styles.input} value={city} onChangeText={setCity} placeholder="Escribe la ciudad" placeholderTextColor={colors.muted} maxLength={100} editable={!loading} />
-          <View style={styles.chips}>
-            {CITY_SHORTCUTS.map((option) => <Chip key={option} label={option.toUpperCase()} active={city === option} onPress={() => setCity(option)} />)}
+        {stepIndex === 0 && (
+          <>
+            <Kicker>/ NO IMPORTA LA CIUDAD</Kicker>
+            <Text style={styles.hero}>¿TE GUSTA UN SPOT? <Text style={{ color: colors.violet }}>SÚBELO.</Text></Text>
+            <Text style={styles.lead}>Toma menos de un minuto. Lo revisamos antes de publicarlo: aquí no entran rankings pagados.</Text>
+          </>
+        )}
+        <ShadowBox offset={6}>
+          <View style={styles.card}>
+            <Text style={styles.stepCount}>PASO {stepIndex + 1} DE {STEPS.length}</Text>
+            <View style={styles.bar}><View style={[styles.barFill, { width: `${((stepIndex + 1) / STEPS.length) * 100}%` }]} /></View>
+            <Text style={styles.question}>{COPY[step].question}</Text>
+            <Text style={styles.helper}>{COPY[step].helper}</Text>
+            <TextInput
+              key={step}
+              ref={inputRef}
+              style={[styles.input, multiline && styles.textarea]}
+              value={values[step]}
+              onChangeText={(value) => set(step, value)}
+              placeholder={{ spot: 'Nombre del lugar', city: 'Escribe la ciudad', location: 'Enlace o dirección', reason: 'Ej. El pan francés es increíble y la terraza es perfecta por la mañana.', email: 'tu@correo.com' }[step]}
+              placeholderTextColor="#8a8794"
+              multiline={multiline}
+              maxLength={{ spot: 120, city: 100, location: 500, reason: 1200, email: 180 }[step]}
+              autoCapitalize={step === 'email' || step === 'location' ? 'none' : step === 'reason' ? 'sentences' : 'words'}
+              autoCorrect={step === 'reason'}
+              keyboardType={step === 'email' ? 'email-address' : step === 'location' ? 'url' : 'default'}
+              autoComplete={step === 'email' ? 'email' : 'off'}
+              returnKeyType={multiline ? 'default' : isLast ? 'send' : 'next'}
+              onSubmitEditing={multiline ? undefined : next}
+              editable={!loading}
+              accessibilityLabel={COPY[step].question}
+            />
+            {step === 'city' && (
+              <View style={styles.chips}>
+                {CITY_SHORTCUTS.map((city) => <Chip key={city} dark label={city.toUpperCase()} active={values.city === city} onPress={() => set('city', city)} />)}
+              </View>
+            )}
+            {step === 'location' && (
+              <Pressable accessibilityRole="button" onPress={() => void locate()} disabled={locating} style={styles.tool}>
+                <LocateFixed size={18} color={colors.ink} />
+                <Text style={styles.toolText}>{locating ? 'UBICANDO…' : 'ESTOY AHÍ AHORA'}</Text>
+              </Pressable>
+            )}
+            {step === 'reason' && (
+              <Text style={styles.count}>{values.reason.trim().length < 10 ? `Mínimo 10 caracteres · ${values.reason.trim().length}/10` : `${values.reason.length}/1200`}</Text>
+            )}
+            {step === 'email' && <Text style={styles.summary}><Text style={{ color: colors.ink, fontFamily: fonts.bodyBold }}>{values.spot.trim()}</Text> · {values.city.trim()}</Text>}
+            {error ? <ErrorNote>{error}</ErrorNote> : null}
+            <View style={styles.actions}>
+              {stepIndex > 0 && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Paso anterior"
+                  onPress={() => {
+                    tap();
+                    setError('');
+                    setStepIndex(stepIndex - 1);
+                  }}
+                  style={styles.back}
+                >
+                  <ChevronLeft size={22} color={colors.ink} />
+                </Pressable>
+              )}
+              <Button
+                label={isLast ? 'SUBIR A BRUUK' : step === 'location' && !values.location.trim() ? 'OMITIR' : 'SIGUIENTE'}
+                icon={isLast ? Send : ArrowRight}
+                onPress={next}
+                loading={loading}
+                style={{ flex: 1 }}
+              />
+            </View>
+            {isLast && <Text style={styles.privacy}>Al enviarlo aceptas que Bruuk revise la recomendación. Tu correo nunca se publica.</Text>}
           </View>
-        </Field>
-        <Field label="¿Dónde lo encontramos? (opcional)">
-          <TextInput style={styles.input} value={location} onChangeText={setLocation} placeholder="Enlace de Maps, Instagram o dirección" placeholderTextColor={colors.muted} autoCapitalize="none" maxLength={500} editable={!loading} />
-        </Field>
-        <Field label="¿Por qué te gusta?">
-          <TextInput style={[styles.input, styles.textarea]} value={reason} onChangeText={setReason} placeholder="Qué pedir, cuándo ir, qué lo hace especial…" placeholderTextColor={colors.muted} multiline maxLength={1200} editable={!loading} />
-        </Field>
-        <Field label="¿A dónde te escribimos?">
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="tu@correo.com" placeholderTextColor={colors.muted} keyboardType="email-address" autoCapitalize="none" autoComplete="email" maxLength={180} editable={!loading} />
-        </Field>
-
-        {status === 'error' && <Text style={styles.error}>{error}</Text>}
-        <Button label={loading ? 'ENVIANDO…' : 'SUBIR A BRUUK'} icon="send" onPress={() => void submit()} disabled={loading} style={styles.submit} />
-        <Text style={styles.privacy}>Al enviarlo aceptas que Bruuk revise la recomendación. Tu correo nunca se publica.</Text>
+        </ShadowBox>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <View style={{ gap: 8 }}>
-      <Text style={styles.label}>{label}</Text>
-      {children}
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.ink },
-  content: { padding: space.gutter, paddingBottom: 48, gap: 16 },
-  success: { padding: space.gutter, gap: 14, justifyContent: 'center' },
-  label: { color: colors.paper, fontFamily: fonts.heading, fontSize: 16 },
-  input: { minHeight: 52, paddingHorizontal: 14, color: colors.ink, backgroundColor: colors.paper, fontFamily: fonts.body, fontSize: 16 },
-  textarea: { minHeight: 130, paddingTop: 14, textAlignVertical: 'top' },
+  content: { padding: space.gutter, paddingBottom: 48, gap: 14 },
+  hero: { color: colors.paper, fontFamily: fonts.display, fontSize: 36, lineHeight: 36, letterSpacing: -1.5 },
+  lead: { color: colors.muted, fontFamily: fonts.body, fontSize: 15, lineHeight: 22 },
+  card: { padding: 18, gap: 12, backgroundColor: colors.paper },
+  stepCount: { color: colors.violetDeep, fontFamily: fonts.heading, fontSize: 11, letterSpacing: 1.6 },
+  bar: { height: 4, backgroundColor: colors.lineDark },
+  barFill: { height: 4, backgroundColor: colors.ink },
+  question: { color: colors.ink, fontFamily: fonts.display, fontSize: 28, lineHeight: 29, letterSpacing: -1 },
+  helper: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 14, lineHeight: 20 },
+  input: { minHeight: 54, paddingHorizontal: 14, color: colors.ink, backgroundColor: colors.white, borderWidth: 1.5, borderColor: colors.ink, fontFamily: fonts.body, fontSize: 16 },
+  textarea: { minHeight: 140, paddingTop: 14, textAlignVertical: 'top' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  error: { padding: 12, color: colors.white, backgroundColor: colors.error, fontFamily: fonts.body },
-  submit: { backgroundColor: colors.violet, borderColor: colors.violet },
-  privacy: { color: colors.muted, fontFamily: fonts.body, fontSize: 12, textAlign: 'center' },
+  tool: { minHeight: 48, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: colors.lilac, borderWidth: 1.5, borderColor: colors.ink },
+  toolText: { color: colors.ink, fontFamily: fonts.heading, fontSize: 12, letterSpacing: 1 },
+  count: { alignSelf: 'flex-end', color: colors.mutedDark, fontFamily: fonts.body, fontSize: 12 },
+  summary: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 14 },
+  actions: { flexDirection: 'row', gap: 10, marginTop: 6 },
+  back: { width: 54, minHeight: 54, alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: colors.ink },
+  privacy: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 12, textAlign: 'center' },
+  success: { padding: 24, gap: 14, justifyContent: 'center' },
+  successIcon: { width: 56, height: 56, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.violetSoft, borderWidth: 1.5, borderColor: colors.paper },
+  successTitle: { color: colors.paper, fontFamily: fonts.display, fontSize: 44, lineHeight: 42, letterSpacing: -2 },
+  successBody: { color: colors.muted, fontFamily: fonts.body, fontSize: 16, lineHeight: 23 },
 });

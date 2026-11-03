@@ -1,60 +1,145 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { router, type Href } from 'expo-router';
-import { Body, Kicker, Logo, PlaceCard, Screen, Title } from '../../components/ui';
-import { getPlace, PLAN_PLACES } from '../../lib/catalog';
-import { colors, fonts } from '../../theme';
+import { useMemo, useRef, useState } from 'react';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View, type FlatList as FlatListType } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { router, useScrollToTop } from 'expo-router';
+import { ArrowRight, ArrowUpRight, Coffee, Martini, Megaphone, Sunset, Utensils } from 'lucide-react-native';
+import { HotspotsCard } from '../../components/HotspotsCard';
+import { SpotCard } from '../../components/SpotCard';
+import { TopBar } from '../../components/TopBar';
+import { Button, Chip, Kicker, openUrl } from '../../components/ui';
+import type { PlanPlace } from '../../lib/catalog';
+import { useContent } from '../../lib/content';
+import { colors, fonts, space } from '../../theme';
 
-const FEATURED = ['spot_003', 'spot_018', 'spot_105', 'spot_131'];
+type Filter = 'todos' | 'cafe' | 'comida' | 'noche' | 'atardecer';
 
-const GATEWAYS: { href: Href; number: string; label: string; hint: string; icon: keyof typeof Feather.glyphMap }[] = [
-  { href: '/comer', number: '01', label: 'COMER Y TOMAR', hint: 'Cafés, comida y noche', icon: 'coffee' },
-  { href: '/rack', number: '02', label: 'VINTAGE Y TIANGUIS', hint: 'Ropa, objetos, mercados y cultura', icon: 'shopping-bag' },
-  { href: '/plan', number: '03', label: 'ARMA TU PLAN', hint: 'Cinco preguntas, una ruta real', icon: 'zap' },
-  { href: '/atardeceres', number: '04', label: 'ATARDECERES', hint: 'Miradores para ver caer el sol', icon: 'sunset' },
+const FILTERS: { value: Filter; label: string; icon?: typeof Coffee }[] = [
+  { value: 'todos', label: 'TODOS' },
+  { value: 'cafe', label: 'CAFÉS', icon: Coffee },
+  { value: 'comida', label: 'COMIDA', icon: Utensils },
+  { value: 'noche', label: 'BARES', icon: Martini },
+  { value: 'atardecer', label: 'ATARDECERES', icon: Sunset },
 ];
 
+type Row = { key: string; kind: 'hotspots'; places: PlanPlace[] } | { key: string; kind: 'place'; place: PlanPlace } | { key: string; kind: 'sunsetCover' };
+
+const shuffle = <T,>(items: T[]) => {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swap]] = [copy[swap], copy[index]];
+  }
+  return copy;
+};
+
 export default function HomeScreen() {
-  const featured = FEATURED.map(getPlace).filter((place) => place !== undefined);
+  const { places, hotspots, sunsets, config, refresh, refreshing, byId } = useContent();
+  const [filter, setFilter] = useState<Filter>('todos');
+  const listRef = useRef<FlatListType<Row>>(null);
+  useScrollToTop(listRef);
+
+  // Como el feed de la web: los hotspots primero y el resto revuelto (una vez por carga).
+  const shuffled = useMemo(() => shuffle(places.filter((place) => ['cafe', 'comida', 'noche'].includes(place.interest))), [places]);
+
+  const rows = useMemo<Row[]>(() => {
+    if (filter === 'atardecer') {
+      const ordered = sunsets.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
+      return [{ key: 'cover', kind: 'sunsetCover' }, ...ordered.map((place) => ({ key: place.id, kind: 'place' as const, place }))];
+    }
+    const hot = hotspots.ids.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
+    const pinnedIds = hot.length > 0 ? hot.map((place) => place.id) : config.featuredSpotIds;
+    const pinned = pinnedIds.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
+    const pinnedSet = new Set(pinned.map((place) => place.id));
+    const rest = shuffled.filter((place) => !pinnedSet.has(place.id) && (filter === 'todos' || place.interest === filter));
+    const head = filter === 'todos' ? pinned : pinned.filter((place) => place.interest === filter);
+    return [
+      ...(filter === 'todos' && hot.length > 0 ? [{ key: 'hotspots', kind: 'hotspots' as const, places: hot }] : []),
+      ...[...head, ...rest].map((place) => ({ key: place.id, kind: 'place' as const, place })),
+    ];
+  }, [filter, sunsets, byId, hotspots.ids, config.featuredSpotIds, shuffled]);
 
   return (
-    <Screen>
-      <Logo />
-      <View style={styles.hero}>
-        <Kicker>/ GUADALAJARA · EDICIÓN 001</Kicker>
-        <Title accent="Más mundo.">Menos pantalla.</Title>
-        <Body>Dónde comer y tomar, vintage y tianguis, y planes para salir. Elegidos por personas reales, sin rankings pagados.</Body>
-        <Text style={styles.count}>{PLAN_PLACES.length} LUGARES EN LA GUÍA</Text>
-      </View>
-
-      <View style={styles.gateways}>
-        {GATEWAYS.map((gateway) => (
-          <Pressable key={gateway.label} accessibilityRole="link" onPress={() => router.push(gateway.href)} style={({ pressed }) => [styles.gateway, pressed && { backgroundColor: '#1a1826' }]}>
-            <Text style={styles.gatewayNumber}>{gateway.number}</Text>
-            <Feather name={gateway.icon} size={22} color={colors.violet} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.gatewayLabel}>{gateway.label}</Text>
-              <Text style={styles.gatewayHint}>{gateway.hint}</Text>
+    <SafeAreaView style={styles.screen} edges={['top']}>
+      <FlatList
+        ref={listRef}
+        data={rows}
+        keyExtractor={(row) => row.key}
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} tintColor={colors.violet} />}
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <TopBar />
+            {config.banner && (
+              <Pressable
+                accessibilityRole={config.banner.url ? 'link' : 'text'}
+                disabled={!config.banner.url}
+                onPress={() => config.banner?.url && openUrl(config.banner.url)}
+                style={styles.banner}
+              >
+                <Megaphone size={16} color={colors.ink} strokeWidth={2.4} />
+                <Text style={styles.bannerText}>{config.banner.text}</Text>
+                {config.banner.url ? <ArrowUpRight size={16} color={colors.ink} /> : null}
+              </Pressable>
+            )}
+            <Kicker>{config.copy.homeKicker}</Kicker>
+            <Text style={styles.title} accessibilityRole="header">
+              {config.copy.homeTitle.toUpperCase()}
+              {'\n'}
+              <Text style={{ color: colors.violet }}>{config.copy.homeAccent.toUpperCase()}</Text>
+            </Text>
+            <Text style={styles.lead}>{config.copy.homeLead}</Text>
+            <View style={styles.chips}>
+              {FILTERS.map((item) => (
+                <Chip
+                  key={item.value}
+                  label={item.label}
+                  icon={item.icon}
+                  active={filter === item.value}
+                  onPress={() => {
+                    setFilter(item.value);
+                    listRef.current?.scrollToOffset({ offset: 0, animated: false });
+                  }}
+                />
+              ))}
             </View>
-            <Feather name="arrow-up-right" size={20} color={colors.paper} />
-          </Pressable>
-        ))}
-      </View>
-
-      <Kicker>/ ASÍ SE VE BRUUK</Kicker>
-      <Text style={styles.sectionTitle}>LUGARES REALES.{'\n'}RAZONES CONCRETAS.</Text>
-      {featured.map((place) => <PlaceCard key={place.id} place={place} />)}
-    </Screen>
+          </View>
+        }
+        renderItem={({ item }) => {
+          if (item.kind === 'hotspots') return <HotspotsCard places={item.places} date={hotspots.date} />;
+          if (item.kind === 'sunsetCover') {
+            return (
+              <View style={styles.sunsetCover}>
+                <Sunset size={30} color={colors.sunset} strokeWidth={2} />
+                <Text style={styles.sunsetTitle}>DONDE CAE{'\n'}EL SOL.</Text>
+                <Text style={styles.lead}>Miradores, parques y rooftops para ver el atardecer. Llega unos minutos antes.</Text>
+              </View>
+            );
+          }
+          return <SpotCard place={item.place} hotspotOf={hotspots.ids.length || undefined} />;
+        }}
+        ListFooterComponent={
+          <View style={styles.footer}>
+            <Kicker>/ EL MAPA TAMBIÉN ES TUYO</Kicker>
+            <Text style={styles.footerTitle}>¿TIENES UN SPOT{'\n'}QUE TE GUSTA?</Text>
+            {config.features.subirSpot && <Button label="SUBIR UN SPOT" icon={ArrowRight} variant="accent" onPress={() => router.push('/sube-un-spot')} />}
+          </View>
+        }
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  hero: { gap: 12, paddingVertical: 18 },
-  count: { color: colors.violetSoft, fontFamily: fonts.heading, fontSize: 11, letterSpacing: 1.6 },
-  gateways: { borderTopWidth: 1, borderColor: colors.line, marginBottom: 18 },
-  gateway: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 18, paddingHorizontal: 4, borderBottomWidth: 1, borderColor: colors.line },
-  gatewayNumber: { color: colors.muted, fontFamily: fonts.heading, fontSize: 12, width: 22 },
-  gatewayLabel: { color: colors.paper, fontFamily: fonts.display, fontSize: 18, letterSpacing: -0.3 },
-  gatewayHint: { color: colors.muted, fontFamily: fonts.body, fontSize: 13, marginTop: 2 },
-  sectionTitle: { color: colors.paper, fontFamily: fonts.display, fontSize: 28, lineHeight: 30, letterSpacing: -1 },
+  screen: { flex: 1, backgroundColor: colors.ink },
+  content: { padding: space.gutter, paddingBottom: 32, gap: 18 },
+  header: { gap: 12 },
+  banner: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, backgroundColor: colors.violetSoft },
+  bannerText: { flex: 1, color: colors.ink, fontFamily: fonts.bodyBold, fontSize: 14, lineHeight: 19 },
+  title: { marginTop: 4, color: colors.paper, fontFamily: fonts.display, fontSize: 44, lineHeight: 42, letterSpacing: -2 },
+  lead: { color: colors.muted, fontFamily: fonts.body, fontSize: 15, lineHeight: 22 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 6 },
+  sunsetCover: { gap: 10, paddingVertical: 8 },
+  sunsetTitle: { color: colors.paper, fontFamily: fonts.display, fontSize: 48, lineHeight: 46, letterSpacing: -2 },
+  footer: { gap: 12, paddingTop: 22, borderTopWidth: 1, borderColor: colors.line },
+  footerTitle: { color: colors.paper, fontFamily: fonts.display, fontSize: 30, lineHeight: 30, letterSpacing: -1 },
 });

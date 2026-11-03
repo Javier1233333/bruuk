@@ -27,7 +27,9 @@
     "plugins": [
       "expo-router",
       "expo-image",
-      "expo-font"
+      "expo-font",
+      "expo-sharing",
+      "expo-sqlite"
     ],
     "scheme": "bruuk",
     "backgroundColor": "#0b0a12",

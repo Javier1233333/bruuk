@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DEFAULT_CONFIG, type AppConfig } from '../src/data/appConfig.js';
 import { BUNDLED_SUNSETS, ROULETTE_ZONES } from '../src/data/planBuilder.js';
 import { getLiveCatalog } from './_catalog.js';
 import { adminDb, firebaseConfigured } from './_firebase.js';
@@ -13,38 +14,6 @@ import { adminDb, firebaseConfigured } from './_firebase.js';
    consola de Firebase). Cualquier campo que falte usa el valor de
    DEFAULT_CONFIG, así que el documento puede no existir.
    ============================================================ */
-
-type AppConfig = {
-  // La app más vieja que sigue funcionando; abajo de esto pide actualizar.
-  minVersion: string;
-  features: { ruleta: boolean; preguntas: boolean; momentos: boolean; subirSpot: boolean };
-  copy: { homeKicker: string; homeTitle: string; homeAccent: string; homeLead: string; planLead: string; momentosLead: string };
-  // Si no hay hotspots publicados, estos van primero en Inicio.
-  featuredSpotIds: string[];
-  banner: { text: string; url?: string } | null;
-  links: { contacto: string; privacidad: string; instagram: string; web: string };
-};
-
-const DEFAULT_CONFIG: AppConfig = {
-  minVersion: '1.0.0',
-  features: { ruleta: true, preguntas: true, momentos: true, subirSpot: true },
-  copy: {
-    homeKicker: '/ GUADALAJARA',
-    homeTitle: 'Menos pantalla.',
-    homeAccent: 'Más mundo.',
-    homeLead: 'Dónde comer y tomar, vintage y planes para salir. Elegidos por personas reales, sin rankings pagados.',
-    planLead: 'Gira, fija los que te laten y sal.',
-    momentosLead: 'Lo que viviste, guardado sólo en tu teléfono.',
-  },
-  featuredSpotIds: ['spot_003', 'spot_018', 'spot_105', 'spot_131'],
-  banner: null,
-  links: {
-    contacto: 'mailto:contacto@bruuk.space',
-    privacidad: 'https://bruuk.space/privacidad',
-    instagram: 'https://instagram.com/bruuk.space',
-    web: 'https://bruuk.space',
-  },
-};
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
