@@ -104,7 +104,7 @@ export function Button({ label, onPress, icon: Icon, variant = 'primary', disabl
         !palette.shadow && style,
       ]}
     >
-      {loading ? <ActivityIndicator color={palette.text} /> : <Text style={[styles.buttonText, { color: palette.text }]}>{label}</Text>}
+      {loading ? <ActivityIndicator color={palette.text} /> : <Text style={[styles.buttonText, { color: palette.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{label}</Text>}
       {!loading && Icon && <Icon size={17} color={palette.text} strokeWidth={2.6} />}
     </Pressable>
   );

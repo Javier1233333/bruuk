@@ -30,7 +30,7 @@ function SpotButton() {
       style={({ pressed }) => [styles.spotButton, pressed && { opacity: 0.72 }]}
     >
       <View style={styles.spotBubble}>
-        <Plus size={26} color={colors.ink} strokeWidth={2.6} />
+        <Plus size={20} color={colors.ink} strokeWidth={2.8} />
       </View>
       <Text style={styles.spotLabel}>SPOT</Text>
     </Pressable>
@@ -65,7 +65,7 @@ export default function TabsLayout() {
 const styles = StyleSheet.create({
   iconWrap: { alignItems: 'center', justifyContent: 'center', width: 40, height: 28 },
   activeBar: { position: 'absolute', top: -9, width: 28, height: 3, backgroundColor: colors.violet },
-  spotButton: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingTop: 4 },
-  spotBubble: { width: 46, height: 38, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.violet, borderWidth: 1.5, borderColor: colors.paper },
+  spotButton: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', gap: 3, paddingTop: 5 },
+  spotBubble: { width: 40, height: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.violet, borderWidth: 1.5, borderColor: colors.paper },
   spotLabel: { color: colors.tabInactive, fontFamily: fonts.heading, fontSize: 10, letterSpacing: 1 },
 });

@@ -234,8 +234,19 @@ export function Roulette({ state, onChange, onGenerate, loading }: Props) {
       <View style={styles.actions}>
         {hasSpun ? (
           <>
-            <Button label="GIRAR" icon={Dices} variant="secondary" onPress={() => spin()} disabled={busy || lockedCount === state.count} style={{ flex: 1 }} />
-            <Button label="ARMAR PLAN" icon={Sparkles} onPress={onGenerate} loading={loading} disabled={isSpinning} style={{ flex: 1.4 }} />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Volver a girar"
+              onPress={() => {
+                tap();
+                spin();
+              }}
+              disabled={busy || lockedCount === state.count}
+              style={[styles.spinAgain, (busy || lockedCount === state.count) && { opacity: 0.4 }]}
+            >
+              <Dices size={22} color={colors.ink} />
+            </Pressable>
+            <Button label="ARMAR PLAN" icon={Sparkles} onPress={onGenerate} loading={loading} disabled={isSpinning} style={{ flex: 1 }} />
           </>
         ) : (
           <Button label="GIRAR LA RULETA" icon={Dices} onPress={() => spin()} disabled={busy || pool.length < state.count} style={{ flex: 1 }} />
@@ -277,4 +288,5 @@ const styles = StyleSheet.create({
   respin: { position: 'absolute', top: -8, right: -8, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.violetSoft, borderWidth: 1.5, borderColor: colors.ink },
   hint: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 13, lineHeight: 18 },
   actions: { flexDirection: 'row', gap: 10 },
+  spinAgain: { width: 56, minHeight: 54, alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: colors.ink },
 });

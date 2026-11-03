@@ -7,19 +7,27 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "requireFullScreen": true,
-      "bundleIdentifier": "space.bruuk.app"
+      "bundleIdentifier": "space.bruuk.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0b0a12",
+        "backgroundColor": "#6d4cf6",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "space.bruuk.app"
+      "package": "space.bruuk.app",
+      "versionCode": 1,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,7 +37,36 @@
       "expo-image",
       "expo-font",
       "expo-sharing",
-      "expo-sqlite"
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0b0a12",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Bruuk usa tus fotos sólo para guardarlas en tus Momentos, dentro de este teléfono.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Bruuk usa tu ubicación sólo cuando tocas \"Estoy ahí ahora\" al subir un spot.",
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false,
+          "motionUsagePermission": false,
+          "locationFullAccuracyPermission": "Bruuk usa tu ubicación exacta para marcar el spot que estás subiendo.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false,
+          "isAndroidMotionActivityEnabled": false
+        }
+      ]
     ],
     "scheme": "bruuk",
     "backgroundColor": "#0b0a12",
@@ -43,6 +80,9 @@
         "messagingSenderId": "952026606452",
         "appId": "1:952026606452:web:31d549c525d4afb2479a21"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
