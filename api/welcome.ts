@@ -1,6 +1,6 @@
-import { createHash } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { adminDb, firebaseConfigured } from './_firebase.js';
+import { clientIp, hash, takeSlot } from './_security.js';
 
 /* ============================================================
    Correo de bienvenida al registrarse.
@@ -16,27 +16,8 @@ const IP_WINDOW_MS = 60 * 60 * 1000;
 const isEmail = (value: unknown): value is string =>
   typeof value === 'string' && value.length <= 254 && /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(value);
 
-const hash = (value: string) => createHash('sha256').update(value).digest('hex');
-
-const clientIp = (req: VercelRequest) => {
-  const forwarded = req.headers['x-forwarded-for'];
-  const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim();
-  return (req.headers['x-real-ip'] as string | undefined) || first || 'unknown';
-};
-
 // true si la IP todavía tiene envíos disponibles en esta hora (y cuenta este)
-async function takeIpSlot(ip: string): Promise<boolean> {
-  const ref = adminDb().collection('welcomeIps').doc(hash(ip));
-  return adminDb().runTransaction(async (tx) => {
-    const now = Date.now();
-    const data = (await tx.get(ref)).data();
-    const inWindow = data && now - data.windowStart < IP_WINDOW_MS;
-    const count = inWindow ? data.count : 0;
-    if (count >= MAX_PER_IP) return false;
-    tx.set(ref, { count: count + 1, windowStart: inWindow ? data.windowStart : now });
-    return true;
-  });
-}
+const takeIpSlot = (ip: string) => takeSlot('welcomeIps', ip, MAX_PER_IP, IP_WINDOW_MS);
 
 // true si es la primera bienvenida para este correo (create falla si ya existe)
 async function claimEmail(email: string): Promise<boolean> {

@@ -127,7 +127,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           <span className="spot-card__type" style={{ background: spot.colorAccent }}>{spot.type}</span>
           {/* Colonia si tiene coordenadas; si no, la ciudad */}
           {zone
-            ? <span className="spot-card__zone">{zone.name}</span>
+            ? <span className="spot-card__zone" title={zone.name}>{zone.short}</span>
             : <span className="spot-card__label" style={{ textTransform: 'capitalize' }}>{spot.city || 'Guadalajara'}</span>}
         </div>
         <h3 className="spot-card__name">{spot.name}</h3>

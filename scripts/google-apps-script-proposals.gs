@@ -28,19 +28,27 @@ function doPost(event) {
 
     sheet.appendRow([
       new Date(),
-      payload.submissionType || '',
-      payload.email || '',
-      payload.city || '',
-      payload.proposalType || '',
-      payload.details || '',
-      payload.timestamp || '',
-    ]);
+      payload.submissionType,
+      payload.email,
+      payload.city,
+      payload.proposalType,
+      payload.details,
+      payload.timestamp,
+    ].map(function (value, index) { return index === 0 ? value : sheetSafe(value); }));
 
     return jsonResponse({ success: true });
   } catch (error) {
     console.error(error);
     return jsonResponse({ success: false, error: 'No se pudo guardar' });
   }
+}
+
+// Sheets ejecuta como fórmula lo que empieza con = + - @ (o tab / retorno).
+// Con un apóstrofo inicial queda como texto. Así un "=IMPORTXML(...)" en la
+// ciudad no puede leer ni mandar fuera las demás filas.
+function sheetSafe(value) {
+  const text = String(value == null ? '' : value);
+  return /^[=+\-@\t\r]/.test(text) ? "'" + text : text;
 }
 
 function jsonResponse(data) {

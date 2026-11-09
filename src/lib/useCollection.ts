@@ -7,14 +7,16 @@ import { useEffect, useState } from 'react';
    el JSON. Una sola petición por carga de página.
    ============================================================ */
 
-export function createCollectionHook<T>(url: string, bundled: T[]) {
+// `pick` saca la lista de una respuesta que no es un arreglo (p. ej. /api/app).
+export function createCollectionHook<T>(url: string, bundled: T[], pick: (data: unknown) => unknown = (data) => data) {
   let cached: T[] | null = null;
   let request: Promise<T[] | null> | null = null;
 
   const load = () => {
     request ??= fetch(url)
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: unknown) => {
+      .then((raw: unknown) => {
+        const data = raw == null ? null : pick(raw);
         if (!Array.isArray(data) || data.length === 0) return null;
         cached = data as T[];
         return cached;

@@ -1,118 +1,151 @@
 import type { ReactNode } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ActivityIndicator, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
-import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
+import type { LucideIcon } from 'lucide-react-native';
 import { colors, fonts, space } from '../theme';
-import { imageUri, type PlanPlace } from '../lib/catalog';
 
 export function Logo({ size = 30 }: { size?: number }) {
   return (
-    <Text style={[styles.logo, { fontSize: size }]}>
+    <Text style={[styles.logo, { fontSize: size }]} accessibilityRole="header" accessibilityLabel="Bruuk">
       bruuk<Text style={{ color: colors.violet }}>.</Text>
     </Text>
   );
 }
 
-export function Screen({ children, scroll = true }: { children: ReactNode; scroll?: boolean }) {
+type ScreenProps = { children: ReactNode; scroll?: boolean; onRefresh?: () => void; refreshing?: boolean; contentStyle?: StyleProp<ViewStyle> };
+
+export function Screen({ children, scroll = true, onRefresh, refreshing = false, contentStyle }: ScreenProps) {
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
-      {scroll ? <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView> : children}
+      {scroll ? (
+        <ScrollView
+          contentContainerStyle={[styles.scroll, contentStyle]}
+          keyboardShouldPersistTaps="handled"
+          refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.violet} /> : undefined}
+        >
+          {children}
+        </ScrollView>
+      ) : (
+        children
+      )}
     </SafeAreaView>
   );
 }
 
-export function Kicker({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
-  return <Text style={[styles.kicker, dark && { color: colors.violetDeep }]}>{children}</Text>;
+export function Kicker({ children, dark = false, style }: { children: ReactNode; dark?: boolean; style?: StyleProp<TextStyle> }) {
+  return <Text style={[styles.kicker, dark && { color: colors.violetDeep }, style]}>{children}</Text>;
 }
 
-export function Title({ children, accent, dark = false }: { children: ReactNode; accent?: string; dark?: boolean }) {
+export function Title({ children, accent, dark = false, size = 38 }: { children: ReactNode; accent?: string; dark?: boolean; size?: number }) {
   return (
-    <Text style={[styles.title, dark && { color: colors.ink }]}>
+    <Text style={[styles.title, { fontSize: size, lineHeight: size * 0.98 }, dark && { color: colors.ink }]} accessibilityRole="header">
       {children}
-      {accent ? <Text style={{ color: colors.violet }}> {accent}</Text> : null}
+      {accent ? <Text style={{ color: colors.violet }}>{'\n'}{accent}</Text> : null}
     </Text>
   );
 }
 
-export function Body({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
-  return <Text style={[styles.body, dark && { color: colors.mutedDark }]}>{children}</Text>;
+export function Body({ children, dark = false, style }: { children: ReactNode; dark?: boolean; style?: StyleProp<TextStyle> }) {
+  return <Text style={[styles.body, dark && { color: colors.mutedDark }, style]}>{children}</Text>;
 }
 
-export function Chip({ label, active, onPress, disabled }: { label: string; active?: boolean; onPress: () => void; disabled?: boolean }) {
+type ChipProps = { label: string; active?: boolean; onPress: () => void; disabled?: boolean; icon?: LucideIcon; dark?: boolean };
+
+export function Chip({ label, active, onPress, disabled, icon: Icon, dark = false }: ChipProps) {
+  const color = active ? colors.ink : dark ? colors.ink : colors.paper;
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected: active, disabled }}
-      onPress={onPress}
+      onPress={() => {
+        tap();
+        onPress();
+      }}
       disabled={disabled}
-      style={[styles.chip, active && styles.chipActive, disabled && { opacity: 0.4 }]}
+      style={({ pressed }) => [styles.chip, dark && { borderColor: colors.ink }, active && styles.chipActive, (disabled || pressed) && { opacity: disabled ? 0.35 : 0.72 }]}
     >
-      <Text style={[styles.chipText, active && { color: colors.ink }]}>{label}</Text>
+      {Icon && <Icon size={14} color={color} strokeWidth={2.4} />}
+      <Text style={[styles.chipText, { color }]}>{label}</Text>
     </Pressable>
   );
 }
 
-type ButtonProps = { label: string; onPress: () => void; icon?: keyof typeof Feather.glyphMap; variant?: 'primary' | 'secondary'; disabled?: boolean; style?: StyleProp<ViewStyle> };
+type ButtonProps = {
+  label: string;
+  onPress: () => void;
+  icon?: LucideIcon;
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost';
+  disabled?: boolean;
+  loading?: boolean;
+  style?: StyleProp<ViewStyle>;
+};
 
-export function Button({ label, onPress, icon, variant = 'primary', disabled, style }: ButtonProps) {
-  const primary = variant === 'primary';
-  return (
+export function Button({ label, onPress, icon: Icon, variant = 'primary', disabled, loading, style }: ButtonProps) {
+  const palette = {
+    primary: { bg: colors.ink, border: colors.ink, text: colors.white, shadow: true },
+    accent: { bg: colors.violet, border: colors.violet, text: colors.ink, shadow: false },
+    secondary: { bg: 'transparent', border: colors.ink, text: colors.ink, shadow: false },
+    ghost: { bg: 'transparent', border: 'rgba(255,255,255,0.5)', text: colors.paper, shadow: false },
+  }[variant];
+  const button = (
     <Pressable
       accessibilityRole="button"
-      onPress={onPress}
-      disabled={disabled}
-      style={({ pressed }) => [styles.button, primary ? styles.buttonPrimary : styles.buttonSecondary, (pressed || disabled) && { opacity: 0.7 }, style]}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      onPress={() => {
+        tap();
+        onPress();
+      }}
+      disabled={disabled || loading}
+      style={({ pressed }) => [
+        styles.button,
+        { backgroundColor: palette.bg, borderColor: palette.border },
+        (pressed || disabled) && { opacity: disabled ? 0.55 : 0.85 },
+        !palette.shadow && style,
+      ]}
     >
-      <Text style={[styles.buttonText, !primary && { color: colors.ink }]}>{label}</Text>
-      {icon && <Feather name={icon} size={17} color={primary ? colors.white : colors.ink} />}
+      {loading ? <ActivityIndicator color={palette.text} /> : <Text style={[styles.buttonText, { color: palette.text }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{label}</Text>}
+      {!loading && Icon && <Icon size={17} color={palette.text} strokeWidth={2.6} />}
     </Pressable>
   );
+  return palette.shadow ? <ShadowBox style={style}>{button}</ShadowBox> : button;
+}
+
+// Sombra violeta desplazada del diseño Bruuk. Android no pinta sombras de color, así que
+// se dibuja como un bloque detrás del contenido en las dos plataformas.
+export function ShadowBox({ children, offset = 4, color = colors.violet, style }: { children: ReactNode; offset?: number; color?: string; style?: StyleProp<ViewStyle> }) {
+  return (
+    <View style={[{ marginRight: offset, marginBottom: offset }, style]}>
+      <View pointerEvents="none" style={{ position: 'absolute', top: offset, left: offset, right: -offset, bottom: -offset, backgroundColor: color }} />
+      {children}
+    </View>
+  );
+}
+
+export function ErrorNote({ children }: { children: ReactNode }) {
+  return <Text style={styles.error} accessibilityRole="alert">{children}</Text>;
 }
 
 export const openUrl = (url: string) => {
-  void Linking.openURL(url);
+  void Linking.openURL(url).catch(() => undefined);
 };
 
-export function PlaceCard({ place }: { place: PlanPlace }) {
-  const uri = imageUri(place);
-  return (
-    <Pressable accessibilityRole="button" onPress={() => router.push(`/lugar/${place.id}`)} style={({ pressed }) => [styles.card, pressed && { opacity: 0.85 }]}>
-      {uri ? <Image source={{ uri }} style={styles.cardImage} contentFit="cover" transition={200} /> : <View style={[styles.cardImage, styles.cardImageEmpty]}><Feather name="map-pin" size={28} color={colors.violet} /></View>}
-      <View style={styles.cardBody}>
-        <Text style={styles.cardType}>{place.type.toUpperCase()}{place.price ? ` · ${place.price}` : ''}</Text>
-        <Text style={styles.cardName}>{place.name}</Text>
-        {place.tip && (
-          <Text style={styles.cardTip} numberOfLines={2}>
-            <Text style={styles.cardTipLabel}>VE POR  </Text>{place.tip}
-          </Text>
-        )}
-      </View>
-    </Pressable>
-  );
-}
+// Vibración corta, como navigator.vibrate(8) en la web.
+export const tap = () => {
+  void Haptics.selectionAsync().catch(() => undefined);
+};
 
 const styles = StyleSheet.create({
   logo: { color: colors.paper, fontFamily: fonts.display, letterSpacing: -1.5 },
   screen: { flex: 1, backgroundColor: colors.ink },
   scroll: { padding: space.gutter, paddingBottom: 40, gap: 14 },
   kicker: { color: colors.violetSoft, fontFamily: fonts.heading, fontSize: 11, letterSpacing: 1.8 },
-  title: { color: colors.paper, fontFamily: fonts.display, fontSize: 38, lineHeight: 38, letterSpacing: -1.6, textTransform: 'uppercase' },
+  title: { color: colors.paper, fontFamily: fonts.display, letterSpacing: -1.6, textTransform: 'uppercase' },
   body: { color: colors.muted, fontFamily: fonts.body, fontSize: 15, lineHeight: 22 },
-  chip: { minHeight: 40, justifyContent: 'center', paddingHorizontal: 14, borderWidth: 1.5, borderColor: colors.paper },
+  chip: { minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, borderWidth: 1.5, borderColor: colors.paper },
   chipActive: { backgroundColor: colors.violet, borderColor: colors.violet },
-  chipText: { color: colors.paper, fontFamily: fonts.heading, fontSize: 12, letterSpacing: 1 },
+  chipText: { fontFamily: fonts.heading, fontSize: 12, letterSpacing: 1 },
   button: { minHeight: 54, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingHorizontal: 20, borderWidth: 1.5 },
-  buttonPrimary: { backgroundColor: colors.ink, borderColor: colors.ink, shadowColor: colors.violet, shadowOffset: { width: 4, height: 4 }, shadowOpacity: 1, shadowRadius: 0, elevation: 0 },
-  buttonSecondary: { backgroundColor: 'transparent', borderColor: colors.ink },
-  buttonText: { color: colors.white, fontFamily: fonts.display, fontSize: 13, letterSpacing: 1.3 },
-  card: { backgroundColor: colors.paper, borderWidth: 1.5, borderColor: colors.paper },
-  cardImage: { width: '100%', aspectRatio: 16 / 10, backgroundColor: colors.lilac },
-  cardImageEmpty: { alignItems: 'center', justifyContent: 'center' },
-  cardBody: { padding: 14, gap: 4 },
-  cardType: { color: colors.violetDeep, fontFamily: fonts.heading, fontSize: 10, letterSpacing: 1.5 },
-  cardName: { color: colors.ink, fontFamily: fonts.display, fontSize: 21, letterSpacing: -0.4 },
-  cardTip: { color: colors.mutedDark, fontFamily: fonts.body, fontSize: 13, lineHeight: 19 },
-  cardTipLabel: { color: colors.violetDeep, fontFamily: fonts.heading, fontSize: 10, letterSpacing: 1.5 },
+  buttonText: { fontFamily: fonts.display, fontSize: 13, letterSpacing: 1.3 },
+  error: { padding: 12, color: colors.white, backgroundColor: colors.error, fontFamily: fonts.body, fontSize: 14, lineHeight: 20 },
 });

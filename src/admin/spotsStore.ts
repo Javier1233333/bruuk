@@ -1,6 +1,4 @@
 import {
-  arrayRemove,
-  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -32,7 +30,7 @@ interface PlaceDocBase {
   imagePath?: string | null; // ruta en Storage si la foto se subió desde el panel
   mapsLink: string;
   coordinates?: { lat: number; lng: number } | null;
-  zone?: string | null; // colonia asignada a mano; si falta, se calcula con las coordenadas
+  zone?: string | null; // id de una de las 7 zonas (src/lib/zones.ts), asignada a mano; null = sin zona
   active: boolean;
   order?: number; // posición original del JSON; los nuevos van al final
 }
@@ -107,19 +105,27 @@ export const setSpotZone = spotsStore.setZone;
 export const deleteSpot = spotsStore.remove;
 export const uploadSpotImage = spotsStore.uploadImage;
 
-// Colonias agregadas a mano en el admin (además de las de src/lib/zones.ts)
-const zonesDoc = doc(db, 'meta', 'zones');
+// Selección curada de cada zona (meta/zoneGuides): texto corto y top ordenado de lugares.
+// El público la recibe por /api/app; las reglas sólo dejan leer meta/* al admin.
+const zoneGuidesDoc = doc(db, 'meta', 'zoneGuides');
 
-export function watchCustomZones(onChange: (names: string[]) => void, onError: (err: Error) => void): () => void {
-  return onSnapshot(zonesDoc, (snap) => onChange((snap.data()?.names as string[] | undefined) ?? []), onError);
+export interface ZoneGuide {
+  intro: string;
+  picks: string[];
 }
 
-export async function addCustomZone(name: string): Promise<void> {
-  await setDoc(zonesDoc, { names: arrayUnion(name), updatedAt: serverTimestamp() }, { merge: true });
+export const MAX_ZONE_PICKS = 8;
+
+export function watchZoneGuides(onChange: (guides: Record<string, ZoneGuide>) => void, onError: (err: Error) => void): () => void {
+  return onSnapshot(zoneGuidesDoc, (snap) => onChange((snap.data()?.zones as Record<string, ZoneGuide> | undefined) ?? {}), onError);
 }
 
-export async function removeCustomZone(name: string): Promise<void> {
-  await setDoc(zonesDoc, { names: arrayRemove(name), updatedAt: serverTimestamp() }, { merge: true });
+export async function saveZoneGuide(zoneId: string, guide: ZoneGuide): Promise<void> {
+  await setDoc(
+    zoneGuidesDoc,
+    { zones: { [zoneId]: { intro: guide.intro.trim(), picks: guide.picks.slice(0, MAX_ZONE_PICKS) } }, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
 }
 
 // Hotspots de la semana: los tres spots que van al inicio del feed (meta/hotspots)

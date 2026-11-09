@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { adminAuth, firebaseConfigured, verifyAuthHeader } from './_firebase.js';
+import { clientIp, takeSlot } from './_security.js';
 
 /* ============================================================
    Correos de cuenta (verificar correo, cambiar contraseña).
@@ -10,6 +11,12 @@ import { adminAuth, firebaseConfigured, verifyAuthHeader } from './_firebase.js'
    ============================================================ */
 
 const SITE_URL = 'https://bruuk.space';
+
+// Límites por hora: sin ellos cualquiera podía mandar cientos de correos de
+// "cambia tu contraseña" a otra persona y gastar la cuota de Resend.
+const HOUR_MS = 60 * 60 * 1000;
+const MAX_PER_IP = 10;
+const MAX_PER_ACCOUNT = 3;
 
 type EmailType = 'verify' | 'reset';
 
@@ -109,6 +116,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const raw = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
     if (!isEmail(raw)) return res.status(400).json({ error: 'Correo inválido.' });
     email = raw;
+  }
+
+  try {
+    if (!(await takeSlot('authEmailIps', clientIp(req), MAX_PER_IP, HOUR_MS))) {
+      return res.status(429).json({ error: 'Demasiadas solicitudes. Espera un rato.' });
+    }
+    // Tope por correo: respondemos éxito sin mandar nada. Así no revela nada y el
+    // cliente no cae al correo de respaldo de Firebase.
+    if (!(await takeSlot('authEmailAccounts', `${type}:${email}`, MAX_PER_ACCOUNT, HOUR_MS))) {
+      return res.status(200).json({ success: true });
+    }
+  } catch (error) {
+    console.error('auth-email rate limit error:', error);
+    return res.status(500).json({ error: 'No pudimos enviar el correo.' });
   }
 
   const actionCodeSettings = { url: `${SITE_URL}/login` };

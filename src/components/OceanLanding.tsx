@@ -4,6 +4,7 @@ import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ChevronDown,
   Flame,
+  MapPin,
   Sunset,
 } from 'lucide-react';
 import { BruukLogo } from './BruukLogo';
@@ -11,11 +12,14 @@ import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
 import { SpotCard } from './SpotCard';
 import { HotspotsCard } from './HotspotsCard';
+import { ZoneGuideCard } from './ZoneGuideCard';
 import { FeedLoginWall } from './FeedLoginWall';
 import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
 import { useSpots } from '../lib/useSpots';
 import { SUNSET_IDS, useSunsetSpots } from '../lib/sunsets';
 import { IS_APP_MODE } from '../lib/appMode';
+import { spotZone, type ZoneId } from '../lib/zones';
+import { useZones, zoneFromParam } from '../lib/useZones';
 import './OceanLanding.css';
 
 type Spot = {
@@ -32,6 +36,7 @@ type Spot = {
   highlight?: string;
   hotspot?: number; // 1-3: hotspot de la semana, elegido en /admin/spots
   hotspotDate?: string;
+  zone?: string; // id de la zona, asignada a mano en /admin/spots
 };
 
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -46,7 +51,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 // Atardeceres es una sección aparte: sus lugares no entran a Todos ni a las demás categorías.
 type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares' | 'atardeceres';
 
-type Slide = Spot | { id: string; wall: true } | { id: string; hotspots: true };
+type Slide = Spot | { id: string; wall: true } | { id: string; hotspots: true } | { id: string; guide: true };
 
 export function OceanLanding() {
   const { city: urlCity } = useParams();
@@ -55,8 +60,20 @@ export function OceanLanding() {
   const allSpots = useSpots();
   const sunsetSpots = useSunsetSpots();
   // Enlace compartido (?spot=): ese spot va primero; si es un atardecer, abre en su sección
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const sharedSpotId = searchParams.get('spot');
+  // Explorar por zona (?zona=<id>): abre con la guía de esa zona y sólo sus lugares.
+  const activeZoneId = zoneFromParam(searchParams.get('zona'));
+  const zones = useZones();
+  const activeZone = zones.find((zone) => zone.id === activeZoneId) ?? null;
+  const setZone = (zoneId: ZoneId | null) =>
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      if (zoneId) next.set('zona', zoneId);
+      else next.delete('zona');
+      next.delete('spot');
+      return next;
+    }, { replace: true });
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>(() => (sharedSpotId && SUNSET_IDS.has(sharedSpotId) ? 'atardeceres' : 'todos'));
   // Hotspots de la semana: abren el feed en su orden; el resto va al azar
   const hotspots = useMemo(
@@ -89,7 +106,7 @@ export function OceanLanding() {
   };
 
   const sharedSunset = sunsetSpots.find((spot) => spot.id === sharedSpotId);
-  const filteredSpots = activeCategory === 'atardeceres'
+  const categorySpots = activeCategory === 'atardeceres'
     ? (sharedSunset ? [sharedSunset, ...sunsetSpots.filter((spot) => spot !== sharedSunset)] : sunsetSpots) as Spot[]
     : spots.filter(spot => {
     if (activeCategory === 'todos') return true;
@@ -99,6 +116,17 @@ export function OceanLanding() {
     if (activeCategory === 'restaurantes') return cat === 'restaurantes';
     return true;
   });
+  // Con zona: sólo sus lugares, y primero el top curado de la zona en su orden.
+  const zonePicks = activeZone
+    ? activeZone.picks.map((id) => (allSpots as Spot[]).find((spot) => spot.id === id)).filter((spot): spot is Spot => Boolean(spot))
+    : [];
+  const filteredSpots = activeZone && activeCategory !== 'atardeceres'
+    ? (() => {
+      const inZone = categorySpots.filter((spot) => spotZone(spot)?.id === activeZone.id);
+      const picked = zonePicks.filter((spot) => inZone.includes(spot));
+      return [...picked, ...inZone.filter((spot) => !picked.includes(spot))];
+    })()
+    : categorySpots;
 
   // Sin sesión en la web: 5 spots de prueba y el feed termina en el aviso de login.
   const feedLocked = isFeedLocked();
@@ -107,18 +135,20 @@ export function OceanLanding() {
     : filteredSpots;
   // En "Todos", la sección de hotspots va justo antes del primero (un spot compartido se queda arriba)
   const firstHotspot = spotSlides.findIndex((slide, i) => (!sharedSpotId || i > 0) && 'hotspot' in slide && slide.hotspot);
-  const feedSlides: Slide[] = activeCategory === 'todos' && firstHotspot !== -1
-    ? [...spotSlides.slice(0, firstHotspot), { id: 'hotspots', hotspots: true }, ...spotSlides.slice(firstHotspot)]
-    : spotSlides;
+  const feedSlides: Slide[] = activeZone && activeCategory !== 'atardeceres'
+    ? [{ id: `zone-${activeZone.id}`, guide: true }, ...spotSlides]
+    : activeCategory === 'todos' && firstHotspot !== -1
+      ? [...spotSlides.slice(0, firstHotspot), { id: 'hotspots', hotspots: true }, ...spotSlides.slice(firstHotspot)]
+      : spotSlides;
 
   const goToSpot = (id: string) => document.getElementById(`spot-slide-${id}`)?.scrollIntoView({ behavior: 'smooth' });
 
-  // Reset scroll to top when category changes
+  // Reset scroll to top when category or zone changes
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = 0;
     }
-  }, [activeCategory]);
+  }, [activeCategory, activeZoneId]);
 
   if (urlCity && urlCity !== 'guadalajara') return <Navigate to="/guadalajara/spots" replace />;
 
@@ -161,6 +191,15 @@ export function OceanLanding() {
             <Sunset size={13} strokeWidth={2.6} aria-hidden="true" /> Atardeceres
           </button>
         </div>
+        {activeCategory !== 'atardeceres' && (
+          <label className={`zone-filter-floating${activeZone ? ' is-active' : ''}`} style={activeZone ? { borderColor: activeZone.color } : undefined}>
+            <MapPin size={13} strokeWidth={2.6} aria-hidden="true" />
+            <select value={activeZoneId ?? ''} onChange={(event) => setZone(zoneFromParam(event.target.value))} aria-label="Explorar por zona">
+              <option value="">Todas las zonas</option>
+              {zones.map((zone) => <option key={zone.id} value={zone.id}>{zone.name}</option>)}
+            </select>
+          </label>
+        )}
       </div>
 
       {/* Vertical Snap Scroll Container */}
@@ -206,6 +245,10 @@ export function OceanLanding() {
             'wall' in slide ? (
               <section className="tiktok-slide login-wall-slide" key={`${slide.id}-${activeCategory}`}>
                 <FeedLoginWall />
+              </section>
+            ) : 'guide' in slide ? (
+              <section className="tiktok-slide hotspots-slide" key={`${slide.id}-${activeCategory}`}>
+                <ZoneGuideCard zone={activeZone!} picks={zonePicks.filter((spot) => filteredSpots.includes(spot))} total={filteredSpots.length} onPick={goToSpot} />
               </section>
             ) : 'hotspots' in slide ? (
               <section className="tiktok-slide hotspots-slide" key={`${slide.id}-${activeCategory}`}>

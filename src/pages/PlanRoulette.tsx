@@ -3,8 +3,6 @@ import { Dices, Lock, LockOpen, MapPin, Moon, Shuffle, Sparkles, Sun, Sunrise, t
 import {
   INTEREST_OPTIONS,
   MOMENT_INTERESTS,
-  PLAN_PLACES,
-  PLAN_PLACES_BY_ID,
   ROULETTE_MOMENTS,
   ROULETTE_ZONES,
   STOP_OPTIONS,
@@ -14,6 +12,7 @@ import {
   type RouletteZone,
 } from '../data/planBuilder';
 import { INTEREST_ICONS, placeIcon } from '../lib/placeIcons';
+import { usePlanCatalog } from '../lib/planCatalog';
 
 export type RouletteSlot = { placeId: string; locked: boolean };
 export type RouletteState = { moment: RouletteMoment; zone: RouletteZone; interests: PlanInterest[]; count: number; slots: RouletteSlot[] };
@@ -40,18 +39,18 @@ const allowedInterests = ({ moment, interests }: Pick<RouletteState, 'moment' | 
   return chosen.length > 0 ? chosen : forMoment;
 };
 
-const roulettePool = (state: Pick<RouletteState, 'moment' | 'interests' | 'zone'>) => {
+const roulettePool = (places: PlanPlace[], state: Pick<RouletteState, 'moment' | 'interests' | 'zone'>) => {
   const interests = allowedInterests(state);
-  return PLAN_PLACES.filter((place) => interests.includes(place.interest) && (state.zone === 'toda' || place.zone === state.zone));
+  return places.filter((place) => interests.includes(place.interest) && (state.zone === 'toda' || place.zone === state.zone));
 };
 
 // Llena las casillas sin fijar repartiendo categorías, para que no salgan tres cafés seguidos.
 // Con "Toda la ciudad", después de la primera parada busca lugares de la misma zona: así la ruta se puede caminar.
-const pickSlots = (state: RouletteState): RouletteSlot[] => {
-  const pool = roulettePool(state);
+const pickSlots = (places: PlanPlace[], getPlace: (id: string) => PlanPlace | undefined, state: RouletteState): RouletteSlot[] => {
+  const pool = roulettePool(places, state);
   const kept = state.slots.slice(0, state.count);
   const used = new Set(kept.filter((slot) => slot.locked).map((slot) => slot.placeId));
-  let anchorZone = kept.map((slot) => (slot.locked ? PLAN_PLACES_BY_ID.get(slot.placeId)?.zone : undefined)).find(Boolean);
+  let anchorZone = kept.map((slot) => (slot.locked ? getPlace(slot.placeId)?.zone : undefined)).find(Boolean);
   const interests = shuffle([...new Set(pool.map((place) => place.interest))]);
   let turn = 0;
   return Array.from({ length: state.count }, (_, index) => {
@@ -83,7 +82,8 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
   // Mientras gira, cada casilla muestra lugares al azar hasta detenerse en el resultado.
   const [rolling, setRolling] = useState<(PlanPlace | null)[] | null>(null);
   const timer = useRef<number | undefined>(undefined);
-  const pool = roulettePool(state);
+  const { places, getPlace } = usePlanCatalog();
+  const pool = roulettePool(places, state);
   const isSpinning = rolling !== null;
   const hasSpun = state.slots.length > 0;
 
@@ -92,7 +92,7 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
   const spin = (only?: number) => {
     if (isSpinning) return;
     const base = only === undefined ? state : { ...state, slots: state.slots.map((slot, index) => (index === only ? slot : { ...slot, locked: true })) };
-    const picked = pickSlots(base).map((slot, index) => ({ ...slot, locked: state.slots[index]?.locked ?? false }));
+    const picked = pickSlots(places, getPlace, base).map((slot, index) => ({ ...slot, locked: state.slots[index]?.locked ?? false }));
     const next = { ...state, slots: picked };
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       onChange(next);
@@ -136,7 +136,7 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
       const loose = state.slots.filter((slot) => !slot.locked).slice(0, count - locked.length);
       next.slots = state.slots.filter((slot) => locked.includes(slot) || loose.includes(slot));
     } else if (hasSpun) {
-      next.slots = pickSlots({ ...next, slots: state.slots.map((slot) => ({ ...slot, locked: true })) }).map((slot, index) => ({ ...slot, locked: state.slots[index]?.locked ?? false }));
+      next.slots = pickSlots(places, getPlace, { ...next, slots: state.slots.map((slot) => ({ ...slot, locked: true })) }).map((slot, index) => ({ ...slot, locked: state.slots[index]?.locked ?? false }));
     }
     onChange(next);
   };
@@ -167,7 +167,7 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
         {ROULETTE_ZONES.map((option) => {
           const selected = state.zone === option.value;
           // Una zona sin lugares suficientes a esa hora no se puede elegir
-          const tooFew = roulettePool({ ...state, zone: option.value }).length < state.count;
+          const tooFew = roulettePool(places, { ...state, zone: option.value }).length < state.count;
           return (
             <button key={option.value} type="button" role="radio" aria-checked={selected} title={tooFew ? `${option.hint}: pocos lugares a esa hora` : option.hint} className={selected ? 'is-active' : ''} onClick={() => onChange({ ...state, zone: option.value, slots: state.slots.filter((slot) => slot.locked) })} disabled={isSpinning || (tooFew && !selected)}>
               {option.label}
@@ -200,7 +200,7 @@ export function PlanRoulette({ state, onChange, onGenerate, disabled }: Props) {
       <ol className="plan-roulette-slots" aria-live="polite" aria-busy={isSpinning}>
         {Array.from({ length: state.count }, (_, index) => {
           const slot = state.slots[index];
-          const place = rolling?.[index] ?? (slot ? PLAN_PLACES_BY_ID.get(slot.placeId) : undefined);
+          const place = rolling?.[index] ?? (slot ? getPlace(slot.placeId) : undefined);
           const isRolling = Boolean(rolling?.[index]);
           const Icon = place ? placeIcon(place) : Dices;
           return (

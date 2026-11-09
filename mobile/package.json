@@ -9,18 +9,30 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~58.0.14",
     "expo-constants": "~58.0.12",
+    "expo-document-picker": "~58.0.4",
+    "expo-file-system": "~58.0.9",
     "expo-font": "~58.0.8",
+    "expo-haptics": "~58.0.7",
     "expo-image": "~58.0.15",
+    "expo-image-manipulator": "~58.0.14",
+    "expo-image-picker": "~58.0.10",
     "expo-linking": "~58.0.13",
+    "expo-location": "~58.0.17",
     "expo-router": "~58.0.23",
     "expo-screen-orientation": "~58.0.3",
+    "expo-sharing": "~58.0.19",
+    "expo-splash-screen": "~58.0.10",
     "expo-status-bar": "~58.0.3",
+    "expo-updates": "~58.0.17",
     "firebase": "^13.0.0",
+    "lucide-react-native": "^1.67.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.0",
     "react-native-safe-area-context": "~5.10.1",
     "react-native-screens": "~4.30.0",
+    "react-native-svg": "15.16.0",
+    "react-native-view-shot": "6.1.1",
     "react-native-web": "~0.21.4"
   },
   "devDependencies": {
@@ -32,7 +44,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "private": true
 }

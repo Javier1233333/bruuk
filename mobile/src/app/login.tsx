@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
+import { ArrowRight, Eye, EyeOff } from 'lucide-react-native';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -132,7 +132,7 @@ export default function LoginScreen() {
                   style={styles.eye}
                   hitSlop={8}
                 >
-                  <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color={colors.mutedDark} />
+                  {showPassword ? <EyeOff size={20} color={colors.mutedDark} /> : <Eye size={20} color={colors.mutedDark} />}
                 </Pressable>
               </View>
               {isLogin && (
@@ -147,7 +147,7 @@ export default function LoginScreen() {
 
             <Button
               label={loading ? 'PROCESANDO…' : isLogin ? 'ENTRAR' : 'CREAR CUENTA'}
-              icon="arrow-right"
+              icon={ArrowRight}
               onPress={() => void submit()}
               disabled={loading || !email.trim() || password.length < 6}
             />

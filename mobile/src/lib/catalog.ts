@@ -1,21 +1,15 @@
-// El catálogo vive en la web (src/data) y se comparte tal cual: un solo lugar para editar spots.
+// Tipos, opciones del plan y el catálogo empaquetado (sólo respaldo sin conexión).
+// Los lugares que se ven en la app vienen de /api/app: ver lib/content.tsx.
 import Constants from 'expo-constants';
-import {
-  PLAN_PLACES,
-  PLAN_PLACES_BY_ID,
-  type PlanInterest,
-  type PlanPlace,
-} from '../../../src/data/planBuilder';
+import type { PlanInterest, PlanPlace } from '../../../src/data/planBuilder';
 
 export * from '../../../src/data/planBuilder';
 
 export const SITE_URL: string = Constants.expoConfig?.extra?.siteUrl ?? 'https://bruuk.space';
 
-export const imageUri = (place: PlanPlace) => (place.imageUrl ? `${SITE_URL}${place.imageUrl}` : undefined);
-
-export const placesFor = (interests: PlanInterest[]) => PLAN_PLACES.filter((place) => interests.includes(place.interest));
-
-export const getPlace = (id: string) => PLAN_PLACES_BY_ID.get(id);
+// Las fotos del repo son rutas del sitio; las que se suben en el admin ya son URLs completas.
+export const imageUri = (place: Pick<PlanPlace, 'imageUrl'>) =>
+  !place.imageUrl ? undefined : /^https?:\/\//.test(place.imageUrl) ? place.imageUrl : `${SITE_URL}${place.imageUrl}`;
 
 export const INTEREST_LABELS: Record<PlanInterest, string> = {
   cafe: 'Café',
@@ -25,3 +19,8 @@ export const INTEREST_LABELS: Record<PlanInterest, string> = {
   cultura: 'Cultura',
   atardecer: 'Atardecer',
 };
+
+export const shareUrlFor = (place: PlanPlace) =>
+  place.interest === 'vintage' || place.interest === 'cultura'
+    ? `${SITE_URL}/guadalajara/rack`
+    : `${SITE_URL}/guadalajara/spots?spot=${encodeURIComponent(place.id)}`;
