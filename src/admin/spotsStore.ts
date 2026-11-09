@@ -106,7 +106,7 @@ export const deleteSpot = spotsStore.remove;
 export const uploadSpotImage = spotsStore.uploadImage;
 
 // Selección curada de cada zona (meta/zoneGuides): texto corto y top ordenado de lugares.
-// El público la recibe por /api/zones y /api/app; las reglas sólo dejan leer meta/* al admin.
+// El público la recibe por /api/app; las reglas sólo dejan leer meta/* al admin.
 const zoneGuidesDoc = doc(db, 'meta', 'zoneGuides');
 
 export interface ZoneGuide {
