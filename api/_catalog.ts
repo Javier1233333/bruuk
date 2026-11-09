@@ -7,7 +7,7 @@ import {
   type CatalogSpot,
   type PlanPlace,
 } from '../src/data/planBuilder.js';
-import { ZONES, zoneIdFrom, type ZoneId } from '../src/lib/zones.js';
+import { ZONES, readShape, zoneIdFrom, type ZoneId, type ZoneShapes } from '../src/lib/zones.js';
 import { adminDb, firebaseConfigured } from './_firebase.js';
 
 /* ============================================================
@@ -76,7 +76,9 @@ async function loadLiveCatalog(): Promise<LiveCatalog> {
 
   // Con una colección vacía (antes de los scripts de seed) se queda lo empaquetado
   if (spots.length === 0) return bundledCatalog();
+  const shapes = readShapes(guidesDoc.data()?.zones);
   const places = buildPlanPlaces({
+    shapes,
     spots,
     rack: rack.length > 0 ? rack : PLAN_PLACES.filter((place) => place.interest === 'vintage').map(toCatalogRack),
     sunsets: BUNDLED_SUNSETS,
@@ -100,6 +102,18 @@ const toCatalogRack = (place: PlanPlace): CatalogRack => ({
   coordinates: place.coordinates,
   zone: place.zoneName,
 });
+
+// Trazos de zona dibujados en el admin (sólo los válidos).
+function readShapes(raw: unknown): ZoneShapes {
+  const shapes: ZoneShapes = {};
+  if (!raw || typeof raw !== 'object') return shapes;
+  for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+    const id = zoneIdFrom(key);
+    const shape = id && value && typeof value === 'object' ? readShape((value as { shape?: unknown }).shape) : undefined;
+    if (id && shape) shapes[id] = shape;
+  }
+  return shapes;
+}
 
 // Sólo zonas conocidas y picks que sigan existiendo y estén en esa misma zona.
 function readZoneGuides(raw: unknown, places: PlanPlace[]): LiveCatalog['zoneGuides'] {

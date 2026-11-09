@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { getIdToken } from '../lib/firebase';
 import { suggestZone } from '../lib/zones';
+import { useZoneGuides } from './useZoneGuides';
 import { RACK_CATEGORY_NAMES, rackCategory } from './adminCategories';
 import { rackStore, spotsStore } from './spotsStore';
 import type { RackDoc } from './spotsStore';
@@ -37,6 +38,7 @@ function isDuplicate(place: MapsListPlace, existing: Existing[]) {
 }
 
 export function MapsListImport({ kind, existing, types = [], onClose }: { kind: 'spots' | 'rack'; existing: Existing[]; types?: string[]; onClose: () => void }) {
+  const { shapes } = useZoneGuides();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<{ title: string | null; places: MapsListPlace[] } | null>(null);
@@ -161,7 +163,7 @@ export function MapsListImport({ kind, existing, types = [], onClose }: { kind: 
 
                   <ul className="sa-import-list">
                     {list.places.map((place, i) => {
-                      const zone = suggestZone(place.lat, place.lng);
+                      const zone = suggestZone(place.lat, place.lng, shapes);
                       return (
                         <li key={i}>
                           <label className={`sa-import-row${duplicates.has(i) ? ' is-duplicate' : ''}`}>

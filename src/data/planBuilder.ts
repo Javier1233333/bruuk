@@ -5,7 +5,7 @@ import sunsetData from './atardeceres.json' with { type: 'json' };
 import rackData from './rack.json' with { type: 'json' };
 import cultureData from '../../lugares-mapa-gdl.json' with { type: 'json' };
 import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
-import { ZONES, spotZone, suggestZone, type PlanZone } from '../lib/zones.js';
+import { ZONES, spotZone, suggestZone, type PlanZone, type ZoneShapes } from '../lib/zones.js';
 
 export type PlanInterest = 'cafe' | 'comida' | 'noche' | 'vintage' | 'cultura' | 'atardecer';
 export type { PlanZone };
@@ -227,7 +227,16 @@ const CULTURE_PLACES: PlanPlace[] = (cultureData.places as CulturePlace[])
   });
 
 // Un solo catálogo para la web (JSON empaquetado), la API (Firestore en vivo) y la app.
-export function buildPlanPlaces({ spots, rack, sunsets }: { spots: CatalogSpot[]; rack: CatalogRack[]; sunsets: CatalogSunsetEntry[] }): PlanPlace[] {
+// Con trazos del admin, la zona de los museos sale del trazo en vez del círculo.
+const cultureWithShapes = (shapes?: ZoneShapes) =>
+  shapes && Object.keys(shapes).length > 0
+    ? CULTURE_PLACES.map((place) => {
+      const zone = suggestZone(place.coordinates?.lat, place.coordinates?.lng, shapes);
+      return { ...place, zone: zone?.id, zoneName: zone?.name };
+    })
+    : CULTURE_PLACES;
+
+export function buildPlanPlaces({ spots, rack, sunsets, shapes }: { spots: CatalogSpot[]; rack: CatalogRack[]; sunsets: CatalogSunsetEntry[]; shapes?: ZoneShapes }): PlanPlace[] {
   const spotsById = new Map(spots.map((spot) => [spot.id, spot]));
   const sunsetIds = new Set(sunsets.map((entry) => (typeof entry === 'string' ? entry : entry.id)));
   const places: PlanPlace[] = [
@@ -266,7 +275,7 @@ export function buildPlanPlaces({ spots, rack, sunsets }: { spots: CatalogSpot[]
         coordinates: place.coordinates,
         ...zoneFields(place),
       })),
-    ...CULTURE_PLACES,
+    ...cultureWithShapes(shapes),
     ...sunsets
       .map((entry) => (typeof entry === 'string' ? spotsById.get(entry) : entry))
       .filter((sunset): sunset is CatalogSunset | CatalogSpot => Boolean(sunset))
