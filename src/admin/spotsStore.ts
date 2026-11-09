@@ -1,6 +1,7 @@
 import {
   collection,
   deleteDoc,
+  deleteField,
   doc,
   getFirestore,
   onSnapshot,
@@ -79,6 +80,10 @@ function placeStore<Doc extends PlaceDocBase, Input>(name: 'spots' | 'rack') {
     setZone: async (id: string, zone: string | null) => {
       await updateDoc(doc(col, id), { zone, updatedAt: serverTimestamp() });
     },
+    // Coordenadas (y, si se pasa, el link de Maps) encontradas en Google.
+    setLocation: async (id: string, coordinates: { lat: number; lng: number }, mapsLink?: string) => {
+      await updateDoc(doc(col, id), { coordinates, ...(mapsLink ? { mapsLink } : {}), updatedAt: serverTimestamp() });
+    },
     remove: async (item: Doc) => {
       await deleteDoc(doc(col, item.id));
       if (item.imagePath) await removeImage(item.imagePath);
@@ -112,6 +117,8 @@ const zoneGuidesDoc = doc(db, 'meta', 'zoneGuides');
 export interface ZoneGuide {
   intro: string;
   picks: string[];
+  // Trazo de la zona dibujado en el Mapa; sin trazo se usa el círculo aproximado.
+  shape?: { lat: number; lng: number }[];
 }
 
 export const MAX_ZONE_PICKS = 8;
@@ -124,6 +131,15 @@ export async function saveZoneGuide(zoneId: string, guide: ZoneGuide): Promise<v
   await setDoc(
     zoneGuidesDoc,
     { zones: { [zoneId]: { intro: guide.intro.trim(), picks: guide.picks.slice(0, MAX_ZONE_PICKS) } }, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
+// merge: el trazo vive junto al texto y el top sin pisarlos. null quita el trazo.
+export async function saveZoneShape(zoneId: string, shape: { lat: number; lng: number }[] | null): Promise<void> {
+  await setDoc(
+    zoneGuidesDoc,
+    { zones: { [zoneId]: { shape: shape ? shape.map(({ lat, lng }) => ({ lat: +lat.toFixed(6), lng: +lng.toFixed(6) })) : deleteField() } }, updatedAt: serverTimestamp() },
     { merge: true },
   );
 }

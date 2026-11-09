@@ -1,5 +1,6 @@
 import { MapPin } from 'lucide-react';
 import { ZONES, suggestZone, zoneIdFrom } from '../lib/zones';
+import { useZoneGuides } from './useZoneGuides';
 
 type Props = {
   id?: string;
@@ -11,10 +12,11 @@ type Props = {
   className?: string;
 };
 
-// Las 7 zonas + "Sin zona". La sugerencia por coordenadas sólo se muestra: asignar es a mano.
+// Las 7 zonas + "Sin zona". La sugerencia (trazo o círculo) sólo se muestra: asignar es a mano.
 export function ZoneSelect({ id, value, coordinates, onChange, disabled, ariaLabel, className = '' }: Props) {
   const current = zoneIdFrom(value) ?? '';
-  const suggested = suggestZone(coordinates?.lat, coordinates?.lng);
+  const { shapes } = useZoneGuides();
+  const suggested = suggestZone(coordinates?.lat, coordinates?.lng, shapes);
   return (
     <select
       id={id}

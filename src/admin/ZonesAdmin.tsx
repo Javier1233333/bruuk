@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp, Check, Sparkles, X } from 'lucide-react';
 import { ZONES, spotZone, suggestZoneFor, type Zone } from '../lib/zones';
 import { CategoryGroup, RowImage } from './adminShared';
 import { groupByCategory } from './adminCategories';
-import { MAX_ZONE_PICKS, saveZoneGuide, watchZoneGuides, type ZoneGuide } from './spotsStore';
+import { MAX_ZONE_PICKS, saveZoneGuide, type ZoneGuide } from './spotsStore';
+import { useZoneGuides } from './useZoneGuides';
 import type { RackDoc, SpotDoc } from './spotsStore';
 import { placeRows, rowCategory, rowKind, setRowZone, type PlaceRow } from './zoneRows';
 import { ZoneSelectRow } from './ZoneSelect';
@@ -18,16 +19,14 @@ export function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: Rac
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
-  const [guides, setGuides] = useState<Record<string, ZoneGuide>>({});
-
-  useEffect(() => watchZoneGuides(setGuides, (err) => setError(`No se pudieron cargar las selecciones: ${err.message}`)), []);
+  const { guides, shapes, error: guidesError } = useZoneGuides();
 
   const rows = useMemo(() => placeRows(spots, rack), [spots, rack]);
   const pending = useMemo(
     () => rows.filter((row) => !spotZone(row.item)).sort((a, b) => a.item.name.localeCompare(b.item.name, 'es')),
     [rows],
   );
-  const withSuggestion = pending.filter((row) => suggestZoneFor(row.item));
+  const withSuggestion = pending.filter((row) => suggestZoneFor(row.item, shapes));
 
   const change = async (row: PlaceRow, zoneId: string | null) => {
     setError(null);
@@ -47,7 +46,7 @@ export function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: Rac
     const failed: string[] = [];
     for (const row of withSuggestion) {
       try {
-        await setRowZone(row, suggestZoneFor(row.item)!.id);
+        await setRowZone(row, suggestZoneFor(row.item, shapes)!.id);
       } catch {
         failed.push(row.item.name);
       }
@@ -74,7 +73,7 @@ export function ZonesView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: Rac
             </button>
           )}
         </header>
-        {error && <p className="login-error">{error}</p>}
+        {(error ?? guidesError) && <p className="login-error">{error ?? guidesError}</p>}
         {pending.length === 0 ? (
           <p className="sa-empty"><Check size={16} /> Todos los lugares tienen zona.</p>
         ) : (

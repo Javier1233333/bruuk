@@ -1,5 +1,5 @@
 // Las 7 zonas de Bruuk. La zona de cada lugar la decide el admin (curada a mano);
-// la distancia sólo sirve para sugerirla en el admin y para dibujar el mapa.
+// el trazo (o el círculo) sólo sirve para sugerirla en el admin y para dibujar el mapa.
 // Lo que no cae en ninguna (Andares, lejanos, sin coordenadas) queda "sin zona".
 
 export type ZoneId = 'americana' | 'santa-tere' | 'providencia' | 'chapalita' | 'centro' | 'zapopan' | 'tlaquepaque';
@@ -71,16 +71,53 @@ const distanceKm = (lat1: number, lng1: number, lat2: number, lng2: number) => {
 // Margen sobre el radio para sugerir: el círculo es aproximado y la colonia no termina en una línea exacta.
 const SUGGEST_MARGIN_KM = 0.6;
 
-// Sugerencia para el admin: la zona más cercana si el lugar cae dentro de su círculo (con margen).
-export function suggestZone(lat?: number | null, lng?: number | null): Zone | undefined {
+// Trazo de una zona dibujado en el mapa del admin (meta/zoneGuides.zones[id].shape).
+// Si una zona tiene trazo, se usa en vez de su círculo para sugerir y para dibujarla.
+export type LatLng = { lat: number; lng: number };
+export type ZoneShapes = Partial<Record<ZoneId, LatLng[]>>;
+export const MIN_SHAPE_POINTS = 3;
+export const MAX_SHAPE_POINTS = 80;
+
+// Lo que venga de Firestore: sólo puntos válidos y polígonos de al menos 3.
+export function readShape(raw: unknown): LatLng[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const points = raw
+    .filter((point): point is LatLng => Boolean(point) && typeof point === 'object'
+      && Number.isFinite((point as LatLng).lat) && Number.isFinite((point as LatLng).lng))
+    .slice(0, MAX_SHAPE_POINTS)
+    .map(({ lat, lng }) => ({ lat, lng }));
+  return points.length >= MIN_SHAPE_POINTS ? points : undefined;
+}
+
+// Ray casting: ¿el punto cae dentro del polígono?
+export function insideShape(lat: number, lng: number, shape: LatLng[]): boolean {
+  let inside = false;
+  for (let i = 0, j = shape.length - 1; i < shape.length; j = i, i += 1) {
+    const a = shape[i];
+    const b = shape[j];
+    if ((a.lat > lat) !== (b.lat > lat) && lng < ((b.lng - a.lng) * (lat - a.lat)) / (b.lat - a.lat) + a.lng) inside = !inside;
+  }
+  return inside;
+}
+
+// Sugerencia para el admin: primero las zonas trazadas (si el punto cae dentro);
+// las que no tienen trazo usan su círculo (la más cercana, con margen).
+export function suggestZone(lat?: number | null, lng?: number | null, shapes?: ZoneShapes): Zone | undefined {
   if (lat == null || lng == null) return undefined;
+  for (const zone of ZONES) {
+    const shape = shapes?.[zone.id];
+    if (shape && shape.length >= MIN_SHAPE_POINTS && insideShape(lat, lng, shape)) return zone;
+  }
   let best: { zone: Zone; km: number } | undefined;
   for (const zone of ZONES) {
+    if ((shapes?.[zone.id]?.length ?? 0) >= MIN_SHAPE_POINTS) continue;
     const km = distanceKm(lat, lng, zone.center.lat, zone.center.lng);
     if (km <= zone.radiusKm + SUGGEST_MARGIN_KM && (!best || km < best.km)) best = { zone, km };
   }
   return best?.zone;
 }
 
-export const suggestZoneFor = (place: { coordinates?: { lat: number; lng: number } | null }) =>
-  suggestZone(place.coordinates?.lat, place.coordinates?.lng);
+export const suggestZoneFor = (place: { coordinates?: { lat: number; lng: number } | null }, shapes?: ZoneShapes) =>
+  suggestZone(place.coordinates?.lat, place.coordinates?.lng, shapes);
+
+export { distanceKm };
