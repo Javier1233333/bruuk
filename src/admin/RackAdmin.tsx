@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Eye, EyeOff, ImagePlus, ListPlus, Pencil, Plus, Search, Trash2, X } from 'lucide-react';
-import { spotZone } from '../lib/zones';
+import { spotZone, zoneIdFrom } from '../lib/zones';
+import { ZoneSelect } from './ZoneSelect';
 import { CategoryGroup, RowImage } from './adminShared';
 import { RACK_CATEGORY_NAMES, groupByCategory, rackCategory } from './adminCategories';
 import { MapsListImport } from './MapsListImport';
@@ -14,7 +15,7 @@ import type { RackDoc, RackInput } from './spotsStore';
 
 type Filter = 'all' | 'active' | 'hidden';
 
-export function RackView({ places, loaded, loadError, zoneNames }: { places: RackDoc[]; loaded: boolean; loadError: string | null; zoneNames: string[] }) {
+export function RackView({ places, loaded, loadError }: { places: RackDoc[]; loaded: boolean; loadError: string | null }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [editing, setEditing] = useState<RackDoc | 'new' | null>(null);
@@ -115,7 +116,7 @@ export function RackView({ places, loaded, loadError, zoneNames }: { places: Rac
       )}
 
       {importing && <MapsListImport kind="rack" existing={places} onClose={() => setImporting(false)} />}
-      {editing && <RackForm place={editing === 'new' ? null : editing} zoneNames={zoneNames} onClose={() => setEditing(null)} />}
+      {editing && <RackForm place={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />}
     </main>
   );
 }
@@ -144,11 +145,11 @@ const toForm = (place: RackDoc | null): FormState => ({
   mapsLink: place?.mapsLink ?? '',
   lat: place?.coordinates ? String(place.coordinates.lat) : '',
   lng: place?.coordinates ? String(place.coordinates.lng) : '',
-  zone: place?.zone ?? '',
+  zone: zoneIdFrom(place?.zone) ?? '',
   active: place?.active ?? true,
 });
 
-function RackForm({ place, zoneNames, onClose }: { place: RackDoc | null; zoneNames: string[]; onClose: () => void }) {
+function RackForm({ place, onClose }: { place: RackDoc | null; onClose: () => void }) {
   const [placeId] = useState(() => place?.id ?? rackStore.newId());
   const [form, setForm] = useState<FormState>(() => toForm(place));
   const [uploading, setUploading] = useState(false);
@@ -223,7 +224,6 @@ function RackForm({ place, zoneNames, onClose }: { place: RackDoc | null; zoneNa
     }
   };
 
-  const currentZone = spotZone({ zone: form.zone, coordinates: form.lat && form.lng ? { lat: Number(form.lat), lng: Number(form.lng) } : null });
 
   return (
     <div className="sa-overlay" onClick={close}>
@@ -285,11 +285,13 @@ function RackForm({ place, zoneNames, onClose }: { place: RackDoc | null; zoneNa
           <p className="sa-hint">Puedes pegar “lat, lng” directo desde Google Maps en el campo de latitud.</p>
 
           <div className="login-field">
-            <label htmlFor="ra-zone">Colonia</label>
-            <select id="ra-zone" className={currentZone ? '' : 'is-no-zone'} value={form.zone} onChange={(e) => set('zone', e.target.value)}>
-              <option value="">Automática por coordenadas</option>
-              {zoneNames.map((name) => <option key={name} value={name}>{name}</option>)}
-            </select>
+            <label htmlFor="ra-zone">Zona</label>
+            <ZoneSelect
+              id="ra-zone"
+              value={form.zone}
+              coordinates={form.lat && form.lng ? { lat: Number(form.lat), lng: Number(form.lng) } : null}
+              onChange={(zoneId) => set('zone', zoneId ?? '')}
+            />
           </div>
 
           <label className="sa-check">

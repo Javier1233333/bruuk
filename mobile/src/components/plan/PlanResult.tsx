@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { ArrowUpRight, Check, Dices, Pencil, RefreshCw, Share2, Shuffle } from 'lucide-react-native';
 import type { CustomPlan } from '../../lib/catalog';
 import { useContent } from '../../lib/content';
+import { zoneLabel } from '../../lib/visual';
 import { colors, fonts } from '../../theme';
 import { PlaceThumb } from '../SpotCard';
 import { Button, ErrorNote, openUrl } from '../ui';
@@ -68,7 +69,7 @@ export function PlanResult({ plan, mode, spunIds, summary, error, sharing, swapp
             </View>
             <View style={{ flex: 1, gap: 6 }}>
               <PlaceThumb place={place} style={styles.thumb} />
-              <Text style={styles.type}>{place.type.toUpperCase()}{place.price ? ` · ${place.price}` : ''}{place.zoneName ? ` · ${place.zoneName.toUpperCase()}` : ''}</Text>
+              <Text style={styles.type}>{place.type.toUpperCase()}{place.price ? ` · ${place.price}` : ''}{place.zoneName ? ` · ${zoneLabel(place).toUpperCase()}` : ''}</Text>
               <Pressable accessibilityRole="link" onPress={() => router.push(`/lugar/${encodeURIComponent(place.id)}`)}>
                 <Text style={styles.name}>{place.name}</Text>
               </Pressable>

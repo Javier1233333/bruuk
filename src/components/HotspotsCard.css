@@ -175,3 +175,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hotspots-card__item { transition: none; }
 }
+
+/* Guía de zona: misma tarjeta que los hotspots, con el color de la zona */
+.zone-guide-card .hotspots-card__kicker { display: inline-flex; align-items: center; gap: 0.3rem; }
+.zone-guide-card__top { margin: 0.2rem 0 0.6rem; color: rgba(255, 255, 255, 0.7) !important; }

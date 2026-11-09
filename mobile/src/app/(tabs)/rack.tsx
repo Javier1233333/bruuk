@@ -5,10 +5,11 @@ import { router, useScrollToTop } from 'expo-router';
 import { Grid3x3, Landmark, List, ShoppingBag, Store, Disc3, Sunset, Search, ArrowRight } from 'lucide-react-native';
 import { PlaceThumb, SpotCard } from '../../components/SpotCard';
 import { TopBar } from '../../components/TopBar';
+import { ZoneChips, ZoneGuide, orderByZone } from '../../components/ZoneGuide';
 import { Chip, Kicker, tap } from '../../components/ui';
 import type { PlanPlace } from '../../lib/catalog';
 import { useContent } from '../../lib/content';
-import { accentFor, placeVisual } from '../../lib/visual';
+import { accentFor, placeVisual, zoneLabel } from '../../lib/visual';
 import { colors, fonts, space } from '../../theme';
 
 type Filter = 'todos' | 'tiendas' | 'antiguedades' | 'tianguis' | 'cultura';
@@ -24,7 +25,9 @@ const FILTERS: { value: Filter; label: string; icon?: typeof Store; matches: (pl
 const normalize = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 export default function RackScreen() {
-  const { places, refresh, refreshing } = useContent();
+  const { places, refresh, refreshing, zones } = useContent();
+  const [zoneId, setZoneId] = useState<string | null>(null);
+  const zone = zones.find((item) => item.value === zoneId) ?? null;
   const [filter, setFilter] = useState<Filter>('todos');
   const [grid, setGrid] = useState(false);
   const [query, setQuery] = useState('');
@@ -35,8 +38,9 @@ export default function RackScreen() {
   const visible = useMemo(() => {
     const term = normalize(query.trim());
     const { matches } = FILTERS.find((item) => item.value === filter)!;
-    return rackPlaces.filter((place) => matches(place) && (!term || normalize(`${place.name} ${place.type} ${place.description} ${place.zoneName ?? ''}`).includes(term)));
-  }, [rackPlaces, filter, query]);
+    const matching = rackPlaces.filter((place) => matches(place) && (!term || normalize(`${place.name} ${place.type} ${place.description} ${place.zoneName ?? ''}`).includes(term)));
+    return orderByZone(matching, zone);
+  }, [rackPlaces, filter, query, zone]);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
@@ -89,6 +93,8 @@ export default function RackScreen() {
                 <Chip key={item.value} label={item.label} icon={item.icon} active={filter === item.value} onPress={() => setFilter(item.value)} />
               ))}
             </View>
+            <ZoneChips zones={zones} value={zoneId} onChange={setZoneId} />
+            {zone && <ZoneGuide zone={zone} picks={visible.filter((place) => zone.picks?.includes(place.id))} total={visible.length} />}
             <Pressable accessibilityRole="link" onPress={() => router.push('/atardeceres')} style={styles.sunsetLink}>
               <Sunset size={18} color={colors.sunset} />
               <Text style={styles.sunsetText}>¿Y DESPUÉS? VER ATARDECERES</Text>
@@ -117,7 +123,7 @@ function GridCard({ place }: { place: PlanPlace }) {
       <View style={[styles.gridStripe, { backgroundColor: accentFor(place) }]} />
       <PlaceThumb place={place} style={{ aspectRatio: 1 }} />
       <View style={styles.gridBody}>
-        <Text style={styles.gridLabel}>{label}{place.zoneName ? ` · ${place.zoneName.toUpperCase()}` : ''}</Text>
+        <Text style={styles.gridLabel}>{label}{place.zoneName ? ` · ${zoneLabel(place).toUpperCase()}` : ''}</Text>
         <Text style={styles.gridName} numberOfLines={2}>{place.name}</Text>
       </View>
     </Pressable>

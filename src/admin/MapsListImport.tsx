@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Check, X } from 'lucide-react';
 import { getIdToken } from '../lib/firebase';
-import { spotZone } from '../lib/zones';
+import { suggestZone } from '../lib/zones';
 import { RACK_CATEGORY_NAMES, rackCategory } from './adminCategories';
 import { rackStore, spotsStore } from './spotsStore';
 import type { RackDoc } from './spotsStore';
@@ -161,7 +161,7 @@ export function MapsListImport({ kind, existing, types = [], onClose }: { kind: 
 
                   <ul className="sa-import-list">
                     {list.places.map((place, i) => {
-                      const zone = spotZone({ coordinates: place.lat !== null && place.lng !== null ? { lat: place.lat, lng: place.lng } : null });
+                      const zone = suggestZone(place.lat, place.lng);
                       return (
                         <li key={i}>
                           <label className={`sa-import-row${duplicates.has(i) ? ' is-duplicate' : ''}`}>
@@ -170,7 +170,7 @@ export function MapsListImport({ kind, existing, types = [], onClose }: { kind: 
                               <span className="sa-row__name">{place.name}</span>
                               <span className="sa-row__meta">
                                 {duplicates.has(i) && <span className="sa-warn">ya está · </span>}
-                                {zone?.name ?? (place.lat === null ? <span className="sa-warn">sin coordenadas</span> : 'sin zona')}
+                                {zone ? `sugerida: ${zone.short}` : (place.lat === null ? <span className="sa-warn">sin coordenadas</span> : 'sin zona')}
                                 {place.note && ` · ${place.note}`}
                               </span>
                             </span>

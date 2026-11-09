@@ -3,7 +3,8 @@ import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import type { LucideIcon } from 'lucide-react';
 import { BruukLogo } from '../components/BruukLogo';
-import { PLAN_PLACES_BY_ID, type CustomPlan } from '../data/planBuilder';
+import type { CustomPlan } from '../data/planBuilder';
+import { getPlanPlace } from './planCatalog';
 import { placeIcon } from './placeIcons';
 
 // Imagen vertical (formato historia) para mandar el plan por WhatsApp o Instagram.
@@ -84,7 +85,7 @@ const drawPlan = async (plan: CustomPlan) => {
   await Promise.all(['900 120px Outfit', '800 40px Outfit', '500 36px "DM Sans"'].map((font) => document.fonts?.load(font).catch(() => undefined)));
 
   const stops = plan.stops
-    .map((stop) => ({ stop, place: PLAN_PLACES_BY_ID.get(stop.placeId) }))
+    .map((stop) => ({ stop, place: getPlanPlace(stop.placeId) }))
     .filter((item): item is { stop: typeof item.stop; place: NonNullable<typeof item.place> } => Boolean(item.place))
     .slice(0, 5);
   const images = await Promise.all(stops.map(({ place }) => (place.imageUrl ? loadImage(place.imageUrl) : Promise.resolve(null))));

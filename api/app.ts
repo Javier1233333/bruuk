@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { DEFAULT_CONFIG, type AppConfig } from '../src/data/appConfig.js';
-import { BUNDLED_SUNSETS, ROULETTE_ZONES } from '../src/data/planBuilder.js';
-import { getLiveCatalog } from './_catalog.js';
+import { BUNDLED_SUNSETS } from '../src/data/planBuilder.js';
+import { getLiveCatalog, publicZones } from './_catalog.js';
 import { adminDb, firebaseConfigured } from './_firebase.js';
 
 /* ============================================================
@@ -64,7 +64,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
     places: catalog.places,
     hotspots: catalog.hotspots,
     sunsets,
-    zones: ROULETTE_ZONES,
+    // "toda" + las 7 zonas con su selección curada; la ruleta usa value/label/hint.
+    zones: [{ value: 'toda', label: 'Toda', hint: 'Toda la ciudad' }, ...publicZones(catalog)],
   };
   // La app compara este número para saber si algo cambió sin revisar todo.
   const version = createHash('sha1').update(JSON.stringify(content)).digest('hex').slice(0, 12);

@@ -9,8 +9,6 @@ import {
   MAX_INTERESTS,
   MAX_NOTE_LENGTH,
   MOMENT_OPTIONS,
-  PLAN_PLACES,
-  PLAN_PLACES_BY_ID,
   STOP_OPTIONS,
   VIBE_OPTIONS,
   labelFor,
@@ -21,6 +19,7 @@ import {
 } from '../data/planBuilder';
 import { IS_APP_MODE } from '../lib/appMode';
 import { sharePlanImage } from '../lib/sharePlanImage';
+import { usePlanCatalog } from '../lib/planCatalog';
 import { PlanRoulette, type RouletteState } from './PlanRoulette';
 import './PlanBuilderPage.css';
 
@@ -61,6 +60,7 @@ const requestPlan = async (body: object) => {
 };
 
 export function PlanBuilderPage() {
+  const catalog = usePlanCatalog();
   const { city = 'guadalajara' } = useParams();
   const [stepIndex, setStepIndex] = useState(0);
   const [draft, setDraft] = useState<Draft>({ interests: [], stops: 3, note: '' });
@@ -240,7 +240,7 @@ export function PlanBuilderPage() {
           {mode === 'ruleta' ? (
             <>
               <h1 id="plan-builder-title">GIRA. <em>SAL.</em></h1>
-              <p>{PLAN_PLACES.length} lugares. Gira, fija los que te laten y sal.</p>
+              <p>{catalog.places.length} lugares. Gira, fija los que te laten y sal.</p>
             </>
           ) : (
             <>
@@ -293,7 +293,7 @@ export function PlanBuilderPage() {
 
               <ol className="plan-result-stops">
                 {plan.stops.map((stop, index) => {
-                  const place = PLAN_PLACES_BY_ID.get(stop.placeId);
+                  const place = catalog.getPlace(stop.placeId);
                   if (!place) return null;
                   const isSwapping = swappingIndex === index;
                   return (

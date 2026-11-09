@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEFAULT_CONFIG, type AppConfig } from '../../../src/data/appConfig';
-import { BUNDLED_SUNSETS, PLAN_PLACES, ROULETTE_ZONES, type PlanPlace } from './catalog';
+import { ZONES } from '../../../src/lib/zones';
+import { BUNDLED_SUNSETS, PLAN_PLACES, type PlanPlace } from './catalog';
 import { getApi } from './api';
 
 /* ============================================================
@@ -15,13 +16,21 @@ import { getApi } from './api';
    pedir /api/app al regresar a la app (máximo cada 5 minutos).
    ============================================================ */
 
+// "toda" + las 7 zonas. value/label/hint los usa la ruleta; color/intro/picks, explorar por zona.
+export type AppZone = { value: string; label: string; hint: string; color?: string; intro?: string; picks?: string[]; count?: number };
+
+const BUNDLED_ZONES: AppZone[] = [
+  { value: 'toda', label: 'Toda', hint: 'Toda la ciudad' },
+  ...ZONES.map((zone) => ({ value: zone.id, label: zone.short, hint: zone.name, color: zone.color, intro: '', picks: [] })),
+];
+
 export type AppContent = {
   version: string;
   config: AppConfig;
   places: PlanPlace[];
   hotspots: { ids: string[]; date?: string };
   sunsets: string[];
-  zones: typeof ROULETTE_ZONES;
+  zones: AppZone[];
 };
 
 type ContentState = AppContent & {
@@ -41,7 +50,7 @@ const BUNDLED: AppContent = {
   places: PLAN_PLACES,
   hotspots: { ids: [] },
   sunsets: BUNDLED_SUNSETS.map((entry) => (typeof entry === 'string' ? entry : entry.id)),
-  zones: ROULETTE_ZONES,
+  zones: BUNDLED_ZONES,
 };
 
 // Una respuesta rara (o de una versión vieja de la API) no debe dejar la app en blanco.
@@ -62,7 +71,7 @@ const withDefaults = (content: AppContent): AppContent => ({
   },
   hotspots: content.hotspots ?? { ids: [] },
   sunsets: content.sunsets ?? [],
-  zones: content.zones ?? ROULETTE_ZONES,
+  zones: Array.isArray(content.zones) && content.zones.length > 1 ? content.zones : BUNDLED_ZONES,
 });
 
 const ContentContext = createContext<ContentState | null>(null);

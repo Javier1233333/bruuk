@@ -28,7 +28,8 @@ import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { FeedLoginWall } from '../components/FeedLoginWall';
 import { ShareButton } from '../components/ShareButton';
-import { spotZone } from '../lib/zones';
+import { ZONES, spotZone, type ZoneId } from '../lib/zones';
+import { useZones, zoneFromParam } from '../lib/useZones';
 import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
 import { BruukSelect } from '../components/BruukSelect';
 
@@ -172,7 +173,17 @@ export function RackPlaces() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   // Ya vienen filtrados (sólo activos) desde /api/rack o src/data/rack.json
-  const RACK_PLACES = useRackPlaces();
+  const allRackPlaces = useRackPlaces();
+  // Explorar por zona (?zona=<id>): el feed, la cuadrícula y el mapa sólo muestran esa zona.
+  const activeZoneId = zoneFromParam(searchParams.get('zona'));
+  const activeZone = useZones().find((zone) => zone.id === activeZoneId) ?? null;
+  const RACK_PLACES = useMemo(() => {
+    if (!activeZoneId) return allRackPlaces;
+    const inZone = allRackPlaces.filter((place) => spotZone(place)?.id === activeZoneId);
+    // Primero el top curado de la zona, en su orden.
+    const picks = (activeZone?.picks ?? []).map((id) => inZone.find((place) => place.id === id)).filter((place) => place !== undefined);
+    return [...picks, ...inZone.filter((place) => !picks.includes(place))];
+  }, [allRackPlaces, activeZoneId, activeZone]);
   const initialFilter = filterFromSearchParams(searchParams);
   const feedRef = useRef<HTMLDivElement | null>(null);
   const scrollSettleRef = useRef<number | null>(null);
@@ -206,6 +217,7 @@ export function RackPlaces() {
     ) => {
       const nextParams = new URLSearchParams();
       if (filter !== 'todos') nextParams.set('filter', filter);
+      if (activeZoneId) nextParams.set('zona', activeZoneId);
       if (mapOpen) {
         nextParams.set('view', 'map');
       } else if (view !== 'feed') {
@@ -213,7 +225,7 @@ export function RackPlaces() {
       }
       setSearchParams(nextParams, { replace: true });
     },
-    [setSearchParams],
+    [setSearchParams, activeZoneId],
   );
 
   const filteredPlaces = useMemo(() => {
@@ -339,6 +351,17 @@ export function RackPlaces() {
     if (!feed) return;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     feed.scrollBy({ top: direction * feed.clientHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
+  const changeZone = (zoneId: ZoneId | null) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (zoneId) nextParams.set('zona', zoneId);
+    else nextParams.delete('zona');
+    nextParams.delete('lugar');
+    setActiveIndex(0);
+    setIsWallSlide(false);
+    wallBoundariesRef.current.clear();
+    setSearchParams(nextParams, { replace: true });
   };
 
   const changeFilter = (filter: PlaceFilter) => {
@@ -630,6 +653,15 @@ export function RackPlaces() {
           ))}
           <Link to="/guadalajara/atardeceres" className="rack-places-filter-link">Atardeceres</Link>
         </div>
+        <div className="rack-places-zone-select">
+          <span>ZONA</span>
+          <BruukSelect
+            ariaLabel="Explorar por zona"
+            value={activeZoneId ?? 'todas'}
+            onChange={(value) => changeZone(zoneFromParam(value))}
+            options={[{ value: 'todas', label: 'Todas las zonas' }, ...ZONES.map((zone) => ({ value: zone.id, label: zone.name }))]}
+          />
+        </div>
 
         <div
           className={`rack-places-view-toggle${activeFilter === 'tianguis' ? ' has-history' : ''}`}
@@ -677,7 +709,19 @@ export function RackPlaces() {
         </div>
       </section>
 
-      {viewMode === 'history' ? (
+      {activeZone && (
+        <aside className="rack-zone-intro" style={{ borderColor: activeZone.color }} aria-label={`Zona ${activeZone.name}`}>
+          <strong>{activeZone.name}</strong>
+          <span>{activeZone.intro || `${filteredPlaces.length} ${filteredPlaces.length === 1 ? 'lugar' : 'lugares'} de Rack en esta zona.`}</span>
+        </aside>
+      )}
+
+      {filteredPlaces.length === 0 ? (
+        <main className="rack-zone-empty">
+          <p>Todavía no hay lugares de Rack{activeZone ? ` en ${activeZone.name}` : ''}{activeFilter !== 'todos' ? ` en ${FILTER_LABELS[activeFilter].toLowerCase()}` : ''}.</p>
+          <button type="button" onClick={() => changeZone(null)}>VER TODAS LAS ZONAS</button>
+        </main>
+      ) : viewMode === 'history' ? (
         <TianguisHistory />
       ) : viewMode === 'feed' ? (
         <main
@@ -1025,7 +1069,7 @@ function PlaceFeedCard({
             )}
             {FILTER_LABELS[kind]}
           </span>
-          {zone && <span className="rack-place-zone">{zone.name}</span>}
+          {zone && <span className="rack-place-zone" title={zone.name}>{zone.short}</span>}
           <span>{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
         </div>
         <h1>{place.name}</h1>

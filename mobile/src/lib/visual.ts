@@ -3,6 +3,7 @@ import {
   Coffee, Croissant, Disc3, IceCreamBowl, Landmark, Martini, Moon, Music2, ShoppingBag, Sparkles, Store, Sun, Sunrise, Sunset, Utensils,
   type LucideIcon,
 } from 'lucide-react-native';
+import { ZONE_BY_ID, type ZoneId } from '../../../src/lib/zones';
 import type { PlanInterest, PlanPlace, RouletteMoment } from './catalog';
 
 type Visual = { label: string; Icon: LucideIcon };
@@ -58,3 +59,7 @@ export function placeVisual(place: PlanPlace): Visual {
 const KIND_COLORS: Record<string, string> = { 'Rack recomienda': '#64d23c', 'Vinilos y antigüedades': '#e8a145', Tianguis: '#a78bfa' };
 export const accentFor = (place: PlanPlace) =>
   place.colorAccent ?? (place.category ? KIND_COLORS[place.category] : undefined) ?? (place.interest === 'atardecer' ? '#ff9a5c' : place.interest === 'cultura' ? '#6557d8' : '#8b7cf6');
+
+// Nombre corto de la zona para etiquetas ("Americana" en vez de "Americana / Lafayette / Moderna").
+export const zoneLabel = (place: Pick<PlanPlace, 'zone' | 'zoneName'>) =>
+  (place.zone ? ZONE_BY_ID.get(place.zone as ZoneId)?.short : undefined) ?? place.zoneName ?? '';

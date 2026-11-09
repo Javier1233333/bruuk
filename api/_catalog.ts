@@ -7,6 +7,7 @@ import {
   type CatalogSpot,
   type PlanPlace,
 } from '../src/data/planBuilder.js';
+import { ZONES, zoneIdFrom, type ZoneId } from '../src/lib/zones.js';
 import { adminDb, firebaseConfigured } from './_firebase.js';
 
 /* ============================================================
@@ -25,13 +26,19 @@ export type LiveCatalog = {
   places: PlanPlace[];
   byId: Map<string, PlanPlace>;
   hotspots: { ids: string[]; date?: string };
+  // Selección curada de cada zona (meta/zoneGuides): texto corto y top ordenado.
+  zoneGuides: Partial<Record<ZoneId, ZoneGuide>>;
   live: boolean;
 };
+
+export type ZoneGuide = { intro: string; picks: string[] };
+export const MAX_ZONE_PICKS = 8;
 
 const bundledCatalog = (): LiveCatalog => ({
   places: PLAN_PLACES,
   byId: PLAN_PLACES_BY_ID,
   hotspots: { ids: [] },
+  zoneGuides: {},
   live: false,
 });
 
@@ -52,10 +59,11 @@ const publicDocs = (docs: Doc[]) =>
 
 async function loadLiveCatalog(): Promise<LiveCatalog> {
   const db = adminDb();
-  const [spotsSnap, rackSnap, hotspotsDoc] = await Promise.all([
+  const [spotsSnap, rackSnap, hotspotsDoc, guidesDoc] = await Promise.all([
     db.collection('spots').where('active', '==', true).get(),
     db.collection('rack').where('active', '==', true).get(),
     db.collection('meta').doc('hotspots').get(),
+    db.collection('meta').doc('zoneGuides').get(),
   ]);
   const hotspotIds: string[] = hotspotsDoc.data()?.ids ?? [];
   const hotspotDate: string | undefined = hotspotsDoc.data()?.publishedAt?.toDate().toISOString().slice(0, 10);
@@ -77,6 +85,7 @@ async function loadLiveCatalog(): Promise<LiveCatalog> {
     places,
     byId: new Map(places.map((place) => [place.id, place])),
     hotspots: { ids: hotspotIds.filter((id) => places.some((place) => place.id === id)), date: hotspotDate },
+    zoneGuides: readZoneGuides(guidesDoc.data()?.zones, places),
     live: true,
   };
 }
@@ -91,6 +100,41 @@ const toCatalogRack = (place: PlanPlace): CatalogRack => ({
   coordinates: place.coordinates,
   zone: place.zoneName,
 });
+
+// Sólo zonas conocidas y picks que sigan existiendo y estén en esa misma zona.
+function readZoneGuides(raw: unknown, places: PlanPlace[]): LiveCatalog['zoneGuides'] {
+  const guides: LiveCatalog['zoneGuides'] = {};
+  if (!raw || typeof raw !== 'object') return guides;
+  const zoneOf = new Map(places.map((place) => [place.id, place.zone]));
+  for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+    const id = zoneIdFrom(key);
+    if (!id || !value || typeof value !== 'object') continue;
+    const guide = value as { intro?: unknown; picks?: unknown };
+    guides[id] = {
+      intro: typeof guide.intro === 'string' ? guide.intro.trim().slice(0, 400) : '',
+      picks: (Array.isArray(guide.picks) ? guide.picks : [])
+        .filter((pick): pick is string => typeof pick === 'string' && zoneOf.get(pick) === id)
+        .slice(0, MAX_ZONE_PICKS),
+    };
+  }
+  return guides;
+}
+
+// Las 7 zonas como las ven la web y la app: datos fijos + lo curado en el admin.
+// value/label/hint los usa la ruleta (mismo formato que ROULETTE_ZONES).
+export const publicZones = (catalog: LiveCatalog) =>
+  ZONES.map((zone) => ({
+    value: zone.id,
+    label: zone.short,
+    hint: zone.name,
+    id: zone.id,
+    name: zone.name,
+    short: zone.short,
+    color: zone.color,
+    intro: catalog.zoneGuides[zone.id]?.intro ?? '',
+    picks: catalog.zoneGuides[zone.id]?.picks ?? [],
+    count: catalog.places.filter((place) => place.zone === zone.id).length,
+  }));
 
 let cached: { at: number; catalog: LiveCatalog } | null = null;
 let pending: Promise<LiveCatalog> | null = null;

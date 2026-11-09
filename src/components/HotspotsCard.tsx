@@ -55,7 +55,7 @@ export function HotspotsCard({ hotspots, onPick }: { hotspots: Hotspot[]; onPick
                 <span className="hotspots-card__text">
                   <span className="hotspots-card__name">{spot.name}</span>
                   <span className="hotspots-card__why">
-                    {spot.highlight ? <><b>VE POR</b> {spot.highlight}</> : [spot.type, spotZone(spot)?.name].filter(Boolean).join(' · ')}
+                    {spot.highlight ? <><b>VE POR</b> {spot.highlight}</> : [spot.type, spotZone(spot)?.short].filter(Boolean).join(' · ')}
                   </span>
                 </span>
                 <ChevronRight size={18} strokeWidth={2.6} aria-hidden="true" className="hotspots-card__go" />

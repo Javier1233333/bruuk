@@ -5,7 +5,7 @@ import sunsetData from './atardeceres.json' with { type: 'json' };
 import rackData from './rack.json' with { type: 'json' };
 import cultureData from '../../lugares-mapa-gdl.json' with { type: 'json' };
 import { SPOT_MAP_LINKS } from '../rack/spotMapLinks.js';
-import { placeZone, spotZone, type PlanZone } from '../lib/zones.js';
+import { ZONES, spotZone, suggestZone, type PlanZone } from '../lib/zones.js';
 
 export type PlanInterest = 'cafe' | 'comida' | 'noche' | 'vintage' | 'cultura' | 'atardecer';
 export type { PlanZone };
@@ -103,11 +103,10 @@ export const ROULETTE_MOMENTS: Option<'sorpresa' | 'manana' | 'tarde' | 'noche'>
 export type RouletteMoment = (typeof ROULETTE_MOMENTS)[number]['value'];
 
 // Zonas con suficientes lugares para una ruta caminable. Las colonias chicas se agrupan.
+// "Toda" + las 7 zonas de Bruuk (src/lib/zones.ts). Una zona sin suficientes lugares se deshabilita en la ruleta.
 export const ROULETTE_ZONES: Option<'toda' | PlanZone>[] = [
   { value: 'toda', label: 'Toda', hint: 'Toda la ciudad' },
-  { value: 'centro', label: 'Centro', hint: 'Centro histórico' },
-  { value: 'americana', label: 'Americana', hint: 'Americana, Lafayette y Chapultepec' },
-  { value: 'poniente', label: 'Poniente', hint: 'Providencia, Chapalita y Zapopan' },
+  ...ZONES.map((zone) => ({ value: zone.id, label: zone.short, hint: zone.name })),
 ];
 
 export type RouletteZone = (typeof ROULETTE_ZONES)[number]['value'];
@@ -199,16 +198,18 @@ const slug = (value: string) =>
 // Fotos reales (relativas del sitio o absolutas de Firebase Storage); los SVG de relleno no cuentan.
 const realImage = (url?: string) => (url && /\.(webp|jpe?g|png|avif)(\?|$)/i.test(url) ? url : undefined);
 
-const zoneFields = (place: { zone?: string; coordinates?: { lat: number; lng: number } }) => {
+// Sólo la zona asignada a mano en el admin; sin asignar, el lugar queda sin zona.
+const zoneFields = (place: { zone?: string }) => {
   const zone = spotZone(place);
-  return { zone: zone?.zone, zoneName: zone?.name };
+  return { zone: zone?.id, zoneName: zone?.name };
 };
 
 // Museos y espacios culturales: todavía no están en el admin, salen del mapa original.
 const CULTURE_PLACES: PlanPlace[] = (cultureData.places as CulturePlace[])
   .filter((place) => place.category === 'Cultura')
   .map((place) => {
-    const zone = placeZone(place.geometry?.latitude, place.geometry?.longitude);
+    // Los museos todavía no están en el admin: su zona sale de las coordenadas.
+    const zone = suggestZone(place.geometry?.latitude, place.geometry?.longitude);
     return {
       id: `rack_${slug(place.name)}`,
       name: place.name,
@@ -217,7 +218,7 @@ const CULTURE_PLACES: PlanPlace[] = (cultureData.places as CulturePlace[])
       description: place.description,
       tip: place.description,
       mapsUrl: SPOT_MAP_LINKS[place.name] ?? place.google_maps_url,
-      zone: zone?.zone,
+      zone: zone?.id,
       zoneName: zone?.name,
       coordinates: place.geometry?.latitude != null && place.geometry?.longitude != null
         ? { lat: place.geometry.latitude, lng: place.geometry.longitude }

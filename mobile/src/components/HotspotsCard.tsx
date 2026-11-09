@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { ChevronRight, Flame } from 'lucide-react-native';
 import type { PlanPlace } from '../lib/catalog';
+import { zoneLabel } from '../lib/visual';
 import { colors, fonts } from '../theme';
 import { PlaceThumb } from './SpotCard';
 import { ShadowBox } from './ui';
@@ -39,7 +40,7 @@ export function HotspotsCard({ places, date }: { places: PlanPlace[]; date?: str
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.name} numberOfLines={1}>{place.name}</Text>
               <Text style={styles.tip} numberOfLines={2}>
-                {place.tip ? <><Text style={styles.tipLabel}>VE POR </Text>{place.tip}</> : [place.type, place.zoneName].filter(Boolean).join(' · ')}
+                {place.tip ? <><Text style={styles.tipLabel}>VE POR </Text>{place.tip}</> : [place.type, place.zoneName && zoneLabel(place)].filter(Boolean).join(' · ')}
               </Text>
             </View>
             <ChevronRight size={18} color={colors.ink} />

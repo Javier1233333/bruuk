@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useScrollToTop } from 'expo-router';
 import { ArrowRight, ArrowUpRight, Coffee, Martini, Megaphone, Sunset, Utensils } from 'lucide-react-native';
 import { HotspotsCard } from '../../components/HotspotsCard';
+import { ZoneChips, ZoneGuide, orderByZone } from '../../components/ZoneGuide';
 import { SpotCard } from '../../components/SpotCard';
 import { TopBar } from '../../components/TopBar';
 import { Button, Chip, Kicker, openUrl } from '../../components/ui';
@@ -21,7 +22,7 @@ const FILTERS: { value: Filter; label: string; icon?: typeof Coffee }[] = [
   { value: 'atardecer', label: 'ATARDECERES', icon: Sunset },
 ];
 
-type Row = { key: string; kind: 'hotspots'; places: PlanPlace[] } | { key: string; kind: 'place'; place: PlanPlace } | { key: string; kind: 'sunsetCover' };
+type Row = { key: string; kind: 'guide'; places: PlanPlace[]; total: number } | { key: string; kind: 'hotspots'; places: PlanPlace[] } | { key: string; kind: 'place'; place: PlanPlace } | { key: string; kind: 'sunsetCover' };
 
 const shuffle = <T,>(items: T[]) => {
   const copy = [...items];
@@ -33,8 +34,11 @@ const shuffle = <T,>(items: T[]) => {
 };
 
 export default function HomeScreen() {
-  const { places, hotspots, sunsets, config, refresh, refreshing, byId } = useContent();
+  const { places, hotspots, sunsets, config, refresh, refreshing, byId, zones } = useContent();
   const [filter, setFilter] = useState<Filter>('todos');
+  // Explorar por zona: abre con la guía de la zona y sólo sus lugares.
+  const [zoneId, setZoneId] = useState<string | null>(null);
+  const zone = zones.find((item) => item.value === zoneId) ?? null;
   const listRef = useRef<FlatListType<Row>>(null);
   useScrollToTop(listRef);
 
@@ -46,6 +50,14 @@ export default function HomeScreen() {
       const ordered = sunsets.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
       return [{ key: 'cover', kind: 'sunsetCover' }, ...ordered.map((place) => ({ key: place.id, kind: 'place' as const, place }))];
     }
+    if (zone) {
+      const inZone = orderByZone(shuffled.filter((place) => filter === 'todos' || place.interest === filter), zone);
+      const picks = inZone.filter((place) => zone.picks?.includes(place.id));
+      return [
+        { key: `zone-${zone.value}`, kind: 'guide' as const, places: picks, total: inZone.length },
+        ...inZone.map((place) => ({ key: place.id, kind: 'place' as const, place })),
+      ];
+    }
     const hot = hotspots.ids.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
     const pinnedIds = hot.length > 0 ? hot.map((place) => place.id) : config.featuredSpotIds;
     const pinned = pinnedIds.map((id) => byId.get(id)).filter((place): place is PlanPlace => Boolean(place));
@@ -56,7 +68,7 @@ export default function HomeScreen() {
       ...(filter === 'todos' && hot.length > 0 ? [{ key: 'hotspots', kind: 'hotspots' as const, places: hot }] : []),
       ...[...head, ...rest].map((place) => ({ key: place.id, kind: 'place' as const, place })),
     ];
-  }, [filter, sunsets, byId, hotspots.ids, config.featuredSpotIds, shuffled]);
+  }, [filter, sunsets, byId, hotspots.ids, config.featuredSpotIds, shuffled, zone]);
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
@@ -102,9 +114,20 @@ export default function HomeScreen() {
                 />
               ))}
             </View>
+            {filter !== 'atardecer' && (
+              <ZoneChips
+                zones={zones}
+                value={zoneId}
+                onChange={(value) => {
+                  setZoneId(value);
+                  listRef.current?.scrollToOffset({ offset: 0, animated: false });
+                }}
+              />
+            )}
           </View>
         }
         renderItem={({ item }) => {
+          if (item.kind === 'guide') return zone ? <ZoneGuide zone={zone} picks={item.places} total={item.total} /> : null;
           if (item.kind === 'hotspots') return <HotspotsCard places={item.places} date={hotspots.date} />;
           if (item.kind === 'sunsetCover') {
             return (

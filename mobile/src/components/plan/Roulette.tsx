@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { Dices, Lock, LockOpen, MapPin, Shuffle, Sparkles } from 'lucide-react-native';
-import { INTEREST_OPTIONS, MOMENT_INTERESTS, ROULETTE_MOMENTS, STOP_OPTIONS, type PlanInterest, type PlanPlace } from '../../lib/catalog';
+import { INTEREST_OPTIONS, MOMENT_INTERESTS, ROULETTE_MOMENTS, ROULETTE_ZONES, STOP_OPTIONS, type PlanInterest, type PlanPlace, type RouletteZone } from '../../lib/catalog';
 import { useContent } from '../../lib/content';
 import { pickSlots, randomItem, roulettePool, type RouletteState } from '../../lib/roulette';
 import { INTEREST_ICONS, MOMENT_ICONS, accentFor, placeVisual } from '../../lib/visual';
@@ -119,7 +119,7 @@ export function Roulette({ state, onChange, onGenerate, loading }: Props) {
 
       <View style={styles.zones} accessibilityRole="radiogroup" accessibilityLabel="¿En qué zona?">
         <MapPin size={15} color={colors.ink} strokeWidth={2.4} />
-        {zones.map((option) => {
+        {zones.filter((option): option is typeof option & { value: RouletteZone } => ROULETTE_ZONES.some((known) => known.value === option.value)).map((option) => {
           const selected = state.zone === option.value;
           // Una zona sin lugares suficientes a esa hora no se puede elegir
           const tooFew = roulettePool(places, { ...state, zone: option.value }).length < state.count;

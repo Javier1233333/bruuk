@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ArrowUpRight, Flame, MapPin, Share2, Star } from 'lucide-react-native';
 import { imageUri, shareUrlFor, type PlanPlace } from '../lib/catalog';
-import { accentFor, placeVisual } from '../lib/visual';
+import { accentFor, placeVisual, zoneLabel } from '../lib/visual';
 import { colors, fonts } from '../theme';
 import { ShadowBox, openUrl, tap } from './ui';
 
@@ -60,7 +60,7 @@ export function SpotCard({ place, hotspotOf, compact = false }: Props) {
             {place.zoneName ? (
               <View style={styles.zone}>
                 <MapPin size={11} color={colors.mutedDark} strokeWidth={2.4} />
-                <Text style={styles.zoneText}>{place.zoneName.toUpperCase()}</Text>
+                <Text style={styles.zoneText}>{zoneLabel(place).toUpperCase()}</Text>
               </View>
             ) : null}
           </View>

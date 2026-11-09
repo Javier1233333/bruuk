@@ -809,3 +809,32 @@
   .filter-btn-floating { font-size: 0.58rem; padding-inline: 3px; }
   .filter-btn-sunset { flex: 1.7; }
 }
+
+/* Explorar por zona: selector bajo los filtros de categoría */
+.zone-filter-floating {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  margin: 0.4rem auto 0;
+  padding: 0 0.6rem;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(14, 13, 26, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+.zone-filter-floating.is-active { color: #fff; }
+.zone-filter-floating select {
+  min-height: 34px;
+  max-width: 260px;
+  padding: 0 0.2rem;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font: 700 0.72rem 'Outfit', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.zone-filter-floating select option { color: #0b0a12; text-transform: none; }
+.zone-filter-floating:focus-within { outline: 2px solid #fff; outline-offset: 2px; }
