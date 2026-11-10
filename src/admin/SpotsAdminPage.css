@@ -507,6 +507,7 @@
 .sa-map-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 1rem; align-items: start; }
 .sa-map-wrap { position: sticky; top: 76px; }
 .sa-map { height: calc(100vh - 110px); min-height: 420px; border: 2px solid var(--border-color); background: #f3f2ef; }
+.sa-map .sa-map-tiles { filter: grayscale(1) contrast(0.85) brightness(1.1); }
 .sa-map.is-drawing { cursor: crosshair; }
 .sa-map.is-drawing .sa-map-marker { pointer-events: none; opacity: 0.5; }
 .sa-map-loading { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); padding: 0.4rem 0.8rem; background: var(--bg-secondary); font-size: 0.85rem; }
@@ -565,8 +566,12 @@
 .sa-gcoords__list input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--accent-light); }
 .sa-gcoords__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sa-gcoords__match { font-size: 0.85rem; font-weight: 700; }
-.sa-gcoords__tag { align-self: flex-start; margin-top: 2px; padding: 1px 6px; color: #0b0a12; font: 800 0.68rem 'Outfit', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
+.sa-gcoords__tag { margin-top: 2px; padding: 1px 6px; color: #0b0a12; font: 800 0.68rem 'Outfit', sans-serif; letter-spacing: 0.05em; text-transform: uppercase; }
+.sa-gcoords__tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .sa-gcoords__tag.is-new { background: #7fc36a; }
+.sa-gcoords__tag.is-check { background: #ff9a5c; }
+.sa-gcoords__running { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.5rem 0.7rem; background: var(--bg-secondary); border: 2px solid var(--border-color); font-weight: 700; }
+.sa-gcoords__running .btn { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
 .sa-gcoords__tag.is-moved { background: #f5d547; }
 .sa-gcoords__see { flex: none; display: grid; place-items: center; width: 34px; height: 34px; color: var(--text-primary); background: transparent; border: 2px solid var(--border-color); cursor: pointer; }
 .sa-map-popup { display: flex; flex-direction: column; gap: 4px; font-family: 'DM Sans', sans-serif; }

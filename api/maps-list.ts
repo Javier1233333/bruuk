@@ -3,11 +3,6 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { verifyAuthHeader } from './_firebase.js';
 
 /* ============================================================
-   POST /api/maps-list { lookup: [{ key, query }] } → coordenadas
-   de cada lugar con Google Places (Text Search). Necesita
-   GOOGLE_MAPS_API_KEY en Vercel. Va en esta función porque el
-   plan de Vercel sólo permite 12.
-
    POST /api/maps-list { url } → lugares de una lista de Google Maps
    compartida ("Cualquier persona con el vínculo"). Solo admin.
    Usa el endpoint interno que la propia página de la lista llama
@@ -97,75 +92,11 @@ async function fetchList(listId: string, token: string | null): Promise<{ title:
   };
 }
 
-/* ---------- Coordenadas con Google Places ---------- */
-
-export interface PlaceLookup {
-  key: string;
-  found: boolean;
-  name?: string;
-  address?: string;
-  lat?: number;
-  lng?: number;
-  mapsLink?: string;
-}
-
-const MAX_LOOKUPS = 25;
-// Sesgo hacia el área metropolitana de Guadalajara (30 km alrededor del centro).
-const GDL_BIAS = { circle: { center: { latitude: 20.6736, longitude: -103.3440 }, radius: 30000 } };
-
-async function lookupPlace(key: string, query: string, apiKey: string): Promise<PlaceLookup> {
-  const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location,places.googleMapsUri',
-    },
-    body: JSON.stringify({ textQuery: query, languageCode: 'es', regionCode: 'MX', locationBias: GDL_BIAS, pageSize: 1 }),
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new ListError(res.status === 403 || res.status === 400
-      ? `Google rechazó la llave (${res.status}). Revisa que GOOGLE_MAPS_API_KEY tenga activada "Places API (New)".`
-      : `Google respondió ${res.status}. ${detail.slice(0, 120)}`);
-  }
-  const data = await res.json() as { places?: { displayName?: { text?: string }; formattedAddress?: string; location?: { latitude?: number; longitude?: number }; googleMapsUri?: string }[] };
-  const place = data.places?.[0];
-  const lat = num(place?.location?.latitude);
-  const lng = num(place?.location?.longitude);
-  if (!place || lat === null || lng === null) return { key, found: false };
-  return { key, found: true, name: str(place.displayName?.text) ?? undefined, address: str(place.formattedAddress) ?? undefined, lat, lng, mapsLink: str(place.googleMapsUri) ?? undefined };
-}
-
-async function handleLookup(raw: unknown, res: VercelResponse) {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: 'Falta la variable GOOGLE_MAPS_API_KEY en Vercel (con "Places API (New)" activada).' });
-  const items = (Array.isArray(raw) ? raw : [])
-    .map((item) => ({ key: str((item as { key?: unknown })?.key), query: str((item as { query?: unknown })?.query) }))
-    .filter((item): item is { key: string; query: string } => Boolean(item.key && item.query))
-    .map((item) => ({ key: item.key.slice(0, 120), query: item.query.slice(0, 200) }));
-  if (items.length === 0 || items.length > MAX_LOOKUPS) return res.status(400).json({ error: `Manda de 1 a ${MAX_LOOKUPS} lugares por vez.` });
-  try {
-    // De 5 en 5 para no pegarle de golpe a Google.
-    const results: PlaceLookup[] = [];
-    for (let index = 0; index < items.length; index += 5) {
-      results.push(...await Promise.all(items.slice(index, index + 5).map((item) => lookupPlace(item.key, item.query, apiKey))));
-    }
-    return res.status(200).json({ results });
-  } catch (err) {
-    if (err instanceof ListError) return res.status(502).json({ error: err.message });
-    console.error('maps-list lookup error:', err);
-    return res.status(502).json({ error: 'No se pudo consultar Google.' });
-  }
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
   const decoded = await verifyAuthHeader(req.headers.authorization);
   if (decoded?.admin !== true) return res.status(403).json({ error: 'Solo admin' });
-
-  if (req.body?.lookup !== undefined) return handleLookup(req.body.lookup, res);
 
   const url = typeof req.body?.url === 'string' ? req.body.url.trim() : '';
   let host = '';

@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { PenLine, Trash2 } from 'lucide-react';
 import { MIN_SHAPE_POINTS, MAX_SHAPE_POINTS, ZONES, ZONE_BY_ID, insideShape, spotZone, suggestZoneFor, type LatLng, type ZoneId, type ZoneShapes } from '../lib/zones';
 import { RowImage } from './adminShared';
-import { GoogleCoords } from './GoogleCoords';
+import { OsmCoords } from './OsmCoords';
 import { saveZoneShape, type RackDoc, type SpotDoc } from './spotsStore';
 import { useZoneGuides } from './useZoneGuides';
 import { ZoneSelectRow } from './ZoneSelect';
@@ -17,12 +17,13 @@ import { placeRows, rowKind, setRowZone, type PlaceRow } from './zoneRows';
    punteado si no tiene). Al tocar un punto se le asigna la zona
    ahí mismo. "Trazar" dibuja el contorno de una zona punto por
    punto. Lo que no tiene coordenadas va en la lista de al lado,
-   con la búsqueda de coordenadas en Google.
+   con la búsqueda de coordenadas en OpenStreetMap.
    ============================================================ */
 
-// Mapa base minimalista (CARTO Positron): calles claras, sin ruido.
-const TILES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-const TILES_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+// Mapa base de OpenStreetMap (sin llave), en gris con CSS (.sa-map-tiles) para que
+// sólo resalten las zonas y los puntos.
+const TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILES_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const HOME: L.LatLngExpression = [20.68, -103.37];
 
 const NO_ZONE_COLOR = '#8f8a9f';
@@ -127,7 +128,7 @@ export function ZonesMapView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const map = L.map(containerRef.current, { center: HOME, zoom: 13, zoomAnimation: false, fadeAnimation: false, markerZoomAnimation: false });
-    L.tileLayer(TILES, { maxZoom: 20, subdomains: 'abcd', attribution: TILES_ATTRIBUTION }).addTo(map);
+    L.tileLayer(TILES, { maxZoom: 19, attribution: TILES_ATTRIBUTION, className: 'sa-map-tiles' }).addTo(map);
     zonesLayerRef.current = L.layerGroup().addTo(map);
     markersRef.current = L.layerGroup().addTo(map);
     drawLayerRef.current = L.layerGroup().addTo(map);
@@ -283,7 +284,7 @@ export function ZonesMapView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: 
     if (failed.length) setError(`No se pudo asignar: ${failed.join(', ')}`);
   };
 
-  // Vista previa de lo que encontró Google, sin guardar.
+  // Vista previa de lo que encontró OpenStreetMap, sin guardar.
   const focusPoint = (lat: number, lng: number) => {
     const map = mapRef.current;
     if (!map) return;
@@ -386,7 +387,7 @@ export function ZonesMapView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: 
             </div>
           )}
 
-          <GoogleCoords rows={rows} onFocus={focusPoint} />
+          <OsmCoords rows={rows} onFocus={focusPoint} />
 
           <h3 className="sa-map-side__title">Sin coordenadas <span>{withoutCoords.length}</span></h3>
           {withoutCoords.length === 0 ? (
