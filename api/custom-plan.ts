@@ -228,7 +228,8 @@ const generateRoulettePlan = async (live: LiveCatalog, { placeIds, locked, momen
     'Apoyo, sólo para reemplazos:',
     ...lines.slice(spunPlaces.length),
   ].join('\n');
-  const raw = await askDeepSeek(ROULETTE_PROMPT, user, 650, 0.9);
+  // Hasta 5 paradas: un poco más de espacio para la respuesta.
+  const raw = await askDeepSeek(ROULETTE_PROMPT, user, 800, 0.9);
   if (!raw) return null;
 
   const allowed = new Set(catalog.list.map((place) => place.id));

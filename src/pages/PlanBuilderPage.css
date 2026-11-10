@@ -110,8 +110,6 @@
   .plan-builder-page.is-in-progress .plan-builder-card { min-height: calc(var(--app-dvh) - 88px - env(safe-area-inset-bottom)); }
   /* Que GIRAR y ARMAR PLAN se vean sin deslizar */
   .plan-builder-copy > p { display: none; }
-  .plan-slot { min-height: 96px; }
-  .plan-slot.is-empty { min-height: 60px; }
   /* Como en la app: GIRAR / ARMAR PLAN pegados abajo, siempre a la vista */
   .plan-roulette .plan-step-actions { position: sticky; bottom: 0; z-index: 10; margin-inline: -18px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); background: #f7f6ff; border-top: 1.5px solid rgba(11,10,18,.12); }
 }
@@ -146,64 +144,18 @@
 .plan-mode-switch button.is-active { color: #fff; background: #0b0a12; }
 .plan-mode-switch button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: -4px; }
 
-.plan-roulette { gap: 12px; padding-top: 14px; }
 
-.plan-roulette-moments { display: grid; grid-template-columns: repeat(4, 1fr); border: 1.5px solid #0b0a12; }
-.plan-roulette-moments button { display: grid; justify-items: center; gap: 4px; min-height: 58px; padding: 8px 2px; color: #575463; background: #fff; border: 0; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
-.plan-roulette-moments button + button { border-left: 1.5px solid #0b0a12; }
-.plan-roulette-moments button.is-active { color: #fff; background: #0b0a12; }
-.plan-roulette-moments button.is-active svg { color: #b8affe; }
 
-/* Zona: fila compacta de texto, debajo del momento */
-.plan-roulette-zones { display: flex; align-items: center; gap: 6px; color: #6557d8; }
-.plan-roulette-zones svg { flex: none; }
-.plan-roulette-zones button { flex: 1; min-height: 36px; padding: 0 4px; color: #0b0a12; background: transparent; border: 1.5px solid rgba(11,10,18,.25); font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
-.plan-roulette-zones button.is-active { color: #fff; background: #0b0a12; border-color: #0b0a12; }
-.plan-roulette-zones button:disabled { opacity: .45; }
-.plan-roulette-zones button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
 
-.plan-roulette-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.plan-roulette-interests { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-.plan-roulette-interests::-webkit-scrollbar { display: none; }
-.plan-roulette-interests button, .plan-roulette-count button { flex: none; display: grid; width: 42px; height: 42px; place-items: center; padding: 0; color: #6557d8; background: transparent; border: 1.5px dashed #6557d8; cursor: pointer; touch-action: manipulation; }
-.plan-roulette-interests button.is-active { color: #fff; background: #6557d8; border-style: solid; }
-.plan-roulette-count { flex: none; display: flex; border: 1.5px solid #0b0a12; }
-.plan-roulette-count button { width: 36px; height: 39px; color: #0b0a12; border: 0; font: 900 .95rem 'Outfit', sans-serif; }
-.plan-roulette-count button.is-active { color: #fff; background: #0b0a12; }
-.plan-roulette button:disabled { cursor: not-allowed; }
-.plan-roulette-interests button:disabled, .plan-roulette-count button:disabled, .plan-roulette-moments button:disabled { opacity: .45; }
-.plan-roulette button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
 
-/* Las tarjetas se reparten el alto disponible: la foto manda. */
-.plan-roulette-slots { flex: 1; display: flex; flex-direction: column; gap: 10px; min-height: 0; margin: 0; padding: 0; list-style: none; }
-.plan-slot { position: relative; flex: 1 1 0; min-height: 112px; }
-.plan-slot-face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; overflow: hidden; padding: 14px; color: #fff; text-align: left; background: #0b0a12; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; transition: transform .15s, box-shadow .15s; }
-.plan-slot-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.plan-slot-face::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,10,18,.88), rgba(11,10,18,.1) 62%); }
-.plan-slot-face > :not(img) { position: relative; z-index: 1; }
-.plan-slot-art { position: absolute !important; inset: 0; display: grid; place-items: center; color: #b8affe; background: repeating-linear-gradient(135deg, #17142a 0 14px, #1c1934 14px 28px); }
-.plan-slot-tag { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; max-width: 100%; overflow: hidden; padding: 4px 8px; color: #0b0a12; background: #b8affe; font: 850 .6rem 'Outfit', sans-serif; letter-spacing: .1em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.plan-slot-face strong { display: -webkit-box; overflow: hidden; font: 900 clamp(1.25rem, 6vw, 1.6rem)/1 'Outfit', sans-serif; letter-spacing: -.03em; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.plan-slot-lock { position: absolute !important; top: 10px; right: 10px; display: grid; width: 36px; height: 36px; place-items: center; color: #fff; background: rgba(11,10,18,.55); border: 1.5px solid rgba(255,255,255,.6); }
-.plan-slot.is-locked .plan-slot-face { border: 3px solid #b8affe; box-shadow: 5px 5px 0 #8b7cf6; transform: translate(-2px, -2px); }
-.plan-slot.is-locked .plan-slot-lock { color: #0b0a12; background: #b8affe; border-color: #0b0a12; }
-.plan-slot.is-rolling .plan-slot-face img, .plan-slot.is-rolling .plan-slot-face strong { filter: blur(2px); }
-.plan-slot.is-empty .plan-slot-face { justify-content: center; align-items: center; color: #6557d8; background: #e9e6ff; border: 2px dashed #6557d8; }
-.plan-slot.is-empty .plan-slot-face::after { display: none; }
-.plan-slot.is-empty .plan-slot-face strong { font-size: 2.6rem; }
-.plan-slot-respin { position: absolute; z-index: 2; right: 10px; bottom: 10px; display: grid; width: 40px; height: 40px; place-items: center; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; }
-.plan-slot:has(.plan-slot-respin) .plan-slot-face strong { padding-right: 46px; }
 
 .plan-roulette .plan-step-actions { margin-top: 0; padding-top: 14px; }
-.plan-roulette-respin { flex: none; width: 56px; padding: 0; }
-.plan-roulette-spin { font-size: 1rem; letter-spacing: .16em; }
 .plan-roulette-error { margin: 12px 18px 0; }
 
 .plan-result-thread { display: grid; gap: 4px; margin: 0 0 12px; padding: 12px 14px; color: #fff; background: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; font: 800 1rem/1.35 'Outfit', sans-serif; }
 .plan-result-thread b { color: #b8affe; font-size: .62rem; letter-spacing: .16em; }
 .plan-stop-swapped { justify-self: start; padding: 3px 7px; color: #0b0a12; background: #b8affe; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .12em; }
 
-@media (prefers-reduced-motion: reduce) { .plan-slot-face { transition: none; } }
 
 .plan-result-share { width: 100%; margin-top: 22px; }
 
@@ -230,58 +182,26 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
   html.is-app-mode .plan-builder-main { grid-template-columns: 1fr; width: min(620px, 100%); padding: 0; }
 }
 
-/* Pantallas chicas (iPhone SE, Android compactos): filtros, paradas y GIRAR caben sin deslizar.
-   Las paradas se reparten el alto que sobra y bajan a una línea. */
+/* Pantallas chicas (iPhone SE, Android compactos): menos alto en barras y botones. */
 @media (max-width: 899px) and (max-height: 760px) {
   .plan-builder-nav { min-height: 52px; }
   .plan-builder-page.is-in-progress .plan-builder-main { padding-top: 8px; padding-bottom: 10px; }
   .plan-builder-page.is-in-progress .plan-builder-card { min-height: calc(var(--app-dvh) - 70px - env(safe-area-inset-bottom)); }
   .plan-mode-switch button { min-height: 42px; }
 
-  .plan-roulette { gap: 8px; padding-top: 10px; }
-  .plan-roulette-moments button { min-height: 46px; padding: 5px 2px; gap: 2px; }
-  .plan-roulette-moments svg { width: 17px; height: 17px; }
-  .plan-roulette-zones button { min-height: 32px; }
-  .plan-roulette-interests button { width: 36px; height: 36px; }
-  .plan-roulette-count button { width: 32px; height: 33px; }
 
-  .plan-slot, .plan-slot.is-empty { min-height: 60px; }
-  .plan-slot-face { gap: 4px; padding: 9px 12px; }
-  .plan-slot-face strong { font-size: 1.1rem; -webkit-line-clamp: 1; }
-  .plan-slot.is-empty .plan-slot-face strong { font-size: 1.8rem; }
-  .plan-slot-tag { padding: 3px 7px; font-size: .56rem; }
-  .plan-slot-art svg { width: 30px; height: 30px; opacity: .4; }
   /* Candado y volver a girar, uno al lado del otro y centrados: no caben apilados */
-  .plan-slot-lock, .plan-slot-respin { top: 50%; bottom: auto; width: 34px; height: 34px; transform: translateY(-50%); }
-  .plan-slot-lock { right: 8px; }
-  .plan-slot-respin { right: 8px; }
-  .plan-slot:has(.plan-slot-respin) .plan-slot-lock { right: 48px; }
-  .plan-slot-face strong { padding-right: 40px; }
-  .plan-slot:has(.plan-slot-respin) .plan-slot-face strong { padding-right: 82px; }
 
-  /* Con 4 paradas: sólo el nombre, sin etiqueta */
-  .plan-roulette-slots:has(> li:nth-child(4)) { gap: 6px; }
-  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot { min-height: 44px; }
-  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot-tag { display: none; }
-  .plan-roulette-slots:has(> li:nth-child(4)) .plan-slot-face { justify-content: center; padding-block: 6px; }
 
   .plan-roulette .plan-step-actions { padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
   .plan-builder-button, .plan-builder-secondary, .plan-step-back { min-height: 50px; }
-  .plan-roulette-respin, .plan-step-back { width: 50px; }
+  .plan-step-back { width: 50px; }
 }
 
-/* Muy bajitas (iPhone SE de 4", teclado o barras del navegador abiertas): los momentos sin ícono. */
+/* Muy bajitas (iPhone SE de 4", teclado o barras del navegador abiertas). */
 @media (max-width: 899px) and (max-height: 540px) {
   .plan-builder-nav { min-height: 46px; }
   .plan-mode-switch button { min-height: 36px; }
-  .plan-roulette { gap: 6px; padding-top: 8px; }
-  .plan-roulette-moments button { min-height: 34px; padding: 0 2px; align-content: center; }
-  .plan-roulette-moments svg { display: none; }
-  .plan-roulette-zones button { min-height: 30px; }
-  .plan-roulette-interests button { width: 34px; height: 34px; }
-  .plan-roulette-count button { height: 31px; }
-  .plan-slot, .plan-slot.is-empty { min-height: 54px; }
-  .plan-slot-face { padding-block: 7px; }
   .plan-builder-button, .plan-builder-secondary, .plan-step-back { min-height: 46px; }
 }
 
@@ -292,13 +212,6 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
   .plan-step { padding-inline: 12px; }
   .plan-step-actions, .plan-roulette .plan-step-actions { margin-inline: -12px; padding-inline: 12px; }
 
-  .plan-roulette-moments button { font-size: .56rem; letter-spacing: .02em; white-space: nowrap; }
-  .plan-roulette-zones { gap: 4px; }
-  .plan-roulette-zones > svg { display: none; }
-  .plan-roulette-zones button { flex: 1 1 0; min-width: 0; padding: 0 2px; font-size: .56rem; letter-spacing: .02em; }
-  .plan-roulette-tools { gap: 8px; }
-  /* Si no caben todas las categorías se desliza de lado; el borde difuminado avisa que hay más */
-  .plan-roulette-interests { flex: 1; -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
 }
 
 /* 5 preguntas: ruta de tres paradas (ItineraryCard) */
@@ -321,3 +234,103 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
 .plan-route .plan-builder-note { color: #8a8794; }
 .plan-route-more { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; color: #b8affe; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
 .plan-route-more:hover, .plan-route-more:focus-visible { color: #fff; text-decoration: underline; outline: 0; }
+
+/* ---------- Ruleta en dos pasos (cuándo y dónde → tu plan) ---------- */
+.plan-roulette { gap: 14px; padding-top: 16px; }
+.plan-roulette .plan-step-top { margin-bottom: 2px; }
+.plan-roulette button:disabled { cursor: not-allowed; }
+.plan-roulette button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+.plan-roulette .plan-step-actions { margin-top: auto; }
+
+.plan-roulette-question { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; font: 900 1.45rem/1 'Outfit', sans-serif; letter-spacing: -.03em; }
+.plan-roulette-question svg { color: #6557d8; }
+
+.plan-roulette-moments { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.plan-roulette-moments button { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; align-items: center; min-height: 64px; padding: 10px 12px; color: #0b0a12; text-align: left; background: #fff; border: 1.5px solid #0b0a12; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-moments svg { grid-row: 1 / span 2; color: #6557d8; }
+.plan-roulette-moments strong { font: 900 1rem/1.1 'Outfit', sans-serif; letter-spacing: -.01em; }
+.plan-roulette-moments span { color: #575463; font-size: .76rem; line-height: 1.2; }
+.plan-roulette-moments button.is-active { color: #fff; background: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; }
+.plan-roulette-moments button.is-active svg { color: #b8affe; }
+.plan-roulette-moments button.is-active span { color: #d6d0ff; }
+
+.plan-roulette-zones { display: flex; flex-wrap: wrap; gap: 8px; }
+.plan-roulette-zones button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 850 .72rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-zones small { color: #6557d8; font-size: .62rem; }
+.plan-roulette-zones button.is-active { color: #fff; background: #0b0a12; }
+.plan-roulette-zones button.is-active small { color: #b8affe; }
+.plan-roulette-zones button:disabled { opacity: .4; border-style: dashed; }
+
+.plan-roulette-actions.is-column { flex-direction: column; gap: 2px; }
+.plan-roulette-spin { min-height: 60px; font-size: 1rem; letter-spacing: .16em; }
+.plan-roulette-link { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 6px; color: #6557d8; background: none; border: 0; font: 850 .66rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
+
+.plan-roulette-summary { display: flex; min-height: 48px; align-items: center; justify-content: space-between; gap: 10px; padding: 0 12px; color: #fff; text-align: left; background: #0b0a12; border: 0; font: 850 .74rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-summary b { display: inline-flex; flex: none; align-items: center; gap: 5px; color: #b8affe; font-size: .62rem; letter-spacing: .12em; }
+.plan-roulette-help { margin: 0; color: #575463; font-size: .86rem; line-height: 1.4; }
+
+.plan-roulette-slots { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.plan-roulette-slots:empty { display: none; }
+.plan-slot { min-width: 0; background: #fff; border: 1.5px solid #0b0a12; }
+.plan-slot.is-locked { border-color: #6557d8; box-shadow: 4px 4px 0 #8b7cf6; }
+.plan-slot-card { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px; }
+.plan-slot-thumb { display: grid; width: 72px; height: 72px; place-items: center; overflow: hidden; color: #b8affe; background: repeating-linear-gradient(135deg, #17142a 0 10px, #1c1934 10px 20px); }
+.plan-slot-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.plan-slot-info { display: grid; gap: 3px; min-width: 0; }
+.plan-slot-number { color: #6557d8; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .14em; }
+.plan-slot-info strong { display: -webkit-box; overflow: hidden; font: 900 1.12rem/1.08 'Outfit', sans-serif; letter-spacing: -.02em; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.plan-slot-meta { overflow: hidden; color: #575463; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+.plan-slot.is-rolling .plan-slot-thumb img, .plan-slot.is-rolling .plan-slot-info strong, .plan-slot.is-rolling .plan-slot-meta { filter: blur(2px); }
+.plan-slot-actions { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1.5px solid #0b0a12; }
+.plan-slot-actions button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 6px; padding: 0 4px; color: #0b0a12; background: transparent; border: 0; font: 850 .64rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
+.plan-slot-actions button + button { border-left: 1.5px solid rgba(11, 10, 18, .2); }
+.plan-slot-actions button.is-on { background: #b8affe; }
+.plan-slot-actions button:disabled { opacity: .35; }
+
+.plan-roulette-add { display: inline-flex; width: 100%; min-height: 56px; align-items: center; justify-content: center; gap: 8px; color: #0b0a12; background: #e9e6ff; border: 2px dashed #6557d8; font: 900 .78rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
+.plan-roulette-add small { color: #6557d8; font-size: .66rem; }
+.plan-roulette-add:disabled { opacity: .5; }
+.plan-roulette-full { margin: 0; padding: 10px 12px; color: #36333f; background: #e9e6ff; font-size: .82rem; line-height: 1.4; }
+.plan-roulette-actions .plan-roulette-respin { flex: 0 0 auto; padding: 0 16px; }
+
+/* Agregar parada: hoja que sube desde abajo */
+.plan-add { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-end; justify-content: center; color: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.plan-add *, .plan-add *::before, .plan-add *::after { box-sizing: border-box; }
+.plan-add-backdrop { position: absolute; inset: 0; background: rgba(11, 10, 18, .62); border: 0; cursor: pointer; }
+.plan-add-sheet { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: min(88dvh, 760px); background: #f7f6ff; border-top: 2px solid #0b0a12; box-shadow: 0 -6px 0 #8b7cf6; animation: plan-add-in .2s ease both; }
+@keyframes plan-add-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .plan-add-sheet { animation: none; } }
+.plan-add-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 8px 6px 16px; }
+.plan-add-head h2 { margin: 0; font: 900 1.15rem 'Outfit', sans-serif; letter-spacing: .02em; }
+.plan-add-close { display: grid; width: 44px; height: 44px; place-items: center; color: #0b0a12; background: none; border: 0; cursor: pointer; }
+.plan-add-categories { display: flex; flex: none; gap: 6px; overflow-x: auto; padding: 2px 16px 10px; scrollbar-width: none; }
+.plan-add-categories::-webkit-scrollbar { display: none; }
+.plan-add-categories button { display: inline-flex; flex: none; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 850 .66rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; touch-action: manipulation; }
+.plan-add-categories button.is-active { color: #fff; background: #0b0a12; }
+.plan-add-search { display: flex; flex: none; align-items: center; gap: 8px; min-height: 48px; margin: 0 16px 8px; padding: 0 12px; color: #575463; background: #fff; border: 1.5px solid #0b0a12; }
+.plan-add-search:focus-within { box-shadow: 4px 4px 0 #8b7cf6; }
+/* 16px evita que iOS haga zoom al enfocar */
+.plan-add-search input { flex: 1; min-width: 0; height: 44px; color: #0b0a12; background: transparent; border: 0; outline: 0; font: 500 16px 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
+.plan-add-list { flex: 1; min-height: 0; margin: 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; list-style: none; }
+.plan-add-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; min-height: 68px; padding: 8px 0; color: #0b0a12; text-align: left; background: none; border: 0; border-bottom: 1.5px solid rgba(11, 10, 18, .14); cursor: pointer; touch-action: manipulation; }
+.plan-add-row:focus-visible, .plan-add-categories button:focus-visible, .plan-add-close:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+.plan-add-thumb { display: grid; width: 52px; height: 52px; place-items: center; overflow: hidden; color: #b8affe; background: #17142a; }
+.plan-add-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.plan-add-row.is-surprise .plan-add-thumb { color: #0b0a12; background: #b8affe; }
+.plan-add-info { display: grid; gap: 2px; min-width: 0; }
+.plan-add-info strong { overflow: hidden; font: 900 1rem/1.15 'Outfit', sans-serif; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.plan-add-info span { overflow: hidden; color: #575463; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+.plan-add-row > svg { color: #6557d8; }
+.plan-add-empty { padding: 24px 0; color: #575463; font-size: .9rem; }
+@media (min-width: 900px) {
+  .plan-add { align-items: center; }
+  .plan-add-sheet { height: min(80dvh, 720px); border: 2px solid #0b0a12; box-shadow: 8px 8px 0 #8b7cf6; }
+  .plan-roulette-moments { grid-template-columns: repeat(4, 1fr); }
+  .plan-roulette-moments button { grid-template-columns: 1fr; row-gap: 4px; }
+  .plan-roulette-moments svg { grid-row: auto; }
+}
+@media (max-width: 360px) {
+  .plan-slot-actions button { font-size: .58rem; letter-spacing: .06em; }
+  .plan-slot-card { grid-template-columns: 60px minmax(0, 1fr); }
+  .plan-slot-thumb { width: 60px; height: 60px; }
+}
