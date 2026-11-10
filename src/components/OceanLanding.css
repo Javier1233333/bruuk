@@ -799,15 +799,17 @@
 .sunset-intro-card .spots-eyebrow { color: #ff9a5c; }
 .sunset-intro-card .spots-subtitle { margin-top: 10px; font-size: 1rem; }
 
-/* Con Atardeceres son 5 botones: en celular se compactan para que quepan sin desbordar */
+/* Con Museos y Atardeceres son 6 botones: en celular se compactan y, si aun así
+   no caben, la barra se desliza de lado en vez de recortar el texto. */
 @media (max-width: 480px) {
-  .filter-btn-floating { min-width: 0; padding-inline: 4px; letter-spacing: 0; }
+  .category-filters-inner { overflow-x: auto; scrollbar-width: none; }
+  .category-filters-inner::-webkit-scrollbar { display: none; }
+  .filter-btn-floating { flex: 1 0 auto; white-space: nowrap; padding-inline: 3px; letter-spacing: 0; }
   .filter-btn-sunset svg { display: none; }
 }
 
 @media (max-width: 360px) {
-  .filter-btn-floating { font-size: 0.58rem; padding-inline: 3px; }
-  .filter-btn-sunset { flex: 1.7; }
+  .filter-btn-floating { font-size: 0.6rem; }
 }
 
 /* Explorar por zona: selector bajo los filtros de categoría */

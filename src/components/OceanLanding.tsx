@@ -50,7 +50,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 };
 
 // Atardeceres es una sección aparte: sus lugares no entran a Todos ni a las demás categorías.
-type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares' | 'atardeceres';
+type CategoryFilter = 'todos' | 'cafes' | 'restaurantes' | 'bares' | 'museos' | 'atardeceres';
 
 type Slide = Spot | { id: string; wall: true } | { id: string; hotspots: true } | { id: string; guide: true };
 
@@ -98,6 +98,7 @@ export function OceanLanding() {
   // Categorize spots for filtering
   const getCategoryGroup = (type: string): CategoryFilter => {
     const t = type.toLowerCase();
+    if (t.includes('museo')) return 'museos';
     if (t.startsWith('café') || t.startsWith('cafe') || t.startsWith('cafetería') || t.startsWith('panader')) return 'cafes';
     if (t.startsWith('restaurante') || t.startsWith('maris') || t.startsWith('pizz') || t.startsWith('bagel') || t.startsWith('sandwich') || t.startsWith('pollería') || t.startsWith('hamburgues')) return 'restaurantes';
     if (t.startsWith('bar') || t.startsWith('rooftop bar') || t.startsWith('club') || t.startsWith('disco') || t.startsWith('coctel') || t.startsWith('cervec')) return 'bares';
@@ -115,6 +116,7 @@ export function OceanLanding() {
     if (activeCategory === 'cafes') return cat === 'cafes';
     if (activeCategory === 'bares') return cat === 'bares';
     if (activeCategory === 'restaurantes') return cat === 'restaurantes';
+    if (activeCategory === 'museos') return cat === 'museos';
     return true;
   });
   // Con zona: sólo sus lugares, y primero el top curado de la zona en su orden.
@@ -208,6 +210,12 @@ export function OceanLanding() {
             onClick={() => setActiveCategory('bares')}
           >
             Bares
+          </button>
+          <button
+            className={`filter-btn-floating ${activeCategory === 'museos' ? 'active' : ''}`}
+            onClick={() => setActiveCategory('museos')}
+          >
+            Museos
           </button>
           <button
             className={`filter-btn-floating filter-btn-sunset ${activeCategory === 'atardeceres' ? 'active' : ''}`}

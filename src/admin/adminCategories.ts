@@ -23,7 +23,7 @@ export const rackCategory = (place: Pick<RackDoc, 'category'>): Category =>
   RACK_CATEGORIES[place.category] ?? RACK_CATEGORIES['Rack recomienda'];
 
 // Orden de los grupos: primero las de Spots, luego las de Rack
-const CATEGORY_ORDER = ['CAFÉ', 'PAN', 'POSTRE', 'COMIDA', 'BAR', 'NOCHE', 'TIENDA', 'ATARDECER', ...Object.values(RACK_CATEGORIES).map((category) => category.label)];
+const CATEGORY_ORDER = ['CAFÉ', 'PAN', 'POSTRE', 'COMIDA', 'BAR', 'NOCHE', 'TIENDA', 'MUSEO', 'ATARDECER', ...Object.values(RACK_CATEGORIES).map((category) => category.label)];
 
 export function groupByCategory<T>(items: T[], categoryOf: (item: T) => Category, hasZone: (item: T) => boolean) {
   const groups = new Map<string, { category: Category; items: T[] }>();

@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View, type FlatList as FlatListType } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useScrollToTop } from 'expo-router';
-import { ArrowRight, ArrowUpRight, Coffee, Martini, Megaphone, Sunset, Utensils } from 'lucide-react-native';
+import { ArrowRight, ArrowUpRight, Coffee, Landmark, Martini, Megaphone, Sunset, Utensils } from 'lucide-react-native';
 import { HotspotsCard } from '../../components/HotspotsCard';
 import { ZoneChips, ZoneGuide, orderByZone } from '../../components/ZoneGuide';
 import { SpotCard } from '../../components/SpotCard';
@@ -12,13 +12,14 @@ import type { PlanPlace } from '../../lib/catalog';
 import { useContent } from '../../lib/content';
 import { colors, fonts, space } from '../../theme';
 
-type Filter = 'todos' | 'cafe' | 'comida' | 'noche' | 'atardecer';
+type Filter = 'todos' | 'cafe' | 'comida' | 'noche' | 'cultura' | 'atardecer';
 
 const FILTERS: { value: Filter; label: string; icon?: typeof Coffee }[] = [
   { value: 'todos', label: 'TODOS' },
   { value: 'cafe', label: 'CAFÉS', icon: Coffee },
   { value: 'comida', label: 'COMIDA', icon: Utensils },
   { value: 'noche', label: 'BARES', icon: Martini },
+  { value: 'cultura', label: 'MUSEOS', icon: Landmark },
   { value: 'atardecer', label: 'ATARDECERES', icon: Sunset },
 ];
 
@@ -43,7 +44,9 @@ export default function HomeScreen() {
   useScrollToTop(listRef);
 
   // Como el feed de la web: los hotspots primero y el resto revuelto (una vez por carga).
-  const shuffled = useMemo(() => shuffle(places.filter((place) => ['cafe', 'comida', 'noche'].includes(place.interest))), [places]);
+  // Museos: sólo los que están en Spots (los del mapa original de cultura no tienen ficha completa).
+  const isFeedPlace = (place: PlanPlace) => ['cafe', 'comida', 'noche'].includes(place.interest) || (place.interest === 'cultura' && /museo/i.test(place.type));
+  const shuffled = useMemo(() => shuffle(places.filter(isFeedPlace)), [places]);
 
   const rows = useMemo<Row[]>(() => {
     if (filter === 'atardecer') {

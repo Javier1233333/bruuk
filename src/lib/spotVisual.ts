@@ -1,4 +1,4 @@
-import { Coffee, Croissant, IceCreamBowl, Martini, Music2, ShoppingBag, Sunset, Utensils, type LucideIcon } from 'lucide-react';
+import { Coffee, Croissant, IceCreamBowl, Landmark, Martini, Music2, ShoppingBag, Sunset, Utensils, type LucideIcon } from 'lucide-react';
 
 // Ícono, etiqueta e imagen de respaldo de cada categoría de Spots (tarjetas e imagen para compartir).
 export type SpotVisual = {
@@ -42,6 +42,10 @@ const CATEGORY_VISUALS: Record<string, SpotVisual> = {
     label: 'ATARDECER',
     Icon: Sunset,
   },
+  museum: {
+    label: 'MUSEO',
+    Icon: Landmark,
+  },
   shop: {
     label: 'TIENDA',
     imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=480&q=74',
@@ -51,6 +55,7 @@ const CATEGORY_VISUALS: Record<string, SpotVisual> = {
 
 export function getSpotVisual(type: string): SpotVisual {
   const value = type.toLocaleLowerCase('es');
+  if (value.includes('museo')) return CATEGORY_VISUALS.museum;
   if (value.includes('mirador') || value.includes('parque') || value.includes('bosque')) return CATEGORY_VISUALS.outdoors;
   if (value.includes('panader')) return CATEGORY_VISUALS.bakery;
   if (value.includes('helad') || value.includes('postre')) return CATEGORY_VISUALS.dessert;
