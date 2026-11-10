@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { PenLine, Trash2 } from 'lucide-react';
 import { MIN_SHAPE_POINTS, MAX_SHAPE_POINTS, ZONES, ZONE_BY_ID, insideShape, spotZone, suggestZoneFor, type LatLng, type ZoneId, type ZoneShapes } from '../lib/zones';
 import { RowImage } from './adminShared';
-import { GoogleCoords } from './GoogleCoords';
+import { OsmCoords } from './OsmCoords';
 import { saveZoneShape, type RackDoc, type SpotDoc } from './spotsStore';
 import { useZoneGuides } from './useZoneGuides';
 import { ZoneSelectRow } from './ZoneSelect';
@@ -17,7 +17,7 @@ import { placeRows, rowKind, setRowZone, type PlaceRow } from './zoneRows';
    punteado si no tiene). Al tocar un punto se le asigna la zona
    ahí mismo. "Trazar" dibuja el contorno de una zona punto por
    punto. Lo que no tiene coordenadas va en la lista de al lado,
-   con la búsqueda de coordenadas en Google.
+   con la búsqueda de coordenadas en OpenStreetMap.
    ============================================================ */
 
 // Mapa base minimalista (CARTO Positron): calles claras, sin ruido.
@@ -283,7 +283,7 @@ export function ZonesMapView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: 
     if (failed.length) setError(`No se pudo asignar: ${failed.join(', ')}`);
   };
 
-  // Vista previa de lo que encontró Google, sin guardar.
+  // Vista previa de lo que encontró OpenStreetMap, sin guardar.
   const focusPoint = (lat: number, lng: number) => {
     const map = mapRef.current;
     if (!map) return;
@@ -386,7 +386,7 @@ export function ZonesMapView({ spots, rack, loaded }: { spots: SpotDoc[]; rack: 
             </div>
           )}
 
-          <GoogleCoords rows={rows} onFocus={focusPoint} />
+          <OsmCoords rows={rows} onFocus={focusPoint} />
 
           <h3 className="sa-map-side__title">Sin coordenadas <span>{withoutCoords.length}</span></h3>
           {withoutCoords.length === 0 ? (
