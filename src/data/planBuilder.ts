@@ -119,6 +119,11 @@ export const MOMENT_INTERESTS: Record<RouletteMoment, PlanInterest[]> = {
   noche: ['comida', 'noche', 'atardecer'],
 };
 
+// En la ruleta las paradas se agregan y quitan a mano: de 2 a 5 para armar el plan.
+export const ROULETTE_MIN_STOPS = 2;
+export const ROULETTE_MAX_STOPS = 5;
+export const ROULETTE_DEFAULT_STOPS = 3;
+
 export type RouletteRequest = { placeIds: string[]; locked: string[]; moment: RouletteMoment; zone: RouletteZone };
 
 // `isKnown` permite validar contra el catálogo en vivo de la API; por defecto, el empaquetado.
@@ -130,7 +135,8 @@ export const parseRouletteRequest = (body: unknown, isKnown: (id: string) => boo
   const locked = ids(input.locked).filter((id) => placeIds.includes(id));
   if (
     !isOneOf(ROULETTE_MOMENTS, input.moment) ||
-    !STOP_OPTIONS.some((count) => count === placeIds.length) ||
+    placeIds.length < ROULETTE_MIN_STOPS ||
+    placeIds.length > ROULETTE_MAX_STOPS ||
     !placeIds.every(isKnown)
   ) {
     return null;
