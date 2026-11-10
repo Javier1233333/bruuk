@@ -1,0 +1,44 @@
+/* Itinerario: tarjeta de papel sobre fondo oscuro, como una página de fanzine. */
+.itinerary { display: flex; flex-direction: column; min-width: 0; color: #0b0a12; background: #f7f6ff; border: 2px solid #0b0a12; box-shadow: 6px 6px 0 #8b7cf6; font-family: 'DM Sans', sans-serif; scroll-margin-top: 84px; }
+.itinerary *, .itinerary *::before, .itinerary *::after { box-sizing: border-box; }
+
+.itinerary-head { display: grid; gap: 8px; padding: 18px 18px 16px; border-bottom: 2px solid #0b0a12; }
+.itinerary-kicker { color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .16em; }
+.itinerary-title { margin: 0; font: 900 clamp(1.55rem, 7vw, 2.1rem)/.95 'Outfit', sans-serif; letter-spacing: -.04em; text-transform: uppercase; text-wrap: balance; }
+.itinerary-blurb { margin: 0; color: #36333f; font-size: .92rem; line-height: 1.45; }
+.itinerary-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; }
+.itinerary-meta li { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 0 8px; border: 1.5px solid #0b0a12; font: 800 .64rem 'Outfit', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.itinerary-meta li.is-vibe { color: #fff; background: #0b0a12; }
+
+.itinerary-stops { margin: 0; padding: 4px 18px 0; list-style: none; }
+.itinerary-stop-row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; padding: 14px 0; }
+.itinerary-marker { display: grid; align-content: start; gap: 2px; }
+.itinerary-marker span { color: #6557d8; font: 850 .54rem 'Outfit', sans-serif; letter-spacing: .14em; }
+.itinerary-marker b { font: 900 1.7rem/1 'Outfit', sans-serif; letter-spacing: -.04em; }
+.itinerary-marker time { margin-top: 2px; font: 800 .72rem 'Outfit', sans-serif; letter-spacing: .06em; }
+.itinerary-body { display: grid; gap: 5px; min-width: 0; }
+.itinerary-type { color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .13em; text-transform: uppercase; }
+.itinerary-body h4 { margin: 0; font: 900 1.22rem/1.08 'Outfit', sans-serif; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.itinerary-tip { margin: 2px 0 0; padding: 8px 10px; color: #0b0a12; background: #e9e6ff; font-size: .9rem; line-height: 1.4; }
+.itinerary-tip b { margin-right: 4px; color: #6557d8; font: 900 .64rem 'Outfit', sans-serif; letter-spacing: .14em; }
+.itinerary-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; }
+.itinerary-links a, .itinerary-links button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0; color: #0b0a12; background: none; border: 0; font: 900 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; cursor: pointer; touch-action: manipulation; }
+.itinerary-links button { color: #6557d8; }
+.itinerary-links a:focus-visible, .itinerary-links button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+
+/* El tramo entre dos paradas: la línea punteada une los números. */
+.itinerary-leg { position: relative; display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 0 10px 70px; color: #36333f; border-top: 1.5px solid rgba(11, 10, 18, .14); border-bottom: 1.5px solid rgba(11, 10, 18, .14); font: 800 .7rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+.itinerary-leg::before { content: ''; position: absolute; left: 14px; top: 0; bottom: 0; border-left: 2px dashed #8b7cf6; }
+.itinerary-leg svg { flex: none; color: #6557d8; }
+
+.itinerary-actions { display: grid; gap: 8px; margin-top: auto; padding: 16px 18px 18px; border-top: 2px solid #0b0a12; }
+.itinerary-action { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; gap: 10px; padding: 0 16px; color: #0b0a12; background: transparent; border: 1.5px solid #0b0a12; font: 900 .76rem 'Outfit', sans-serif; letter-spacing: .1em; text-decoration: none; cursor: pointer; touch-action: manipulation; }
+.itinerary-action.is-primary { color: #fff; background: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; }
+.itinerary-action.is-saved { background: #b8affe; }
+.itinerary-action:hover, .itinerary-action:focus-visible { background: #e9e6ff; outline: 2px solid #0b0a12; outline-offset: 2px; }
+.itinerary-action.is-primary:hover, .itinerary-action.is-primary:focus-visible { color: #0b0a12; background: #8b7cf6; }
+
+@media (min-width: 560px) {
+  .itinerary-actions { grid-template-columns: 1fr 1fr; }
+  .itinerary-action.is-primary { grid-column: 1 / -1; }
+}

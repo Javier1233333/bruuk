@@ -337,7 +337,7 @@ function App() {
           <div className="container community-spot-cta-inner">
             <span>/ EL MAPA TAMBIÉN ES DE USTEDES</span>
             <h2 id="community-spot-title">¿TIENES UN SPOT<br />QUE TE GUSTA?</h2>
-            <p>Cada cierto tiempo subiré una guía humana con mis descubrimientos y, espero, también con los de ustedes. No tiene que estar en Guadalajara.</p>
+            <p>Cada cierto tiempo subimos una guía humana con nuestros descubrimientos y, esperamos, también con los de ustedes. No tiene que estar en Guadalajara.</p>
             <button type="button" onClick={() => transitionTo('/sube-un-spot')}>SUBIR UN SPOT <ArrowRight size={20} strokeWidth={3} /></button>
           </div>
         </section>
@@ -379,6 +379,7 @@ function App() {
                 <a href="/guadalajara/spots">Comer y tomar</a>
                 <a href="/guadalajara/rack">Vintage y tianguis</a>
                 <a href="/guadalajara/senales">Planes y rutas</a>
+                <a href="/guadalajara/rutas">Rutas para salir hoy</a>
                 <a href="/sube-un-spot">Sube un spot</a>
               </div>
               <div>

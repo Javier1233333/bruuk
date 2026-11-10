@@ -300,3 +300,24 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
   /* Si no caben todas las categorías se desliza de lado; el borde difuminado avisa que hay más */
   .plan-roulette-interests { flex: 1; -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
 }
+
+/* 5 preguntas: ruta de tres paradas (ItineraryCard) */
+.plan-builder-routes { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 6px; color: #b8affe; font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+.plan-builder-routes:hover, .plan-builder-routes:focus-visible { color: #fff; outline: 0; text-decoration: underline; }
+.plan-options.is-stacked { grid-template-columns: 1fr; }
+.plan-options.is-stacked button { min-height: 68px; }
+.plan-step-hint { flex: 1; align-self: center; margin: 0; color: #575463; font-size: .82rem; line-height: 1.35; }
+/* La tarjeta de la ruta ya trae su borde y sombra: el contenedor se vuelve transparente. */
+.plan-builder-card.is-route { color: #f7f6ff; background: transparent; box-shadow: none; }
+.plan-route { display: grid; gap: 16px; padding: 0 6px 6px 0; }
+.plan-route-answers { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.plan-route-answers button { min-height: 36px; padding: 0 10px; color: #f7f6ff; background: transparent; border: 1.5px solid rgba(255, 255, 255, .4); font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
+.plan-route-answers button:hover, .plan-route-answers button:focus-visible { color: #0b0a12; background: #b8affe; border-color: #b8affe; outline: 0; }
+.plan-route .plan-result-actions { margin-top: 4px; }
+.plan-route .plan-builder-button { color: #0b0a12; background: #f7f6ff; border-color: #f7f6ff; }
+.plan-route .plan-builder-secondary { color: #f7f6ff; border-color: rgba(255, 255, 255, .5); }
+.plan-route .plan-builder-secondary:hover, .plan-route .plan-builder-secondary:focus-visible { color: #0b0a12; background: #b8affe; }
+.plan-route .plan-builder-error { margin: 0; }
+.plan-route .plan-builder-note { color: #8a8794; }
+.plan-route-more { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; color: #b8affe; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+.plan-route-more:hover, .plan-route-more:focus-visible { color: #fff; text-decoration: underline; outline: 0; }

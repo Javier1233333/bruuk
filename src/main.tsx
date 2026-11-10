@@ -35,6 +35,7 @@ const SubmitSpotPage = lazy(() => import('./pages/SubmitSpotPage'))
 const BusinessPage = lazy(() => import('./pages/BusinessPage'))
 const SunsetPage = lazy(() => import('./pages/SunsetPage'))
 const PlanBuilderPage = lazy(() => import('./pages/PlanBuilderPage'))
+const RoutesPage = lazy(() => import('./pages/RoutesPage'))
 const EventsPage = lazy(() => import('./pages/EventsPage'))
 const MemoryMicrosite = lazy(() => import('./momentos/MemoryMicrosite'))
 // Expande Bruuk queda fuera del bundle hasta configurar sus keys.
@@ -97,6 +98,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/admin/eventos" element={<Navigate to="/guadalajara" replace />} />
           <Route path="/:city/spots" element={<OceanLanding />} />
           <Route path="/:city/rack" element={<RackPlaces />} />
+          {/* Pública: los planes compartidos por WhatsApp abren sin pedir cuenta */}
+          <Route path="/:city/rutas" element={<RoutesPage />} />
           <Route path="/:city/planes" element={<Navigate to="/guadalajara/senales" replace />} />
           <Route path="/:city/planes/:slug" element={<Navigate to="/guadalajara" replace />} />
           {/* Solo Spots y Rack son libres en la web; lo demás pide iniciar sesión */}
