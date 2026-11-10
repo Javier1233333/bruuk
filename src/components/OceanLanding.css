@@ -838,3 +838,15 @@
 }
 .zone-filter-floating select option { color: #0b0a12; text-transform: none; }
 .zone-filter-floating:focus-within { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* Flechas para avanzar el feed en computadora (como en Rack) */
+.spots-feed-arrows { position: fixed; z-index: 30; right: 24px; bottom: 32px; display: none; flex-direction: column; gap: 8px; }
+.spots-feed-arrows button { width: 48px; height: 48px; display: grid; place-items: center; color: #09090d; background: #ffffff; border: 2px solid #ffffff; box-shadow: 4px 4px 0 #8b7cf6; cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease; }
+.spots-feed-arrows button:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #8b7cf6; }
+.spots-feed-arrows button:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #8b7cf6; }
+.spots-feed-arrows button:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+.spots-feed-arrows button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+  .spots-feed-arrows { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) { .spots-feed-arrows button { transition: none; } }

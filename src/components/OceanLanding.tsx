@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ChevronDown,
+  ChevronUp,
   Flame,
   MapPin,
   Sunset,
@@ -141,6 +142,30 @@ export function OceanLanding() {
       ? [...spotSlides.slice(0, firstHotspot), { id: 'hotspots', hotspots: true }, ...spotSlides.slice(firstHotspot)]
       : spotSlides;
 
+  // Flechas de la esquina (computadora, como en Rack): avanzan una tarjeta, igual que un giro de la rueda.
+  const [edges, setEdges] = useState({ atTop: true, atBottom: false });
+  useEffect(() => {
+    const feed = containerRef.current;
+    if (!feed) return;
+    const update = () => setEdges({
+      atTop: feed.scrollTop <= 4,
+      atBottom: feed.scrollTop + feed.clientHeight >= feed.scrollHeight - 4,
+    });
+    update();
+    feed.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      feed.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [activeCategory, activeZoneId, feedSlides.length]);
+  const scrollFeedBy = (direction: 1 | -1) => {
+    const feed = containerRef.current;
+    if (!feed) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    feed.scrollBy({ top: direction * feed.clientHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
   const goToSpot = (id: string) => document.getElementById(`spot-slide-${id}`)?.scrollIntoView({ behavior: 'smooth' });
 
   // Reset scroll to top when category or zone changes
@@ -200,6 +225,15 @@ export function OceanLanding() {
             </select>
           </label>
         )}
+      </div>
+
+      <div className="spots-feed-arrows">
+        <button type="button" onClick={() => scrollFeedBy(-1)} aria-label="Spot anterior" disabled={edges.atTop}>
+          <ChevronUp size={22} strokeWidth={2.4} aria-hidden="true" />
+        </button>
+        <button type="button" onClick={() => scrollFeedBy(1)} aria-label="Siguiente spot" disabled={edges.atBottom}>
+          <ChevronDown size={22} strokeWidth={2.4} aria-hidden="true" />
+        </button>
       </div>
 
       {/* Vertical Snap Scroll Container */}
