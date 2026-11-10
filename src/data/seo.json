@@ -112,9 +112,17 @@
       "type": "website",
       "lastmod": "2026-09-25"
     },
+    "/guadalajara/rutas": {
+      "title": "Rutas en Guadalajara — Planes listos para salir hoy | Bruuk",
+      "description": "Itinerarios curados con paradas reales en un orden que se puede caminar: café, vintage, vinilos, cultura y noche en Guadalajara. Mándalos por WhatsApp y salgan hoy.",
+      "image": "/og-bruuk.jpg",
+      "imageAlt": "Rutas curadas de Bruuk en Guadalajara",
+      "type": "website",
+      "lastmod": "2026-11-10"
+    },
     "/guadalajara/arma-tu-plan": {
       "title": "Arma tu plan en Guadalajara — Planes a tu medida | Bruuk",
-      "description": "Gira la ruleta entre los cafés, comida, vintage, cultura y miradores de la guía Bruuk y deja que la IA encuentre qué los une. O arma tu plan con cinco preguntas.",
+      "description": "Gira la ruleta entre los cafés, comida, vintage, cultura y miradores de la guía Bruuk y deja que la IA encuentre qué los une. O contesta cinco preguntas y recibe una ruta de tres paradas.",
       "image": "/og-bruuk.jpg",
       "imageAlt": "Arma tu plan en Guadalajara con Bruuk",
       "type": "website",

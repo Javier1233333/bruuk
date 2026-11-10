@@ -382,3 +382,7 @@
 @media (prefers-reduced-motion: reduce) {
   .radar-canvas-card { transition: none; }
 }
+
+/* Acceso a los itinerarios curados (/guadalajara/rutas) */
+.radar-routes-link { position: absolute; z-index: 40; left: 50%; bottom: 14px; display: inline-flex; min-height: 44px; align-items: center; gap: .55rem; padding: 0 1rem; color: #0a0911; background: #fffdf8; border: 2px solid #fffdf8; box-shadow: 4px 4px 0 var(--radar-purple); font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; white-space: nowrap; transform: translateX(-50%); }
+.radar-routes-link:hover, .radar-routes-link:focus-visible { background: var(--radar-purple); border-color: var(--radar-purple); box-shadow: 4px 4px 0 #fffdf8; outline: 0; }

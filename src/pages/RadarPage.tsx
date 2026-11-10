@@ -213,6 +213,7 @@ export function RadarPage() {
         </div>
 
         <div className="radar-infinity-help" aria-hidden="true"><span>ARRASTRA PARA EXPLORAR</span><span>RUEDA / TRACKPAD / TOUCH</span></div>
+        <Link className="radar-routes-link" to="/guadalajara/rutas">RUTAS PARA SALIR HOY <ArrowRight size={16} aria-hidden="true" /></Link>
         <button className="radar-infinity-reset" type="button" onClick={resetView}><Crosshair size={17} /> CENTRAR</button>
       </main>
 

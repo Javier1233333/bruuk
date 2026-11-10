@@ -140,7 +140,7 @@ export function RadarMazRoutePage() {
 
           <section className="cabanas-entry-lead maz-route-lead maz-route-snap-card" id="ruta">
             <span>/ POR QUÉ ESTA RUTA</span>
-            <p>SOY FANÁTICO DE REDESCUBRIR MI CIUDAD. ARMÉ ESTE RECORRIDO PARA QUIENES TODAVÍA NO SE HAN DADO UNA VUELTA POR EL CENTRO RENOVADO DE ZAPOPAN.</p>
+            <p>SOMOS FANÁTICOS DE REDESCUBRIR NUESTRA CIUDAD. ARMAMOS ESTE RECORRIDO PARA QUIENES TODAVÍA NO SE HAN DADO UNA VUELTA POR EL CENTRO RENOVADO DE ZAPOPAN.</p>
           </section>
 
           <section className="cabanas-entry-chapter maz-route-stop maz-route-text-stop maz-route-snap-card" aria-labelledby="maz-breakfast-title">
@@ -148,7 +148,7 @@ export function RadarMazRoutePage() {
             <div className="cabanas-entry-chapter-copy">
               <span>/ ANTES DE QUE ABRA EL MUSEO</span>
               <h2 id="maz-breakfast-title">EMPIEZA CON ALGO DE DESAYUNAR.</h2>
-              <p><strong>Amorcito Mío</strong> es mi opción para arrancar con uno de sus sándwiches. Si llegas más tarde, también funciona para sentarte a comer una pizza.</p>
+              <p><strong>Amorcito Mío</strong> es nuestra opción para arrancar con uno de sus sándwiches. Si llegas más tarde, también funciona para sentarte a comer una pizza.</p>
               <p>Si prefieres un desayuno mexicano más tradicional, cambia la primera parada por <strong>Hostería del Ángel</strong>. No hay una respuesta correcta: elige según la hora y el antojo.</p>
               <div className="cabanas-entry-facts">
                 <span><Utensils size={17} /><b>DOS OPCIONES</b> SEGÚN TU ANTOJO</span>
@@ -168,7 +168,7 @@ export function RadarMazRoutePage() {
             </div>
             <div className="maz-route-museum-grid">
               <div className="maz-route-museum-copy">
-                <p>Me gusta empezar por el MAZ y revisar qué exposiciones están disponibles ese día. El museo tiene varias áreas: vale la pena preguntar al personal y dejar que te guíe si es tu primera visita.</p>
+                <p>Nos gusta empezar por el MAZ y revisar qué exposiciones están disponibles ese día. El museo tiene varias áreas: vale la pena preguntar al personal y dejar que te guíe si es tu primera visita.</p>
                 <p>No te quedes solamente con la primera sala. Explora todos los espacios que estén habilitados y pregunta si existe alguna sección que no hayas visto.</p>
               </div>
               <div className="cabanas-entry-facts">
@@ -187,11 +187,11 @@ export function RadarMazRoutePage() {
             </div>
             <div className="maz-route-museum-grid">
               <div className="maz-route-museum-copy">
-                <p>La exposición que a mí me voló la cabeza fue <em>Carmen Huízar: 1 gota de lluvia sobre el polvo</em>. No la menciono como promesa de que seguirá montada cuando vayas, sino como ejemplo de por qué conviene entrar sin asumir qué vas a encontrar.</p>
+                <p>La exposición que nos voló la cabeza fue <em>Carmen Huízar: 1 gota de lluvia sobre el polvo</em>. No la mencionamos como promesa de que seguirá montada cuando vayas, sino como ejemplo de por qué conviene entrar sin asumir qué vas a encontrar.</p>
                 <p>Las exposiciones cambian. Esa es una buena razón para volver al MAZ aunque ya lo conozcas.</p>
               </div>
               <div className="cabanas-entry-facts">
-                <span><Radio size={17} /><b>MI REFERENCIA</b> CARMEN HUÍZAR</span>
+                <span><Radio size={17} /><b>NUESTRA REFERENCIA</b> CARMEN HUÍZAR</span>
                 <span><Clock3 size={17} /><b>ANTES DE IR</b> REVISA LA CARTELERA ACTUAL</span>
                 <a href={MAZ_URL} target="_blank" rel="noreferrer">CONSULTAR CARTELERA <ArrowUpRight size={17} /></a>
               </div>
@@ -212,11 +212,11 @@ export function RadarMazRoutePage() {
             <div className="cabanas-entry-chapter-copy">
               <span>/ LA CALLE PEATONAL Y UNA PAUSA</span>
               <h2 id="maz-binaural-title">CAFÉ, VINILOS Y TIEMPO PARA QUEDARSE.</h2>
-              <p>Al salir del MAZ, aprovecha para caminar por la calle peatonal, una de las zonas más vivas del área metropolitana. Mi recomendación especial es <strong>Binaural Café</strong>: combina café y vinilos sin sentirse como un concepto de aparador.</p>
-              <p>Puedes pedir para llevar, pero yo me daría la oportunidad de quedarme. Escoge el vinilo que más te guste en la barra; ahí te dejan ponerlo mientras tomas el café.</p>
+              <p>Al salir del MAZ, aprovecha para caminar por la calle peatonal, una de las zonas más vivas del área metropolitana. Nuestra recomendación especial es <strong>Binaural Café</strong>: combina café y vinilos sin sentirse como un concepto de aparador.</p>
+              <p>Puedes pedir para llevar, pero nosotros nos daríamos la oportunidad de quedarnos. Escoge el vinilo que más te guste en la barra; ahí te dejan ponerlo mientras tomas el café.</p>
               <div className="cabanas-entry-facts">
                 <span><Disc3 size={17} /><b>ELIGE UN VINILO</b> Y PONLO EN LA BARRA</span>
-                <span><Coffee size={17} /><b>PARA LLEVAR O QUEDARTE</b> YO ME QUEDARÍA</span>
+                <span><Coffee size={17} /><b>PARA LLEVAR O QUEDARTE</b> NOS QUEDARÍAMOS</span>
               </div>
               <nav className="maz-route-inline-links" aria-label="Opciones de café">
                 <a href={BINAURAL_MAP_URL} target="_blank" rel="noreferrer">BINAURAL CAFÉ <ArrowUpRight size={17} /></a>
