@@ -28,6 +28,8 @@ import './RackPlaces.css';
 import { CityNav } from '../components/CityNav';
 import { FeedLoginWall } from '../components/FeedLoginWall';
 import { ShareButton } from '../components/ShareButton';
+import { PlanCartBar } from '../components/PlanCartBar';
+import { PlanCartButton } from '../components/PlanCartButton';
 import { ZONES, spotZone, type ZoneId } from '../lib/zones';
 import { useZones, zoneFromParam } from '../lib/useZones';
 import { FREE_SPOTS, isFeedLocked } from '../lib/appSession';
@@ -623,6 +625,7 @@ export function RackPlaces() {
   return (
     <div className="rack-places-page">
       <CityNav active="rack" />
+      <PlanCartBar />
       <section className="rack-places-controls" aria-label="Controles del directorio">
         <div className="rack-places-filter-select">
           <span>CATEGORÍA</span>
@@ -1083,13 +1086,16 @@ function PlaceFeedCard({
         >
           ABRIR EN MAPS <ArrowUpRight size={18} aria-hidden="true" />
         </a>
-        <ShareButton
-          className="rack-place-share"
-          title={place.name}
-          text={`Mira ${place.name} en Bruuk`}
-          path={`/guadalajara/rack?lugar=${encodeURIComponent(place.name)}`}
-          tabIndex={isClone ? -1 : undefined}
-        />
+        <div className="rack-place-buttons">
+          <PlanCartButton id={place.id} name={place.name} className="rack-place-plan" />
+          <ShareButton
+            className="rack-place-share"
+            title={place.name}
+            text={`Mira ${place.name} en Bruuk`}
+            path={`/guadalajara/rack?lugar=${encodeURIComponent(place.name)}`}
+            tabIndex={isClone ? -1 : undefined}
+          />
+        </div>
         <span className="rack-place-scroll-hint">DESLIZA PARA SEGUIR ↓</span>
       </div>
     </article>
@@ -1143,6 +1149,7 @@ function PlaceGridCard({ place, index }: { place: RackPlace; index: number }) {
       >
         CÓMO LLEGAR <ArrowUpRight size={16} aria-hidden="true" />
       </a>
+      <PlanCartButton id={place.id} name={place.name} className="rack-place-grid-plan" />
     </article>
   );
 }

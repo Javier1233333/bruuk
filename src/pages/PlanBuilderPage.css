@@ -235,65 +235,64 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
 .plan-route-more { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; color: #b8affe; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
 .plan-route-more:hover, .plan-route-more:focus-visible { color: #fff; text-decoration: underline; outline: 0; }
 
-/* ---------- Ruleta de dos carretes (zona · qué), a lo Urbanspoon ---------- */
-.plan-roulette { gap: 14px; padding-top: 18px; }
+/* ---------- Ruleta a lo Urbanspoon: dos carretes y un botón ---------- */
+.plan-roulette { gap: 12px; padding-top: 18px; }
 .plan-roulette button:disabled { cursor: not-allowed; }
 .plan-roulette button:focus-visible, .plan-roulette a:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
 .plan-roulette .plan-step-actions { margin-top: auto; }
 
 .plan-reels { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.plan-reel { display: grid; min-width: 0; background: #0b0a12; border: 2px solid #0b0a12; }
-.plan-reel-label { padding: 7px 10px 0; color: #b8affe; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .18em; }
-.plan-reel-face { display: grid; min-height: 92px; align-content: center; justify-items: start; gap: 8px; padding: 6px 10px 12px; color: #fff; text-align: left; background: transparent; border: 0; cursor: pointer; touch-action: manipulation; }
-.plan-reel-face svg { color: #b8affe; }
-.plan-reel-face strong { max-width: 100%; overflow: hidden; font: 900 clamp(1rem, 5vw, 1.6rem)/1 'Outfit', sans-serif; letter-spacing: -.03em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.plan-reel.is-rolling .plan-reel-face strong, .plan-reel.is-rolling .plan-reel-face svg { filter: blur(1.5px); opacity: .75; }
-.plan-reel-lock { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 6px; color: #0b0a12; background: #f7f6ff; border: 0; border-top: 2px solid #0b0a12; font: 850 .6rem 'Outfit', sans-serif; letter-spacing: .12em; cursor: pointer; touch-action: manipulation; }
-.plan-reel-lock:disabled { color: #8a8794; }
-.plan-reel.is-locked { border-color: #6557d8; box-shadow: 4px 4px 0 #8b7cf6; }
-.plan-reel.is-locked .plan-reel-lock { background: #b8affe; }
+.plan-reel { display: grid; min-width: 0; min-height: 112px; align-content: center; justify-items: start; gap: 8px; padding: 12px; color: #fff; text-align: left; background: #0b0a12; border: 2px solid #0b0a12; cursor: pointer; touch-action: manipulation; }
+.plan-reel:disabled { cursor: default; }
+.plan-reel svg { color: #b8affe; }
+.plan-reel-label { display: inline-flex; align-items: center; gap: 6px; color: #b8affe; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .18em; }
+.plan-reel strong { max-width: 100%; overflow: hidden; font: 900 clamp(1rem, 5vw, 1.6rem)/1 'Outfit', sans-serif; letter-spacing: -.03em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.plan-reel.is-rolling strong, .plan-reel.is-rolling > svg { filter: blur(1.5px); opacity: .75; }
+.plan-reel.is-locked { color: #0b0a12; background: #b8affe; border-color: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; }
+.plan-reel.is-locked svg, .plan-reel.is-locked .plan-reel-label { color: #0b0a12; }
+.plan-reels-hint { margin: -2px 0 0; color: #575463; font-size: .8rem; text-align: center; }
+.plan-reels-hint.is-warning { padding: 8px 10px; color: #0b0a12; background: #b8affe; font-weight: 700; }
 
-.plan-reel-options { display: flex; flex-wrap: wrap; gap: 6px; }
-.plan-reel-options button { display: inline-flex; align-items: center; gap: 6px; min-height: 42px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 850 .68rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; touch-action: manipulation; }
-.plan-reel-options button.is-active { color: #fff; background: #0b0a12; }
-.plan-reel-options button:disabled { opacity: .35; border-style: dashed; }
-
-/* El lugar que salió */
-.plan-hit-area { display: grid; }
-.plan-hit { display: grid; min-width: 0; background: #fff; border: 2px solid #0b0a12; box-shadow: 5px 5px 0 #8b7cf6; animation: plan-step-in .2s ease both; }
-.plan-hit-photo { display: grid; aspect-ratio: 16 / 9; place-items: center; overflow: hidden; color: #b8affe; background: repeating-linear-gradient(135deg, #17142a 0 14px, #1c1934 14px 28px); border-bottom: 2px solid #0b0a12; }
+/* El lugar que salió: compacto, con foto a un lado */
+.plan-hit { display: grid; grid-template-columns: 88px minmax(0, 1fr); min-width: 0; background: #fff; border: 2px solid #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; animation: plan-step-in .2s ease both; }
+.plan-hit-photo { display: grid; width: 88px; min-height: 100%; place-items: center; overflow: hidden; color: #b8affe; background: repeating-linear-gradient(135deg, #17142a 0 10px, #1c1934 10px 20px); }
 .plan-hit-photo img { width: 100%; height: 100%; object-fit: cover; }
-.plan-hit-body { display: grid; gap: 6px; padding: 12px 14px 4px; }
-.plan-hit-type { color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .13em; text-transform: uppercase; }
-.plan-hit-body h2 { margin: 0; font: 900 clamp(1.5rem, 7vw, 2rem)/1 'Outfit', sans-serif; letter-spacing: -.04em; overflow-wrap: anywhere; }
-.plan-hit-tip { margin: 2px 0 0; padding: 8px 10px; background: #e9e6ff; font-size: .9rem; line-height: 1.4; }
-.plan-hit-tip b { margin-right: 4px; color: #6557d8; font: 900 .64rem 'Outfit', sans-serif; letter-spacing: .14em; }
-.plan-hit-body a { display: inline-flex; justify-self: start; align-items: center; gap: 6px; min-height: 40px; color: #0b0a12; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
-.plan-hit-actions { display: grid; grid-template-columns: auto 1fr; border-top: 2px solid #0b0a12; }
-.plan-hit-actions button { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; color: #0b0a12; background: #fff; border: 0; font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
-.plan-hit-actions button.is-primary { color: #fff; background: #0b0a12; }
-.plan-hit-actions button:disabled { opacity: .4; }
-.plan-hit-empty { display: flex; min-height: 96px; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 16px; color: #36333f; text-align: center; background: #e9e6ff; border: 2px dashed #6557d8; font-size: .92rem; line-height: 1.4; }
-.plan-hit-empty svg { flex: none; color: #6557d8; }
-.plan-hit-empty.is-rolling { color: #6557d8; font: 900 .8rem 'Outfit', sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.plan-hit-body { display: grid; align-content: start; gap: 4px; min-width: 0; padding: 10px 12px 2px; }
+.plan-hit-type { overflow: hidden; color: #6557d8; font: 850 .58rem 'Outfit', sans-serif; letter-spacing: .12em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.plan-hit-body h2 { margin: 0; font: 900 1.25rem/1.05 'Outfit', sans-serif; letter-spacing: -.03em; overflow-wrap: anywhere; }
+.plan-hit-tip { display: -webkit-box; margin: 0; overflow: hidden; color: #36333f; font-size: .84rem; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.plan-hit-body a { display: inline-flex; justify-self: start; align-items: center; gap: 5px; min-height: 36px; color: #0b0a12; font: 900 .6rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+.plan-hit-add { grid-column: 1 / -1; display: inline-flex; min-height: 52px; align-items: center; justify-content: center; gap: 8px; color: #fff; background: #0b0a12; border: 0; font: 900 .76rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
+.plan-hit-add:hover, .plan-hit-add:focus-visible { color: #0b0a12; background: #8b7cf6; }
 @media (prefers-reduced-motion: reduce) { .plan-hit { animation: none; } }
 
-/* Mi plan: lo que se va agregando */
-.plan-tray { display: grid; gap: 8px; padding: 0; }
-.plan-tray header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.plan-tray h2 { display: flex; align-items: center; gap: 8px; margin: 0; font: 900 .8rem 'Outfit', sans-serif; letter-spacing: .14em; }
-.plan-tray h2 span { padding: 1px 7px; color: #fff; background: #0b0a12; font-size: .66rem; letter-spacing: .06em; }
-.plan-tray-search { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0; color: #6557d8; background: none; border: 0; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
-.plan-tray-empty { margin: 0; color: #575463; font-size: .84rem; line-height: 1.4; }
+/* Mi plan: lo que se va agregando (desde aquí, Spots o Rack) */
+.plan-tray { display: grid; gap: 6px; padding: 0; }
+.plan-tray h2 { display: flex; align-items: center; gap: 8px; margin: 4px 0 0; font: 900 .74rem 'Outfit', sans-serif; letter-spacing: .14em; }
+.plan-tray h2 span { padding: 1px 7px; color: #fff; background: #0b0a12; font-size: .64rem; letter-spacing: .06em; }
+.plan-tray-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0; color: #575463; font-size: .84rem; line-height: 1.4; }
+.plan-tray-empty a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; color: #6557d8; font-weight: 800; }
 .plan-tray ol { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1.5px solid #0b0a12; }
-.plan-tray li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 52px; border-bottom: 1.5px solid rgba(11, 10, 18, .16); }
-.plan-tray li b { color: #6557d8; font: 900 .95rem 'Outfit', sans-serif; }
-.plan-tray li span { display: grid; min-width: 0; color: #575463; font-size: .74rem; }
-.plan-tray li strong { overflow: hidden; color: #0b0a12; font: 900 .98rem/1.15 'Outfit', sans-serif; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
-.plan-tray li button { display: grid; width: 44px; height: 44px; place-items: center; color: #0b0a12; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
+.plan-tray li { display: grid; grid-template-columns: 22px minmax(0, 1fr) 40px; gap: 6px; align-items: center; min-height: 44px; border-bottom: 1.5px solid rgba(11, 10, 18, .16); }
+.plan-tray li b { color: #6557d8; font: 900 .9rem 'Outfit', sans-serif; }
+.plan-tray li span { overflow: hidden; font: 900 .95rem/1.15 'Outfit', sans-serif; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.plan-tray li button { display: grid; width: 40px; height: 40px; place-items: center; color: #0b0a12; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
 
-.plan-roulette-spin { min-height: 60px; font-size: 1rem; letter-spacing: .16em; }
+.plan-roulette-spin { min-height: 58px; font-size: 1rem; letter-spacing: .16em; }
 .plan-roulette-actions .plan-roulette-respin { flex: 0 0 auto; padding: 0 16px; }
+
+/* Celulares chicos (320–360 px): todo cabe sin deslizar de lado */
+@media (max-width: 360px) {
+  .plan-reels { gap: 8px; }
+  .plan-reel { min-height: 96px; padding: 10px; }
+  .plan-hit { grid-template-columns: 72px minmax(0, 1fr); }
+  .plan-hit-photo { width: 72px; }
+  .plan-hit-body h2 { font-size: 1.1rem; }
+  .plan-mode-switch button { gap: 5px; font-size: .62rem; letter-spacing: .08em; }
+  .plan-mode-switch button svg { width: 14px; height: 14px; }
+  .plan-roulette-actions .plan-roulette-respin { padding: 0 12px; }
+  .plan-builder-button, .plan-builder-secondary { padding: 0 12px; gap: 8px; }
+}
 
 /* Pestaña RUTAS: las rutas curadas en chico */
 .plan-mode-switch { grid-template-columns: repeat(3, 1fr); }
@@ -309,39 +308,5 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
 .plan-curated-go { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font: 900 .66rem 'Outfit', sans-serif; letter-spacing: .12em; }
 .plan-curated-all { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 6px; color: #fff; background: #0b0a12; font: 900 .7rem 'Outfit', sans-serif; letter-spacing: .1em; text-decoration: none; }
 .plan-curated-all:hover, .plan-curated-all:focus-visible { color: #0b0a12; background: #b8affe; outline: 0; }
-
-/* Agregar parada: hoja que sube desde abajo */
-.plan-add { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-end; justify-content: center; color: #0b0a12; font-family: 'DM Sans', sans-serif; }
-.plan-add *, .plan-add *::before, .plan-add *::after { box-sizing: border-box; }
-.plan-add-backdrop { position: absolute; inset: 0; background: rgba(11, 10, 18, .62); border: 0; cursor: pointer; }
-.plan-add-sheet { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: min(88dvh, 760px); background: #f7f6ff; border-top: 2px solid #0b0a12; box-shadow: 0 -6px 0 #8b7cf6; animation: plan-add-in .2s ease both; }
-@keyframes plan-add-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .plan-add-sheet { animation: none; } }
-.plan-add-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 8px 6px 16px; }
-.plan-add-head h2 { margin: 0; font: 900 1.15rem 'Outfit', sans-serif; letter-spacing: .02em; }
-.plan-add-close { display: grid; width: 44px; height: 44px; place-items: center; color: #0b0a12; background: none; border: 0; cursor: pointer; }
-.plan-add-categories { display: flex; flex: none; gap: 6px; overflow-x: auto; padding: 2px 16px 10px; scrollbar-width: none; }
-.plan-add-categories::-webkit-scrollbar { display: none; }
-.plan-add-categories button { display: inline-flex; flex: none; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 850 .66rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; touch-action: manipulation; }
-.plan-add-categories button.is-active { color: #fff; background: #0b0a12; }
-.plan-add-search { display: flex; flex: none; align-items: center; gap: 8px; min-height: 48px; margin: 0 16px 8px; padding: 0 12px; color: #575463; background: #fff; border: 1.5px solid #0b0a12; }
-.plan-add-search:focus-within { box-shadow: 4px 4px 0 #8b7cf6; }
-/* 16px evita que iOS haga zoom al enfocar */
-.plan-add-search input { flex: 1; min-width: 0; height: 44px; color: #0b0a12; background: transparent; border: 0; outline: 0; font: 500 16px 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
-.plan-add-list { flex: 1; min-height: 0; margin: 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; list-style: none; }
-.plan-add-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; min-height: 68px; padding: 8px 0; color: #0b0a12; text-align: left; background: none; border: 0; border-bottom: 1.5px solid rgba(11, 10, 18, .14); cursor: pointer; touch-action: manipulation; }
-.plan-add-row:focus-visible, .plan-add-categories button:focus-visible, .plan-add-close:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
-.plan-add-thumb { display: grid; width: 52px; height: 52px; place-items: center; overflow: hidden; color: #b8affe; background: #17142a; }
-.plan-add-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.plan-add-row.is-surprise .plan-add-thumb { color: #0b0a12; background: #b8affe; }
-.plan-add-info { display: grid; gap: 2px; min-width: 0; }
-.plan-add-info strong { overflow: hidden; font: 900 1rem/1.15 'Outfit', sans-serif; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
-.plan-add-info span { overflow: hidden; color: #575463; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
-.plan-add-row > svg { color: #6557d8; }
-.plan-add-empty { padding: 24px 0; color: #575463; font-size: .9rem; }
-@media (min-width: 900px) {
-  .plan-add { align-items: center; }
-  .plan-add-sheet { height: min(80dvh, 720px); border: 2px solid #0b0a12; box-shadow: 8px 8px 0 #8b7cf6; }
-}
 
 .plan-route-notice { margin: 0; padding: 10px 12px; color: #0b0a12; background: #b8affe; font-size: .84rem; line-height: 1.4; }

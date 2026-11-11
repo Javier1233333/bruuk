@@ -1507,3 +1507,20 @@
   .rack-places-zone-select { width: 100%; min-width: 0; }
   .rack-zone-intro { padding: 10px 16px; }
 }
+
+/* "Al plan": suma el lugar a Mi plan (src/lib/planCart.ts) */
+.rack-place-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.rack-place-buttons > * { white-space: nowrap; }
+.rack-place-buttons .rack-place-share { margin-top: 0; }
+.rack-place-plan { font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 900; letter-spacing: .12em; color: #09090d; background: #ffffff; border-color: #ffffff; }
+.rack-place-plan.is-in { background: #b8affe; border-color: #b8affe; }
+.rack-place-grid-card .rack-place-grid-plan { align-self: flex-start; margin-top: 10px; min-height: 40px; font-family: 'Outfit', sans-serif; font-size: .64rem; font-weight: 900; letter-spacing: .1em; }
+/* Pantallas bajas: la ficha se compacta para que los botones queden arriba de la barra de "Mi plan" */
+@media (max-height: 720px) and (max-width: 700px) {
+  .rack-place-copy { padding-top: 18px; }
+  .rack-place-meta { margin-bottom: .6rem; }
+  .rack-place-copy h1 { margin-bottom: .5rem; }
+  .rack-place-copy p { margin-bottom: .9rem; }
+  .rack-place-buttons { margin-top: 10px; }
+  .rack-place-copy a, .rack-place-buttons > * { min-height: 42px; }
+}
