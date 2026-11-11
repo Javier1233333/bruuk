@@ -1,7 +1,8 @@
-import { ArrowUpRight, CalendarDays, Compass, Dices, Lock, Radio, Store, type LucideIcon } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, Compass, Dices, Lock, Radio, Route, Store, type LucideIcon } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AsciiDiscoveryBackground } from '../components/AsciiDiscoveryBackground';
 import { CityNav } from '../components/CityNav';
+import { CURATED_ROUTES } from '../data/curatedRoutes';
 import { useSpots } from '../lib/useSpots';
 import { useRackPlaces } from '../rack/useRackPlaces';
 import { IS_APP_MODE } from '../lib/appMode';
@@ -14,8 +15,10 @@ type Section = {
   copy: string;
   icon: LucideIcon;
   meta?: string;
-  // Spots y Rack son libres; lo demás pide iniciar sesión
+  // Spots y Rack son libres (y van en grande); lo demás pide iniciar sesión
   free?: boolean;
+  // Abierta sin cuenta, pero en tarjeta chica (las rutas listas)
+  open?: boolean;
 };
 
 export default function CityHomePage() {
@@ -31,6 +34,7 @@ export default function CityHomePage() {
   const sections: Section[] = [
     { to: '/guadalajara/spots', title: 'Comer y tomar', copy: 'Cafés, comida y bares elegidos a mano.', icon: Compass, meta: `${spotCount} lugares`, free: true },
     { to: '/guadalajara/rack', title: 'Vintage y tianguis', copy: 'Ropa, objetos y mercados con historia.', icon: Store, meta: `${rackCount} lugares`, free: true },
+    { to: '/guadalajara/rutas', title: 'Rutas listas', copy: 'Planes ya armados para salir hoy.', icon: Route, meta: `${CURATED_ROUTES.length} rutas`, open: true },
     { to: '/guadalajara/senales', title: 'Planes y rutas', copy: 'Lo que está por pasar en la ciudad.', icon: Radio },
     { to: '/guadalajara/arma-tu-plan', title: 'Arma tu plan', copy: 'Gira la ruleta y sal hoy.', icon: Dices },
     { to: '/guadalajara/eventos', title: 'Eventos', copy: 'Encuentros en persona. Próximamente.', icon: CalendarDays },
@@ -48,8 +52,8 @@ export default function CityHomePage() {
         </header>
 
         <nav className="city-menu-grid" aria-label="Secciones de Bruuk">
-          {sections.map(({ to, title, copy, icon: Icon, meta, free }) => {
-            const locked = !free && !signedIn;
+          {sections.map(({ to, title, copy, icon: Icon, meta, free, open }) => {
+            const locked = !free && !open && !signedIn;
             return (
               <Link key={to} to={to} className={`city-menu-item ${free ? 'is-main' : ''}`}>
                 <span className="city-menu-icon"><Icon size={free ? 24 : 20} strokeWidth={1.9} aria-hidden="true" /></span>

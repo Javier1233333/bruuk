@@ -1,6 +1,6 @@
 import type { PlanInterest, PlanPlace } from '../data/planBuilder';
 import { MOMENT_TIMES, type Itinerary, type ItineraryMoment } from './itinerary';
-import { ZONE_BY_ID, distanceKm, suggestZone, type ZoneId } from './zones';
+import { ZONES, ZONE_BY_ID, ZONE_IDS, distanceKm, suggestZone, type ZoneId } from './zones';
 
 /* ============================================================
    "Arma tu plan": cinco respuestas → una ruta de 3 paradas
@@ -15,7 +15,8 @@ type Option<T extends string> = { value: T; label: string; hint: string };
 export type RouteAnswers = {
   company: 'solo' | 'pareja' | 'amigos' | 'cita';
   moment: ItineraryMoment;
-  zone: 'americana' | 'centro' | 'providencia' | 'sorpresa';
+  // Una de las 7 zonas de Bruuk (src/lib/zones.ts) o "sorpresa".
+  zone: ZoneId | 'sorpresa';
   rhythm: 'caminar' | 'platicar' | 'comer' | 'cultura';
   mood: 'casual' | 'especial' | 'bailar';
 };
@@ -46,9 +47,8 @@ export const ROUTE_QUESTIONS: { id: RouteQuestionId; question: string; options: 
     id: 'zone',
     question: '¿Qué zona prefieres?',
     options: [
-      { value: 'americana', label: 'Americana · Lafayette', hint: 'Y Santa Tere a un lado' },
-      { value: 'centro', label: 'Centro', hint: 'San Juan de Dios y alrededores' },
-      { value: 'providencia', label: 'Providencia · Chapalita', hint: 'Al poniente' },
+      // Las 7 zonas reales; la página muestra cuántos lugares tiene cada una.
+      ...ZONES.map((zone) => ({ value: zone.id, label: zone.short, hint: zone.name === zone.short ? '' : zone.name })),
       { value: 'sorpresa', label: 'Sorpréndeme', hint: 'Donde salga mejor' },
     ],
   },
@@ -77,13 +77,6 @@ export const answerLabel = (id: RouteQuestionId, value: string) =>
   ROUTE_QUESTIONS.find((question) => question.id === id)?.options.find((option) => option.value === value)?.label ?? value;
 
 const VIBE_LABEL: Record<RouteAnswers['company'], string> = { solo: 'Solo', pareja: 'Pareja', amigos: 'Amigos', cita: 'Cita' };
-
-// Zonas de Bruuk que cubre cada respuesta.
-const ZONE_GROUPS: Record<Exclude<RouteAnswers['zone'], 'sorpresa'>, ZoneId[]> = {
-  americana: ['americana', 'santa-tere'],
-  centro: ['centro'],
-  providencia: ['providencia', 'chapalita'],
-};
 
 // El papel de cada parada: qué categorías sirven, en orden de preferencia.
 type Slot = PlanInterest[];
@@ -153,6 +146,12 @@ const priceMid = (price?: string) => {
 export const routeZone = (place: PlanPlace): ZoneId | undefined =>
   place.zone ?? suggestZone(place.coordinates?.lat, place.coordinates?.lng)?.id;
 
+// Nombre corto de la zona de un lugar, para etiquetas ("Americana", "Centro").
+export const zoneShort = (place: PlanPlace) => {
+  const zone = routeZone(place);
+  return zone ? ZONE_BY_ID.get(zone)?.short : undefined;
+};
+
 const km = (a: PlanPlace, b: PlanPlace) =>
   a.coordinates && b.coordinates ? distanceKm(a.coordinates.lat, a.coordinates.lng, b.coordinates.lat, b.coordinates.lng) : null;
 
@@ -219,7 +218,7 @@ function pickStop(context: Context, slotIndex: number, slot: Slot, neighbors: Pl
       if (zones) {
         if (zone && zones.includes(zone)) score += 6;
         // Si la zona no tiene de esa categoría, que al menos quede pegado a ella.
-        else score -= Math.min(8, (kmToZones(place, zones) ?? 3) * 2);
+        else score -= Math.min(8, (kmToZones(place, zones) ?? 4) * 2);
       }
       for (const neighbor of neighbors) {
         const distance = km(neighbor, place);
@@ -259,9 +258,8 @@ const toItinerary = (answers: RouteAnswers, stops: PlanPlace[]): Itinerary => ({
 const contextFor = (answers: RouteAnswers, places: PlanPlace[]): Context => {
   const zones = answers.zone === 'sorpresa'
     // Sorpréndeme: se sortea una zona con lugares suficientes para empezar.
-    ? [pickRandom((['americana', 'centro', 'santa-tere', 'providencia', 'chapalita', 'zapopan'] as ZoneId[])
-      .filter((zone) => places.filter((place) => routeZone(place) === zone).length >= 3))].filter(Boolean)
-    : ZONE_GROUPS[answers.zone];
+    ? [pickRandom(ZONE_IDS.filter((zone) => places.filter((place) => routeZone(place) === zone).length >= 3))].filter(Boolean)
+    : [answers.zone];
   return { answers, places, zones: zones.length ? zones : null };
 };
 

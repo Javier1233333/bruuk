@@ -28,8 +28,9 @@ const FEATURED_IDS = ['spot_003', 'spot_018', 'spot_105', 'spot_131'];
 const CATEGORY_LINKS = [
   { to: '/guadalajara/spots', label: 'COMER Y TOMAR', hint: 'Cafés, comida y noche' },
   { to: '/guadalajara/rack', label: 'VINTAGE Y TIANGUIS', hint: 'Ropa, objetos y mercados' },
+  { to: '/guadalajara/rutas', label: 'RUTAS LISTAS', hint: 'Planes ya armados para salir hoy' },
   { to: '/guadalajara/senales', label: 'PLANES Y RUTAS', hint: 'Museos, rutas y eventos' },
-  { to: '/guadalajara/arma-tu-plan', label: 'ARMA TU PLAN', hint: 'Cinco preguntas, una ruta a tu medida' },
+  { to: '/guadalajara/arma-tu-plan', label: 'ARMA TU PLAN', hint: 'Gira la ruleta o contesta cinco preguntas' },
 ];
 
 function App() {
