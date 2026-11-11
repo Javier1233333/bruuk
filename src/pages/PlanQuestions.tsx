@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { ItineraryCard } from '../components/ItineraryCard';
 import type { PlanPlace } from '../data/planBuilder';
 import type { Itinerary } from '../lib/itinerary';
-import { ROUTE_QUESTIONS, answerLabel, buildRoute, rerollStop, type RouteAnswers } from '../lib/routeGenerator';
+import { ROUTE_QUESTIONS, answerLabel, buildRoute, rerollStop, routeZone, type RouteAnswers } from '../lib/routeGenerator';
+import { ZONE_BY_ID } from '../lib/zones';
 
 /* ============================================================
    Cinco preguntas, una ruta: tarjetas grandes que avanzan solas
@@ -80,6 +81,12 @@ export function PlanQuestions({ places, getPlace, onStage }: Props) {
   };
 
   if (route && isComplete(answers)) {
+    // Zona con pocos lugares: la ruta se completó con lo más cercano de otra zona y se avisa.
+    const zone = answers.zone === 'sorpresa' ? undefined : ZONE_BY_ID.get(answers.zone);
+    const completed = zone && route.stops.some((stop) => {
+      const place = getPlace(stop.placeId);
+      return place && routeZone(place) !== zone.id;
+    });
     return (
       <div className="plan-route">
         <ul className="plan-route-answers" aria-label="Tus respuestas (toca una para cambiarla)">
@@ -89,6 +96,7 @@ export function PlanQuestions({ places, getPlace, onStage }: Props) {
             </li>
           ))}
         </ul>
+        {completed && <p className="plan-route-notice">{zone.name} tiene pocos lugares así en la guía: completamos la ruta con lo más cercano.</p>}
         <ItineraryCard itinerary={route} getPlace={getPlace} onReroll={reroll} heading="h2" />
         {error && <p className="plan-builder-error" role="alert">{error}</p>}
         <div className="plan-result-actions">
@@ -102,6 +110,13 @@ export function PlanQuestions({ places, getPlace, onStage }: Props) {
   }
 
   const question = ROUTE_QUESTIONS[stepIndex];
+  // En la pregunta de zona, cada opción dice cuántos lugares tiene.
+  const zoneCounts = question.id === 'zone'
+    ? places.reduce((counts, place) => {
+      const zone = routeZone(place);
+      return zone ? counts.set(zone, (counts.get(zone) ?? 0) + 1) : counts;
+    }, new Map<string, number>())
+    : null;
   return (
     <div className="plan-step">
       <div className="plan-step-top">
@@ -116,7 +131,7 @@ export function PlanQuestions({ places, getPlace, onStage }: Props) {
             const selected = answers[question.id] === option.value;
             return (
               <button key={option.value} type="button" role="radio" aria-checked={selected} className={selected ? 'is-active' : ''} onClick={() => choose(option.value)}>
-                <strong>{option.label}</strong><span>{option.hint}</span>
+                <strong>{option.label}</strong><span>{zoneCounts?.get(option.value) !== undefined ? `${zoneCounts.get(option.value)} ${zoneCounts.get(option.value) === 1 ? 'lugar' : 'lugares'}` : option.hint}</span>
               </button>
             );
           })}

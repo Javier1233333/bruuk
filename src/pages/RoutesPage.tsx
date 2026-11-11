@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Dices } from 'lucide-react';
-import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import { ItineraryCard } from '../components/ItineraryCard';
 import { CURATED_ROUTES } from '../data/curatedRoutes';
@@ -25,6 +25,14 @@ export default function RoutesPage() {
   const catalog = usePlanCatalog();
   const saved = useSavedItineraries();
   const [filter, setFilter] = useState<Filter>('todas');
+  const { hash } = useLocation();
+
+  // Se llega con #id desde "Arma tu plan" o un link compartido: baja hasta esa ruta.
+  useEffect(() => {
+    if (!hash) return;
+    const frame = requestAnimationFrame(() => document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ block: 'start' }));
+    return () => cancelAnimationFrame(frame);
+  }, [hash]);
 
   // Se resuelve en cada render: cuando llega el catálogo en vivo puede aparecer un lugar nuevo.
   const shared = itineraryFromParams(params, catalog.getPlace);

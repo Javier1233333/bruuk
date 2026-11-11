@@ -1,20 +1,21 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Dices, RefreshCw, Share2, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Dices, RefreshCw, Route, Share2, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import type { CustomPlan } from '../data/planBuilder';
 import { IS_APP_MODE } from '../lib/appMode';
 import { sharePlanImage } from '../lib/sharePlanImage';
 import { usePlanCatalog } from '../lib/planCatalog';
+import { PlanCuratedList } from './PlanCuratedList';
 import { PlanQuestions } from './PlanQuestions';
 import { PlanRoulette, type RouletteState } from './PlanRoulette';
 import './PlanBuilderPage.css';
 
 type Status = 'choosing' | 'loading' | 'result' | 'error';
-type Mode = 'ruleta' | 'preguntas';
+type Mode = 'ruleta' | 'preguntas' | 'rutas';
 type QuestionsStage = 'inicio' | 'pasos' | 'ruta';
 
-const INITIAL_ROULETTE: RouletteState = { moment: 'sorpresa', zone: 'toda', interests: [], count: 3, slots: [] };
+const INITIAL_ROULETTE: RouletteState = { slots: [] };
 
 const requestPlan = async (body: object) => {
   const response = await fetch('/api/custom-plan', {
@@ -37,8 +38,6 @@ export function PlanBuilderPage() {
   const [questionsStage, setQuestionsStage] = useState<QuestionsStage>('inicio');
   const [mode, setMode] = useState<Mode>('ruleta');
   const [roulette, setRoulette] = useState<RouletteState>(INITIAL_ROULETTE);
-  // Lo que salió en la ruleta al pedir el plan, para marcar qué paradas cambió la IA.
-  const [spunIds, setSpunIds] = useState<string[]>([]);
   const [isSharing, setIsSharing] = useState(false);
   const [shareError, setShareError] = useState('');
 
@@ -50,14 +49,15 @@ export function PlanBuilderPage() {
     const placeIds = roulette.slots.map((slot) => slot.placeId);
     setStatus('loading');
     setError('');
-    setSpunIds(placeIds);
     try {
       const result = await requestPlan({
         mode: 'roulette',
-        moment: roulette.moment,
-        zone: roulette.zone,
+        // La ruleta ya no pregunta hora ni zona del plan: la IA elige la mejor hora y sólo ordena.
+        moment: 'sorpresa',
+        zone: 'toda',
         placeIds,
-        locked: roulette.slots.filter((slot) => slot.locked).map((slot) => slot.placeId),
+        // Cada parada la agregó la persona: todas van fijas.
+        locked: placeIds,
       });
       if (!result.plan) throw new Error('No pudimos armar tu plan.');
       setPlan(result.plan as CustomPlan);
@@ -69,12 +69,9 @@ export function PlanBuilderPage() {
     }
   };
 
-  // Regresa a la ruleta con las paradas finales del plan, conservando lo que estaba fijo.
+  // Regresa a la ruleta con las paradas del plan, para quitar o agregar.
   const backToRoulette = () => {
-    if (plan) {
-      const locked = new Set(roulette.slots.filter((slot) => slot.locked).map((slot) => slot.placeId));
-      setRoulette((current) => ({ ...current, count: plan.stops.length, slots: plan.stops.map((stop) => ({ placeId: stop.placeId, locked: locked.has(stop.placeId) })) }));
-    }
+    if (plan) setRoulette({ slots: plan.stops.map((stop) => ({ placeId: stop.placeId, locked: true })) });
     setError('');
     setStatus('choosing');
   };
@@ -98,8 +95,8 @@ export function PlanBuilderPage() {
     }
   };
 
-  const inProgress = mode === 'ruleta' ? roulette.slots.length > 0 || status !== 'choosing' : questionsStage !== 'inicio';
-  const showSwitch = mode === 'ruleta' ? status === 'choosing' || status === 'error' : questionsStage !== 'ruta';
+  const inProgress = mode === 'ruleta' ? roulette.slots.length > 0 || status !== 'choosing' : mode === 'preguntas' && questionsStage !== 'inicio';
+  const showSwitch = mode === 'ruleta' ? status === 'choosing' || status === 'error' : mode === 'rutas' || questionsStage !== 'ruta';
 
   return (
     <div className={`plan-builder-page ${inProgress ? 'is-in-progress' : ''}`}>
@@ -107,33 +104,40 @@ export function PlanBuilderPage() {
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
         <span>/ ARMA TU PLAN · GDL</span>
         {/* En el modo app se regresa con el menú inferior. */}
-        {IS_APP_MODE ? <span className="plan-builder-nav-app">{mode === 'ruleta' ? '/ RULETA' : '/ 5 PREGUNTAS'}</span> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
+        {IS_APP_MODE ? <span className="plan-builder-nav-app">{mode === 'ruleta' ? '/ RULETA' : mode === 'preguntas' ? '/ 5 PREGUNTAS' : '/ RUTAS'}</span> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
       </header>
 
       <main className="plan-builder-main">
         <section className="plan-builder-copy" aria-labelledby="plan-builder-title">
-          <span className="plan-builder-kicker">{mode === 'ruleta' ? '/ RULETA DE SPOTS' : '/ PLANES A TU MEDIDA'}</span>
+          <span className="plan-builder-kicker">{mode === 'ruleta' ? '/ RULETA DE SPOTS' : mode === 'preguntas' ? '/ PLANES A TU MEDIDA' : '/ RUTAS CURADAS'}</span>
           {mode === 'ruleta' ? (
             <>
               <h1 id="plan-builder-title">GIRA. <em>SAL.</em></h1>
-              <p>{catalog.places.length} lugares. Gira, fija los que te laten y sal.</p>
+              <p>Dos carretes: zona y qué se antoja. Gira, agrega lo que te lata y arma tu plan.</p>
             </>
-          ) : (
+          ) : mode === 'preguntas' ? (
             <>
               <h1 id="plan-builder-title">ELIGE. <em>SAL.</em></h1>
               <p>Cinco preguntas y armamos una ruta de tres paradas con lugares reales de la guía. Nada de rankings pagados ni lugares inventados.</p>
             </>
+          ) : (
+            <>
+              <h1 id="plan-builder-title">RUTAS <em>LISTAS.</em></h1>
+              <p>Itinerarios ya armados por Bruuk: paradas reales en un orden que se puede caminar.</p>
+            </>
           )}
-          <Link className="plan-builder-routes" to="/guadalajara/rutas">O ELIGE UNA RUTA YA ARMADA <ArrowRight size={15} aria-hidden="true" /></Link>
         </section>
 
         <section className={`plan-builder-card${mode === 'preguntas' && questionsStage === 'ruta' ? ' is-route' : ''}`} aria-live="polite">
           {showSwitch && (
             <div className="plan-mode-switch" role="tablist" aria-label="Cómo armar tu plan">
               <button type="button" role="tab" aria-selected={mode === 'ruleta'} className={mode === 'ruleta' ? 'is-active' : ''} onClick={() => switchMode('ruleta')}><Dices size={16} aria-hidden="true" /> RULETA</button>
-              <button type="button" role="tab" aria-selected={mode === 'preguntas'} className={mode === 'preguntas' ? 'is-active' : ''} onClick={() => switchMode('preguntas')}><SlidersHorizontal size={16} aria-hidden="true" /> 5 PREGUNTAS</button>
+              <button type="button" role="tab" aria-selected={mode === 'preguntas'} className={mode === 'preguntas' ? 'is-active' : ''} onClick={() => switchMode('preguntas')}><SlidersHorizontal size={16} aria-hidden="true" /> PREGUNTAS</button>
+              <button type="button" role="tab" aria-selected={mode === 'rutas'} className={mode === 'rutas' ? 'is-active' : ''} onClick={() => switchMode('rutas')}><Route size={16} aria-hidden="true" /> RUTAS</button>
             </div>
           )}
+
+          {mode === 'rutas' && <PlanCuratedList getPlace={catalog.getPlace} />}
 
           {mode === 'preguntas' && <PlanQuestions places={catalog.places} getPlace={catalog.getPlace} onStage={setQuestionsStage} />}
 
@@ -166,7 +170,6 @@ export function PlanBuilderPage() {
                       <div className="plan-stop-body">
                         {place.imageUrl && <img src={place.imageUrl} alt={place.name} loading="lazy" decoding="async" />}
                         <span className="plan-stop-type">{place.type}{place.price ? ` · ${place.price}` : ''}</span>
-                        {spunIds.length > 0 && !spunIds.includes(stop.placeId) && <span className="plan-stop-swapped">LA IA LA CAMBIÓ PARA QUE ENCAJE</span>}
                         <h3>{place.name}</h3>
                         {stop.why && <p>{stop.why}</p>}
                         {place.tip && (

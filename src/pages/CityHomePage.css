@@ -49,10 +49,11 @@
 .city-menu-heading > span { color: var(--brand-accent-soft); font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .16em; }
 .city-menu-heading h1 { margin: 0; font: 900 clamp(2rem, 5vw, 4.2rem)/.9 'Outfit', sans-serif; letter-spacing: -.055em; text-transform: uppercase; }
 
-.city-menu-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+/* 12 columnas: dos tarjetas grandes arriba y cuatro chicas abajo */
+.city-menu-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; }
 
 .city-menu-item {
-  grid-column: span 2;
+  grid-column: span 3;
   min-width: 0;
   min-height: 132px;
   display: grid;
@@ -65,7 +66,7 @@
   backdrop-filter: blur(3px);
   transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
-.city-menu-item.is-main { grid-column: span 3; min-height: clamp(170px, 26vh, 250px); border-color: rgba(139, 124, 246, .55); box-shadow: 6px 6px 0 rgba(139, 124, 246, .35); }
+.city-menu-item.is-main { grid-column: span 6; min-height: clamp(170px, 26vh, 250px); border-color: rgba(139, 124, 246, .55); box-shadow: 6px 6px 0 rgba(139, 124, 246, .35); }
 .city-menu-item:hover,
 .city-menu-item:focus-visible { border-color: var(--brand-accent); background: #1b1833; transform: translate(-2px, -2px); }
 .city-menu-item:active { transform: none; }
@@ -96,7 +97,7 @@
   .city-menu-grid { gap: 8px; }
   /* Filas compactas: ícono, título + una línea y el candado o la flecha al lado */
   .city-menu-item { grid-column: 1 / -1; min-height: 64px; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; align-items: center; gap: 12px; padding: 10px 12px; }
-  .city-menu-item.is-main { grid-column: span 3; min-height: 150px; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; align-items: start; gap: 10px; padding: 14px; box-shadow: 4px 4px 0 rgba(139, 124, 246, .35); }
+  .city-menu-item.is-main { grid-column: span 6; min-height: 150px; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; align-items: start; gap: 10px; padding: 14px; box-shadow: 4px 4px 0 rgba(139, 124, 246, .35); }
   .city-menu-icon { width: 38px; height: 38px; }
   .city-menu-item.is-main .city-menu-icon { width: 40px; height: 40px; }
   .city-menu-copy { gap: 3px; }

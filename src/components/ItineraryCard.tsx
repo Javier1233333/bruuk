@@ -14,8 +14,7 @@ import {
   type Itinerary,
   type Leg,
 } from '../lib/itinerary';
-import { routeZone } from '../lib/routeGenerator';
-import { ZONE_BY_ID } from '../lib/zones';
+import { zoneShort } from '../lib/routeGenerator';
 import './ItineraryCard.css';
 
 /* ============================================================
@@ -36,11 +35,6 @@ type Props = {
 };
 
 const LEG_ICON: Record<Leg['mode'], typeof Footprints> = { pie: Footprints, bici: Bike, coche: Car };
-
-const zoneShort = (place: PlanPlace) => {
-  const zone = routeZone(place);
-  return zone ? ZONE_BY_ID.get(zone)?.short : undefined;
-};
 
 export function ItineraryCard({ itinerary, getPlace, onReroll, heading: Heading = 'h3', kicker }: Props) {
   const saved = useSavedItineraries();
