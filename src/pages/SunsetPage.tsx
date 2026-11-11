@@ -3,6 +3,7 @@ import { ArrowRight, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import { AsciiSpotsBackground } from '../components/AsciiSpotsBackground';
+import { PlanCartBar } from '../components/PlanCartBar';
 import { SpotCard } from '../components/SpotCard';
 import { useSunsetSpots } from '../lib/sunsets';
 import '../components/OceanLanding.css';
@@ -13,6 +14,7 @@ export function SunsetPage() {
   return (
     <div className="tiktok-feed-wrapper sunset-feed">
       <AsciiSpotsBackground />
+      <PlanCartBar />
 
       <header className="sunset-nav">
         <Link to="/" aria-label="Ir a Bruuk"><BruukLogo width={96} /></Link>

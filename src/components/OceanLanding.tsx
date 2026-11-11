@@ -11,6 +11,7 @@ import {
 import { BruukLogo } from './BruukLogo';
 import { AsciiSpotsBackground } from './AsciiSpotsBackground';
 import { CityNav } from './CityNav';
+import { PlanCartBar } from './PlanCartBar';
 import { SpotCard } from './SpotCard';
 import { HotspotsCard } from './HotspotsCard';
 import { ZoneGuideCard } from './ZoneGuideCard';
@@ -181,6 +182,7 @@ export function OceanLanding() {
     <div className="tiktok-feed-wrapper">
       <AsciiSpotsBackground />
       <CityNav active="spots" />
+      <PlanCartBar />
 
       {/* Floating Category Filters */}
       <div className="category-filters-floating">

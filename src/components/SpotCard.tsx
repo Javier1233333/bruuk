@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { getSpotVisual } from '../lib/spotVisual';
 import { spotZone } from '../lib/zones';
+import { PlanCartButton } from './PlanCartButton';
 import { ShareButton } from './ShareButton';
 
 interface Spot {
@@ -159,12 +160,15 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           </svg>
           Ver en Maps
         </a>
+        <span className="spot-card__buttons">
+        <PlanCartButton id={spot.id} name={spot.name} />
         <ShareButton
           className="spot-card__share"
           title={spot.name}
           text={`Mira ${spot.name} en Bruuk`}
           path={`/guadalajara/spots?spot=${encodeURIComponent(spot.id)}`}
         />
+        </span>
         </div>
       </div>
     </motion.div>

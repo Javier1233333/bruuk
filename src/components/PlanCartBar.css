@@ -1,0 +1,24 @@
+/* "Mi plan": barra flotante en Spots y botón de las tarjetas */
+.plan-cart-bar { position: fixed; z-index: 60; left: 50%; bottom: calc(14px + var(--app-tabbar-h, 0px) + env(safe-area-inset-bottom)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; width: min(460px, calc(100% - 24px)); color: #0b0a12; background: #f7f6ff; border: 2px solid #0b0a12; box-shadow: 5px 5px 0 #8b7cf6; transform: translateX(-50%); font-family: 'DM Sans', sans-serif; animation: plan-cart-in .18s ease both; }
+@keyframes plan-cart-in { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .plan-cart-bar { animation: none; } }
+.plan-cart-bar-clear { display: grid; width: 44px; height: 56px; place-items: center; color: #575463; background: none; border: 0; cursor: pointer; }
+.plan-cart-bar-count { display: grid; gap: 1px; min-width: 0; color: #575463; font-size: .76rem; line-height: 1.25; }
+.plan-cart-bar-count b { color: #0b0a12; font: 900 .74rem 'Outfit', sans-serif; letter-spacing: .1em; }
+.plan-cart-bar-go { display: inline-flex; align-self: stretch; align-items: center; gap: 6px; padding: 0 16px; color: #fff; background: #0b0a12; font: 900 .76rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+.plan-cart-bar-go:hover, .plan-cart-bar-go:focus-visible { color: #0b0a12; background: #8b7cf6; outline: 0; }
+.plan-cart-bar-clear:focus-visible { outline: 2px solid #8b7cf6; outline-offset: -4px; }
+
+.plan-cart-button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; color: #fff; background: #0b0a12; border: 1.5px solid #0b0a12; font: 800 .72rem 'DM Sans', sans-serif; letter-spacing: .5px; cursor: pointer; touch-action: manipulation; }
+.plan-cart-button.is-in { color: #0b0a12; background: #b8affe; }
+.plan-cart-button:disabled { opacity: .4; cursor: not-allowed; }
+.plan-cart-button:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+
+/* Celular: barra de una línea para tapar lo menos posible */
+@media (max-width: 480px) {
+  .plan-cart-bar { bottom: calc(10px + var(--app-tabbar-h, 0px) + env(safe-area-inset-bottom)); width: calc(100% - 20px); box-shadow: 4px 4px 0 #8b7cf6; }
+  .plan-cart-bar-clear { width: 40px; height: 46px; }
+  .plan-cart-bar-count { font-size: 0; }
+  .plan-cart-bar-count b { font-size: .7rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plan-cart-bar-go { padding: 0 14px; font-size: .72rem; }
+}

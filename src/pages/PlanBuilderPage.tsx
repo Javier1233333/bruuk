@@ -8,14 +8,14 @@ import { sharePlanImage } from '../lib/sharePlanImage';
 import { usePlanCatalog } from '../lib/planCatalog';
 import { PlanCuratedList } from './PlanCuratedList';
 import { PlanQuestions } from './PlanQuestions';
-import { PlanRoulette, type RouletteState } from './PlanRoulette';
+import { PlanRoulette } from './PlanRoulette';
+import { setPlan as setPlanCart, usePlanCart } from '../lib/planCart';
 import './PlanBuilderPage.css';
 
 type Status = 'choosing' | 'loading' | 'result' | 'error';
 type Mode = 'ruleta' | 'preguntas' | 'rutas';
 type QuestionsStage = 'inicio' | 'pasos' | 'ruta';
 
-const INITIAL_ROULETTE: RouletteState = { slots: [] };
 
 const requestPlan = async (body: object) => {
   const response = await fetch('/api/custom-plan', {
@@ -37,7 +37,8 @@ export function PlanBuilderPage() {
   // Las 5 preguntas arman la ruta en el navegador; aquí sólo se sabe en qué van.
   const [questionsStage, setQuestionsStage] = useState<QuestionsStage>('inicio');
   const [mode, setMode] = useState<Mode>('ruleta');
-  const [roulette, setRoulette] = useState<RouletteState>(INITIAL_ROULETTE);
+  // "Mi plan": lo que se juntó en Spots, Rack o la ruleta.
+  const cart = usePlanCart();
   const [isSharing, setIsSharing] = useState(false);
   const [shareError, setShareError] = useState('');
 
@@ -46,7 +47,7 @@ export function PlanBuilderPage() {
   const isLoading = status === 'loading';
 
   const generateFromRoulette = async () => {
-    const placeIds = roulette.slots.map((slot) => slot.placeId);
+    const placeIds = cart.filter((id) => catalog.getPlace(id));
     setStatus('loading');
     setError('');
     try {
@@ -71,7 +72,8 @@ export function PlanBuilderPage() {
 
   // Regresa a la ruleta con las paradas del plan, para quitar o agregar.
   const backToRoulette = () => {
-    if (plan) setRoulette({ slots: plan.stops.map((stop) => ({ placeId: stop.placeId, locked: true })) });
+    // El orden que propuso la IA se queda en "Mi plan".
+    if (plan) setPlanCart(plan.stops.map((stop) => stop.placeId));
     setError('');
     setStatus('choosing');
   };
@@ -95,7 +97,7 @@ export function PlanBuilderPage() {
     }
   };
 
-  const inProgress = mode === 'ruleta' ? roulette.slots.length > 0 || status !== 'choosing' : mode === 'preguntas' && questionsStage !== 'inicio';
+  const inProgress = mode === 'ruleta' ? cart.length > 0 || status !== 'choosing' : mode === 'preguntas' && questionsStage !== 'inicio';
   const showSwitch = mode === 'ruleta' ? status === 'choosing' || status === 'error' : mode === 'rutas' || questionsStage !== 'ruta';
 
   return (
@@ -192,7 +194,7 @@ export function PlanBuilderPage() {
               </button>
               {shareError && <p className="plan-builder-error" role="alert">{shareError}</p>}
               <div className="plan-result-actions">
-                <button type="button" className="plan-builder-button" onClick={backToRoulette}><Dices size={18} aria-hidden="true" /> VOLVER A GIRAR</button>
+                <button type="button" className="plan-builder-button" onClick={backToRoulette}><Dices size={18} aria-hidden="true" /> CAMBIAR LUGARES</button>
                 <button type="button" className="plan-builder-secondary" onClick={() => void generateFromRoulette()}><RefreshCw size={18} aria-hidden="true" /> OTRO HILO, MISMOS LUGARES</button>
               </div>
               <p className="plan-builder-note">La IA ordena el plan; los lugares y las recomendaciones salen de la guía Bruuk. Revisa horarios antes de salir.</p>
@@ -202,7 +204,7 @@ export function PlanBuilderPage() {
           {mode === 'ruleta' && (status === 'choosing' || status === 'error') && (
             <>
               {error && <p className="plan-builder-error plan-roulette-error" role="alert">{error}</p>}
-              <PlanRoulette state={roulette} onChange={setRoulette} onGenerate={() => void generateFromRoulette()} disabled={isLoading} />
+              <PlanRoulette onGenerate={() => void generateFromRoulette()} disabled={isLoading} />
             </>
           )}
         </section>
