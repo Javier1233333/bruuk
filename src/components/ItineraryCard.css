@@ -42,3 +42,8 @@
   .itinerary-actions { grid-template-columns: 1fr 1fr; }
   .itinerary-action.is-primary { grid-column: 1 / -1; }
 }
+
+/* Ruleta: candado por parada. La fija no cambia al volver a girar. */
+.itinerary-links .itinerary-lock { min-height: 36px; padding: 0 12px; color: #0b0a12; border: 1.5px solid #0b0a12; }
+.itinerary-links .itinerary-lock[aria-pressed='true'] { color: #0b0a12; background: #b8affe; box-shadow: 3px 3px 0 #8b7cf6; }
+.itinerary-stop.is-locked .itinerary-marker b { color: #6557d8; }

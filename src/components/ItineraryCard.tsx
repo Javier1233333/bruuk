@@ -1,4 +1,4 @@
-import { ArrowUpRight, Bike, Bookmark, BookmarkCheck, Car, Clock3, Dices, Footprints, MapPin, MessageCircle, Route } from 'lucide-react';
+import { ArrowUpRight, Bike, Bookmark, BookmarkCheck, Car, Clock3, Dices, Footprints, Lock, LockOpen, MapPin, MessageCircle, Route } from 'lucide-react';
 import type { PlanPlace } from '../data/planBuilder';
 import {
   MOMENT_LABEL,
@@ -29,6 +29,9 @@ type Props = {
   getPlace: (id: string) => PlanPlace | undefined;
   // Sólo en "Arma tu plan": cambia esa parada por otra.
   onReroll?: (index: number) => void;
+  // Sólo en la ruleta: candado por parada (la fija no cambia al volver a girar).
+  lockedIds?: ReadonlySet<string>;
+  onToggleLock?: (placeId: string) => void;
   // Para titular con h2 o h3 según dónde viva la tarjeta.
   heading?: 'h2' | 'h3';
   kicker?: string;
@@ -36,7 +39,7 @@ type Props = {
 
 const LEG_ICON: Record<Leg['mode'], typeof Footprints> = { pie: Footprints, bici: Bike, coche: Car };
 
-export function ItineraryCard({ itinerary, getPlace, onReroll, heading: Heading = 'h3', kicker }: Props) {
+export function ItineraryCard({ itinerary, getPlace, onReroll, lockedIds, onToggleLock, heading: Heading = 'h3', kicker }: Props) {
   const saved = useSavedItineraries();
   const isSaved = saved.some((item) => item.id === itinerary.id);
   const stops = resolveStops(itinerary, getPlace);
@@ -64,8 +67,9 @@ export function ItineraryCard({ itinerary, getPlace, onReroll, heading: Heading 
           const { place } = stop;
           const leg = index > 0 ? legBetween(stops[index - 1].place, place) : null;
           const LegIcon = leg ? LEG_ICON[leg.mode] : Route;
+          const isLocked = lockedIds?.has(place.id) ?? false;
           return (
-            <li key={place.id} className="itinerary-stop">
+            <li key={place.id} className={`itinerary-stop${isLocked ? ' is-locked' : ''}`}>
               {index > 0 && (
                 <p className="itinerary-leg">
                   <LegIcon size={14} aria-hidden="true" />
@@ -87,6 +91,11 @@ export function ItineraryCard({ itinerary, getPlace, onReroll, heading: Heading 
                     {onReroll && (
                       <button type="button" onClick={() => onReroll(index)} aria-label={`Cambiar la parada ${index + 1}: ${place.name}`}>
                         <Dices size={15} aria-hidden="true" /> CAMBIAR PARADA
+                      </button>
+                    )}
+                    {onToggleLock && (
+                      <button type="button" className="itinerary-lock" onClick={() => onToggleLock(place.id)} aria-pressed={isLocked} aria-label={`${isLocked ? 'Soltar' : 'Dejar fija'} la parada ${index + 1}: ${place.name}`}>
+                        {isLocked ? <Lock size={15} aria-hidden="true" /> : <LockOpen size={15} aria-hidden="true" />} {isLocked ? 'FIJA' : 'FIJAR'}
                       </button>
                     )}
                   </div>

@@ -90,7 +90,12 @@ DEEPSEEK_MODEL=
 
 Desde el resultado se puede cambiar una sola parada o ajustar cualquier opción sin empezar de cero.
 
-La página abre en modo **Ruleta** (`src/pages/PlanRoulette.tsx`): gira entre todo el catálogo (filtrado por la hora y, si quieres, por categorías), reparte categorías entre las casillas y deja fijar con candado las que te gusten antes de volver a girar. "Darle sentido" envía `mode: 'roulette'` a la misma API: DeepSeek busca el hilo que une las paradas, las ordena y sólo cambia una no fijada si de plano no encaja, usando un catálogo de apoyo; las fijas nunca se cambian. El modo "5 preguntas" sigue disponible en la misma página. Configura `DEEPSEEK_API_KEY` en Vercel para activarlo.
+La página abre en modo **Ruleta** (`src/pages/PlanRoulette.tsx`), pensada para decidir a dónde ir sin pensarle. Arriba se elige qué sale y para cuándo (mañana, tarde o noche; arranca con la hora del teléfono, así no sale un bar para desayunar):
+
+- **Un lugar.** Dos carretes, ZONA y QUÉ; tocar uno lo deja fijo. Sale un lugar con lo necesario para irse: tipo, zona, precio, por qué ir, el "Ve por" de la guía, **Cómo llegar**, mandarlo por WhatsApp y, si se quiere, sumarlo a "Mi plan".
+- **Plan de 3.** Un giro saca tres paradas en orden (arranque, algo que hacer, cierre) y a pie entre sí, con el tiempo de cada tramo. Cada parada tiene candado: la fija se queda y lo demás vuelve a girar cerca de ella. Lo arma `spinRoute` en `src/lib/routeGenerator.ts`, sin IA y al instante; sólo giran zonas donde hay lugares a pie a esa hora.
+
+"Mi plan" (lo que se junta en Spots, Rack o la ruleta) sigue disponible: con dos o más lugares aparece "Armar mi plan", que envía `mode: 'roulette'` a la misma API para que DeepSeek los ordene y encuentre el hilo que los une; todos van fijos. Los modos "Preguntas" y "Rutas" siguen en la misma página. Configura `DEEPSEEK_API_KEY` en Vercel para activar la IA.
 
 ### Preparar la hoja de propuestas de ciudad
 

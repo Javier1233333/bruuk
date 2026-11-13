@@ -155,8 +155,11 @@ export const zoneShort = (place: PlanPlace) => {
 const km = (a: PlanPlace, b: PlanPlace) =>
   a.coordinates && b.coordinates ? distanceKm(a.coordinates.lat, a.coordinates.lng, b.coordinates.lat, b.coordinates.lng) : null;
 
+// La ruleta no pregunta compañía ni cierre: sólo hora y ritmo.
+type ScoreAnswers = Pick<RouteAnswers, 'moment' | 'rhythm'> & Partial<Pick<RouteAnswers, 'company' | 'mood'>>;
+
 // Qué tan bien encaja un lugar en una parada, sin contar la distancia.
-function fitScore(place: PlanPlace, slot: Slot, slotIndex: number, answers: RouteAnswers): number {
+function fitScore(place: PlanPlace, slot: Slot, slotIndex: number, answers: ScoreAnswers): number {
   const rank = slot.indexOf(place.interest);
   if (rank === -1) return -Infinity;
   const text = `${place.type} ${place.category ?? ''} ${place.description}`;
@@ -194,7 +197,7 @@ function choose(scored: { place: PlanPlace; score: number }[]): PlanPlace | null
   return pickRandom(sorted.filter((item) => item.score >= best - 2.5).slice(0, 5)).place;
 }
 
-type Context = { answers: RouteAnswers; places: PlanPlace[]; zones: ZoneId[] | null };
+type Context = { answers: ScoreAnswers; places: PlanPlace[]; zones: ZoneId[] | null };
 
 // Qué tan lejos queda un lugar de la zona pedida (km al centro más cercano).
 const kmToZones = (place: PlanPlace, zones: ZoneId[]) =>
@@ -240,6 +243,21 @@ function pickStop(context: Context, slotIndex: number, slot: Slot, neighbors: Pl
   return choose(scored);
 }
 
+// Elige la parada y, si la zona no tiene de esa categoría y queda lejos, se abre a lo que
+// sí haya cerca a esa hora: mejor otra categoría a pie que la ideal a 3 km.
+function pickNear(context: Context, index: number, slot: Slot, neighbors: PlanPlace[], used: Set<string>, next?: Slot, strict = false): PlanPlace | null {
+  const place = pickStop(context, index, slot, neighbors, used, next);
+  if (!place || strict) return place;
+  const previous = neighbors[0];
+  const inZone = (candidate: PlanPlace) => !context.zones || context.zones.includes(routeZone(candidate) as ZoneId);
+  const offRoute = previous ? (km(previous, place) ?? 0) > 1.8 : !inZone(place);
+  if (!offRoute) return place;
+  const wide = [...slot, ...AROUND[context.answers.moment].filter((interest) => !slot.includes(interest))];
+  const near = pickStop(context, index, wide, neighbors, used, next);
+  const better = near && (previous ? (km(previous, near) ?? 9) < (km(previous, place) ?? 9) : inZone(near));
+  return near && better ? near : place;
+}
+
 const slotsFor = (answers: RouteAnswers): [Slot, Slot, Slot] => {
   const slots = SLOTS[answers.moment][answers.rhythm];
   // Para cerrar bailando hace falta un lugar de noche al final, sea la hora que sea.
@@ -271,21 +289,7 @@ export function buildRoute(answers: RouteAnswers, places: PlanPlace[], avoid: st
     const used = new Set(skip);
     const stops: PlanPlace[] = [];
     for (const [index, slot] of slots.entries()) {
-      let place = pickStop(context, index, slot, stops.slice(-1), used, slots[index + 1]);
-      // Si la zona no tiene de esa categoría y la parada queda lejos, se abre a lo que
-      // sí haya cerca a esa hora: mejor otra categoría a pie que la ideal a 3 km.
-      const previous = stops[stops.length - 1];
-      const offRoute = place && (previous
-        ? (km(previous, place) ?? 0) > 1.8
-        : Boolean(context.zones) && !context.zones!.includes(routeZone(place) as ZoneId));
-      if (place && offRoute && !(answers.mood === 'bailar' && index === 2)) {
-        const wide = [...slot, ...AROUND[answers.moment].filter((interest) => !slot.includes(interest))];
-        const near = pickStop(context, index, wide, stops.slice(-1), used, slots[index + 1]);
-        const better = near && (previous
-          ? (km(previous, near) ?? 9) < (km(previous, place) ?? 9)
-          : context.zones!.includes(routeZone(near) as ZoneId));
-        if (near && better) place = near;
-      }
+      const place = pickNear(context, index, slot, stops.slice(-1), used, slots[index + 1], answers.mood === 'bailar' && index === 2);
       if (!place) return null;
       used.add(place.id);
       stops.push(place);
@@ -315,4 +319,73 @@ export function rerollStop(answers: RouteAnswers, places: PlanPlace[], current: 
   if (!next) return null;
   const replaced = resolved.map((place, position) => (position === index ? next : place));
   return { ...toItinerary(answers, replaced), title: current.title };
+}
+
+/* ---------- Ruleta: plan completo de un giro ---------- */
+
+const RHYTHMS: RouteAnswers['rhythm'][] = ['caminar', 'platicar', 'comer', 'cultura'];
+export const SPIN_STOPS = 3;
+// Tramo máximo entre paradas para llamarlo caminable, y cuántas veces se sortea el ritmo buscándolo.
+const WALK_KM = 1.15;
+const SPIN_TRIES = 8;
+
+// Zonas donde un giro puede armar algo que se camine: algún lugar de la zona, abierto a esa
+// hora, con al menos otros dos a pie. Una zona con tres lugares regados no cuenta.
+export const spinZones = (places: PlanPlace[], moment: ItineraryMoment): ZoneId[] => {
+  const open = places.filter((place) => place.coordinates && AROUND[moment].includes(place.interest));
+  return ZONE_IDS.filter((zone) => open.some((place) => routeZone(place) === zone
+    && open.filter((other) => other.id !== place.id && (km(place, other) ?? 9) <= WALK_KM).length >= SPIN_STOPS - 1));
+};
+
+// Tres paradas cercanas entre sí y en orden (arranque, actividad, cierre) para esa zona y hora.
+// `kept` son las paradas fijas con candado, cada una en su posición: no se tocan y lo demás
+// se acomoda cerca de ellas. El ritmo se sortea para que cada giro salga distinto.
+export function spinRoute({ zone, moment, kept = [], avoid = [] }: { zone: ZoneId; moment: ItineraryMoment; kept?: (PlanPlace | null | undefined)[]; avoid?: string[] }, places: PlanPlace[]): Itinerary | null {
+  const fixed = Array.from({ length: SPIN_STOPS }, (_, index) => kept[index] ?? null);
+  const fixedPlaces = fixed.filter((place): place is PlanPlace => place !== null);
+  // Con paradas fijas manda la zona donde ya están.
+  const fixedZones = [...new Set(fixedPlaces.map(routeZone).filter((id): id is ZoneId => Boolean(id)))];
+  const attempt = (pool: PlanPlace[], skip: string[]) => {
+    const rhythm = pickRandom(RHYTHMS);
+    const slots = SLOTS[moment][rhythm];
+    const context: Context = { answers: { moment, rhythm }, places: pool, zones: fixedZones.length ? fixedZones : [zone] };
+    const used = new Set([...skip, ...fixedPlaces.map((place) => place.id)]);
+    const stops: (PlanPlace | null)[] = [...fixed];
+    for (let index = 0; index < SPIN_STOPS; index += 1) {
+      if (stops[index]) continue;
+      const beside = [stops[index - 1], stops[index + 1]].filter((place): place is PlanPlace => Boolean(place));
+      // Sin vecina inmediata, que al menos quede cerca de la parada fija que haya.
+      const neighbors = beside.length ? beside : fixedPlaces.slice(0, 1);
+      const place = pickNear(context, index, slots[index], neighbors, used, stops[index + 1] ? undefined : slots[index + 1]);
+      if (!place) return null;
+      used.add(place.id);
+      stops[index] = place;
+    }
+    return { rhythm, stops: stops as PlanPlace[] };
+  };
+  // La promesa es que se camina: sólo lugares con ubicación, y ningún tramo largo entre paradas libres.
+  const located = places.filter((place) => place.coordinates);
+  const walkable = (stops: PlanPlace[]) => stops.every((place, index) => {
+    if (index === 0 || (fixed[index] && fixed[index - 1])) return true;
+    const distance = km(stops[index - 1], place);
+    return distance !== null && distance <= WALK_KM;
+  });
+  const tryFor = (skip: string[]) => {
+    for (let round = 0; round < SPIN_TRIES; round += 1) {
+      const candidate = attempt(located, skip);
+      if (candidate && walkable(candidate.stops)) return candidate;
+    }
+    return null;
+  };
+  // Primero sin repetir lo ya visto; si ya no alcanza, se repite antes que mandar lejos.
+  const result = tryFor(avoid) ?? tryFor([]) ?? attempt(located, []) ?? attempt(places, []);
+  if (!result) return null;
+  return {
+    id: `ruleta-${result.stops.map((place) => place.id).join('.')}`,
+    title: TITLES[moment][result.rhythm],
+    vibes: [],
+    moment,
+    stops: result.stops.map((place, index) => ({ placeId: place.id, time: MOMENT_TIMES[moment][index] })),
+    source: 'generada',
+  };
 }

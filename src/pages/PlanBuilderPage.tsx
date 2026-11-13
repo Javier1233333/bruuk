@@ -115,7 +115,7 @@ export function PlanBuilderPage() {
           {mode === 'ruleta' ? (
             <>
               <h1 id="plan-builder-title">GIRA. <em>SAL.</em></h1>
-              <p>Dos carretes: zona y qué se antoja. Gira, agrega lo que te lata y arma tu plan.</p>
+              <p>Gira y sale un lugar para ir hoy, o un plan de tres paradas que se camina. Fija lo que te lata y vuelve a girar.</p>
             </>
           ) : mode === 'preguntas' ? (
             <>
