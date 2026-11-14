@@ -310,3 +310,78 @@ html.is-app-mode .plan-builder-note { margin-bottom: 18px; }
 .plan-curated-all:hover, .plan-curated-all:focus-visible { color: #0b0a12; background: #b8affe; outline: 0; }
 
 .plan-route-notice { margin: 0; padding: 10px 12px; color: #0b0a12; background: #b8affe; font-size: .84rem; line-height: 1.4; }
+
+/* Agregar parada: hoja que sube desde abajo */
+.plan-add { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-end; justify-content: center; color: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.plan-add *, .plan-add *::before, .plan-add *::after { box-sizing: border-box; }
+.plan-add-backdrop { position: absolute; inset: 0; background: rgba(11, 10, 18, .62); border: 0; cursor: pointer; }
+.plan-add-sheet { position: relative; display: flex; flex-direction: column; width: 100%; max-width: 560px; height: min(88dvh, 760px); background: #f7f6ff; border-top: 2px solid #0b0a12; box-shadow: 0 -6px 0 #8b7cf6; animation: plan-add-in .2s ease both; }
+@keyframes plan-add-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .plan-add-sheet { animation: none; } }
+.plan-add-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 8px 6px 16px; }
+.plan-add-head h2 { margin: 0; font: 900 1.15rem 'Outfit', sans-serif; letter-spacing: .02em; }
+.plan-add-close { display: grid; width: 44px; height: 44px; place-items: center; color: #0b0a12; background: none; border: 0; cursor: pointer; }
+.plan-add-categories { display: flex; flex: none; gap: 6px; overflow-x: auto; padding: 2px 16px 10px; scrollbar-width: none; }
+.plan-add-categories::-webkit-scrollbar { display: none; }
+.plan-add-categories button { display: inline-flex; flex: none; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; color: #0b0a12; background: #fff; border: 1.5px solid #0b0a12; font: 850 .66rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; touch-action: manipulation; }
+.plan-add-categories button.is-active { color: #fff; background: #0b0a12; }
+.plan-add-search { display: flex; flex: none; align-items: center; gap: 8px; min-height: 48px; margin: 0 16px 8px; padding: 0 12px; color: #575463; background: #fff; border: 1.5px solid #0b0a12; }
+.plan-add-search:focus-within { box-shadow: 4px 4px 0 #8b7cf6; }
+/* 16px evita que iOS haga zoom al enfocar */
+.plan-add-search input { flex: 1; min-width: 0; height: 44px; color: #0b0a12; background: transparent; border: 0; outline: 0; font: 500 16px 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
+.plan-add-list { flex: 1; min-height: 0; margin: 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; list-style: none; }
+.plan-add-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; min-height: 68px; padding: 8px 0; color: #0b0a12; text-align: left; background: none; border: 0; border-bottom: 1.5px solid rgba(11, 10, 18, .14); cursor: pointer; touch-action: manipulation; }
+.plan-add-row:focus-visible, .plan-add-categories button:focus-visible, .plan-add-close:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+.plan-add-thumb { display: grid; width: 52px; height: 52px; place-items: center; overflow: hidden; color: #b8affe; background: #17142a; }
+.plan-add-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.plan-add-row.is-surprise .plan-add-thumb { color: #0b0a12; background: #b8affe; }
+.plan-add-info { display: grid; gap: 2px; min-width: 0; }
+.plan-add-info strong { overflow: hidden; font: 900 1rem/1.15 'Outfit', sans-serif; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.plan-add-info span { overflow: hidden; color: #575463; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+.plan-add-row > svg { color: #6557d8; }
+.plan-add-empty { padding: 24px 0; color: #575463; font-size: .9rem; }
+@media (min-width: 900px) {
+  .plan-add { align-items: center; }
+  .plan-add-sheet { height: min(80dvh, 720px); border: 2px solid #0b0a12; box-shadow: 8px 8px 0 #8b7cf6; }
+}
+
+/* Botón ancho para abrir el buscador desde Mi plan */
+.plan-tray-add { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 8px; color: #0b0a12; background: #e9e6ff; border: 2px dashed #6557d8; font: 900 .74rem 'Outfit', sans-serif; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; }
+.plan-tray-add:hover, .plan-tray-add:focus-visible { background: #b8affe; outline: 0; }
+.plan-tray-add:disabled { opacity: .5; }
+
+/* Onboarding de Arma tu plan: tres pantallas, hoja en celular y tarjeta en PC */
+.plan-onboarding { position: fixed; inset: 0; z-index: 1300; display: flex; align-items: flex-end; justify-content: center; color: #0b0a12; font-family: 'DM Sans', sans-serif; }
+.plan-onboarding *, .plan-onboarding *::before, .plan-onboarding *::after { box-sizing: border-box; }
+.plan-onboarding-backdrop { position: absolute; inset: 0; background: rgba(11, 10, 18, .7); border: 0; cursor: pointer; }
+.plan-onboarding-card { position: relative; display: grid; gap: 14px; width: 100%; max-width: 480px; padding: 22px 20px calc(18px + env(safe-area-inset-bottom)); background: #f7f6ff; border-top: 2px solid #0b0a12; box-shadow: 0 -6px 0 #8b7cf6; animation: plan-add-in .2s ease both; }
+@media (prefers-reduced-motion: reduce) { .plan-onboarding-card, .plan-onboarding-step { animation: none !important; } }
+.plan-onboarding-top { display: flex; align-items: center; justify-content: space-between; color: #6557d8; font: 850 .62rem 'Outfit', sans-serif; letter-spacing: .16em; }
+.plan-onboarding-skip { min-height: 40px; padding: 0 4px; color: #575463; background: none; border: 0; font: 850 .64rem 'Outfit', sans-serif; letter-spacing: .12em; cursor: pointer; }
+.plan-onboarding-step { display: grid; gap: 10px; animation: plan-step-in .22s ease both; }
+.plan-onboarding-icon { display: grid; width: 64px; height: 64px; place-items: center; color: #b8affe; background: #0b0a12; box-shadow: 4px 4px 0 #8b7cf6; }
+.plan-onboarding-step h2 { margin: 6px 0 0; font: 900 clamp(2.4rem, 13vw, 3.4rem)/.9 'Outfit', sans-serif; letter-spacing: -.05em; }
+.plan-onboarding-step h2 em { color: #6557d8; font-style: normal; }
+.plan-onboarding-step p { margin: 0; color: #36333f; font-size: 1rem; line-height: 1.45; }
+.plan-onboarding-step a { color: #6557d8; font-weight: 800; }
+.plan-onboarding-dots { display: flex; gap: 6px; }
+.plan-onboarding-dots span { width: 22px; height: 4px; background: rgba(11, 10, 18, .18); }
+.plan-onboarding-dots span.is-on { background: #0b0a12; }
+.plan-onboarding-actions { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+.plan-onboarding-actions .plan-builder-button, .plan-onboarding-actions .plan-builder-secondary { min-height: 52px; }
+.plan-onboarding-actions .plan-builder-secondary { flex: none; padding: 0 16px; }
+.plan-onboarding-skip:focus-visible, .plan-onboarding-step a:focus-visible { outline: 2px solid #8b7cf6; outline-offset: 2px; }
+@media (min-width: 900px) {
+  .plan-onboarding { align-items: center; }
+  .plan-onboarding-card { padding: 28px; border: 2px solid #0b0a12; box-shadow: 10px 10px 0 #8b7cf6; }
+}
+
+/* "¿Cómo funciona?" en la cabecera */
+.plan-builder-help { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0; color: #b8affe; background: none; border: 0; font: 800 .66rem 'Outfit', sans-serif; letter-spacing: .12em; cursor: pointer; }
+.plan-builder-help:hover, .plan-builder-help:focus-visible { color: #fff; outline: 0; text-decoration: underline; }
+.plan-builder-nav-end { display: flex; align-items: center; justify-self: end; gap: 14px; }
+.plan-builder-nav-end > a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: #f7f6ff; font: 800 .68rem 'Outfit', sans-serif; letter-spacing: .12em; text-decoration: none; }
+@media (max-width: 420px) {
+  .plan-builder-nav-end { gap: 10px; }
+  .plan-builder-nav-end .plan-builder-help span, .plan-builder-nav-end > a span { display: none; }
+}

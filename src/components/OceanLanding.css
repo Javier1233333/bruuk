@@ -355,7 +355,10 @@
 
 /* Card slide centering */
 .card-slide {
-  padding-top: 6rem; /* Make sure card doesn't hit header logo */
+  /* La tarjeta empieza debajo de los filtros flotantes (categoría + zona), no detrás */
+  padding-top: 112px;
+  /* index.css le da 8rem abajo a toda <section>: eso subía la tarjeta debajo de los filtros */
+  padding-bottom: 16px;
   border-top: 1px solid rgba(255, 255, 255, .04);
 }
 
@@ -371,8 +374,9 @@
   position: relative !important;
   left: auto !important;
   top: auto !important;
-  width: 90vw !important;
-  max-width: 320px;
+  /* Más ancha para que "Ver en Maps", "Al plan" y "Compartir" quepan sin cortarse */
+  width: min(92vw, 400px) !important;
+  max-width: 400px;
   z-index: 10;
   box-shadow: 8px 8px 0px #000;
 }
@@ -498,10 +502,11 @@
   .end-contact-links { margin-top: 1rem; }
 
   .card-slide {
-    padding-top: 4rem;
+    padding-top: 94px;
   }
 
-  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 174px); }
+  /* Si en una pantalla muy baja no cabe, se desliza por dentro en vez de cortarse */
+  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 70px - 94px - 12px); overflow-y: auto; overscroll-behavior: contain; }
 }
 
 @media (min-width: 481px) and (max-width: 760px) {
@@ -542,6 +547,10 @@
   height: 130px;
   background: #f0f0f0;
   overflow: hidden;
+}
+/* En el feed la foto crece con la pantalla y se achica en las bajitas para que la tarjeta quepa completa */
+.card-wrapper-centered .spot-card__img-wrap {
+  height: clamp(88px, calc(var(--app-dvh) - 460px), 200px);
 }
 
 .spot-card__img-wrap.has-category-photo {
