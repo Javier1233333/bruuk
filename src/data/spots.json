@@ -1122,5 +1122,105 @@
     "price": "$200-500",
     "mapsLink": "https://maps.google.com/?q=Casa+Cobra+Guadalajara",
     "city": "guadalajara"
+  },
+  {
+    "id": "spot_134",
+    "name": "Museo de Arte de Zapopan (MAZ)",
+    "type": "Museo de arte",
+    "description": "Museo en el Centro de Zapopan con varias áreas y exposiciones temporales. Pregunta al personal qué salas están abiertas y recórrelas todas, no te quedes sólo con la primera.",
+    "highlight": "Revisar la cartelera antes de ir: las exposiciones cambian y vale la pena volver",
+    "imageUrl": "/radar/maz-route/maz.webp",
+    "colorAccent": "#3a5f8f",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Museo+de+Arte+de+Zapopan",
+    "city": "guadalajara",
+    "zone": "zapopan"
+  },
+  {
+    "id": "spot_135",
+    "name": "Estación MAZ",
+    "type": "Museo / Espacio de arte",
+    "description": "La segunda sede del MAZ, junto a la estación del tren y los Arcos de Zapopan. Montan exposiciones muy buenas; algunas trabajan con elementos sensoriales.",
+    "highlight": "El lobby: una tienda y una mesa para jugar ajedrez",
+    "imageUrl": "/img/spots-real/spot_135.svg",
+    "colorAccent": "#3a5f8f",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Estacion+MAZ+Zapopan",
+    "city": "guadalajara",
+    "zone": "zapopan"
+  },
+  {
+    "id": "spot_136",
+    "name": "Gufo Café",
+    "type": "Cafetería",
+    "description": "La segunda sucursal de Gufo, después de la de avenida Chapultepec, dentro de la Librería del Fondo de Cultura Económica en el Centro de Zapopan.",
+    "highlight": "Un café entre libros a unos pasos de la calle peatonal",
+    "imageUrl": "/img/spots-real/spot_136.svg",
+    "colorAccent": "#7a5230",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Gufo+Cafe+Zapopan+Centro",
+    "city": "guadalajara",
+    "zone": "zapopan"
+  },
+  {
+    "id": "spot_137",
+    "name": "Amorcito Mío",
+    "type": "Sandwichería / Pizzería",
+    "description": "Buena primera parada en el Centro de Zapopan para desayunar uno de sus sándwiches. Si llegas más tarde, también funciona para sentarte a comer una pizza.",
+    "highlight": "Sus sándwiches para arrancar antes del MAZ",
+    "imageUrl": "/img/spots-real/spot_137.svg",
+    "colorAccent": "#c23b22",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Amorcito+Mio+Zapopan+Centro",
+    "city": "guadalajara",
+    "zone": "zapopan"
+  },
+  {
+    "id": "spot_138",
+    "name": "Hostería del Ángel",
+    "type": "Restaurante de desayunos",
+    "description": "Para un desayuno mexicano más tradicional en el Centro de Zapopan antes de entrar al museo.",
+    "highlight": "Desayuno mexicano tradicional",
+    "imageUrl": "/img/spots-real/spot_138.svg",
+    "colorAccent": "#b5451b",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Hosteria+del+Angel+Zapopan+Centro",
+    "city": "guadalajara",
+    "zone": "zapopan"
+  },
+  {
+    "id": "spot_139",
+    "name": "Museo Cabañas",
+    "type": "Museo",
+    "description": "Sus patios se recorren sin saber de arte ni tener que entenderlo todo. En la Capilla Mayor están los 57 frescos de José Clemente Orozco; pregunta qué otras salas están abiertas antes de irte.",
+    "highlight": "El Hombre de Fuego en la cúpula, y los martes la entrada es libre",
+    "imageUrl": "/radar/cabanas/fachada-optimized.webp",
+    "colorAccent": "#c49a2a",
+    "coordinates": {
+      "lat": 20.6765575,
+      "lng": -103.3382462
+    },
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Museo+Caba%C3%B1as+Guadalajara",
+    "city": "guadalajara",
+    "zone": "centro"
+  },
+  {
+    "id": "spot_140",
+    "name": "Café Madoka",
+    "type": "Cafetería",
+    "description": "Un Guadalajara más clásico: mesas sin prisa, comida tradicional y un ambiente que no intenta parecer nuevo. Buena pausa después del Cabañas.",
+    "highlight": "Sentarte un buen rato sin prisa",
+    "imageUrl": "/img/spots-real/spot_140.svg",
+    "colorAccent": "#7a5230",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Caf%C3%A9+Madoka+Guadalajara",
+    "city": "guadalajara",
+    "zone": "centro"
+  },
+  {
+    "id": "spot_141",
+    "name": "Finca Riveroll",
+    "type": "Cafetería",
+    "description": "En el andador Coronilla, con una taza más enfocada en el café. Funciona si todavía quieres seguir caminando el Centro.",
+    "highlight": "Cerrar la caminata por el Centro con un buen café",
+    "imageUrl": "/img/spots-real/spot_141.svg",
+    "colorAccent": "#7a5230",
+    "mapsLink": "https://www.google.com/maps/search/?api=1&query=Finca+Riveroll+Centro+Guadalajara",
+    "city": "guadalajara",
+    "zone": "centro"
   }
 ]

@@ -17,10 +17,12 @@ const CATEGORY: Record<string, Visual> = {
   dessert: { label: 'POSTRE', Icon: IceCreamBowl },
   outdoors: { label: 'ATARDECER', Icon: Sunset },
   shop: { label: 'TIENDA', Icon: ShoppingBag },
+  museum: { label: 'MUSEO', Icon: Landmark },
 };
 
 export function spotVisual(type: string): Visual {
   const value = type.toLocaleLowerCase('es');
+  if (value.includes('museo')) return CATEGORY.museum;
   if (value.includes('mirador') || value.includes('parque') || value.includes('bosque')) return CATEGORY.outdoors;
   if (value.includes('panader')) return CATEGORY.bakery;
   if (value.includes('helad') || value.includes('postre')) return CATEGORY.dessert;
@@ -46,7 +48,7 @@ export const MOMENT_ICONS: Record<RouletteMoment, LucideIcon> = { sorpresa: Spar
 
 export function placeVisual(place: PlanPlace): Visual {
   if (place.interest === 'atardecer') return { label: 'ATARDECER', Icon: Sunset };
-  if (place.interest === 'cultura') return { label: 'CULTURA', Icon: Landmark };
+  if (place.interest === 'cultura') return /museo/i.test(place.type) ? CATEGORY.museum : { label: 'CULTURA', Icon: Landmark };
   if (place.interest === 'vintage') {
     if (place.category === 'Tianguis') return { label: 'TIANGUIS', Icon: ShoppingBag };
     if (place.category === 'Rack recomienda') return { label: 'VINTAGE', Icon: Store };

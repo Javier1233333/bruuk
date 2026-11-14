@@ -192,7 +192,10 @@ type CulturePlace = { name: string; category: string; description: string; googl
 const NIGHT_TYPES = /bar|club|discoteca|coctel|cervecer|jazz|vinos/i;
 const CAFE_TYPES = /caf|panader|bagel|helad|gelat/i;
 
+const MUSEUM_TYPES = /museo/i;
+
 const spotInterest = (spot: CatalogSpot): PlanInterest => {
+  if (MUSEUM_TYPES.test(spot.type)) return 'cultura';
   if (NIGHT_TYPES.test(spot.type)) return 'noche';
   if (CAFE_TYPES.test(spot.type)) return 'cafe';
   return 'comida';
@@ -244,6 +247,7 @@ const cultureWithShapes = (shapes?: ZoneShapes) =>
 
 export function buildPlanPlaces({ spots, rack, sunsets, shapes }: { spots: CatalogSpot[]; rack: CatalogRack[]; sunsets: CatalogSunsetEntry[]; shapes?: ZoneShapes }): PlanPlace[] {
   const spotsById = new Map(spots.map((spot) => [spot.id, spot]));
+  const spotNames = new Set(spots.map((spot) => slug(spot.name)));
   const sunsetIds = new Set(sunsets.map((entry) => (typeof entry === 'string' ? entry : entry.id)));
   const places: PlanPlace[] = [
     ...spots
@@ -281,7 +285,8 @@ export function buildPlanPlaces({ spots, rack, sunsets, shapes }: { spots: Catal
         coordinates: place.coordinates,
         ...zoneFields(place),
       })),
-    ...cultureWithShapes(shapes),
+    // Un museo que ya está en Spots (p. ej. el Cabañas) no se repite desde el mapa original.
+    ...cultureWithShapes(shapes).filter((place) => !spotNames.has(slug(place.name))),
     ...sunsets
       .map((entry) => (typeof entry === 'string' ? spotsById.get(entry) : entry))
       .filter((sunset): sunset is CatalogSunset | CatalogSpot => Boolean(sunset))
