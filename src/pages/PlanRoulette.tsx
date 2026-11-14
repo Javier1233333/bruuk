@@ -1,12 +1,12 @@
 import { createElement, useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Check, Dices, Globe, Lock, MapPin, Plus, Sparkles, X, type LucideIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowUpRight, Check, Dices, Globe, Lock, MapPin, Plus, Search, Sparkles, X, type LucideIcon } from 'lucide-react';
 import { INTEREST_OPTIONS, ROULETTE_MAX_STOPS, ROULETTE_MIN_STOPS, type PlanInterest } from '../data/planBuilder';
 import { addToPlan, removeFromPlan, usePlanCart } from '../lib/planCart';
 import { INTEREST_ICONS, placeIcon } from '../lib/placeIcons';
 import { usePlanCatalog } from '../lib/planCatalog';
 import { routeZone } from '../lib/routeGenerator';
 import { ZONES, ZONE_BY_ID, type ZoneId } from '../lib/zones';
+import { PlanAddStop } from './PlanAddStop';
 
 /* ============================================================
    Ruleta a lo Urbanspoon, lo más simple posible:
@@ -41,6 +41,8 @@ export function PlanRoulette({ onGenerate, disabled }: { onGenerate: () => void;
   const [locks, setLocks] = useState<Record<Reel, boolean>>({ zone: false, what: false });
   const [hitId, setHitId] = useState<string | null>(null);
   const [rolling, setRolling] = useState<{ zone: ZoneFace; what: PlanInterest } | null>(null);
+  // Buscador para terminar de armar el plan: museos, un café en específico, lo que sea.
+  const [searching, setSearching] = useState(false);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
@@ -155,7 +157,7 @@ export function PlanRoulette({ onGenerate, disabled }: { onGenerate: () => void;
       <section className="plan-tray" aria-labelledby="plan-tray-title">
         <h2 id="plan-tray-title">MI PLAN <span>{cart.length}/{ROULETTE_MAX_STOPS}</span></h2>
         {cartPlaces.length === 0 ? (
-          <p className="plan-tray-empty">Agrega lo que salga aquí o <Link to="/guadalajara/spots">elige lugares en Spots <ArrowRight size={13} aria-hidden="true" /></Link></p>
+          <p className="plan-tray-empty">Gira la ruleta, busca un lugar o agrégalo desde Spots y Rack con “+ Al plan”.</p>
         ) : (
           <ol>
             {cartPlaces.map((place, index) => (
@@ -167,7 +169,13 @@ export function PlanRoulette({ onGenerate, disabled }: { onGenerate: () => void;
             ))}
           </ol>
         )}
-        {isFull && <p className="plan-tray-empty"><Check size={14} aria-hidden="true" /> Plan completo.</p>}
+        {isFull ? (
+          <p className="plan-tray-empty"><Check size={14} aria-hidden="true" /> Plan completo.</p>
+        ) : (
+          <button type="button" className="plan-tray-add" onClick={() => setSearching(true)} disabled={isSpinning}>
+            <Search size={17} aria-hidden="true" /> BUSCAR Y AGREGAR LUGARES
+          </button>
+        )}
       </section>
 
       <div className="plan-step-actions plan-roulette-actions">
@@ -180,6 +188,20 @@ export function PlanRoulette({ onGenerate, disabled }: { onGenerate: () => void;
           </button>
         )}
       </div>
+
+      {searching && (
+        <PlanAddStop
+          places={places}
+          taken={cart}
+          anchor={[...cartPlaces].reverse().find((place) => place.coordinates)}
+          zone={locks.zone && zone && zone !== 'toda' ? zone : undefined}
+          onAdd={(place) => {
+            addToPlan(place.id);
+            setSearching(false);
+          }}
+          onClose={() => setSearching(false)}
+        />
+      )}
     </div>
   );
 }

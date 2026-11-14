@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Check, Dices, RefreshCw, Route, Share2, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, CircleHelp, Check, Dices, RefreshCw, Route, Share2, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { BruukLogo } from '../components/BruukLogo';
 import type { CustomPlan } from '../data/planBuilder';
 import { IS_APP_MODE } from '../lib/appMode';
 import { sharePlanImage } from '../lib/sharePlanImage';
 import { usePlanCatalog } from '../lib/planCatalog';
+import { PlanOnboarding } from '../components/PlanOnboarding';
+import { hasSeenPlanOnboarding } from '../lib/planOnboarding';
 import { PlanCuratedList } from './PlanCuratedList';
 import { PlanQuestions } from './PlanQuestions';
 import { PlanRoulette } from './PlanRoulette';
@@ -39,6 +41,8 @@ export function PlanBuilderPage() {
   const [mode, setMode] = useState<Mode>('ruleta');
   // "Mi plan": lo que se juntó en Spots, Rack o la ruleta.
   const cart = usePlanCart();
+  // La primera vez se explica la sección; luego se abre con "¿Cómo funciona?".
+  const [showHelp, setShowHelp] = useState(() => !hasSeenPlanOnboarding());
   const [isSharing, setIsSharing] = useState(false);
   const [shareError, setShareError] = useState('');
 
@@ -106,7 +110,12 @@ export function PlanBuilderPage() {
         <Link to="/" aria-label="Ir al inicio"><BruukLogo width={96} /></Link>
         <span>/ ARMA TU PLAN · GDL</span>
         {/* En el modo app se regresa con el menú inferior. */}
-        {IS_APP_MODE ? <span className="plan-builder-nav-app">{mode === 'ruleta' ? '/ RULETA' : mode === 'preguntas' ? '/ 5 PREGUNTAS' : '/ RUTAS'}</span> : <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> REGRESAR</Link>}
+        <div className="plan-builder-nav-end">
+          <button type="button" className="plan-builder-help" onClick={() => setShowHelp(true)} aria-label="¿Cómo funciona Arma tu plan?">
+            <CircleHelp size={17} aria-hidden="true" /> <span>¿CÓMO FUNCIONA?</span>
+          </button>
+          {!IS_APP_MODE && <Link to="/guadalajara"><ArrowLeft size={17} aria-hidden="true" /> <span>REGRESAR</span></Link>}
+        </div>
       </header>
 
       <main className="plan-builder-main">
@@ -209,6 +218,7 @@ export function PlanBuilderPage() {
           )}
         </section>
       </main>
+      {showHelp && <PlanOnboarding onClose={() => setShowHelp(false)} />}
     </div>
   );
 }
