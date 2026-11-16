@@ -112,6 +112,8 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           </>
         )}
         <span className="spot-card__category-logo" aria-label={`Tipo: ${visual.label}`}><SpotIcon size={16} strokeWidth={2.4} /></span>
+        {/* Chico, sobre la foto: así la fila de abajo (Maps y Compartir) cabe completa */}
+        <PlanCartButton id={spot.id} name={spot.name} compact className="spot-card__plan" />
         {onClose && (
           <button className="spot-card__close" onClick={onClose} aria-label="Cerrar">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -161,7 +163,6 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           Ver en Maps
         </a>
         <span className="spot-card__buttons">
-        <PlanCartButton id={spot.id} name={spot.name} />
         <ShareButton
           className="spot-card__share"
           title={spot.name}

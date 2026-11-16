@@ -355,8 +355,9 @@
 
 /* Card slide centering */
 .card-slide {
-  /* La tarjeta empieza debajo de los filtros flotantes (categoría + zona), no detrás */
-  padding-top: 112px;
+  /* Todas las tarjetas empiezan a la misma altura, justo debajo de los filtros flotantes */
+  align-items: flex-start;
+  padding-top: 120px;
   /* index.css le da 8rem abajo a toda <section>: eso subía la tarjeta debajo de los filtros */
   padding-bottom: 16px;
   border-top: 1px solid rgba(255, 255, 255, .04);
@@ -374,9 +375,8 @@
   position: relative !important;
   left: auto !important;
   top: auto !important;
-  /* Más ancha para que "Ver en Maps", "Al plan" y "Compartir" quepan sin cortarse */
-  width: min(92vw, 400px) !important;
-  max-width: 400px;
+  width: 90vw !important;
+  max-width: 320px;
   z-index: 10;
   box-shadow: 8px 8px 0px #000;
 }
@@ -502,11 +502,11 @@
   .end-contact-links { margin-top: 1rem; }
 
   .card-slide {
-    padding-top: 94px;
+    padding-top: 100px;
   }
 
   /* Si en una pantalla muy baja no cabe, se desliza por dentro en vez de cortarse */
-  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 70px - 94px - 12px); overflow-y: auto; overscroll-behavior: contain; }
+  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 70px - 100px - 12px); overflow-y: auto; overscroll-behavior: contain; }
 }
 
 @media (min-width: 481px) and (max-width: 760px) {
@@ -547,10 +547,6 @@
   height: 130px;
   background: #f0f0f0;
   overflow: hidden;
-}
-/* En el feed la foto crece con la pantalla y se achica en las bajitas para que la tarjeta quepa completa */
-.card-wrapper-centered .spot-card__img-wrap {
-  height: clamp(88px, calc(var(--app-dvh) - 460px), 200px);
 }
 
 .spot-card__img-wrap.has-category-photo {
@@ -784,12 +780,8 @@
 .spot-card__buttons { display: inline-flex; gap: 6px; }
 .spot-card__buttons > * { white-space: nowrap; }
 .spot-card__actions .spot-card__link { white-space: nowrap; }
-/* Tarjeta angosta: "Ver en Maps" arriba y los dos botones abajo, a lo ancho */
-@media (max-width: 400px) {
-  .spot-card__actions { flex-wrap: wrap; gap: 4px 12px; }
-  .spot-card__buttons { flex: 1 1 100%; }
-  .spot-card__buttons > * { flex: 1 1 0; justify-content: center; }
-}
+/* Botón de plan: etiqueta chica en la esquina de la foto */
+.spot-card .spot-card__plan { position: absolute; right: 10px; bottom: 10px; z-index: 2; min-height: 32px; padding: 0 9px; gap: 4px; border-width: 2px; font-size: .62rem; letter-spacing: .4px; box-shadow: 2px 2px 0 rgba(0, 0, 0, .35); }
 .spot-card__share { min-height: 44px; padding: 0 12px; color: #000; border: 1.5px solid #000; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
 .spot-card__share:hover { background: #000; color: #fff; }
 
