@@ -23,6 +23,7 @@
     "firebase": "^12.10.0",
     "firebase-admin": "^13.10.0",
     "framer-motion": "^12.38.0",
+    "html-to-image": "^1.11.11",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.577.0",
     "react": "^19.2.0",

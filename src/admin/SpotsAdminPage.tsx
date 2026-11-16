@@ -12,6 +12,7 @@ import { RackView } from './RackAdmin';
 import { MapsListImport } from './MapsListImport';
 import { HotspotsView } from './HotspotsAdmin';
 import { ZonesView } from './ZonesAdmin';
+import { FichaMaker } from './FichaMaker';
 import { ZonesMapView } from './ZonesMap';
 import { ZoneSelect } from './ZoneSelect';
 import {
@@ -30,7 +31,7 @@ import '../pages/LoginPage.css';
 import './SpotsAdminPage.css';
 
 type Filter = 'all' | 'active' | 'hidden';
-type View = 'spots' | 'rack' | 'zonas' | 'mapa' | 'hotspots';
+type View = 'spots' | 'rack' | 'zonas' | 'mapa' | 'hotspots' | 'fichas';
 
 export function SpotsAdminPage() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -172,6 +173,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
               Zonas{noZoneCount > 0 && <span className="sa-view__badge">{noZoneCount}</span>}
             </button>
             <button className={`sa-view${view === 'mapa' ? ' is-active' : ''}`} onClick={() => setView('mapa')}>Mapa</button>
+            <button className={`sa-view${view === 'fichas' ? ' is-active' : ''}`} onClick={() => setView('fichas')}>Fichas</button>
           </nav>
         </div>
         <div className="sa-header__right">
@@ -180,7 +182,7 @@ function SpotsManager({ email, onSignOut }: { email: string; onSignOut: () => Pr
         </div>
       </header>
 
-      {view === 'hotspots' ? <HotspotsView spots={spots} loaded={loaded} /> : view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'mapa' ? <ZonesMapView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} /> : (
+      {view === 'fichas' ? <FichaMaker spots={spots} loaded={loaded} /> : view === 'hotspots' ? <HotspotsView spots={spots} loaded={loaded} /> : view === 'zonas' ? <ZonesView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'mapa' ? <ZonesMapView spots={spots} rack={rack} loaded={loaded && rackLoaded} /> : view === 'rack' ? <RackView places={rack} loaded={rackLoaded} loadError={rackError} /> : (
       <main className="sa-main">
         <div className="sa-toolbar">
           <div className="sa-search">
