@@ -363,6 +363,8 @@
   border-top: 1px solid rgba(255, 255, 255, .04);
 }
 
+.spot-card-frame { position: relative; width: 90vw; max-width: 320px; }
+
 .card-wrapper-centered {
   position: relative;
   display: flex;
@@ -375,8 +377,8 @@
   position: relative !important;
   left: auto !important;
   top: auto !important;
-  width: 90vw !important;
-  max-width: 320px;
+  /* El ancho lo da el marco (.spot-card-frame): un solo lugar para todas */
+  width: 100% !important;
   z-index: 10;
   box-shadow: 8px 8px 0px #000;
 }
@@ -505,8 +507,6 @@
     padding-top: 100px;
   }
 
-  /* Si en una pantalla muy baja no cabe, se desliza por dentro en vez de cortarse */
-  .card-wrapper-centered .spot-card { max-height: calc(var(--app-dvh) - 70px - 100px - 12px); overflow-y: auto; overscroll-behavior: contain; }
 }
 
 @media (min-width: 481px) and (max-width: 760px) {
@@ -860,3 +860,16 @@
   .spots-feed-arrows { display: flex; }
 }
 @media (prefers-reduced-motion: reduce) { .spots-feed-arrows button { transition: none; } }
+
+/* Pantallas bajas: la tarjeta se compacta para caber completa (sin scroll por dentro) */
+@media (max-height: 700px) {
+  .card-slide .spot-card__img-wrap { height: 100px; }
+  .card-slide .spot-card__body { padding: 10px 14px 12px; }
+  .card-slide .spot-card__name { margin-bottom: 4px; }
+  .card-slide .spot-card__why { margin-bottom: 4px; }
+}
+@media (max-height: 600px) {
+  .card-slide .spot-card__img-wrap { height: 84px; }
+  .card-slide .spot-card__why { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .card-slide .spot-card__why span { margin-right: 8px; }
+}

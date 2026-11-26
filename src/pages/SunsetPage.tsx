@@ -45,7 +45,7 @@ export function SunsetPage() {
         {SUNSET_SPOTS.map((spot) => (
           <section className="tiktok-slide card-slide" key={spot.id}>
             <div className="card-wrapper-centered">
-              <SpotCard spot={spot} />
+              <div className="spot-card-frame"><SpotCard spot={spot} /></div>
             </div>
           </section>
         ))}

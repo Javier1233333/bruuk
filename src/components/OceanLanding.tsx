@@ -293,12 +293,11 @@ export function OceanLanding() {
             ) : (
               <section className="tiktok-slide card-slide" id={`spot-slide-${slide.id}`} key={`${slide.id}-${activeCategory}`}>
                 <div className="card-wrapper-centered">
-                  {slide.hotspot ? (
-                    <div className="hotspot-card-wrap">
-                      <span className="hotspot-tag"><Flame size={12} strokeWidth={3} aria-hidden="true" /> HOTSPOT DE LA SEMANA · {slide.hotspot}/{hotspots.length}</span>
-                      <SpotCard spot={slide} />
-                    </div>
-                  ) : <SpotCard spot={slide} />}
+                  {/* Mismo marco para todas (hotspot o no): mismo ancho y misma posición */}
+                  <div className="spot-card-frame">
+                    {slide.hotspot ? <span className="hotspot-tag"><Flame size={12} strokeWidth={3} aria-hidden="true" /> HOTSPOT DE LA SEMANA · {slide.hotspot}/{hotspots.length}</span> : null}
+                    <SpotCard spot={slide} />
+                  </div>
                 </div>
               </section>
             )
