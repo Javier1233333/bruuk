@@ -590,3 +590,36 @@
   .sa-map { height: 60vh; }
   .sa-map-draw { position: static; margin-top: 0.5rem; }
 }
+
+/* ---------- Fichas Bruuk: tarjeta de Spots para exportar en JPG ---------- */
+.sa-ficha-page { max-width: 1100px; }
+.sa-ficha-page .sa-zones-head h2 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: .05em; }
+.sa-ficha-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.sa-ficha-form { display: grid; gap: .8rem; }
+.sa-field { display: grid; gap: .3rem; min-width: 0; }
+.sa-field > span, .sa-ficha-choice legend { color: var(--text-secondary); font: 800 .7rem 'Outfit', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.sa-field input, .sa-field select, .sa-field textarea { width: 100%; min-height: 44px; padding: .55rem .7rem; color: var(--text-primary); background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: 0; font: 500 16px/1.4 'DM Sans', sans-serif; resize: vertical; }
+.sa-field input:focus-visible, .sa-field select:focus-visible, .sa-field textarea:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+.sa-ficha-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.sa-ficha-color input { padding: 2px; cursor: pointer; }
+.sa-ficha-choice { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1rem; margin: 0; padding: .6rem .7rem .7rem; border: 2px solid var(--border-color); }
+.sa-ficha-choice label { display: inline-flex; align-items: center; gap: .4rem; min-height: 36px; font-size: .9rem; cursor: pointer; }
+.sa-ficha-choice input { width: 17px; height: 17px; accent-color: var(--accent-light); }
+.sa-ficha-choice i { width: 16px; height: 16px; border: 1.5px solid var(--text-secondary); }
+.sa-ficha-upload { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; font-size: .8rem; }
+.sa-ficha-preview { position: sticky; top: 90px; display: grid; gap: .8rem; justify-items: center; }
+.sa-ficha-frame { display: grid; place-items: center; width: 100%; padding: 12px; overflow: auto; background: repeating-conic-gradient(rgba(255, 255, 255, .04) 0 25%, transparent 0 50%) 0 0 / 16px 16px; border: 1px dashed var(--border-color); }
+/* Lo que se exporta: la ficha con margen (para la sombra) o el cuadro vertical de 360×640 (×3 = 1080×1920) */
+.sa-ficha-stage { display: grid; place-items: center; padding: 28px 36px 36px 28px; }
+.sa-ficha-stage.is-vertical { width: 360px; height: 640px; padding: 0; }
+.sa-ficha-stage .card-wrapper-centered .spot-card { width: 320px !important; max-height: none; overflow: hidden; }
+.sa-ficha-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
+.sa-ficha-actions .btn { display: inline-flex; align-items: center; gap: .45rem; padding: .7rem 1.1rem; }
+@media (max-width: 860px) {
+  .sa-ficha-layout { grid-template-columns: 1fr; }
+  .sa-ficha-preview { position: static; order: -1; }
+  .sa-ficha-frame { padding: 6px; }
+}
+@media (max-width: 400px) {
+  .sa-ficha-row { grid-template-columns: 1fr; }
+}

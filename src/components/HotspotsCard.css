@@ -127,9 +127,8 @@
 
 .hotspots-card__go { flex: none; color: rgba(255, 255, 255, 0.5); }
 
-/* Etiqueta sobre la foto de cada hotspot (arriba de la tarjeta la tapan los filtros).
-   Mismo ancho que .card-wrapper-centered .spot-card para que quede en su esquina. */
-.hotspot-card-wrap { position: relative; width: 90vw; max-width: 320px; }
+/* Etiqueta sobre la foto de cada hotspot; va dentro de .spot-card-frame (OceanLanding.css),
+   el mismo marco que el resto de las tarjetas, así que no cambia su ancho ni su posición. */
 
 .hotspot-tag {
   position: absolute;

@@ -4,7 +4,8 @@ import { addToPlan, removeFromPlan, usePlanCart } from '../lib/planCart';
 import './PlanCartBar.css';
 
 // Botón de las tarjetas de Spots: suma el lugar a "Mi plan" o lo quita.
-export function PlanCartButton({ id, name, className = '' }: { id: string; name: string; className?: string }) {
+// compact: sólo "PLAN" (para la tarjeta de Spots, donde el espacio es poco).
+export function PlanCartButton({ id, name, className = '', compact = false }: { id: string; name: string; className?: string; compact?: boolean }) {
   const cart = usePlanCart();
   const inPlan = cart.includes(id);
   const full = !inPlan && cart.length >= ROULETTE_MAX_STOPS;
@@ -23,7 +24,7 @@ export function PlanCartButton({ id, name, className = '' }: { id: string; name:
       title={full ? `Tu plan ya tiene ${ROULETTE_MAX_STOPS} lugares` : undefined}
     >
       {inPlan ? <Check size={15} strokeWidth={3} aria-hidden="true" /> : <Plus size={15} strokeWidth={3} aria-hidden="true" />}
-      {inPlan ? 'EN TU PLAN' : 'AL PLAN'}
+      {compact ? 'PLAN' : inPlan ? 'EN TU PLAN' : 'AL PLAN'}
     </button>
   );
 }

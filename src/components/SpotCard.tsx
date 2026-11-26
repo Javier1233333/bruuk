@@ -5,7 +5,7 @@ import { spotZone } from '../lib/zones';
 import { PlanCartButton } from './PlanCartButton';
 import { ShareButton } from './ShareButton';
 
-interface Spot {
+export interface Spot {
   id: string;
   name: string;
   type: string;
@@ -23,6 +23,8 @@ interface Spot {
 
 interface SpotCardProps {
   spot: Spot;
+  // "ficha": la tarjeta sola para exportarla como imagen (admin → Fichas): sin botones ni animación.
+  variant?: 'ficha';
   clickX?: number;
   clickY?: number;
   onClose?: () => void;
@@ -48,7 +50,8 @@ function getCardPos(cx: number, cy: number) {
   return { x, y };
 }
 
-export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
+export function SpotCard({ spot, clickX, clickY, onClose, variant }: SpotCardProps) {
+  const isFicha = variant === 'ficha';
   const isAbsolute = clickX !== undefined && clickY !== undefined;
   const pos = isAbsolute ? getCardPos(clickX!, clickY!) : { x: 0, y: 0 };
   const cardRef = useRef<HTMLDivElement>(null);
@@ -73,7 +76,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
       ref={cardRef}
       className="spot-card"
       style={isAbsolute ? { left: pos.x, top: pos.y, position: 'fixed' } : { position: 'relative' }}
-      initial={isAbsolute ? { opacity: 0, scale: 0.6, y: 16 } : { opacity: 0, y: 20 }}
+      initial={isFicha ? false : isAbsolute ? { opacity: 0, scale: 0.6, y: 16 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={isAbsolute ? { opacity: 0, scale: 0.5, y: -8 } : undefined}
       transition={isAbsolute ? { type: 'spring', stiffness: 420, damping: 26 } : { duration: 0.3 }}
@@ -112,6 +115,8 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           </>
         )}
         <span className="spot-card__category-logo" aria-label={`Tipo: ${visual.label}`}><SpotIcon size={16} strokeWidth={2.4} /></span>
+        {/* Chico, sobre la foto: así la fila de abajo (Maps y Compartir) cabe completa */}
+        {!isFicha && <PlanCartButton id={spot.id} name={spot.name} compact className="spot-card__plan" />}
         {onClose && (
           <button className="spot-card__close" onClick={onClose} aria-label="Cerrar">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -146,7 +151,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
             {spot.price && <span className="spot-card__price">{spot.price}</span>}
           </div>
         )}
-        <div className="spot-card__actions">
+        {!isFicha && <div className="spot-card__actions">
         <a
           href={spot.mapsLink}
           target="_blank"
@@ -161,7 +166,6 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           Ver en Maps
         </a>
         <span className="spot-card__buttons">
-        <PlanCartButton id={spot.id} name={spot.name} />
         <ShareButton
           className="spot-card__share"
           title={spot.name}
@@ -169,7 +173,7 @@ export function SpotCard({ spot, clickX, clickY, onClose }: SpotCardProps) {
           path={`/guadalajara/spots?spot=${encodeURIComponent(spot.id)}`}
         />
         </span>
-        </div>
+        </div>}
       </div>
     </motion.div>
   );
